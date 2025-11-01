@@ -258,10 +258,10 @@ export default function UpdateProfileForm() {
 					<span className="font-semibold lg:max-w-[280px] w-full text-[#414651] gap-x-0.5 text-sm">
 						User ID
 					</span>
-					<div className="flex items-center gap-x-2 py-2.5 px-11.5 ml-auto capitalize">
-						<span>{user?.username}</span>
+					<div className="flex items-center gap-x-2 py-2.5 px-11.5 ml-auto">
+						<span className="text-sm text-gray-600 font-mono">{user?.id}</span>
 						<CopyButton
-							value={user?.username}
+							value={user?.id}
 							icon="/assets/icons/copy.svg"
 							className="shrink-0 border-0 p-0 size-4.5 hover:bg-transparent"
 						/>
