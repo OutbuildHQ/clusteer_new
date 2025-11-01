@@ -101,15 +101,15 @@ export default function LoginForm() {
 								Must be at least 8 characters.
 							</FormDescription>
 							<FormMessage />
-							<Link
-								href="/forgot-password"
-								className="text-dark-green font-semibold text-sm block text-left mt-2"
-							>
-								Forgot password?
-							</Link>
 						</FormItem>
 					)}
 				/>
+				<Link
+					href="/forgot-password"
+					className="text-dark-green font-semibold text-sm block text-left -mt-3"
+				>
+					Forgot password?
+				</Link>
 				<Button
 					type="submit"
 					disabled={isPending}
