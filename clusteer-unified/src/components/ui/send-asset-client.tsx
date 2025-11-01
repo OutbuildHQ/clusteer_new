@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { NETWORKS } from "@/lib/data";
 import { WalletCurrency, useSelectWallet } from "@/store/wallet";
 import { Dot } from "lucide-react";
@@ -14,16 +15,52 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "./select";
+import SendTypeSelectionModal from "../modals/send-type-selection-modal";
+import InternalSendModal from "../modals/internal-send-modal";
 
 export default function SendAssetClient({ asset }: { asset: string }) {
 	const router = useRouter();
 	const wallet = useSelectWallet(asset as WalletCurrency);
+	const [showTypeSelection, setShowTypeSelection] = useState(true);
+	const [showInternalSend, setShowInternalSend] = useState(false);
+
+	const handleSelectInternal = () => {
+		setShowTypeSelection(false);
+		setShowInternalSend(true);
+	};
+
+	const handleSelectOnchain = () => {
+		setShowTypeSelection(false);
+	};
+
+	const handleCloseModals = () => {
+		setShowInternalSend(false);
+		setShowTypeSelection(true);
+	};
 
 	if (!wallet) {
 		router.push("/");
 		return null;
 	}
+
 	return (
+		<>
+			<SendTypeSelectionModal
+				isOpen={showTypeSelection}
+				onClose={() => router.back()}
+				onSelectInternal={handleSelectInternal}
+				onSelectOnchain={handleSelectOnchain}
+				assetName={wallet.name}
+			/>
+
+			<InternalSendModal
+				isOpen={showInternalSend}
+				onClose={handleCloseModals}
+				asset={asset.toUpperCase()}
+				balance={wallet.balance}
+			/>
+
+			{!showTypeSelection && (
 		<section className="mt-8.5 lg:mt-10">
 			<header>
 				<h1 className="font-bold text-3xl capitalize">Send {wallet.name}</h1>
@@ -133,5 +170,7 @@ export default function SendAssetClient({ asset }: { asset: string }) {
 				<h2 className="text-2xl font-semibold">Withdrawal History</h2>
 			</div>
 		</section>
+			)}
+		</>
 	);
 }
