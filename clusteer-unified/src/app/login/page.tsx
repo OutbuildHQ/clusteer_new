@@ -42,10 +42,15 @@ export default async function LoginPage({
 				)}
 				<LoginForm />
 				<div className="p-2.5 mt-2.5 text-center">
-					<p className="text-[11px]">
-						By logging in you agree to our <br />{" "}
-						<span className="text-dark-green">Terms of Service</span> and{" "}
-						<span className="text-dark-green">Privacy Policies</span>
+					<p className="text-sm text-gray-600">
+						By logging in you agree to our{" "}
+						<Link href="/terms-of-service" className="text-dark-green font-semibold hover:underline">
+							Terms of Service
+						</Link>{" "}
+						and{" "}
+						<Link href="/privacy-policy" className="text-dark-green font-semibold hover:underline">
+							Privacy Policies
+						</Link>
 					</p>
 				</div>
 			</div>
