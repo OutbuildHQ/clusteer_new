@@ -151,12 +151,37 @@ export async function GET(request: NextRequest) {
 			};
 		});
 
-		console.log("Aggregated wallet assets:", walletAssets);
+		// If no wallets found, return default wallets with zero balance
+		const finalWallets = walletAssets.length > 0 ? walletAssets : [
+			{
+				name: "USDT Wallet",
+				type: "CRYPTO" as const,
+				currency: "USDT" as const,
+				address: "",
+				balance: 0,
+			},
+			{
+				name: "USDC Wallet",
+				type: "CRYPTO" as const,
+				currency: "USDC" as const,
+				address: "",
+				balance: 0,
+			},
+			{
+				name: "NGN Wallet",
+				type: "FIAT" as const,
+				currency: "NGN" as const,
+				address: "",
+				balance: 0,
+			},
+		];
+
+		console.log("Aggregated wallet assets:", finalWallets);
 
 		// Return wallets data in the expected format
 		return NextResponse.json({
 			status: true,
-			walletAssets,
+			walletAssets: finalWallets,
 		});
 	} catch (error) {
 		console.error("Wallet fetch error:", error);

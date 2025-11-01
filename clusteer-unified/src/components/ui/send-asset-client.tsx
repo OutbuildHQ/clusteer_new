@@ -24,6 +24,9 @@ export default function SendAssetClient({ asset }: { asset: string }) {
 	const [showTypeSelection, setShowTypeSelection] = useState(true);
 	const [showInternalSend, setShowInternalSend] = useState(false);
 
+	console.log("SendAssetClient - showTypeSelection:", showTypeSelection);
+	console.log("SendAssetClient - wallet:", wallet);
+
 	const handleSelectInternal = () => {
 		setShowTypeSelection(false);
 		setShowInternalSend(true);

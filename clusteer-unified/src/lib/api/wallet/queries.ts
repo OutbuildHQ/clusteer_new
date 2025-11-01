@@ -11,8 +11,10 @@ interface WalletResponse {
 export async function getUserWallet(): Promise<WalletResponse> {
 	try {
 		const res = await apiClient.get<WalletResponse>("/wallet");
+		console.log("Wallet API response:", res.data);
 		// Ensure we always return a valid WalletResponse
 		if (!res.data) {
+			console.warn("No wallet data in response, returning empty wallets");
 			return { walletAssets: [], pinSet: false };
 		}
 		return res.data;
