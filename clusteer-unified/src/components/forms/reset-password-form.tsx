@@ -42,6 +42,16 @@ export default function ResetPasswordForm({ token }: { token: string }) {
 			Toast.success("Password successfully reset. You can now log in.");
 			router.push("/login");
 		},
+		onError: (error: any) => {
+			const errorMessage = error?.response?.data?.message || error?.message;
+			if (errorMessage?.toLowerCase().includes("expired")) {
+				Toast.error("This reset link has expired. Please request a new one.");
+			} else if (errorMessage?.toLowerCase().includes("match")) {
+				Toast.error("Passwords do not match.");
+			} else {
+				Toast.error(errorMessage || "Failed to reset password");
+			}
+		},
 	});
 
 	const onSubmit = (data: ResetPasswordFormData) => {
