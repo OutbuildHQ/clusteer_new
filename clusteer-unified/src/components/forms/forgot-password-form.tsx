@@ -33,7 +33,17 @@ export default function ForgotPasswordForm() {
 
 	const { isPending, mutate } = useMutation({
 		mutationFn: forgotPassword,
-		onSuccess: () => Toast.success("A reset link has  been sent"),
+		onSuccess: () => {
+			Toast.success("A reset link has been sent");
+		},
+		onError: (error: any) => {
+			const errorMessage = error?.response?.data?.message || error?.message;
+			if (errorMessage?.toLowerCase().includes("email")) {
+				Toast.error("Invalid email format. Please check and try again.");
+			} else {
+				Toast.error(errorMessage || "Failed to send reset link");
+			}
+		},
 	});
 
 	const onSubmit = (data: ForgotPasswordFormData) => {
