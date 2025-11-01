@@ -107,7 +107,7 @@ export default function LoginForm() {
 				<Button
 					type="submit"
 					disabled={isPending}
-					className="mt-1 font-mona border-black text-[#111111] bg-light-green border font-semibold text-base shadow-xs hover:bg-muted"
+					className="mt-1 font-mona border-black text-[#111111] bg-light-green border font-semibold text-base shadow-xs hover:bg-muted h-11"
 				>
 					{isPending ? (
 						<>
@@ -118,12 +118,14 @@ export default function LoginForm() {
 						<>Login</>
 					)}
 				</Button>
-				<Link
-					href="/forgot-password"
-					className="text-dark-green font-semibold text-sm block text-center"
-				>
-					Forgot password?
-				</Link>
+				<div className="text-center">
+					<Link
+						href="/forgot-password"
+						className="text-dark-green font-semibold text-sm hover:underline"
+					>
+						Forgot password?
+					</Link>
+				</div>
 				<div className="text-center">
 					Don't have an account?
 					<Link href="/signup">
