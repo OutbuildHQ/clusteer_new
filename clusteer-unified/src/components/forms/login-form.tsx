@@ -104,12 +104,6 @@ export default function LoginForm() {
 						</FormItem>
 					)}
 				/>
-				<Link
-					href="/forgot-password"
-					className="text-dark-green font-semibold text-sm block text-left -mt-3"
-				>
-					Forgot password?
-				</Link>
 				<Button
 					type="submit"
 					disabled={isPending}
@@ -124,8 +118,14 @@ export default function LoginForm() {
 						<>Login</>
 					)}
 				</Button>
-				<div className="text-center mt-3">
-					Don’t have an account?
+				<Link
+					href="/forgot-password"
+					className="text-dark-green font-semibold text-sm block text-center"
+				>
+					Forgot password?
+				</Link>
+				<div className="text-center">
+					Don't have an account?
 					<Link href="/signup">
 						<span className="text-dark-green font-semibold ml-1">Sign up</span>
 						<ChevronRight className="inline-block size-5 stroke-dark-green ml-2" />
