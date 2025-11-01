@@ -19,6 +19,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "../ui/form";
+import { Input } from "../ui/input";
 import { Toast } from "../toast";
 
 type ResetPasswordFormData = z.infer<typeof ResetPasswordFormSchema>;
@@ -29,6 +30,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
 		resolver: zodResolver(ResetPasswordFormSchema),
 		defaultValues: {
 			newPassword: "",
+			confirmPassword: "",
 		},
 	});
 
@@ -60,7 +62,26 @@ export default function ResetPasswordForm({ token }: { token: string }) {
 						<FormItem className="gap-1.5">
 							<FormLabel className="font-medium">New Password</FormLabel>
 							<FormControl>
-								<PasswordInput {...field} />
+								<PasswordInput {...field} placeholder="********" />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				<FormField
+					control={form.control}
+					name="confirmPassword"
+					render={({ field }) => (
+						<FormItem className="gap-1.5">
+							<FormLabel className="font-medium">Confirm New Password</FormLabel>
+							<FormControl>
+								<Input
+									{...field}
+									type="password"
+									placeholder="must match new password"
+									className="h-11"
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
