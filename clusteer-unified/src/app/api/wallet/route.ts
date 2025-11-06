@@ -77,6 +77,7 @@ export async function GET(request: NextRequest) {
 					return NextResponse.json({
 						status: true,
 						walletAssets: [],
+						pinSet: false,
 					});
 				}
 
@@ -111,6 +112,7 @@ export async function GET(request: NextRequest) {
 						balance: 0,
 					},
 				],
+				pinSet: false,
 				message: "Blockchain engine temporarily unavailable. Showing wallets with zero balance.",
 			});
 		}
@@ -182,6 +184,7 @@ export async function GET(request: NextRequest) {
 		return NextResponse.json({
 			status: true,
 			walletAssets: finalWallets,
+			pinSet: false,
 		});
 	} catch (error) {
 		console.error("Wallet fetch error:", error);
