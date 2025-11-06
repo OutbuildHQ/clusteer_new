@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import rateLimiter, { getClientIdentifier } from "@/lib/rate-limiter";
+import { checkRateLimit as redisCheckRateLimit } from "@/lib/redis-rate-limiter";
 
 export interface AuthenticatedRequest extends NextRequest {
 	user?: {
@@ -69,36 +70,67 @@ export async function authenticateRequest(request: NextRequest) {
 
 /**
  * Apply rate limiting to request
+ * Uses Redis if configured, otherwise falls back to in-memory
  */
-function applyRateLimit(
+async function applyRateLimit(
 	request: NextRequest,
 	limit: number,
 	windowMs: number
-): NextResponse | null {
+): Promise<NextResponse | null> {
 	const identifier = getClientIdentifier(request);
+	const useRedis = process.env.USE_REDIS_RATE_LIMITING === 'true';
 
-	if (rateLimiter.isRateLimited(identifier, limit, windowMs)) {
-		const resetTime = rateLimiter.getResetTime(identifier);
-		const retryAfter = resetTime ? Math.ceil((resetTime - Date.now()) / 1000) : 60;
+	if (useRedis) {
+		// Use Redis-based rate limiting
+		const result = await redisCheckRateLimit(identifier, limit, windowMs);
 
-		return NextResponse.json(
-			{
-				status: false,
-				message: "Too many requests. Please try again later.",
-				retryAfter,
-			},
-			{
-				status: 429,
-				headers: {
-					"Retry-After": retryAfter.toString(),
-					"X-RateLimit-Limit": limit.toString(),
-					"X-RateLimit-Remaining": "0",
+		if (!result.success) {
+			const retryAfter = Math.ceil((result.reset - Date.now()) / 1000);
+
+			return NextResponse.json(
+				{
+					status: false,
+					message: "Too many requests. Please try again later.",
+					retryAfter,
 				},
-			}
-		);
-	}
+				{
+					status: 429,
+					headers: {
+						"Retry-After": retryAfter.toString(),
+						"X-RateLimit-Limit": result.limit.toString(),
+						"X-RateLimit-Remaining": result.remaining.toString(),
+						"X-RateLimit-Reset": Math.ceil(result.reset / 1000).toString(),
+					},
+				}
+			);
+		}
 
-	return null;
+		return null;
+	} else {
+		// Use in-memory rate limiting (development/fallback)
+		if (rateLimiter.isRateLimited(identifier, limit, windowMs)) {
+			const resetTime = rateLimiter.getResetTime(identifier);
+			const retryAfter = resetTime ? Math.ceil((resetTime - Date.now()) / 1000) : 60;
+
+			return NextResponse.json(
+				{
+					status: false,
+					message: "Too many requests. Please try again later.",
+					retryAfter,
+				},
+				{
+					status: 429,
+					headers: {
+						"Retry-After": retryAfter.toString(),
+						"X-RateLimit-Limit": limit.toString(),
+						"X-RateLimit-Remaining": "0",
+					},
+				}
+			);
+		}
+
+		return null;
+	}
 }
 
 /**
@@ -116,7 +148,7 @@ export function withMiddleware(
 		try {
 			// Apply rate limiting if configured
 			if (options.rateLimit) {
-				const rateLimitResponse = applyRateLimit(
+				const rateLimitResponse = await applyRateLimit(
 					request,
 					options.rateLimit.limit,
 					options.rateLimit.windowMs
