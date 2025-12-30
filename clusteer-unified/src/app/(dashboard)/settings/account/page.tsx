@@ -224,8 +224,8 @@ export default function Page() {
 						<div className="bg-[#F9FAFB] rounded-xl p-4">
 							<p className="text-sm text-[#667085] mb-1">Member Since</p>
 							<p className="font-semibold text-lg text-[#0D0D0D]">
-								{user?.user?.dateJoined
-									? new Date(user.user.dateJoined).toLocaleDateString("en-US", {
+								{user?.dateJoined
+									? new Date(user.dateJoined).toLocaleDateString("en-US", {
 											month: "long",
 											year: "numeric",
 									  })
