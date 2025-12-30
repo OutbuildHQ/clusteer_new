@@ -4,12 +4,14 @@ interface LoadingSpinnerProps {
 	size?: "sm" | "md" | "lg";
 	text?: string;
 	fullScreen?: boolean;
+	overlay?: boolean;
 }
 
 export default function LoadingSpinner({
 	size = "md",
 	text,
-	fullScreen = false
+	fullScreen = false,
+	overlay = false
 }: LoadingSpinnerProps) {
 	const sizeClasses = {
 		sm: "w-4 h-4",
@@ -24,7 +26,7 @@ export default function LoadingSpinner({
 		</div>
 	);
 
-	if (fullScreen) {
+	if (fullScreen || overlay) {
 		return (
 			<div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
 				{spinner}
