@@ -27,6 +27,7 @@ import {
 	Edit,
 	Trash2,
 	Plus,
+	X,
 } from "lucide-react";
 
 interface TransactionDetail {
