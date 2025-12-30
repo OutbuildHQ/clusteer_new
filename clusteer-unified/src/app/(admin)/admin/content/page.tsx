@@ -642,7 +642,7 @@ export default function ContentPage() {
 				title="Duplicate Content?"
 				message="This will create a copy of this content item as a draft. You can edit and publish it later."
 				confirmText="Duplicate Content"
-				variant="primary"
+				variant="info"
 			/>
 		</div>
 	);
