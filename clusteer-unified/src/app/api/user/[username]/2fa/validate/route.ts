@@ -5,9 +5,11 @@ import speakeasy from "speakeasy";
 
 export async function POST(
 	request: NextRequest,
-	{ params }: { params: { username: string } }
+	{ params }: { params: Promise<{ username: string }> }
 ) {
 	try {
+		// Await params in Next.js 15+
+		await params;
 		// Get the auth token from cookies
 		const token = request.cookies.get("auth_token")?.value;
 
