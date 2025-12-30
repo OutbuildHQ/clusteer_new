@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 import {
 	Home,
 	Users,
@@ -163,18 +164,31 @@ export default function AdminSidebar() {
 			{/* Wrapper with white background */}
 			<div className="flex flex-col h-full bg-white border-[#E9EAEB] rounded-lg border m-1">
 				{/* Logo & Title */}
-				<div className="p-6 border-b border-[#E9EAEB]">
-					<div className="flex items-center gap-2">
-						<div className="w-8 h-8 bg-[#014F01] rounded-lg flex items-center justify-center flex-shrink-0">
-							<span className="text-white font-bold text-sm">C</span>
+				<div className={`${isCollapsed ? 'p-4' : 'p-6'} border-b border-[#E9EAEB]`}>
+					{isCollapsed ? (
+						<div className="flex justify-center">
+							<Image
+								src="/assets/icons/logo.svg"
+								alt="Clusteer logo"
+								width={28}
+								height={30}
+								className="flex-shrink-0"
+							/>
 						</div>
-						{!isCollapsed && (
-							<div className="min-w-0">
-								<h1 className="font-semibold text-gray-900">Clusteer</h1>
-								<p className="text-xs text-gray-500">Admin Panel</p>
-							</div>
-						)}
-					</div>
+					) : (
+						<div className="flex items-center gap-2">
+							<Image
+								src="/assets/icons/logo_with_name.svg"
+								alt="Clusteer logo"
+								width={139}
+								height={32}
+								className="flex-shrink-0"
+							/>
+						</div>
+					)}
+					{!isCollapsed && (
+						<p className="text-xs text-gray-500 mt-2">Admin Panel</p>
+					)}
 				</div>
 
 				{/* Navigation */}
