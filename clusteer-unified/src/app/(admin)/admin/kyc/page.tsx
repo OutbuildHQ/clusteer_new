@@ -500,15 +500,11 @@ export default function KYCPage() {
 				onClose={() => setShowConfirmModal(null)}
 				onConfirm={confirmAction}
 				title="Approve KYC Submissions"
-				description={`This will approve ${selectedPending} pending submission${selectedPending !== 1 ? 's' : ''}`}
+				message={`Are you sure you want to approve ${selectedPending} pending submission${selectedPending !== 1 ? 's' : ''}? Users will be notified and granted full platform access.`}
 				confirmText="Approve"
 				variant="info"
 				isLoading={isLoading}
-			>
-				<p className="text-sm text-gray-600">
-					Are you sure you want to approve these KYC submissions? Users will be notified and granted full platform access.
-				</p>
-			</ConfirmModal>
+			/>
 
 			{/* Reject Confirmation Modal */}
 			<ConfirmModal
@@ -519,27 +515,11 @@ export default function KYCPage() {
 				}}
 				onConfirm={confirmAction}
 				title="Reject KYC Submissions"
-				description={`This will reject ${selectedIds.length} submission${selectedIds.length !== 1 ? 's' : ''}`}
+				message={`Are you sure you want to reject ${selectedIds.length} submission${selectedIds.length !== 1 ? 's' : ''}? Please provide a reason for rejection.`}
 				confirmText="Reject"
 				variant="danger"
 				isLoading={isLoading}
-			>
-				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-2">
-						Reason for rejection (required)
-					</label>
-					<textarea
-						value={rejectReason}
-						onChange={(e) => setRejectReason(e.target.value)}
-						className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
-						rows={3}
-						placeholder="Please provide a reason for rejection..."
-					/>
-					<p className="text-xs text-gray-500 mt-1">
-						This reason will be sent to the users via email.
-					</p>
-				</div>
-			</ConfirmModal>
+			/>
 		</div>
 	);
 }

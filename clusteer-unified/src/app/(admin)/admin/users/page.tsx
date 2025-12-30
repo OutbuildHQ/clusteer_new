@@ -721,24 +721,11 @@ export default function UsersPage() {
 				}}
 				onConfirm={confirmAction}
 				title={`Confirm Bulk ${showConfirmModal}`}
-				description={`This will affect ${selectedIds.length} ${selectedIds.length === 1 ? 'user' : 'users'}`}
+				message={`This will affect ${selectedIds.length} ${selectedIds.length === 1 ? 'user' : 'users'}. Please provide a reason for this action.`}
 				confirmText={`Confirm ${showConfirmModal}`}
 				variant="warning"
 				isLoading={isLoading}
-			>
-				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-2">
-						Reason (required)
-					</label>
-					<textarea
-						value={confirmReason}
-						onChange={(e) => setConfirmReason(e.target.value)}
-						className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
-						rows={3}
-						placeholder={`Enter reason for ${showConfirmModal} action...`}
-					/>
-				</div>
-			</ConfirmModal>
+			/>
 		</div>
 	);
 }
