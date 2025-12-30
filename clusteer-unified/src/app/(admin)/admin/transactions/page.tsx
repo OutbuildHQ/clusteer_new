@@ -369,8 +369,10 @@ export default function TransactionsPage() {
 			{/* Batch Actions */}
 			{selectedIds.length > 0 && (
 				<BatchActions
-					selectedCount={selectedIds.length}
-					onClear={clearSelection}
+				selectedIds={selectedIds}
+				totalItems={filteredTransactions.length}
+					
+					onClearSelection={clearSelection}
 					actions={[
 						{
 

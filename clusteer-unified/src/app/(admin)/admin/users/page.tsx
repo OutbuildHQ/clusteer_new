@@ -363,8 +363,10 @@ export default function UsersPage() {
 			{/* Batch Actions */}
 			{selectedIds.length > 0 && (
 				<BatchActions
-					selectedCount={selectedIds.length}
-					onClear={clearSelection}
+					
+				selectedIds={selectedIds}
+				totalItems={filteredUsers?.length ?? 0}
+					onClearSelection={clearSelection}
 					actions={[
 						{
 

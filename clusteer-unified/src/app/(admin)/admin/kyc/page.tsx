@@ -324,8 +324,10 @@ export default function KYCPage() {
 			{/* Batch Actions */}
 			{selectedIds.length > 0 && (
 				<BatchActions
-					selectedCount={selectedIds.length}
-					onClear={clearSelection}
+					
+				selectedIds={selectedIds}
+				totalItems={filteredSubmissions?.length ?? 0}
+					onClearSelection={clearSelection}
 					actions={[
 						{
 
@@ -500,7 +502,7 @@ export default function KYCPage() {
 				title="Approve KYC Submissions"
 				description={`This will approve ${selectedPending} pending submission${selectedPending !== 1 ? 's' : ''}`}
 				confirmText="Approve"
-				variant="success"
+				variant="info"
 				isLoading={isLoading}
 			>
 				<p className="text-sm text-gray-600">

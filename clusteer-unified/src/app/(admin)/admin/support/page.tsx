@@ -604,7 +604,7 @@ export default function SupportPage() {
 				title="Archive Ticket?"
 				message="This will move the ticket to the archive. You can restore it later if needed."
 				confirmText="Archive Ticket"
-				variant="primary"
+				variant="info"
 			/>
 		</div>
 	);
