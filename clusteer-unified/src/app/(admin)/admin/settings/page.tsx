@@ -352,7 +352,7 @@ export default function SettingsPage() {
 									>
 										<div className="flex-1">
 											<label className="block text-sm font-medium text-gray-900 mb-1">{setting.label}</label>
-											{setting.description && (
+											{'description' in setting && setting.description && (
 												<p className="text-xs text-gray-500">{setting.description}</p>
 											)}
 										</div>
@@ -376,9 +376,9 @@ export default function SettingsPage() {
 															setting.type === "number" ? Number(e.target.value) : e.target.value
 														)
 													}
-													min={setting.min}
-													max={setting.max}
-													step={setting.step}
+													min={'min' in setting ? setting.min : undefined}
+													max={'max' in setting ? setting.max : undefined}
+													step={'step' in setting ? setting.step : undefined}
 													className="w-32 px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
 												/>
 											)}
