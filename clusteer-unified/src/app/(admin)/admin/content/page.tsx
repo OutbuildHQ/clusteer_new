@@ -631,7 +631,7 @@ export default function ContentPage() {
 				title="Delete Content?"
 				message="This action cannot be undone. This will permanently delete this content item and it will no longer be visible to users."
 				confirmText="Delete Content"
-				confirmVariant="danger"
+				variant="danger"
 			/>
 
 			{/* Duplicate Confirmation Modal */}
@@ -642,7 +642,7 @@ export default function ContentPage() {
 				title="Duplicate Content?"
 				message="This will create a copy of this content item as a draft. You can edit and publish it later."
 				confirmText="Duplicate Content"
-				confirmVariant="primary"
+				variant="primary"
 			/>
 		</div>
 	);

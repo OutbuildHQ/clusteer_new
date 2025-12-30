@@ -652,7 +652,7 @@ export default function AdminsPage() {
 				title="Delete Admin Account?"
 				message="This action cannot be undone. This will permanently delete the admin account and remove all associated permissions."
 				confirmText="Delete Admin"
-				confirmVariant="danger"
+				variant="danger"
 			/>
 		</div>
 	);

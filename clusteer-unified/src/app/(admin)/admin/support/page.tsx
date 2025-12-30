@@ -593,7 +593,7 @@ export default function SupportPage() {
 				title="Delete Ticket?"
 				message="This action cannot be undone. This will permanently delete the support ticket and all associated messages."
 				confirmText="Delete Ticket"
-				confirmVariant="danger"
+				variant="danger"
 			/>
 
 			{/* Archive Confirmation Modal */}
@@ -604,7 +604,7 @@ export default function SupportPage() {
 				title="Archive Ticket?"
 				message="This will move the ticket to the archive. You can restore it later if needed."
 				confirmText="Archive Ticket"
-				confirmVariant="primary"
+				variant="primary"
 			/>
 		</div>
 	);
