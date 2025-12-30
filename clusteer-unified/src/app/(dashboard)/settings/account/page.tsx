@@ -82,23 +82,23 @@ export default function Page() {
 
 				setAccountLimits({
 					dailyWithdrawal: {
-						used: parseFloat(limitsData.daily_withdrawal_used),
-						limit: parseFloat(limitsData.daily_withdrawal_limit),
+						used: limitsData.daily_withdrawal_used,
+						limit: limitsData.daily_withdrawal_limit,
 						currency: limitsData.limit_currency,
 					},
 					monthlyWithdrawal: {
-						used: parseFloat(limitsData.monthly_withdrawal_used),
-						limit: parseFloat(limitsData.monthly_withdrawal_limit),
+						used: limitsData.monthly_withdrawal_used,
+						limit: limitsData.monthly_withdrawal_limit,
 						currency: limitsData.limit_currency,
 					},
 					dailyDeposit: {
-						used: parseFloat(limitsData.daily_deposit_used),
-						limit: parseFloat(limitsData.daily_deposit_limit),
+						used: limitsData.daily_deposit_used,
+						limit: limitsData.daily_deposit_limit,
 						currency: limitsData.limit_currency,
 					},
 					monthlyDeposit: {
-						used: parseFloat(limitsData.monthly_deposit_used),
-						limit: parseFloat(limitsData.monthly_deposit_limit),
+						used: limitsData.monthly_deposit_used,
+						limit: limitsData.monthly_deposit_limit,
 						currency: limitsData.limit_currency,
 					},
 				});
