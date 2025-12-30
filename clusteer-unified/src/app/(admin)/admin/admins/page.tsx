@@ -635,7 +635,7 @@ export default function AdminsPage() {
 										!formData.phone.trim() ||
 										formData.permissions.length === 0
 									}
-									className="px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+									className="px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors"
 								>
 									{showEditModal ? "Update Admin" : "Create Admin"}
 								</button>
@@ -657,3 +657,4 @@ export default function AdminsPage() {
 		</div>
 	);
 }
+

@@ -192,7 +192,7 @@ export default function TransactionsPage() {
 		totalFees: filteredTransactions.reduce((sum, t) => sum + t.fees, 0),
 	};
 
-	const handleExport = (format: 'csv' | 'json' | 'excel') => {
+	const handleExport = (format: 'csv' | 'json' | 'xlsx') => {
 		const txToExport = selectedIds.length > 0
 			? filteredTransactions.filter(t => selectedIds.includes(t.id))
 			: filteredTransactions;
@@ -373,13 +373,19 @@ export default function TransactionsPage() {
 					onClear={clearSelection}
 					actions={[
 						{
+
+							id: "action-1",
+
 							label: "Export Selected",
-							onClick: () => handleExport('csv'),
+							onExecute: () => handleExport('csv'),
 							variant: "default",
 						},
 						{
+
+							id: "action-2",
+
 							label: "Export as Excel",
-							onClick: () => handleExport('excel'),
+							onExecute: () => handleExport('xlsx'),
 							variant: "success",
 						},
 					]}
@@ -677,3 +683,4 @@ export default function TransactionsPage() {
 		</div>
 	);
 }
+

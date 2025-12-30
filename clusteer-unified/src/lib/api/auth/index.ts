@@ -9,7 +9,8 @@ import axios, { AxiosError } from "axios";
 
 export async function loginUser(payload: LoginFormType) {
 	try {
-		const res = await axios.post<IResponse<IUser>>("/api/auth/login", payload);
+		// Use Firebase authentication
+		const res = await axios.post<IResponse<IUser>>("/api/auth-firebase/login", payload);
 		return res.data;
 	} catch (error) {
 		throw error as AxiosError;
@@ -18,7 +19,8 @@ export async function loginUser(payload: LoginFormType) {
 
 export async function registerUser(payload: SignupFormData) {
 	try {
-		const res = await axios.post("/api/auth/register", payload);
+		// Use Firebase authentication
+		const res = await axios.post("/api/auth-firebase/register", payload);
 		return res.data;
 	} catch (error) {
 		throw error as AxiosError;

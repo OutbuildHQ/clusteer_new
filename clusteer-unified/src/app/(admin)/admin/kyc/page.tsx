@@ -145,7 +145,7 @@ export default function KYCPage() {
 		return styles[risk as keyof typeof styles] || styles.Low;
 	};
 
-	const handleExport = (format: 'csv' | 'json' | 'excel') => {
+	const handleExport = (format: 'csv' | 'json' | 'xlsx') => {
 		const submissionsToExport = selectedIds.length > 0
 			? filteredSubmissions.filter(s => selectedIds.includes(s.id))
 			: filteredSubmissions;
@@ -328,19 +328,27 @@ export default function KYCPage() {
 					onClear={clearSelection}
 					actions={[
 						{
+
+							id: "action-1",
+
 							label: `Approve (${selectedPending})`,
-							onClick: handleBulkApprove,
-							variant: "success",
-							disabled: selectedPending === 0,
+							onExecute: handleBulkApprove,
+							variant: "success"
 						},
 						{
+
+							id: "action-2",
+
 							label: `Reject (${selectedIds.length})`,
-							onClick: handleBulkReject,
+							onExecute: handleBulkReject,
 							variant: "danger",
 						},
 						{
+
+							id: "action-3",
+
 							label: "Export Selected",
-							onClick: () => handleExport('csv'),
+							onExecute: () => handleExport('csv'),
 							variant: "default",
 						},
 					]}
@@ -533,3 +541,4 @@ export default function KYCPage() {
 		</div>
 	);
 }
+

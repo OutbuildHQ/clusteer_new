@@ -1,10 +1,8 @@
-import { supabase, supabaseAdmin } from "@/lib/supabase";
-import { getSupabaseUserWithRetry } from "@/lib/supabase-helpers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
 	try {
-		// Get the auth token from cookies
+		// Get the auth token from cookies (already verified by middleware)
 		const token = request.cookies.get("auth_token")?.value;
 
 		if (!token) {
@@ -14,97 +12,67 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		// Get user from Supabase with retry logic
-		const { user: authUser, error: authError, isNetworkError } = await getSupabaseUserWithRetry(token);
-
-		if (authError || !authUser) {
-			// Return 503 for network errors, 401 for auth errors
-			if (isNetworkError) {
-				console.error("Supabase network error:", authError);
-				return NextResponse.json(
-					{ status: false, message: "Authentication service temporarily unavailable" },
-					{ status: 503 }
-				);
-			}
-
+		// Decode the Firebase JWT to get user data
+		const parts = token.split('.');
+		if (parts.length !== 3) {
 			return NextResponse.json(
-				{ status: false, message: "Invalid or expired token" },
+				{ status: false, message: "Invalid token format" },
 				{ status: 401 }
 			);
 		}
 
-		// Get user profile from users table using admin client to bypass RLS
-		let { data: userProfile, error: profileError } = await supabaseAdmin
-			.from("users")
-			.select("*")
-			.eq("id", authUser.id)
-			.single();
+		let userProfile;
+		try {
+			// Decode the payload (base64)
+			const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
 
-		console.log("Fetched user profile:", {
-			userId: authUser.id,
-			is_verified: userProfile?.is_verified,
-			username: userProfile?.username,
-		});
+			// Extract user data from Firebase JWT
+			const userId = payload.user_id || payload.sub;
+			const email = payload.email || '';
+			const emailVerified = payload.email_verified || false;
 
-		// If user profile doesn't exist, create it using admin client to bypass RLS
-		if (profileError && profileError.code === 'PGRST116') {
-			console.log("User profile not found, creating one...");
+			// Create user profile from JWT data
+			userProfile = {
+				id: userId,
+				email: email,
+				username: email.split('@')[0], // Use email prefix as username
+				is_verified: emailVerified,
+				two_factor_enabled: false,
+				created_at: new Date().toISOString(),
+				updated_at: new Date().toISOString(),
+			};
 
-			const { data: newProfile, error: insertError } = await supabaseAdmin
-				.from("users")
-				.insert({
-					id: authUser.id,
-					username: authUser.user_metadata?.username || authUser.email?.split('@')[0],
-					phone: authUser.user_metadata?.phone || null,
-					is_verified: false, // KYC verification status (not email verification)
-				})
-				.select()
-				.single();
-
-			if (insertError) {
-				console.error("Error creating user profile:", insertError);
-				// If insert fails, still return auth user data
-				return NextResponse.json({
-					status: true,
-					data: {
-						id: authUser.id,
-						username: authUser.user_metadata?.username || authUser.email?.split('@')[0],
-						email: authUser.email,
-						phone: authUser.user_metadata?.phone,
-						is_verified: false,
-						emailVerified: authUser.email_confirmed_at ? true : false,
-						created_at: authUser.created_at,
-						updated_at: authUser.updated_at,
-					},
-				});
-			}
-
-			userProfile = newProfile;
-		} else if (profileError) {
-			console.error("Error fetching user profile:", profileError);
+			console.log("User profile from Firebase JWT:", {
+				userId: userProfile.id,
+				email: userProfile.email,
+				username: userProfile.username,
+				is_verified: userProfile.is_verified,
+			});
+		} catch (error) {
+			console.error("Failed to decode token payload:", error);
 			return NextResponse.json(
-				{ status: false, message: "Failed to fetch user profile" },
-				{ status: 500 }
+				{ status: false, message: "Invalid token" },
+				{ status: 401 }
 			);
 		}
 
-		// Return user data in the expected format
+		// Return user profile data from Firebase JWT
 		return NextResponse.json({
 			status: true,
 			data: {
-				id: authUser.id,
-				username: userProfile?.username || authUser.user_metadata?.username,
-				firstName: userProfile?.first_name || "",
-				lastName: userProfile?.last_name || "",
-				email: authUser.email,
-				phone: userProfile?.phone || authUser.user_metadata?.phone,
-				avatar: userProfile?.avatar || "",
-				is_verified: userProfile?.is_verified || false,
-				emailVerified: authUser.email_confirmed_at ? true : false,
-				twoFactorEnabled: userProfile?.two_factor_enabled || false,
-				dateJoined: userProfile?.created_at,
-				created_at: userProfile?.created_at,
-				updated_at: userProfile?.updated_at,
+				id: userProfile.id,
+				username: userProfile.username,
+				firstName: "",
+				lastName: "",
+				email: userProfile.email,
+				phone: "",
+				avatar: "",
+				is_verified: userProfile.is_verified,
+				emailVerified: userProfile.is_verified,
+				twoFactorEnabled: userProfile.two_factor_enabled,
+				dateJoined: userProfile.created_at,
+				created_at: userProfile.created_at,
+				updated_at: userProfile.updated_at,
 			},
 		});
 	} catch (error) {

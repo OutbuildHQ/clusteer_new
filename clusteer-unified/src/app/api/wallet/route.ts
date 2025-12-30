@@ -1,9 +1,8 @@
-import { getSupabaseUserWithRetry } from "@/lib/supabase-helpers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
 	try {
-		// Get the auth token from cookies
+		// Get the auth token from cookies (already verified by middleware)
 		const token = request.cookies.get("auth_token")?.value;
 
 		if (!token) {
@@ -13,24 +12,30 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		// Get user from Supabase with retry logic
-		const { user: authUser, error: authError, isNetworkError } = await getSupabaseUserWithRetry(token);
-
-		if (authError || !authUser) {
-			// Return 503 for network errors, 401 for auth errors
-			if (isNetworkError) {
-				console.error("Supabase network error:", authError);
-				return NextResponse.json(
-					{ status: false, message: "Authentication service temporarily unavailable" },
-					{ status: 503 }
-				);
-			}
-
+		// Decode the Firebase JWT to get user ID (no verification needed - middleware already did it)
+		// Firebase JWT format: header.payload.signature
+		const parts = token.split('.');
+		if (parts.length !== 3) {
 			return NextResponse.json(
-				{ status: false, message: "Invalid or expired token" },
+				{ status: false, message: "Invalid token format" },
 				{ status: 401 }
 			);
 		}
+
+		let userId;
+		try {
+			// Decode the payload (base64)
+			const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+			userId = payload.user_id || payload.sub; // Firebase uses 'sub' for user ID
+		} catch (error) {
+			console.error("Failed to decode token payload:", error);
+			return NextResponse.json(
+				{ status: false, message: "Invalid token" },
+				{ status: 401 }
+			);
+		}
+
+		const authUser = { id: userId };
 
 		// Get blockchain engine URL and API key
 		const blockchainEngineUrl = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";

@@ -1,6 +1,7 @@
 "use client";
 
-import { supabase } from "@/lib/supabase";
+// TEMPORARY: Disabled Supabase notifications during Firebase migration
+// import { supabase } from "@/lib/supabase";
 import { useUser } from "@/store/user";
 import { useEffect, useState } from "react";
 
@@ -18,146 +19,30 @@ export interface Notification {
 export function useNotifications() {
 	const user = useUser();
 	const [notifications, setNotifications] = useState<Notification[]>([]);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (!user?.id) {
-			setLoading(false);
-			return;
-		}
-
-		// Fetch initial notifications
-		const fetchNotifications = async () => {
-			try {
-				const { data, error } = await supabase
-					.from("notifications")
-					.select("*")
-					.eq("user_id", user.id)
-					.order("created_at", { ascending: false })
-					.limit(50);
-
-				if (error) {
-					// If table doesn't exist, silently fail and show empty notifications
-					if (error.code === 'PGRST116' || error.message?.includes('relation') || error.message?.includes('does not exist')) {
-						setNotifications([]);
-						setError(null);
-						setLoading(false);
-						return;
-					}
-					throw error;
-				}
-
-				setNotifications(data || []);
-				setError(null);
-			} catch (err) {
-				// Silently handle errors - notifications are optional
-				setNotifications([]);
-				setError(null);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchNotifications();
-
-		// Subscribe to real-time changes
-		const channel = supabase
-			.channel("notifications")
-			.on(
-				"postgres_changes",
-				{
-					event: "*",
-					schema: "public",
-					table: "notifications",
-					filter: `user_id=eq.${user.id}`,
-				},
-				(payload) => {
-					if (payload.eventType === "INSERT") {
-						setNotifications((prev) => [
-							payload.new as Notification,
-							...prev,
-						]);
-					} else if (payload.eventType === "UPDATE") {
-						setNotifications((prev) =>
-							prev.map((notif) =>
-								notif.id === payload.new.id
-									? (payload.new as Notification)
-									: notif
-							)
-						);
-					} else if (payload.eventType === "DELETE") {
-						setNotifications((prev) =>
-							prev.filter((notif) => notif.id !== payload.old.id)
-						);
-					}
-				}
-			)
-			.subscribe();
-
-		// Cleanup subscription on unmount
-		return () => {
-			supabase.removeChannel(channel);
-		};
+		// TEMPORARY: Return empty notifications until we implement Firebase/Spring Boot notifications
+		// TODO: Implement notifications using Firebase Cloud Messaging or Spring Boot backend
+		setNotifications([]);
+		setLoading(false);
+		setError(null);
 	}, [user?.id]);
 
 	const markAsRead = async (notificationId: string) => {
-		try {
-			const { error } = await supabase
-				.from("notifications")
-				.update({ read: true })
-				.eq("id", notificationId);
-
-			if (error) throw error;
-
-			// Optimistically update local state
-			setNotifications((prev) =>
-				prev.map((notif) =>
-					notif.id === notificationId ? { ...notif, read: true } : notif
-				)
-			);
-		} catch (err) {
-			console.error("Error marking notification as read:", err);
-		}
+		// TEMPORARY: No-op until notifications backend is implemented
+		console.log("markAsRead called (not implemented):", notificationId);
 	};
 
 	const markAllAsRead = async () => {
-		if (!user?.id) return;
-
-		try {
-			const { error } = await supabase
-				.from("notifications")
-				.update({ read: true })
-				.eq("user_id", user.id)
-				.eq("read", false);
-
-			if (error) throw error;
-
-			// Optimistically update local state
-			setNotifications((prev) =>
-				prev.map((notif) => ({ ...notif, read: true }))
-			);
-		} catch (err) {
-			console.error("Error marking all notifications as read:", err);
-		}
+		// TEMPORARY: No-op until notifications backend is implemented
+		console.log("markAllAsRead called (not implemented)");
 	};
 
 	const deleteNotification = async (notificationId: string) => {
-		try {
-			const { error } = await supabase
-				.from("notifications")
-				.delete()
-				.eq("id", notificationId);
-
-			if (error) throw error;
-
-			// Optimistically update local state
-			setNotifications((prev) =>
-				prev.filter((notif) => notif.id !== notificationId)
-			);
-		} catch (err) {
-			console.error("Error deleting notification:", err);
-		}
+		// TEMPORARY: No-op until notifications backend is implemented
+		console.log("deleteNotification called (not implemented):", notificationId);
 	};
 
 	const unreadCount = notifications.filter((n) => !n.read).length;

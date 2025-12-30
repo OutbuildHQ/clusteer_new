@@ -142,7 +142,7 @@ export default function UsersPage() {
 		currentPage * pageSize
 	);
 
-	const handleExport = (format: 'csv' | 'json' | 'excel') => {
+	const handleExport = (format: 'csv' | 'json' | 'xlsx') => {
 		const usersToExport = selectedIds.length > 0
 			? filteredUsers.filter(u => selectedIds.includes(u.id))
 			: filteredUsers;
@@ -367,23 +367,35 @@ export default function UsersPage() {
 					onClear={clearSelection}
 					actions={[
 						{
+
+							id: "action-1",
+
 							label: "Suspend",
-							onClick: () => handleBulkAction("suspend"),
+							onExecute: () => handleBulkAction("suspend"),
 							variant: "warning",
 						},
 						{
+
+							id: "action-2",
+
 							label: "Flag for Review",
-							onClick: () => handleBulkAction("flag"),
+							onExecute: () => handleBulkAction("flag"),
 							variant: "default",
 						},
 						{
+
+							id: "action-3",
+
 							label: "Send Email",
-							onClick: () => handleBulkAction("email"),
+							onExecute: () => handleBulkAction("email"),
 							variant: "default",
 						},
 						{
+
+							id: "action-4",
+
 							label: "Export Selected",
-							onClick: () => handleExport('csv'),
+							onExecute: () => handleExport('csv'),
 							variant: "success",
 						},
 					]}
@@ -593,7 +605,7 @@ export default function UsersPage() {
 						</button>
 						<button
 							onClick={handleAddUser}
-							className="flex-1 px-4 py-2.5 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors font-medium shadow-sm disabled:opacity-50"
+							className="flex-1 px-4 py-2.5 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors font-medium shadow-sm"
 							disabled={isLoading}
 						>
 							{isLoading ? 'Creating...' : 'Create User'}
@@ -728,3 +740,4 @@ export default function UsersPage() {
 		</div>
 	);
 }
+

@@ -1,11 +1,64 @@
-import { supabaseAdmin } from "@/lib/supabase";
-import { getSupabaseUserWithRetry } from "@/lib/supabase-helpers";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyKYC } from "@/lib/kyc-provider";
+
+// Rate limiting store (in production, use Redis)
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+// Check rate limit (3 attempts per 24 hours)
+function checkRateLimit(userId: string): { allowed: boolean; message?: string } {
+	const now = Date.now();
+	const userLimit = rateLimitStore.get(userId);
+
+	if (!userLimit || now > userLimit.resetTime) {
+		// Reset or initialize
+		rateLimitStore.set(userId, { count: 1, resetTime: now + 24 * 60 * 60 * 1000 });
+		return { allowed: true };
+	}
+
+	if (userLimit.count >= 3) {
+		const hoursLeft = Math.ceil((userLimit.resetTime - now) / (60 * 60 * 1000));
+		return {
+			allowed: false,
+			message: `KYC submission limit reached. Please try again in ${hoursLeft} hours.`,
+		};
+	}
+
+	userLimit.count++;
+	return { allowed: true };
+}
+
+// Enhanced BVN/NIN validation
+function validateDocumentNumber(documentNumber: string, type: string): { valid: boolean; message?: string } {
+	// Length check
+	if (documentNumber.length !== 11) {
+		return { valid: false, message: `${type} must be exactly 11 digits` };
+	}
+
+	// Digits only
+	if (!/^\d+$/.test(documentNumber)) {
+		return { valid: false, message: `${type} must contain only digits` };
+	}
+
+	// Not all same digit (e.g., 11111111111)
+	if (/^(\d)\1{10}$/.test(documentNumber)) {
+		return { valid: false, message: `Invalid ${type} format` };
+	}
+
+	// Not sequential (e.g., 12345678901)
+	const isSequential = documentNumber.split('').every((char, i, arr) => {
+		if (i === 0) return true;
+		return parseInt(char) === parseInt(arr[i - 1]) + 1;
+	});
+
+	if (isSequential) {
+		return { valid: false, message: `Invalid ${type} format` };
+	}
+
+	return { valid: true };
+}
 
 export async function POST(request: NextRequest) {
 	try {
-		// Get the auth token from cookies
+		// Get the auth token from cookies (already verified by middleware)
 		const token = request.cookies.get("auth_token")?.value;
 
 		if (!token) {
@@ -15,13 +68,35 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Get user from Supabase with retry logic
-		const { user: authUser, error: authError } = await getSupabaseUserWithRetry(token);
-
-		if (authError || !authUser) {
+		// Decode Firebase JWT to get user ID
+		const parts = token.split('.');
+		if (parts.length !== 3) {
 			return NextResponse.json(
-				{ status: false, message: "Invalid or expired token" },
+				{ status: false, message: "Invalid token format" },
 				{ status: 401 }
+			);
+		}
+
+		let userId: string;
+		let userEmail: string;
+		try {
+			const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+			userId = payload.user_id || payload.sub;
+			userEmail = payload.email || '';
+		} catch (error) {
+			console.error("Failed to decode token payload:", error);
+			return NextResponse.json(
+				{ status: false, message: "Invalid token" },
+				{ status: 401 }
+			);
+		}
+
+		// Check rate limit
+		const rateLimitResult = checkRateLimit(userId);
+		if (!rateLimitResult.allowed) {
+			return NextResponse.json(
+				{ status: false, message: rateLimitResult.message },
+				{ status: 429 }
 			);
 		}
 
@@ -44,13 +119,6 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Get user profile for additional data
-		const { data: userProfile } = await supabaseAdmin
-			.from("users")
-			.select("*")
-			.eq("id", authUser.id)
-			.single();
-
 		// Prepare verification request
 		let documentNumber: string;
 		if (verificationType === 'BVN') {
@@ -66,111 +134,119 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Validate document number format
-		const isValidLength = documentNumber.length === 11;
-		const isAllDigits = /^\d+$/.test(documentNumber);
-		const isAllSameDigit = /^(\d)\1{10}$/.test(documentNumber);
-
-		if (!isValidLength || !isAllDigits || isAllSameDigit) {
+		// Enhanced document number validation
+		const validationResult = validateDocumentNumber(documentNumber, verificationType);
+		if (!validationResult.valid) {
 			return NextResponse.json(
-				{ status: false, message: `Invalid ${verificationType} format` },
+				{ status: false, message: validationResult.message },
 				{ status: 400 }
 			);
 		}
 
-		// Store verification request in database
-		const { data: verificationRequest, error: vrError } = await supabaseAdmin
-			.from("verification_requests")
-			.insert({
-				user_id: authUser.id,
-				verification_type: verificationType,
-				document_number: documentNumber,
-				status: 'pending',
-				submitted_data: data,
-			})
-			.select()
-			.single();
+		// Get Django backend configuration
+		const djangoUrl = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";
+		const djangoApiKey = process.env.BLOCKCHAIN_ENGINE_API_KEY;
 
-		if (vrError) {
-			console.error("Error creating verification request:", vrError);
+		if (!djangoApiKey) {
+			console.error("BLOCKCHAIN_ENGINE_API_KEY not configured");
+			return NextResponse.json(
+				{ status: false, message: "Backend not configured" },
+				{ status: 500 }
+			);
 		}
 
-		// Call KYC provider
-		console.log(`Starting ${verificationType} verification for user ${authUser.id}`);
+		// Check for duplicate document number in Django
+		try {
+			const duplicateCheckResponse = await fetch(
+				`${djangoUrl}/api/v1/user/${userId}/check-duplicate-document/`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-API-KEY": djangoApiKey,
+					},
+					body: JSON.stringify({
+						document_number: documentNumber,
+						verification_type: verificationType,
+					}),
+				}
+			);
 
-		const verificationResult = await verifyKYC({
-			userId: authUser.id,
-			verificationType: verificationType as 'BVN' | 'NIN',
-			documentNumber: documentNumber,
-			firstName: userProfile?.first_name || data.firstName,
-			lastName: userProfile?.last_name || data.lastName,
-			dateOfBirth: data.dateOfBirth,
-			phoneNumber: userProfile?.phone || data.phoneNumber,
-		});
-
-		console.log(`${verificationType} verification result:`, {
-			success: verificationResult.success,
-			verified: verificationResult.verified,
-		});
-
-		// Update verification request status
-		if (verificationRequest) {
-			await supabaseAdmin
-				.from("verification_requests")
-				.update({
-					status: verificationResult.verified ? 'approved' : 'rejected',
-					verification_response: verificationResult,
-					updated_at: new Date().toISOString(),
-				})
-				.eq("id", verificationRequest.id);
+			if (duplicateCheckResponse.ok) {
+				const duplicateData = await duplicateCheckResponse.json();
+				if (duplicateData.exists) {
+					return NextResponse.json(
+						{
+							status: false,
+							message: `This ${verificationType} is already registered to another account`,
+						},
+						{ status: 409 }
+					);
+				}
+			}
+		} catch (error) {
+			console.log("Duplicate check error (non-critical):", error);
+			// Continue with verification even if duplicate check fails
 		}
 
-		// If verification successful, update user's is_verified status
-		if (verificationResult.verified) {
-			const { data: updatedUser, error: updateError } = await supabaseAdmin
-				.from("users")
-				.update({
-					is_verified: true,
-					first_name: verificationResult.data?.fullName?.split(' ')[0] || userProfile?.first_name,
-					last_name: verificationResult.data?.fullName?.split(' ').slice(1).join(' ') || userProfile?.last_name,
-					updated_at: new Date().toISOString(),
-				})
-				.eq("id", authUser.id)
-				.select()
-				.single();
+		// Submit KYC verification to Django backend
+		console.log(`Starting ${verificationType} verification for user ${userId}`);
 
-			if (updateError) {
-				console.error("Error updating user verification status:", updateError);
+		try {
+			const kycResponse = await fetch(
+				`${djangoUrl}/api/v1/user/${userId}/kyc-verification/`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-API-KEY": djangoApiKey,
+					},
+					body: JSON.stringify({
+						verification_type: verificationType,
+						document_number: documentNumber,
+						first_name: data.firstName,
+						last_name: data.lastName,
+						date_of_birth: data.dateOfBirth,
+						phone_number: data.phoneNumber,
+						email: userEmail,
+					}),
+				}
+			);
+
+			if (!kycResponse.ok) {
+				const errorData = await kycResponse.json();
+				console.error("Django KYC verification error:", errorData);
+
 				return NextResponse.json(
-					{ status: false, message: "Verification successful but failed to update profile" },
-					{ status: 500 }
+					{
+						status: false,
+						message: errorData.message || "Verification request failed",
+					},
+					{ status: kycResponse.status }
 				);
 			}
 
-			console.log("User verification status updated successfully:", {
-				userId: authUser.id,
-				is_verified: updatedUser?.is_verified,
+			const kycResult = await kycResponse.json();
+
+			console.log(`${verificationType} verification result:`, {
+				success: kycResult.status,
+				verified: kycResult.data?.verified,
 			});
 
 			return NextResponse.json({
-				status: true,
-				message: "Identity verified successfully! Your account has been verified.",
-				data: {
-					is_verified: true,
-					fullName: verificationResult.data?.fullName,
-					confidence: verificationResult.data?.confidence,
-				},
+				status: kycResult.status,
+				message: kycResult.message,
+				data: kycResult.data,
 			});
-		} else {
-			// Verification failed
-			return NextResponse.json({
-				status: false,
-				message: verificationResult.message || "Identity verification failed. Please check your details and try again.",
-				data: {
-					is_verified: false,
-					error: verificationResult.error,
+		} catch (error) {
+			console.error("Django backend connection error:", error);
+			return NextResponse.json(
+				{
+					status: false,
+					message: "Unable to connect to verification service. Please try again later.",
 				},
-			}, { status: 400 });
+				{ status: 503 }
+			);
 		}
 	} catch (error) {
 		console.error("KYC verification error:", error);

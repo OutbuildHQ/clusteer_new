@@ -1,0 +1,16 @@
+{
+  "name": "clusteer-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:dashboard\" \"npm run dev:landing\"",
+    "dev:dashboard": "cd Clusteer-CustomerDashboard && npm run dev",
+    "dev:landing": "cd Clusteer-LandingPage && npm run dev -- -p 3001",
+    "build": "npm run build:dashboard && npm run build:landing",
+    "build:dashboard": "cd Clusteer-CustomerDashboard && npm run build",
+    "build:landing": "cd Clusteer-LandingPage && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

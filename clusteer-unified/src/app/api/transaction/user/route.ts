@@ -1,4 +1,5 @@
-import { supabase } from "@/lib/supabase";
+// TEMPORARY: Disabled Supabase, returning empty transactions
+// TODO: Implement with Django/Spring Boot backend
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -11,50 +12,16 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
-		if (authError || !authUser) {
-			return NextResponse.json(
-				{ status: false, message: "Invalid token" },
-				{ status: 401 }
-			);
-		}
-
-		// Get pagination params
+		// TEMPORARY: Return empty transactions until backend is configured
+		// TODO: Fetch from Django or Spring Boot backend
 		const searchParams = request.nextUrl.searchParams;
 		const page = parseInt(searchParams.get("page") || "1");
 		const size = parseInt(searchParams.get("size") || "10");
-		const offset = (page - 1) * size;
 
-		// Get transactions from database
-		const { data: transactions, error: transactionsError, count } = await supabase
-			.from("transactions")
-			.select("*", { count: "exact" })
-			.eq("user_id", authUser.id)
-			.order("created_at", { ascending: false })
-			.range(offset, offset + size - 1);
-
-		if (transactionsError) {
-			console.error("Error fetching transactions:", transactionsError);
-			return NextResponse.json(
-				{ status: false, message: "Failed to fetch transactions" },
-				{ status: 500 }
-			);
-		}
-
-		const totalPages = count ? Math.ceil(count / size) : 0;
-
-		// Format transactions to match expected structure
-		const formattedTransactions = (transactions || []).map((tx: any) => ({
-			id: tx.id,
-			type: tx.type || "buy",
-			currency: tx.currency || "USDT",
-			amount: tx.amount || 0,
-			rate: tx.rate || 0,
-			flow: tx.flow || "Crypto Purchase",
-			orderNumber: tx.order_number || tx.id,
-			status: tx.status || "pending",
-			dateCreated: new Date(tx.created_at).toLocaleDateString(),
-		}));
+		// Return empty transactions
+		const formattedTransactions: any[] = [];
+		const count = 0;
+		const totalPages = 0;
 
 		return NextResponse.json({
 			status: true,
@@ -62,7 +29,7 @@ export async function GET(request: NextRequest) {
 			metadata: {
 				page,
 				size,
-				totalItems: count || 0,
+				totalItems: count,
 				totalPages,
 			},
 		});

@@ -1,298 +1,370 @@
 /**
- * Email Service using Resend
+ * Email Service using SendGrid
  * Handles all email communications for the platform
- * https://resend.com/docs/send-with-nextjs
  */
 
-import { Resend } from 'resend';
+import sgMail from '@sendgrid/mail';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize SendGrid
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
+const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || 'noreply@clusteer.io';
+const FROM_NAME = process.env.SENDGRID_FROM_NAME || 'Clusteer';
 
-const FROM_EMAIL = process.env.EMAIL_FROM || 'noreply@clusteer.com';
-const REPLY_TO_EMAIL = process.env.EMAIL_REPLY_TO || 'support@clusteer.com';
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
+if (SENDGRID_API_KEY) {
+  sgMail.setApiKey(SENDGRID_API_KEY);
+}
 
-export interface EmailOptions {
-	to: string;
-	subject: string;
-	html: string;
-	text?: string;
-	replyTo?: string;
+export interface EmailTemplate {
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
 }
 
 /**
- * Send a generic email
+ * Send email using SendGrid
  */
-export async function sendEmail(options: EmailOptions) {
-	try {
-		if (!process.env.RESEND_API_KEY) {
-			console.warn('RESEND_API_KEY not configured. Email not sent:', options.subject);
-			return { success: false, error: 'Email service not configured' };
-		}
+export async function sendEmail(template: EmailTemplate): Promise<boolean> {
+  if (!SENDGRID_API_KEY) {
+    console.warn('SendGrid API key not configured. Email not sent.');
+    console.log('Email would have been sent to:', template.to);
+    console.log('Subject:', template.subject);
+    return false;
+  }
 
-		const { data, error } = await resend.emails.send({
-			from: FROM_EMAIL,
-			to: options.to,
-			subject: options.subject,
-			html: options.html,
-			text: options.text,
-			replyTo: options.replyTo || REPLY_TO_EMAIL,
-		});
+  try {
+    await sgMail.send({
+      to: template.to,
+      from: {
+        email: FROM_EMAIL,
+        name: FROM_NAME,
+      },
+      subject: template.subject,
+      text: template.text,
+      html: template.html,
+    });
 
-		if (error) {
-			console.error('Email send error:', error);
-			return { success: false, error: error.message };
-		}
-
-		console.log('Email sent successfully:', { id: data?.id, to: options.to });
-		return { success: true, data };
-	} catch (error) {
-		console.error('Email service error:', error);
-		return { success: false, error: 'Failed to send email' };
-	}
+    console.log(`Email sent successfully to ${template.to}`);
+    return true;
+  } catch (error: any) {
+    console.error('Failed to send email:', error);
+    if (error.response) {
+      console.error('SendGrid error:', error.response.body);
+    }
+    return false;
+  }
 }
 
 /**
- * Send welcome email to new users
+ * Email Templates
  */
-export async function sendWelcomeEmail(to: string, username: string) {
-	return sendEmail({
-		to,
-		subject: 'Welcome to Clusteer!',
-		html: `
-			<!DOCTYPE html>
-			<html>
-			<head>
-				<meta charset="utf-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<title>Welcome to Clusteer</title>
-			</head>
-			<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-				<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-					<h1 style="color: white; margin: 0;">Welcome to Clusteer!</h1>
-				</div>
 
-				<div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-					<p>Hi ${username},</p>
+export const EmailTemplates = {
+  /**
+   * Welcome email after registration
+   */
+  welcome: (email: string, firstName: string): EmailTemplate => ({
+    to: email,
+    subject: 'Welcome to Clusteer - Your Crypto Trading Platform',
+    text: `Hi ${firstName},\n\nWelcome to Clusteer! We're excited to have you on board.\n\nYour account has been created successfully. You can now:\n- Buy and sell USDT/USDC\n- Trade with zero gas fees\n- Withdraw to your bank account\n\nGet started: https://app.clusteer.io/dashboard\n\nBest regards,\nThe Clusteer Team`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #014F01; color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; background: #f9f9f9; }
+          .button { display: inline-block; padding: 12px 30px; background: #014F01; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+          .footer { padding: 20px; text-align: center; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Welcome to Clusteer!</h1>
+          </div>
+          <div class="content">
+            <h2>Hi ${firstName},</h2>
+            <p>Welcome to Clusteer! We're excited to have you on board.</p>
+            <p>Your account has been created successfully. You can now:</p>
+            <ul>
+              <li>Buy and sell USDT/USDC</li>
+              <li>Trade with zero gas fees</li>
+              <li>Withdraw to your Nigerian bank account</li>
+            </ul>
+            <a href="https://app.clusteer.io/dashboard" class="button">Get Started</a>
+          </div>
+          <div class="footer">
+            <p>© 2025 Clusteer. All rights reserved.</p>
+            <p>Need help? Contact us at support@clusteer.io</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }),
 
-					<p>Thank you for joining Clusteer! We're excited to have you as part of our community.</p>
+  /**
+   * Email verification
+   */
+  emailVerification: (email: string, verificationLink: string): EmailTemplate => ({
+    to: email,
+    subject: 'Verify Your Email - Clusteer',
+    text: `Please verify your email address by clicking this link: ${verificationLink}\n\nThis link will expire in 24 hours.\n\nIf you didn't create an account, please ignore this email.`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #014F01; color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; background: #f9f9f9; }
+          .button { display: inline-block; padding: 12px 30px; background: #014F01; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+          .footer { padding: 20px; text-align: center; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Verify Your Email</h1>
+          </div>
+          <div class="content">
+            <p>Please verify your email address by clicking the button below:</p>
+            <a href="${verificationLink}" class="button">Verify Email</a>
+            <p>Or copy this link: <br>${verificationLink}</p>
+            <p><strong>This link will expire in 24 hours.</strong></p>
+            <p>If you didn't create an account, please ignore this email.</p>
+          </div>
+          <div class="footer">
+            <p>© 2025 Clusteer. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }),
 
-					<p>Here's what you can do now:</p>
-					<ul>
-						<li>Complete your identity verification (KYC) to unlock all features</li>
-						<li>Add funds to your wallet</li>
-						<li>Start trading USDT/USDC ↔ NGN</li>
-						<li>Send crypto to other verified users</li>
-					</ul>
+  /**
+   * Password reset email
+   */
+  passwordReset: (email: string, resetLink: string): EmailTemplate => ({
+    to: email,
+    subject: 'Reset Your Password - Clusteer',
+    text: `You requested a password reset. Click this link to reset your password: ${resetLink}\n\nThis link will expire in 1 hour.\n\nIf you didn't request this, please ignore this email.`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #014F01; color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; background: #f9f9f9; }
+          .button { display: inline-block; padding: 12px 30px; background: #014F01; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+          .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+          .footer { padding: 20px; text-align: center; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Reset Your Password</h1>
+          </div>
+          <div class="content">
+            <p>You requested a password reset for your Clusteer account.</p>
+            <a href="${resetLink}" class="button">Reset Password</a>
+            <p>Or copy this link: <br>${resetLink}</p>
+            <div class="warning">
+              <strong>Security Notice:</strong> This link will expire in 1 hour.
+            </div>
+            <p>If you didn't request this, please ignore this email and your password will remain unchanged.</p>
+          </div>
+          <div class="footer">
+            <p>© 2025 Clusteer. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }),
 
-					<div style="text-align: center; margin: 30px 0;">
-						<a href="${APP_URL}/dashboard" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Go to Dashboard</a>
-					</div>
+  /**
+   * Transaction notification
+   */
+  transactionNotification: (
+    email: string,
+    type: 'buy' | 'sell' | 'deposit' | 'withdrawal',
+    amount: string,
+    currency: string,
+    status: string
+  ): EmailTemplate => ({
+    to: email,
+    subject: `Transaction ${status}: ${type.toUpperCase()} ${amount} ${currency}`,
+    text: `Your ${type} transaction of ${amount} ${currency} is ${status}.\n\nView details: https://app.clusteer.io/transactions`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #014F01; color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; background: #f9f9f9; }
+          .transaction { background: white; padding: 20px; border-radius: 5px; margin: 20px 0; }
+          .button { display: inline-block; padding: 12px 30px; background: #014F01; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+          .footer { padding: 20px; text-align: center; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Transaction ${status}</h1>
+          </div>
+          <div class="content">
+            <div class="transaction">
+              <h3>Transaction Details</h3>
+              <p><strong>Type:</strong> ${type.toUpperCase()}</p>
+              <p><strong>Amount:</strong> ${amount} ${currency}</p>
+              <p><strong>Status:</strong> ${status}</p>
+            </div>
+            <a href="https://app.clusteer.io/transactions" class="button">View Transaction</a>
+          </div>
+          <div class="footer">
+            <p>© 2025 Clusteer. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }),
 
-					<p style="color: #666; font-size: 14px;">Need help? Reply to this email and our support team will assist you.</p>
-				</div>
+  /**
+   * KYC status update
+   */
+  kycStatusUpdate: (email: string, firstName: string, status: 'approved' | 'rejected'): EmailTemplate => ({
+    to: email,
+    subject: `KYC Verification ${status === 'approved' ? 'Approved' : 'Rejected'} - Clusteer`,
+    text: status === 'approved'
+      ? `Hi ${firstName},\n\nGreat news! Your KYC verification has been approved.\n\nYou can now enjoy full access to all Clusteer features including higher withdrawal limits.\n\nView your account: https://app.clusteer.io/settings`
+      : `Hi ${firstName},\n\nYour KYC verification was not approved. Please review your information and try again.\n\nCommon issues:\n- Document not clear\n- Information mismatch\n- Invalid document\n\nResubmit verification: https://app.clusteer.io/identity-verification`,
+    html: status === 'approved' ? `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #28a745; color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; background: #f9f9f9; }
+          .button { display: inline-block; padding: 12px 30px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+          .footer { padding: 20px; text-align: center; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>✓ KYC Approved!</h1>
+          </div>
+          <div class="content">
+            <h2>Hi ${firstName},</h2>
+            <p>Great news! Your KYC verification has been <strong>approved</strong>.</p>
+            <p>You can now enjoy:</p>
+            <ul>
+              <li>Higher transaction limits</li>
+              <li>Faster withdrawals</li>
+              <li>Full platform access</li>
+            </ul>
+            <a href="https://app.clusteer.io/settings" class="button">View Account</a>
+          </div>
+          <div class="footer">
+            <p>© 2025 Clusteer. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    ` : `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #dc3545; color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; background: #f9f9f9; }
+          .button { display: inline-block; padding: 12px 30px; background: #014F01; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+          .footer { padding: 20px; text-align: center; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>KYC Not Approved</h1>
+          </div>
+          <div class="content">
+            <h2>Hi ${firstName},</h2>
+            <p>Your KYC verification was not approved. Please review and resubmit.</p>
+            <p><strong>Common issues:</strong></p>
+            <ul>
+              <li>Document not clear or readable</li>
+              <li>Information mismatch</li>
+              <li>Invalid or expired document</li>
+            </ul>
+            <a href="https://app.clusteer.io/identity-verification" class="button">Try Again</a>
+          </div>
+          <div class="footer">
+            <p>© 2025 Clusteer. All rights reserved.</p>
+            <p>Need help? Contact support@clusteer.io</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }),
 
-				<div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
-					<p>© 2025 Clusteer. All rights reserved.</p>
-					<p>Lagos, Nigeria</p>
-				</div>
-			</body>
-			</html>
-		`,
-		text: `Hi ${username},\n\nThank you for joining Clusteer! We're excited to have you as part of our community.\n\nVisit your dashboard: ${APP_URL}/dashboard\n\nNeed help? Reply to this email and our support team will assist you.`,
-	});
-}
-
-/**
- * Send email verification code
- */
-export async function sendVerificationEmail(to: string, code: string) {
-	return sendEmail({
-		to,
-		subject: 'Verify Your Email - Clusteer',
-		html: `
-			<!DOCTYPE html>
-			<html>
-			<head>
-				<meta charset="utf-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			</head>
-			<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-				<div style="background: #667eea; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-					<h1 style="color: white; margin: 0;">Verify Your Email</h1>
-				</div>
-
-				<div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-					<p>Please use the following code to verify your email address:</p>
-
-					<div style="background: white; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 20px 0; border-radius: 5px;">
-						${code}
-					</div>
-
-					<p>This code will expire in 15 minutes.</p>
-
-					<p style="color: #666; font-size: 14px;">If you didn't request this code, please ignore this email.</p>
-				</div>
-			</body>
-			</html>
-		`,
-		text: `Your verification code is: ${code}\n\nThis code will expire in 15 minutes.\n\nIf you didn't request this code, please ignore this email.`,
-	});
-}
-
-/**
- * Send transaction notification
- */
-export async function sendTransactionNotification(
-	to: string,
-	username: string,
-	type: 'buy' | 'sell' | 'send' | 'receive',
-	amount: number,
-	currency: string
-) {
-	const actionText = {
-		buy: 'purchased',
-		sell: 'sold',
-		send: 'sent',
-		receive: 'received',
-	}[type];
-
-	return sendEmail({
-		to,
-		subject: `Transaction ${actionText.charAt(0).toUpperCase() + actionText.slice(1)}: ${amount} ${currency}`,
-		html: `
-			<!DOCTYPE html>
-			<html>
-			<head>
-				<meta charset="utf-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			</head>
-			<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-				<div style="background: #667eea; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-					<h1 style="color: white; margin: 0;">Transaction Notification</h1>
-				</div>
-
-				<div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-					<p>Hi ${username},</p>
-
-					<p>You have successfully ${actionText} <strong>${amount} ${currency}</strong>.</p>
-
-					<div style="text-align: center; margin: 30px 0;">
-						<a href="${APP_URL}/transaction-history" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">View Transaction History</a>
-					</div>
-
-					<p style="color: #666; font-size: 14px;">This is an automated notification. If you didn't perform this transaction, please contact support immediately.</p>
-				</div>
-			</body>
-			</html>
-		`,
-		text: `Hi ${username},\n\nYou have successfully ${actionText} ${amount} ${currency}.\n\nView your transaction history: ${APP_URL}/transaction-history\n\nIf you didn't perform this transaction, please contact support immediately.`,
-	});
-}
-
-/**
- * Send KYC verification status update
- */
-export async function sendKYCStatusEmail(
-	to: string,
-	username: string,
-	status: 'approved' | 'rejected',
-	reason?: string
-) {
-	const isApproved = status === 'approved';
-
-	return sendEmail({
-		to,
-		subject: `Identity Verification ${isApproved ? 'Approved' : 'Update'} - Clusteer`,
-		html: `
-			<!DOCTYPE html>
-			<html>
-			<head>
-				<meta charset="utf-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			</head>
-			<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-				<div style="background: ${isApproved ? '#10b981' : '#f59e0b'}; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-					<h1 style="color: white; margin: 0;">Identity Verification ${isApproved ? 'Approved' : 'Update'}</h1>
-				</div>
-
-				<div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-					<p>Hi ${username},</p>
-
-					${
-						isApproved
-							? `
-						<p>Great news! Your identity verification has been approved. You now have full access to all Clusteer features.</p>
-
-						<p>You can now:</p>
-						<ul>
-							<li>Trade larger amounts</li>
-							<li>Receive transfers from other users</li>
-							<li>Access premium features</li>
-						</ul>
-
-						<div style="text-align: center; margin: 30px 0;">
-							<a href="${APP_URL}/dashboard" style="background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Go to Dashboard</a>
-						</div>
-					`
-							: `
-						<p>We were unable to verify your identity at this time.</p>
-						${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ''}
-						<p>Please ensure that:</p>
-						<ul>
-							<li>Your documents are clear and readable</li>
-							<li>All information matches your official documents</li>
-							<li>You've provided all required information</li>
-						</ul>
-
-						<div style="text-align: center; margin: 30px 0;">
-							<a href="${APP_URL}/identity-verification" style="background: #f59e0b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Try Again</a>
-						</div>
-					`
-					}
-
-					<p style="color: #666; font-size: 14px;">Need help? Reply to this email and our support team will assist you.</p>
-				</div>
-			</body>
-			</html>
-		`,
-		text: `Hi ${username},\n\n${isApproved ? 'Your identity verification has been approved!' : 'We were unable to verify your identity at this time.'}\n\n${!isApproved && reason ? `Reason: ${reason}\n\n` : ''}Visit: ${APP_URL}/${isApproved ? 'dashboard' : 'identity-verification'}`,
-	});
-}
-
-/**
- * Send password reset email
- */
-export async function sendPasswordResetEmail(to: string, resetLink: string) {
-	return sendEmail({
-		to,
-		subject: 'Reset Your Password - Clusteer',
-		html: `
-			<!DOCTYPE html>
-			<html>
-			<head>
-				<meta charset="utf-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			</head>
-			<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-				<div style="background: #667eea; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-					<h1 style="color: white; margin: 0;">Reset Your Password</h1>
-				</div>
-
-				<div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-					<p>We received a request to reset your password.</p>
-
-					<div style="text-align: center; margin: 30px 0;">
-						<a href="${resetLink}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
-					</div>
-
-					<p>This link will expire in 1 hour.</p>
-
-					<p style="color: #666; font-size: 14px;">If you didn't request this password reset, please ignore this email or contact support if you have concerns.</p>
-				</div>
-			</body>
-			</html>
-		`,
-		text: `Reset your password using this link: ${resetLink}\n\nThis link will expire in 1 hour.\n\nIf you didn't request this password reset, please ignore this email.`,
-	});
-}
+  /**
+   * Security alert
+   */
+  securityAlert: (email: string, alertType: string, details: string): EmailTemplate => ({
+    to: email,
+    subject: `Security Alert: ${alertType} - Clusteer`,
+    text: `Security Alert: ${alertType}\n\n${details}\n\nIf this wasn't you, please contact support immediately.\n\nSecure your account: https://app.clusteer.io/settings/security`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #dc3545; color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; background: #f9f9f9; }
+          .alert { background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0; }
+          .button { display: inline-block; padding: 12px 30px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+          .footer { padding: 20px; text-align: center; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>⚠️ Security Alert</h1>
+          </div>
+          <div class="content">
+            <div class="alert">
+              <h3>${alertType}</h3>
+              <p>${details}</p>
+            </div>
+            <p><strong>If this wasn't you, please secure your account immediately.</strong></p>
+            <a href="https://app.clusteer.io/settings/security" class="button">Secure Account</a>
+          </div>
+          <div class="footer">
+            <p>© 2025 Clusteer. All rights reserved.</p>
+            <p>Support: support@clusteer.io</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }),
+};
