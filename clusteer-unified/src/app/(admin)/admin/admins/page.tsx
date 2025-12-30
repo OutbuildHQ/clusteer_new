@@ -539,7 +539,7 @@ export default function AdminsPage() {
 						setFormData({ name: "", email: "", phone: "", role: "Admin", permissions: [] });
 					}}
 					title={showEditModal ? "Edit Admin" : "Create New Admin"}
-					maxWidth="2xl"
+					size="xl"
 				>
 					<div className="space-y-6">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
