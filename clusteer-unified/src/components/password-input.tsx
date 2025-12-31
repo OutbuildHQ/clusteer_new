@@ -4,9 +4,9 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { memo, useState } from "react";
-import { UseControllerProps, useController } from "react-hook-form";
+import { UseControllerProps, useController, FieldValues } from "react-hook-form";
 
-function PasswordInput({ name, control }: UseControllerProps) {
+function PasswordInput<T extends FieldValues = FieldValues>({ name, control }: UseControllerProps<T>) {
 	const [showPassword, setShowPassword] = useState(false);
 	const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
