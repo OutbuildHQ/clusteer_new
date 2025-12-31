@@ -122,8 +122,8 @@ export default function SupportPage() {
 	const createTicketMutation = useMutation({
 		mutationFn: () =>
 			createSupportTicket(user!.id, {
-				user_email: user!.user!.email,
-				user_name: `${user!.user!.firstName} ${user!.user!.lastName}`,
+				user_email: user!.email,
+				user_name: `${user!.firstName} ${user!.lastName}`,
 				...newTicket,
 			}),
 		onSuccess: () => {
@@ -158,7 +158,7 @@ export default function SupportPage() {
 			{/* Header */}
 			<header className="mb-8">
 				<div className="flex items-center justify-between mb-2">
-					<h1 className="text-[#0D0D0D] font-semibold text-2xl">Welcome back, {user?.user?.firstName}</h1>
+					<h1 className="text-[#0D0D0D] font-semibold text-2xl">Welcome back, {user?.firstName}</h1>
 				</div>
 				<p className="text-sm text-[#667085]">
 					{new Date().toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" })}
@@ -252,7 +252,7 @@ export default function SupportPage() {
 								<div className="flex-1">
 									<div className="inline-block bg-[#F9FAFB] p-3 rounded-lg">
 										<p className="text-sm text-[#0D0D0D]">
-											👋 Hi {user?.user?.firstName}! How can we help you today?
+											👋 Hi {user?.firstName}! How can we help you today?
 										</p>
 									</div>
 									<p className="text-xs text-[#667085] mt-1">Just now</p>
