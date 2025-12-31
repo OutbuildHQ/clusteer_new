@@ -192,7 +192,9 @@ export async function POST(request: NextRequest) {
 			uploadFormData.append('document_type', documentType);
 
 			for (const { name, buffer, mimeType } of validatedFiles) {
-				const blob = new Blob([buffer], { type: mimeType });
+				// Convert Buffer to Uint8Array for Blob compatibility
+				const uint8Array = new Uint8Array(buffer);
+				const blob = new Blob([uint8Array], { type: mimeType });
 				const extension = mimeType.split('/')[1];
 				const filename = `${name}_${Date.now()}.${extension}`;
 				uploadFormData.append(name, blob, filename);
