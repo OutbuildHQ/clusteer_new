@@ -29,7 +29,7 @@ export default function TicketDetailPage() {
 		mutationFn: () =>
 			addTicketMessage(user!.id, ticketNumber, {
 				sender_id: user!.id,
-				sender_name: `${user!.user!.firstName} ${user!.user!.lastName}`,
+				sender_name: `${user!.firstName} ${user!.lastName}`,
 				message: newMessage,
 			}),
 		onSuccess: () => {
