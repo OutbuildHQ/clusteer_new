@@ -26,7 +26,7 @@ export default function SearchBar({
 }: SearchBarProps) {
 	const [localValue, setLocalValue] = useState(value);
 	const [showSuggestions, setShowSuggestions] = useState(false);
-	const debounceTimer = useRef<NodeJS.Timeout>();
+	const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined);
 	const wrapperRef = useRef<HTMLDivElement>(null);
 
 	// Debounced search
