@@ -68,11 +68,11 @@ export default function ResetPasswordForm({ token }: { token: string }) {
 				<FormField
 					control={form.control}
 					name="newPassword"
-					render={({ field }) => (
+					render={() => (
 						<FormItem className="gap-1.5">
 							<FormLabel className="font-medium">New Password</FormLabel>
 							<FormControl>
-								<PasswordInput {...field} placeholder="********" />
+								<PasswordInput name="newPassword" control={form.control} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>

@@ -91,11 +91,11 @@ export default function LoginForm() {
 				<FormField
 					control={form.control}
 					name="password"
-					render={({ field }) => (
+					render={() => (
 						<FormItem className="gap-1.5">
 							<FormLabel className="font-medium">Password</FormLabel>
 							<FormControl>
-								<PasswordInput {...field} />
+								<PasswordInput name="password" control={form.control} />
 							</FormControl>
 							<FormDescription className="text-left text-black text-sm font-lexend">
 								Must be at least 8 characters.
