@@ -144,7 +144,7 @@ export function CompactSearch({
 	placeholder?: string;
 }) {
 	const [localValue, setLocalValue] = useState(value);
-	const debounceTimer = useRef<NodeJS.Timeout>();
+	const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined);
 
 	useEffect(() => {
 		if (debounceTimer.current) {
