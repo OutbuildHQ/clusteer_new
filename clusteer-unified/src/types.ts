@@ -8,6 +8,12 @@ export type Crypto = "SOL" | "TRON" | "ETH" | "BSC";
 
 export type Fiat = "NGN";
 
+export interface ICurrency {
+	currency: string;
+	icon: string;
+	rate: number;
+}
+
 export interface Stablecoin {
 	id: number;
 	name: string;
