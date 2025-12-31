@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import rateLimiter, { getClientIdentifier } from "@/lib/rate-limiter";
+import { rateLimit } from "@/lib/rate-limiter";
 import { checkRateLimit as redisCheckRateLimit } from "@/lib/redis-rate-limiter";
 
 export interface AuthenticatedRequest extends NextRequest {
@@ -77,10 +77,15 @@ async function applyRateLimit(
 	limit: number,
 	windowMs: number
 ): Promise<NextResponse | null> {
-	const identifier = getClientIdentifier(request);
 	const useRedis = process.env.USE_REDIS_RATE_LIMITING === 'true';
 
 	if (useRedis) {
+		// Get client identifier for Redis
+		const forwarded = request.headers.get("x-forwarded-for");
+		const ip = forwarded ? forwarded.split(",")[0].trim() : "127.0.0.1";
+		const path = new URL(request.url).pathname;
+		const identifier = `${ip}:${path}`;
+
 		// Use Redis-based rate limiting
 		const result = await redisCheckRateLimit(identifier, limit, windowMs);
 
@@ -108,28 +113,7 @@ async function applyRateLimit(
 		return null;
 	} else {
 		// Use in-memory rate limiting (development/fallback)
-		if (rateLimiter.isRateLimited(identifier, limit, windowMs)) {
-			const resetTime = rateLimiter.getResetTime(identifier);
-			const retryAfter = resetTime ? Math.ceil((resetTime - Date.now()) / 1000) : 60;
-
-			return NextResponse.json(
-				{
-					status: false,
-					message: "Too many requests. Please try again later.",
-					retryAfter,
-				},
-				{
-					status: 429,
-					headers: {
-						"Retry-After": retryAfter.toString(),
-						"X-RateLimit-Limit": limit.toString(),
-						"X-RateLimit-Remaining": "0",
-					},
-				}
-			);
-		}
-
-		return null;
+		return rateLimit(request, { maxRequests: limit, windowMs });
 	}
 }
 
@@ -173,19 +157,6 @@ export function withMiddleware(
 
 			// Call the actual handler
 			const response = await handler(request, context);
-
-			// Add rate limit headers if configured
-			if (options.rateLimit) {
-				const identifier = getClientIdentifier(request);
-				const remaining = rateLimiter.getRemaining(identifier, options.rateLimit.limit);
-				const resetTime = rateLimiter.getResetTime(identifier);
-
-				response.headers.set("X-RateLimit-Limit", options.rateLimit.limit.toString());
-				response.headers.set("X-RateLimit-Remaining", remaining.toString());
-				if (resetTime) {
-					response.headers.set("X-RateLimit-Reset", Math.ceil(resetTime / 1000).toString());
-				}
-			}
 
 			return response;
 		} catch (error) {

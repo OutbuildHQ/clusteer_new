@@ -1,30 +1,13 @@
 import { supabase } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
-import rateLimiter, { RATE_LIMITS, getClientIdentifier } from "@/lib/rate-limiter";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 
 export async function POST(request: NextRequest) {
 	try {
 		// Rate limiting check
-		const identifier = getClientIdentifier(request);
-		if (rateLimiter.isRateLimited(identifier, RATE_LIMITS.LOGIN.limit, RATE_LIMITS.LOGIN.windowMs)) {
-			const resetTime = rateLimiter.getResetTime(identifier);
-			const retryAfter = resetTime ? Math.ceil((resetTime - Date.now()) / 1000) : 900;
-
-			return NextResponse.json(
-				{
-					status: false,
-					message: "Too many login attempts. Please try again later.",
-					retryAfter,
-				},
-				{
-					status: 429,
-					headers: {
-						"Retry-After": retryAfter.toString(),
-						"X-RateLimit-Limit": RATE_LIMITS.LOGIN.limit.toString(),
-						"X-RateLimit-Remaining": "0",
-					},
-				}
-			);
+		const rateLimitResponse = rateLimit(request, RateLimitPresets.strict);
+		if (rateLimitResponse) {
+			return rateLimitResponse;
 		}
 
 		const body = await request.json();
@@ -98,11 +81,6 @@ export async function POST(request: NextRequest) {
 			maxAge: 7 * 24 * 60 * 60, // 7 days
 			path: "/",
 		});
-
-		// Add rate limit headers
-		const remaining = rateLimiter.getRemaining(identifier, RATE_LIMITS.LOGIN.limit);
-		response.headers.set("X-RateLimit-Limit", RATE_LIMITS.LOGIN.limit.toString());
-		response.headers.set("X-RateLimit-Remaining", remaining.toString());
 
 		return response;
 	} catch (error) {
