@@ -183,7 +183,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 
 			{/* Sidebar */}
 			<aside className={`
-				bg-[#FAFAFA] border-r border-[#E9EAEB] flex flex-col transition-all duration-300 relative
+				bg-[#FAFAFA] border-r border-[#E9EAEB] flex flex-col transition-all duration-300
 
 				/* Mobile: Full width sidebar (max 80% screen width) */
 				w-[280px] max-w-[80vw]
@@ -194,11 +194,11 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 				/* Mobile: Fixed overlay sidebar */
 				fixed lg:relative inset-y-0 left-0 z-50
 
-				/* Mobile: Slide in from left */
-				${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
+				/* Mobile: Slide in from left - hide when closed */
+				${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
 
-				/* Desktop: Always visible */
-				lg:translate-x-0
+				/* Ensure smooth transitions */
+				transition-transform
 			`}>
 				{/* Mobile Close Button */}
 				<button

@@ -98,9 +98,9 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="en" className="h-full">
 			<body
-				className={`${lexend.variable} ${inter.variable} ${avenirNext.variable} antialiased`}
+				className={`${lexend.variable} ${inter.variable} ${avenirNext.variable} antialiased h-full overflow-x-hidden`}
 			>
 				<ReactQueryClientProvider>{children}</ReactQueryClientProvider>
 				<Toaster
