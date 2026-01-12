@@ -183,14 +183,19 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 
 			{/* Sidebar */}
 			<aside className={`
-				${isCollapsed ? 'w-20' : 'w-64'}
 				bg-[#FAFAFA] border-r border-[#E9EAEB] flex flex-col transition-all duration-300 relative
+
+				/* Mobile: Full width sidebar (max 80% screen width) */
+				w-[280px] max-w-[80vw]
+
+				/* Desktop: Collapsible width */
+				lg:w-auto ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
 
 				/* Mobile: Fixed overlay sidebar */
 				fixed lg:relative inset-y-0 left-0 z-50
 
 				/* Mobile: Slide in from left */
-				${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+				${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
 
 				/* Desktop: Always visible */
 				lg:translate-x-0
@@ -220,31 +225,45 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 				{/* Wrapper with white background */}
 				<div className="flex flex-col h-full bg-white border-[#E9EAEB] rounded-lg border m-1">
 					{/* Logo & Title */}
-					<div className={`${isCollapsed ? 'p-4' : 'p-6'} border-b border-[#E9EAEB]`}>
-						{isCollapsed ? (
-							<div className="flex justify-center">
-								<Image
-									src="/assets/icons/logo.svg"
-									alt="Clusteer logo"
-									width={28}
-									height={30}
-									className="flex-shrink-0"
-								/>
-							</div>
-						) : (
-							<div className="flex items-center gap-2">
-								<Image
-									src="/assets/icons/logo_with_name.svg"
-									alt="Clusteer logo"
-									width={139}
-									height={32}
-									className="flex-shrink-0"
-								/>
-							</div>
-						)}
-						{!isCollapsed && (
-							<p className="text-xs text-gray-500 mt-2">Admin Panel</p>
-						)}
+					<div className={`border-b border-[#E9EAEB] p-6 lg:p-6 ${isCollapsed ? 'lg:p-4' : ''}`}>
+						{/* Mobile: Always show full logo */}
+						<div className="lg:hidden flex items-center gap-2">
+							<Image
+								src="/assets/icons/logo_with_name.svg"
+								alt="Clusteer logo"
+								width={139}
+								height={32}
+								className="flex-shrink-0"
+							/>
+						</div>
+
+						{/* Desktop: Show based on collapse state */}
+						<div className="hidden lg:block">
+							{isCollapsed ? (
+								<div className="flex justify-center">
+									<Image
+										src="/assets/icons/logo.svg"
+										alt="Clusteer logo"
+										width={28}
+										height={30}
+										className="flex-shrink-0"
+									/>
+								</div>
+							) : (
+								<div className="flex items-center gap-2">
+									<Image
+										src="/assets/icons/logo_with_name.svg"
+										alt="Clusteer logo"
+										width={139}
+										height={32}
+										className="flex-shrink-0"
+									/>
+								</div>
+							)}
+						</div>
+
+						{/* Show subtitle on mobile and expanded desktop */}
+						<p className={`text-xs text-gray-500 mt-2 lg:mt-2 ${isCollapsed ? 'lg:hidden' : ''}`}>Admin Panel</p>
 					</div>
 
 					{/* Navigation */}
@@ -268,14 +287,32 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 														? "bg-[#E7F6EC] text-[#014F01]"
 														: "text-gray-700 hover:bg-gray-50"
 												}
-												${isCollapsed ? 'justify-center' : ''}
+												${isCollapsed ? 'lg:justify-center' : ''}
 											`}
 											title={isCollapsed ? item.name : ''}
 										>
 											<Icon className="w-5 h-5 flex-shrink-0" />
+											{/* Mobile: Always show text */}
+											<span className={`flex-1 text-left lg:hidden`}>{item.name}</span>
+											{/* Desktop: Show based on collapse state */}
 											{!isCollapsed && (
-												<>
-													<span className="flex-1 text-left">{item.name}</span>
+												<span className="hidden lg:block flex-1 text-left">{item.name}</span>
+											)}
+											{/* Badges and chevrons - mobile always shows, desktop based on collapse */}
+											<div className={`flex items-center gap-2 lg:hidden`}>
+												{item.badge && (
+													<span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+														{item.badge}
+													</span>
+												)}
+												<ChevronDown
+													className={`w-4 h-4 transition-transform ${
+														isExpanded ? 'rotate-180' : ''
+													}`}
+												/>
+											</div>
+											{!isCollapsed && (
+												<div className="hidden lg:flex items-center gap-2">
 													{item.badge && (
 														<span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
 															{item.badge}
@@ -286,7 +323,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 															isExpanded ? 'rotate-180' : ''
 														}`}
 													/>
-												</>
+												</div>
 											)}
 										</button>
 									) : (
@@ -299,16 +336,25 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 														? "bg-[#E7F6EC] text-[#014F01]"
 														: "text-gray-700 hover:bg-gray-50"
 												}
-												${isCollapsed ? 'justify-center' : ''}
+												${isCollapsed ? 'lg:justify-center' : ''}
 											`}
 											title={isCollapsed ? item.name : ''}
 										>
 											<Icon className="w-5 h-5 flex-shrink-0" />
+											{/* Mobile: Always show text */}
+											<span className="flex-1 lg:hidden">{item.name}</span>
+											{/* Desktop: Show based on collapse state */}
 											{!isCollapsed && (
+												<span className="hidden lg:block flex-1">{item.name}</span>
+											)}
+											{/* Badge - mobile always shows, desktop based on collapse */}
+											{item.badge && (
 												<>
-													<span className="flex-1">{item.name}</span>
-													{item.badge && (
-														<span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+													<span className="lg:hidden px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+														{item.badge}
+													</span>
+													{!isCollapsed && (
+														<span className="hidden lg:inline-block px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
 															{item.badge}
 														</span>
 													)}
@@ -317,9 +363,9 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 										</Link>
 									)}
 
-									{/* Sub Items */}
-									{hasSubItems && isExpanded && !isCollapsed && (
-										<div className="mt-1 ml-3 pl-5 border-l-2 border-gray-100 space-y-0.5">
+									{/* Sub Items - Always show on mobile when expanded, desktop only when not collapsed */}
+									{hasSubItems && isExpanded && (
+										<div className={`mt-1 ml-3 pl-5 border-l-2 border-gray-100 space-y-0.5 ${isCollapsed ? 'hidden' : ''}`}>
 											{item.subItems!.map((subItem) => (
 												<Link
 													key={subItem.href}
@@ -382,12 +428,22 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 
 					{/* User Profile */}
 					<div className="p-4 border-t border-[#E9EAEB]">
-						<div className={`flex items-center gap-3 p-2 rounded-lg hover:bg-[#FAFAFA] cursor-pointer transition-colors group ${isCollapsed ? 'justify-center' : ''}`}>
+						<div className={`flex items-center gap-3 p-2 rounded-lg hover:bg-[#FAFAFA] cursor-pointer transition-colors group ${isCollapsed ? 'lg:justify-center' : ''}`}>
 							<div className="w-10 h-10 bg-gradient-to-br from-[#014F01] to-[#013d01] rounded-full flex items-center justify-center flex-shrink-0">
 								<span className="text-white font-semibold text-sm">AD</span>
 							</div>
+							{/* Mobile: Always show user info */}
+							<div className="flex-1 min-w-0 lg:hidden">
+								<p className="text-sm font-medium text-gray-900 truncate">
+									Admin User
+								</p>
+								<p className="text-xs text-gray-500 truncate">
+									admin@clusteer.com
+								</p>
+							</div>
+							{/* Desktop: Show based on collapse state */}
 							{!isCollapsed && (
-								<div className="flex-1 min-w-0">
+								<div className="hidden lg:block flex-1 min-w-0">
 									<p className="text-sm font-medium text-gray-900 truncate">
 										Admin User
 									</p>
@@ -396,9 +452,16 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 									</p>
 								</div>
 							)}
+							{/* Logout button - mobile always shows, desktop based on collapse */}
+							<button
+								className="lg:hidden p-1.5 hover:bg-gray-100 rounded"
+								title="Logout"
+							>
+								<LogOut className="w-4 h-4 text-gray-500" />
+							</button>
 							{!isCollapsed && (
 								<button
-									className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-gray-100 rounded"
+									className="hidden lg:block opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-gray-100 rounded"
 									title="Logout"
 								>
 									<LogOut className="w-4 h-4 text-gray-500" />
