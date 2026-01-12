@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resetPassword } from "@/lib/auth-firebase";
+import { isFirebaseConfigured } from "@/lib/firebase";
 
 export async function POST(request: NextRequest) {
+  // Check if Firebase is configured
+  if (!isFirebaseConfigured) {
+    return NextResponse.json(
+      { status: false, message: "Firebase authentication is not configured" },
+      { status: 503 }
+    );
+  }
+
   try {
     const { email } = await request.json();
 

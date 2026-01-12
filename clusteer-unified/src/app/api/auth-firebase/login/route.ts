@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { loginWithFirebase } from "@/lib/auth-firebase";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
+import { isFirebaseConfigured } from "@/lib/firebase";
 
 export async function POST(request: NextRequest) {
+  // Check if Firebase is configured
+  if (!isFirebaseConfigured) {
+    return NextResponse.json(
+      { status: false, message: "Firebase authentication is not configured" },
+      { status: 503 }
+    );
+  }
+
   // Apply strict rate limiting (5 requests/minute)
   const rateLimitResponse = rateLimit(request, RateLimitPresets.strict);
   if (rateLimitResponse) {

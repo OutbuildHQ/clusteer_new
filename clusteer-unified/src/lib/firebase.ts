@@ -13,10 +13,19 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase only once (works on both client and server)
-const app: FirebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const auth: Auth = getAuth(app);
-const storage: FirebaseStorage = getStorage(app);
+// Check if Firebase is properly configured
+const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.projectId;
 
-export { app, auth, storage };
+// Initialize Firebase only if configured and only once
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let storage: FirebaseStorage | null = null;
+
+if (isFirebaseConfigured) {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  auth = getAuth(app);
+  storage = getStorage(app);
+}
+
+export { app, auth, storage, isFirebaseConfigured };
 export default app;
