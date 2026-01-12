@@ -53,6 +53,11 @@ export interface ITransaction {
 	status: string;
 	date: string;
 	description?: string;
+	currency?: string;
+	dateCreated?: string;
+	rate?: number;
+	flow?: string;
+	orderNumber?: string;
 }
 
 export interface IOrder {
@@ -67,6 +72,8 @@ export interface IOrder {
 	dateOrdered?: string;
 	rate?: number;
 	paymentMethod?: string;
+	number?: string;
+	dateSettled?: string;
 }
 
 export interface PageParams {
