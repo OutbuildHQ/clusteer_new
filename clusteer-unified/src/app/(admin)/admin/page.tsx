@@ -249,40 +249,54 @@ export default function AdminDashboardPage() {
 			</div>
 
 			{/* Transaction Flow Chart */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6 transition-all duration-200 hover:shadow-md hover:border-[#014F01]/20">
-				<div className="flex items-center justify-between mb-6">
-					<div>
-						<h2 className="text-lg font-semibold text-gray-900">
-							Transaction Flow
-						</h2>
-						<p className="text-sm text-gray-600 mt-1">
-							Monthly transaction volume
-						</p>
+			<div className="bg-white rounded-lg border border-[#E9EAEB] p-4 sm:p-6 transition-all duration-200 hover:shadow-md hover:border-[#014F01]/20">
+				<div className="flex flex-col gap-4 mb-6">
+					<div className="flex items-start justify-between gap-2">
+						<div className="flex-1 min-w-0">
+							<h2 className="text-base sm:text-lg font-semibold text-gray-900">
+								Transaction Flow
+							</h2>
+							<p className="text-xs sm:text-sm text-gray-600 mt-1">
+								Monthly transaction volume
+							</p>
+						</div>
+						{/* Mobile: Show stats inline */}
+						<div className="flex items-center gap-2 sm:hidden flex-shrink-0">
+							<div className="text-right">
+								<p className="text-lg font-bold text-gray-900">$1.2M</p>
+								<p className="text-xs text-gray-600">Total</p>
+							</div>
+						</div>
 					</div>
-					<div className="flex items-center gap-4">
+
+					<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
 						{/* Time Period Selector */}
-						<div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1">
+						<div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1 overflow-x-auto">
 							{(["7d", "30d", "90d", "1y"] as const).map((period) => (
 								<button
 									key={period}
 									onClick={() => setChartPeriod(period)}
-									className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+									className={`px-2 sm:px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap flex-shrink-0 ${
 										chartPeriod === period
 											? "bg-white text-gray-900 shadow-sm scale-105"
 											: "text-gray-600 hover:text-gray-900"
 									}`}
 								>
-									{period === "7d" ? "7 Days" : period === "30d" ? "30 Days" : period === "90d" ? "90 Days" : "1 Year"}
+									{period === "7d" ? "7D" : period === "30d" ? "30D" : period === "90d" ? "90D" : "1Y"}
 								</button>
 							))}
 						</div>
-						<div className="text-right">
-							<p className="text-2xl font-bold text-gray-900">$1.2M</p>
-							<p className="text-sm text-gray-600">Total Volume</p>
-						</div>
-						<div className="flex items-center gap-1 text-[#014F01]">
-							<TrendingUp className="w-4 h-4" />
-							<span className="text-sm font-medium">+12.5%</span>
+
+						{/* Desktop: Show stats and trend */}
+						<div className="hidden sm:flex items-center gap-3 sm:gap-4 ml-auto">
+							<div className="text-right">
+								<p className="text-xl sm:text-2xl font-bold text-gray-900">$1.2M</p>
+								<p className="text-xs sm:text-sm text-gray-600">Total Volume</p>
+							</div>
+							<div className="flex items-center gap-1 text-[#014F01]">
+								<TrendingUp className="w-4 h-4" />
+								<span className="text-sm font-medium">+12.5%</span>
+							</div>
 						</div>
 					</div>
 				</div>
