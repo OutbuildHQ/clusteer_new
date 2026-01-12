@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,26 +65,27 @@ export default function InternalSendModal({
 	const recipientUserId = form.watch("recipientUserId");
 
 	// Verify recipient when User ID is entered
-	const { isLoading: isVerifying } = useQuery({
+	const { data: verifyData, isLoading: isVerifying, isError: verifyError } = useQuery({
 		queryKey: ["verify-recipient", recipientUserId],
 		queryFn: () => verifyRecipient(recipientUserId),
 		enabled: recipientUserId.length > 10, // UUID minimum length
 		retry: false,
-		onSuccess: (data) => {
-			if (data.status && data.data) {
-				setRecipientInfo({
-					username: data.data.username,
-					verified: data.data.is_verified,
-				});
-			}
-		},
-		onError: () => {
+	});
+
+	// Handle verification result
+	useEffect(() => {
+		if (verifyData?.status && verifyData.data) {
+			setRecipientInfo({
+				username: verifyData.data.username,
+				verified: verifyData.data.is_verified,
+			});
+		} else if (verifyError) {
 			setRecipientInfo(null);
 			form.setError("recipientUserId", {
 				message: "User not found",
 			});
-		},
-	});
+		}
+	}, [verifyData, verifyError, form]);
 
 	const { mutate: sendTransfer, isPending } = useMutation({
 		mutationFn: sendInternalTransfer,
