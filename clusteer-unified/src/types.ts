@@ -66,6 +66,7 @@ export interface IOrder {
 	chain?: string;
 	dateOrdered?: string;
 	rate?: number;
+	paymentMethod?: string;
 }
 
 export interface PageParams {
