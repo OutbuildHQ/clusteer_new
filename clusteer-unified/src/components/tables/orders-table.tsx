@@ -50,9 +50,9 @@ export const columns: ColumnDef<IOrder>[] = [
 						>
 							{type + " "}
 						</span>
-						<span>{chain}</span>
+						<span>{chain || '—'}</span>
 					</p>
-					<p className="text-[#475569]">{dateOrdered}</p>
+					<p className="text-[#475569]">{dateOrdered || '—'}</p>
 				</div>
 			);
 		},
@@ -64,9 +64,9 @@ export const columns: ColumnDef<IOrder>[] = [
 			return (
 				<div>
 					<p className="font-medium">
-						{amount.toLocaleString()} {chain}
+						{amount.toLocaleString()} {chain || '—'}
 					</p>
-					<p className="text-[#475467]">{rate.toLocaleString()} NGN</p>
+					<p className="text-[#475467]">{rate?.toLocaleString() || '—'} NGN</p>
 				</div>
 			);
 		},
