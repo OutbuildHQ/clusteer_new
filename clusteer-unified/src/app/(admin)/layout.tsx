@@ -14,15 +14,16 @@ export default function AdminLayout({
 
   return (
     <ToastProvider>
-      <div className="flex h-screen bg-[#FAFAFA] overflow-hidden">
-        {/* Sidebar */}
-        <AdminSidebar
-          isMobileOpen={isMobileMenuOpen}
-          onMobileClose={() => setIsMobileMenuOpen(false)}
-        />
+      {/* Sidebar - Renders as overlay on mobile */}
+      <AdminSidebar
+        isMobileOpen={isMobileMenuOpen}
+        onMobileClose={() => setIsMobileMenuOpen(false)}
+      />
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden relative">
+      {/* Main Layout - Full screen on mobile, flex with sidebar on desktop */}
+      <div className="flex h-screen bg-[#FAFAFA] overflow-hidden">
+        {/* Main Content - Takes full width on mobile, shares space with sidebar on desktop */}
+        <div className="flex-1 flex flex-col overflow-hidden w-full">
           {/* Header */}
           <AdminHeader
             onMobileMenuOpen={() => setIsMobileMenuOpen(true)}
