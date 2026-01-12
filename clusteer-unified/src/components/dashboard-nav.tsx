@@ -14,6 +14,7 @@ import {
 	SidebarMenuItem,
 	SidebarProvider,
 	SidebarSeparator,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,6 +33,8 @@ import {
 	Settings,
 	HeadphonesIcon,
 	Menu,
+	ChevronLeft,
+	ChevronRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -169,21 +172,53 @@ function MobileNav() {
 
 function AppSidebar() {
 	const pathname = usePathname();
+	const { open, toggleSidebar } = useSidebar();
 
 	return (
-		<Sidebar className="shadow-[0px_1px_2px_0px_#0A0D120D] p-1 pr-0 border-none bg-[#FAFAFA] w-full max-w-[254px] xl:max-w-[296px]">
-			<div className="flex flex-col pt-5 h-full bg-white border-[#E9EAEB] rounded-lg border m-0">
-				<SidebarHeader className="px-5 pb-0">
-					<Image
-						src="/assets/icons/logo_with_name.svg"
-						alt="Clusteer logo"
-						width={139}
-						height={32}
-					/>
-				</SidebarHeader>
+		<>
+			{/* Floating Toggle Button - Perfectly centered at 50% sidebar / 50% content */}
+			<button
+				onClick={toggleSidebar}
+				className="fixed top-[76px] lg:flex hidden z-50 w-8 h-8 bg-white border border-[#E9EAEB] rounded-full shadow-md hover:shadow-lg items-center justify-center transition-all duration-300 hover:scale-110"
+				style={{
+					left: open
+						? 'calc(210px - 16px)'  // 210px = 210px sidebar (middle point) - 16px (half button)
+						: 'calc(72px - 16px)',   // 72px = 4.5rem (72px) collapsed middle - 16px (half button)
+					transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+				}}
+				aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+			>
+				<div className="flex items-center justify-center w-full h-full">
+					{open ? (
+						<ChevronLeft className="w-4 h-4 text-gray-600" strokeWidth={2.5} />
+					) : (
+						<ChevronRight className="w-4 h-4 text-gray-600" strokeWidth={2.5} />
+					)}
+				</div>
+			</button>
 
-				<SidebarContent className="px-4 overflow-hidden">
-					<SidebarGroup className="mt-20 p-0">
+			<Sidebar collapsible="icon" className="shadow-[0px_1px_2px_0px_#0A0D120D] p-1 pr-0 border-none bg-[#FAFAFA] w-full max-w-[210px] transition-all duration-300">
+				<div className="flex flex-col pt-4 h-full bg-white border-[#E9EAEB] rounded-lg border m-0">
+					<SidebarHeader className="px-4 pb-0">
+						<Image
+							src="/assets/icons/logo_with_name.svg"
+							alt="Clusteer logo"
+							width={120}
+							height={28}
+							className="group-data-[collapsible=icon]:hidden"
+						/>
+						<div className="hidden group-data-[collapsible=icon]:flex justify-center">
+							<Image
+								src="/assets/icons/logo.svg"
+								alt="Clusteer logo"
+								width={28}
+								height={28}
+							/>
+						</div>
+					</SidebarHeader>
+
+				<SidebarContent className="px-3 overflow-hidden">
+					<SidebarGroup className="mt-14 p-0">
 						<SidebarGroupContent>
 							<SidebarMenu className="gap-y-1">
 								{NAVLINKS.map((navItem) => {
@@ -194,14 +229,14 @@ function AppSidebar() {
 											<SidebarMenuButton asChild>
 												<Link
 													href={navItem.to}
-													className={`flex font-semibold !text-base capitalize px-3 gap-x-2 items-center shrink-0 h-10 rounded-md transition-colors ${
+													className={`flex font-semibold !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-md transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
 														isActive
 															? "bg-[#E7F6EC] text-[#0D4222] hover:bg-[#E7F6EC] hover:text-[#0D4222]"
 															: "text-[#414651] hover:bg-[#FAFAFA] hover:text-[#414651]"
 													}`}
 												>
-													<Icon className="h-5 w-5" />
-													<span>{navItem.title}</span>
+													<Icon className="h-4 w-4 flex-shrink-0" />
+													<span className="group-data-[collapsible=icon]:hidden">{navItem.title}</span>
 												</Link>
 											</SidebarMenuButton>
 										</SidebarMenuItem>
@@ -224,14 +259,14 @@ function AppSidebar() {
 											<SidebarMenuButton asChild>
 												<Link
 													href={navItem.to}
-													className={`flex font-semibold !text-base capitalize px-3 gap-x-2 items-center shrink-0 h-10 rounded-md transition-colors ${
+													className={`flex font-semibold !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-md transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
 														isActive
 															? "bg-[#E7F6EC] text-[#0D4222] hover:bg-[#E7F6EC] hover:text-[#0D4222]"
 															: "text-[#414651] hover:bg-[#FAFAFA] hover:text-[#414651]"
 													}`}
 												>
-													<Icon className="h-5 w-5" />
-													<span>{navItem.title}</span>
+													<Icon className="h-4 w-4 flex-shrink-0" />
+													<span className="group-data-[collapsible=icon]:hidden">{navItem.title}</span>
 												</Link>
 											</SidebarMenuButton>
 										</SidebarMenuItem>
@@ -241,17 +276,17 @@ function AppSidebar() {
 									<SidebarMenuButton asChild>
 										<Link
 											href="/support"
-											className={`flex font-semibold !text-base capitalize px-3 gap-x-2 items-center shrink-0 h-10 rounded-md transition-colors ${
+											className={`flex font-semibold !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-md transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
 												pathname === "/support" || pathname.startsWith("/support/")
 													? "bg-[#E7F6EC] text-[#0D4222] hover:bg-[#E7F6EC] hover:text-[#0D4222]"
 													: "text-[#414651] hover:bg-[#FAFAFA] hover:text-[#414651]"
 											}`}
 										>
-											<HeadphonesIcon className="h-5 w-5" />
-											<span>Support</span>
+											<HeadphonesIcon className="h-4 w-4 flex-shrink-0" />
+											<span className="group-data-[collapsible=icon]:hidden">Support</span>
 											<Badge
 												variant="outline"
-												className="ml-auto border-[#D5D7DA] rounded-[6px] px-1.5"
+												className="ml-auto border-[#D5D7DA] rounded-[6px] px-1.5 group-data-[collapsible=icon]:hidden"
 											>
 												<div className="bg-green-500 size-2 rounded-full"></div>
 												<span className="text-[#414651] font-medium text-xs">
@@ -266,11 +301,12 @@ function AppSidebar() {
 					</SidebarGroup>
 				</SidebarContent>
 
-				<SidebarFooter className="mt-auto px-4">
+				<SidebarFooter className="mt-auto px-3 pb-3">
 					<NavUser />
 				</SidebarFooter>
 			</div>
 		</Sidebar>
+		</>
 	);
 }
 

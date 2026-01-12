@@ -3,9 +3,10 @@
 import { WALLET_CURRENCY_ICONS } from "@/lib/constants";
 import { formatNumber } from "@/lib/utils";
 import { useWallets, type WalletCurrency } from "@/store/wallet";
-import { Plus } from "lucide-react";
+import { Plus, TrendingUp, TrendingDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function CompactWalletList() {
 	const allWallets = useWallets() || [];
@@ -47,18 +48,23 @@ export default function CompactWalletList() {
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 			{/* Wallet Cards */}
-			{allWallets.map((wallet) => {
+			{allWallets.map((wallet, index) => {
 				if (!wallet || !wallet.currency) return null;
 
 				const iconSrc =
 					WALLET_CURRENCY_ICONS[wallet.currency as WalletCurrency];
 
 				return (
-					<Link
+					<motion.div
 						key={wallet.currency}
-						href={`/assets/${wallet.currency}`}
-						className="group bg-[#F7F9FA] hover:bg-white border border-[#E9EAEB] rounded-xl p-5 transition-all hover:shadow-md"
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: index * 0.1, duration: 0.3 }}
 					>
+						<Link
+							href={`/assets/${wallet.currency}`}
+							className="group bg-[#F7F9FA] hover:bg-white border border-[#E9EAEB] rounded-xl p-5 transition-all hover:shadow-md hover:scale-[1.02] block"
+						>
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm">
 								{iconSrc ? (
@@ -88,11 +94,17 @@ export default function CompactWalletList() {
 									"$"}
 								{formatNumber(wallet.balance || 0)}
 							</p>
-							{wallet.balance === 0 && (
+							{wallet.balance === 0 ? (
 								<p className="text-xs text-[#667085]">No balance</p>
+							) : (
+								<p className="text-xs text-green-600 flex items-center gap-1">
+									<TrendingUp className="w-3 h-3" />
+									Available
+								</p>
 							)}
 						</div>
 					</Link>
+					</motion.div>
 				);
 			})}
 

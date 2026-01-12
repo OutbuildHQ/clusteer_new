@@ -2,12 +2,9 @@
 
 import { formatNumber } from "@/lib/utils";
 import { useWallets } from "@/store/wallet";
-import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
 import { useMemo, useState, useEffect } from "react";
 
 export default function PortfolioSummary() {
-	const router = useRouter();
 	const wallets = useWallets() || [];
 	const [usdToNgnRate, setUsdToNgnRate] = useState(1575); // Default fallback rate
 
@@ -51,34 +48,10 @@ export default function PortfolioSummary() {
 
 	return (
 		<div className="mb-6">
-			{/* Simple balance header like Wise */}
-			<div className="mb-6">
-				<h1 className="text-5xl font-bold text-custom-black">
-					{formatNumber(totalNGN)}
-				</h1>
-			</div>
-
-			{/* Action buttons - matching Wise style */}
-			<div className="flex items-center gap-3">
-				<Button
-					onClick={() => router.push("/send")}
-					className="px-6 py-2 bg-[#9FE870] text-custom-black hover:bg-[#8DD659] font-medium rounded-lg transition-colors"
-				>
-					Send
-				</Button>
-				<Button
-					onClick={() => router.push("/receive")}
-					className="px-6 py-2 bg-[#E8F5E9] text-custom-black hover:bg-[#D0EBD6] font-medium rounded-lg transition-colors"
-				>
-					Add money
-				</Button>
-				<Button
-					onClick={() => router.push("/request")}
-					className="px-6 py-2 bg-[#E8F5E9] text-custom-black hover:bg-[#D0EBD6] font-medium rounded-lg transition-colors"
-				>
-					Request
-				</Button>
-			</div>
+			{/* Simple balance header */}
+			<h1 className="text-5xl font-bold text-custom-black">
+				{formatNumber(totalNGN)}
+			</h1>
 		</div>
 	);
 }

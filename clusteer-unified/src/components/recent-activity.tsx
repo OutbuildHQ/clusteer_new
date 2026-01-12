@@ -2,8 +2,16 @@
 
 import { formatNumber } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDownLeft, ArrowUpRight, Clock, Repeat } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Clock, Repeat, Filter } from "lucide-react";
 import Link from "next/link";
+import { useState, useMemo } from "react";
+import { Button } from "./ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 interface Transaction {
 	id: string;
@@ -62,10 +70,12 @@ function getTransactionIcon(type: string) {
 }
 
 export default function RecentActivity() {
+	const [filterType, setFilterType] = useState<"all" | "in" | "out" | "convert">("all");
+
 	const { data, isLoading, error } = useQuery({
 		queryKey: ["transactions", "recent"],
 		queryFn: async () => {
-			const response = await fetch("/api/transaction/user?page=1&size=5");
+			const response = await fetch("/api/transaction/user?page=1&size=10");
 			if (!response.ok) {
 				throw new Error("Failed to fetch transactions");
 			}
@@ -77,7 +87,7 @@ export default function RecentActivity() {
 	const apiTransactions: ApiTransaction[] = data?.data || [];
 
 	// Transform API transactions to component format
-	const transactions: Transaction[] = apiTransactions.map((tx) => ({
+	const allTransactions: Transaction[] = apiTransactions.map((tx) => ({
 		id: tx.id,
 		type: mapTransactionType(tx.type),
 		description: tx.flow,
@@ -86,6 +96,12 @@ export default function RecentActivity() {
 		date: tx.dateCreated,
 		status: tx.status as "completed" | "pending" | "failed",
 	}));
+
+	// Filter transactions based on selected filter
+	const transactions = useMemo(() => {
+		if (filterType === "all") return allTransactions.slice(0, 5);
+		return allTransactions.filter((tx) => tx.type === filterType).slice(0, 5);
+	}, [allTransactions, filterType]);
 
 	if (isLoading) {
 		return (
@@ -136,12 +152,38 @@ export default function RecentActivity() {
 		<div className="space-y-4">
 			<div className="flex items-center justify-between">
 				<h3 className="text-xl font-bold text-[#0D0D0D]">Recent Activity</h3>
-				<Link
-					href="/transaction-history"
-					className="text-sm font-medium text-dark-green hover:underline"
-				>
-					View all
-				</Link>
+				<div className="flex items-center gap-2">
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline" size="sm" className="h-8 gap-2">
+								<Filter className="h-4 w-4" />
+								<span className="hidden sm:inline">
+									{filterType === "all" ? "All" : filterType === "in" ? "Received" : filterType === "out" ? "Sent" : "Converted"}
+								</span>
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem onClick={() => setFilterType("all")}>
+								All transactions
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => setFilterType("in")}>
+								Received only
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => setFilterType("out")}>
+								Sent only
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => setFilterType("convert")}>
+								Conversions only
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+					<Link
+						href="/transaction-history"
+						className="text-sm font-medium text-dark-green hover:underline"
+					>
+						View all
+					</Link>
+				</div>
 			</div>
 
 			<div className="bg-white rounded-2xl border border-[#E9EAEB] divide-y divide-[#E9EAEB] overflow-hidden">
