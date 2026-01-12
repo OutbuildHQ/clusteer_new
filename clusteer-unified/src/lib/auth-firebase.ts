@@ -42,6 +42,10 @@ export interface LoginResponse {
  * Register a new user with Firebase and create profile in Spring Boot
  */
 export async function registerWithFirebase(data: RegisterData): Promise<LoginResponse> {
+  if (!auth) {
+    throw new Error('Firebase is not configured');
+  }
+
   try {
     // Create user in Firebase Auth
     const userCredential: UserCredential = await createUserWithEmailAndPassword(
@@ -110,6 +114,10 @@ export async function loginWithFirebase(
   email: string,
   password: string
 ): Promise<LoginResponse> {
+  if (!auth) {
+    throw new Error('Firebase is not configured');
+  }
+
   try {
     // Sign in with Firebase
     const userCredential: UserCredential = await signInWithEmailAndPassword(
@@ -169,6 +177,10 @@ export async function loginWithFirebase(
  * Logout from Firebase
  */
 export async function logoutFirebase(): Promise<void> {
+  if (!auth) {
+    throw new Error('Firebase is not configured');
+  }
+
   try {
     await signOut(auth);
   } catch (error) {
@@ -181,6 +193,10 @@ export async function logoutFirebase(): Promise<void> {
  * Send password reset email
  */
 export async function resetPassword(email: string): Promise<void> {
+  if (!auth) {
+    throw new Error('Firebase is not configured');
+  }
+
   try {
     await sendPasswordResetEmail(auth, email);
   } catch (error: any) {
@@ -195,7 +211,7 @@ export async function resetPassword(email: string): Promise<void> {
  * Get current Firebase user
  */
 export function getCurrentUser(): FirebaseUser | null {
-  return auth.currentUser;
+  return auth?.currentUser || null;
 }
 
 /**
