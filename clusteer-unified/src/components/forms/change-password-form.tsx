@@ -64,7 +64,7 @@ export default function ChangePasswordForm() {
 							<FormItem className="gap-1.5">
 								<FormLabel className="font-bold">New Password</FormLabel>
 								<FormControl>
-									<PasswordInput name="newPassword" control={form.control} />
+									<PasswordInput<ChangePasswordFormData> name="newPassword" control={form.control} />
 								</FormControl>
 								<FormDescription className="text-[#475467]">
 									8–32 characters, including a number, uppercase letter,
@@ -81,7 +81,7 @@ export default function ChangePasswordForm() {
 							<FormItem className="gap-1.5">
 								<FormLabel className="font-bold">Confirm Password</FormLabel>
 								<FormControl>
-									<PasswordInput name="confirmPassword" control={form.control} />
+									<PasswordInput<ChangePasswordFormData> name="confirmPassword" control={form.control} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
