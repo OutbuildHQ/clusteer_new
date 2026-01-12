@@ -3,10 +3,10 @@
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { memo, useState } from "react";
+import { useState } from "react";
 import { UseControllerProps, useController, FieldValues } from "react-hook-form";
 
-function PasswordInput<T extends FieldValues = FieldValues>({ name, control }: UseControllerProps<T>) {
+export default function PasswordInput<T extends FieldValues = FieldValues>({ name, control }: UseControllerProps<T>) {
 	const [showPassword, setShowPassword] = useState(false);
 	const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -40,5 +40,3 @@ function PasswordInput<T extends FieldValues = FieldValues>({ name, control }: U
 		</div>
 	);
 }
-
-export default memo(PasswordInput);
