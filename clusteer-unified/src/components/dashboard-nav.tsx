@@ -306,7 +306,7 @@ function AppSidebar() {
 				</SidebarFooter>
 			</div>
 		</Sidebar>
-		</>
+	</>
 	);
 }
 
