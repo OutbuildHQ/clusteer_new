@@ -99,9 +99,9 @@ export default function AdminDashboardPage() {
 	return (
 		<div className="space-y-6 pb-20">
 			{/* Page Header with Live Status */}
-			<div className="flex items-center justify-between">
-				<div>
-					<div className="flex items-center gap-3">
+			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div className="flex-1">
+					<div className="flex items-center gap-3 flex-wrap">
 						<h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
 						{isLiveUpdating && (
 							<div className="flex items-center gap-2 px-3 py-1 bg-green-50 border border-green-200 rounded-full">
@@ -113,28 +113,28 @@ export default function AdminDashboardPage() {
 							</div>
 						)}
 					</div>
-					<p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
-						Welcome back, Admin! Here's what's happening with Clusteer today.
+					<p className="text-sm text-gray-600 mt-2 flex flex-col sm:flex-row sm:items-center gap-2">
+						<span>Welcome back, Admin! Here's what's happening with Clusteer today.</span>
 						<span className="inline-flex items-center gap-1 text-xs text-gray-500">
 							<Clock className="w-3 h-3" />
 							Updated {lastRefresh.toLocaleTimeString()}
 						</span>
 					</p>
 				</div>
-				<div className="flex items-center gap-3">
+				<div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
 					<button
 						onClick={() => setIsLiveUpdating(!isLiveUpdating)}
-						className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors"
+						className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors text-sm"
 					>
 						<RefreshCw className={`w-4 h-4 ${isLiveUpdating ? 'animate-spin' : ''}`} />
-						{isLiveUpdating ? 'Auto-refresh' : 'Paused'}
+						<span className="hidden sm:inline">{isLiveUpdating ? 'Auto-refresh' : 'Paused'}</span>
 					</button>
 					<button
 						onClick={() => router.push("/admin/users")}
-						className="flex items-center gap-2 px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors shadow-sm hover:shadow-md hover:scale-105 active:scale-95"
+						className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors shadow-sm hover:shadow-md hover:scale-105 active:scale-95 text-sm whitespace-nowrap"
 					>
 						<UserPlus className="w-4 h-4" style={{ color: 'white', stroke: 'white' }} />
-						Add User
+						<span className="hidden sm:inline">Add User</span>
 					</button>
 				</div>
 			</div>
