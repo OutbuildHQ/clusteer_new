@@ -2,11 +2,6 @@ import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
-	// Temporarily disabled ESLint errors during builds
-	// TODO: Fix all ESLint warnings and re-enable strict mode
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
 	typescript: {
 		ignoreBuildErrors: false,
 	},
@@ -64,7 +59,6 @@ const nextConfig: NextConfig = {
 
 	// Image optimization configuration
 	images: {
-		domains: ["supabase.co"], // Add your Supabase storage domain
 		remotePatterns: [
 			{
 				protocol: "https",
