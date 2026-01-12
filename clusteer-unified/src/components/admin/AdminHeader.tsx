@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Bell, ChevronDown, LogOut } from "lucide-react";
+import { Search, Bell, ChevronDown, LogOut, Menu } from "lucide-react";
 
-export default function AdminHeader() {
+interface AdminHeaderProps {
+	onMobileMenuOpen?: () => void;
+}
+
+export default function AdminHeader({ onMobileMenuOpen }: AdminHeaderProps) {
 	const router = useRouter();
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [loggingOut, setLoggingOut] = useState(false);
@@ -22,9 +26,18 @@ export default function AdminHeader() {
 	};
 
 	return (
-		<header className="h-16 bg-white border-b border-[#E9EAEB] px-6 flex items-center justify-between gap-4">
+		<header className="h-16 bg-white border-b border-[#E9EAEB] px-4 lg:px-6 flex items-center justify-between gap-4">
+			{/* Mobile Menu Button */}
+			<button
+				onClick={onMobileMenuOpen}
+				className="lg:hidden p-2 text-[#414651] hover:bg-[#FAFAFA] rounded-lg transition-colors"
+				aria-label="Open menu"
+			>
+				<Menu className="w-6 h-6" />
+			</button>
+
 			{/* Search Bar */}
-			<div className="flex-1">
+			<div className="flex-1 max-w-xl">
 				<div className="relative">
 					<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
 					<input

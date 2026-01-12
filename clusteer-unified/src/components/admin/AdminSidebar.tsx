@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
 	Home,
@@ -20,6 +20,7 @@ import {
 	ChevronDown,
 	Activity,
 	LogOut,
+	X,
 } from "lucide-react";
 
 interface SubItem {
@@ -107,7 +108,12 @@ const navigationItems: NavigationItem[] = [
 	},
 ];
 
-export default function AdminSidebar() {
+interface AdminSidebarProps {
+	isMobileOpen?: boolean;
+	onMobileClose?: () => void;
+}
+
+export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: AdminSidebarProps) {
 	const pathname = usePathname();
 	const [isCollapsed, setIsCollapsed] = useState(false);
 	const [expandedSections, setExpandedSections] = useState<string[]>(() => {
@@ -120,6 +126,25 @@ export default function AdminSidebar() {
 		});
 		return expanded;
 	});
+
+	// Close mobile menu when route changes
+	useEffect(() => {
+		if (isMobileOpen && onMobileClose) {
+			onMobileClose();
+		}
+	}, [pathname]);
+
+	// Prevent body scroll when mobile menu is open
+	useEffect(() => {
+		if (isMobileOpen) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = 'unset';
+		}
+		return () => {
+			document.body.style.overflow = 'unset';
+		};
+	}, [isMobileOpen]);
 
 	const toggleSection = (sectionName: string) => {
 		if (isCollapsed) {
@@ -147,210 +172,242 @@ export default function AdminSidebar() {
 	};
 
 	return (
-		<aside className={`${isCollapsed ? 'w-20' : 'w-64'} bg-[#FAFAFA] border-r border-[#E9EAEB] flex flex-col transition-all duration-300 relative`}>
-			{/* Floating Toggle Button */}
-			<button
-				onClick={() => setIsCollapsed(!isCollapsed)}
-				className="absolute top-[76px] -right-4 z-50 w-8 h-8 bg-white border border-[#E9EAEB] rounded-full shadow-md hover:shadow-lg flex items-center justify-center transition-all hover:scale-110"
-				aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-			>
-				{isCollapsed ? (
-					<ChevronRight className="w-4 h-4 text-gray-600" />
-				) : (
-					<ChevronLeft className="w-4 h-4 text-gray-600" />
-				)}
-			</button>
+		<>
+			{/* Mobile Overlay */}
+			{isMobileOpen && (
+				<div
+					className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+					onClick={onMobileClose}
+				/>
+			)}
 
-			{/* Wrapper with white background */}
-			<div className="flex flex-col h-full bg-white border-[#E9EAEB] rounded-lg border m-1">
-				{/* Logo & Title */}
-				<div className={`${isCollapsed ? 'p-4' : 'p-6'} border-b border-[#E9EAEB]`}>
+			{/* Sidebar */}
+			<aside className={`
+				${isCollapsed ? 'w-20' : 'w-64'}
+				bg-[#FAFAFA] border-r border-[#E9EAEB] flex flex-col transition-all duration-300 relative
+
+				/* Mobile: Fixed overlay sidebar */
+				fixed lg:relative inset-y-0 left-0 z-50
+
+				/* Mobile: Slide in from left */
+				${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+
+				/* Desktop: Always visible */
+				lg:translate-x-0
+			`}>
+				{/* Mobile Close Button */}
+				<button
+					onClick={onMobileClose}
+					className="lg:hidden absolute top-4 right-4 z-50 p-2 bg-white border border-[#E9EAEB] rounded-lg shadow-md hover:shadow-lg"
+					aria-label="Close menu"
+				>
+					<X className="w-5 h-5 text-gray-600" />
+				</button>
+
+				{/* Desktop Floating Toggle Button */}
+				<button
+					onClick={() => setIsCollapsed(!isCollapsed)}
+					className="hidden lg:flex absolute top-[76px] -right-4 z-50 w-8 h-8 bg-white border border-[#E9EAEB] rounded-full shadow-md hover:shadow-lg items-center justify-center transition-all hover:scale-110"
+					aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+				>
 					{isCollapsed ? (
-						<div className="flex justify-center">
-							<Image
-								src="/assets/icons/logo.svg"
-								alt="Clusteer logo"
-								width={28}
-								height={30}
-								className="flex-shrink-0"
-							/>
-						</div>
+						<ChevronRight className="w-4 h-4 text-gray-600" />
 					) : (
-						<div className="flex items-center gap-2">
-							<Image
-								src="/assets/icons/logo_with_name.svg"
-								alt="Clusteer logo"
-								width={139}
-								height={32}
-								className="flex-shrink-0"
-							/>
-						</div>
+						<ChevronLeft className="w-4 h-4 text-gray-600" />
 					)}
+				</button>
+
+				{/* Wrapper with white background */}
+				<div className="flex flex-col h-full bg-white border-[#E9EAEB] rounded-lg border m-1">
+					{/* Logo & Title */}
+					<div className={`${isCollapsed ? 'p-4' : 'p-6'} border-b border-[#E9EAEB]`}>
+						{isCollapsed ? (
+							<div className="flex justify-center">
+								<Image
+									src="/assets/icons/logo.svg"
+									alt="Clusteer logo"
+									width={28}
+									height={30}
+									className="flex-shrink-0"
+								/>
+							</div>
+						) : (
+							<div className="flex items-center gap-2">
+								<Image
+									src="/assets/icons/logo_with_name.svg"
+									alt="Clusteer logo"
+									width={139}
+									height={32}
+									className="flex-shrink-0"
+								/>
+							</div>
+						)}
+						{!isCollapsed && (
+							<p className="text-xs text-gray-500 mt-2">Admin Panel</p>
+						)}
+					</div>
+
+					{/* Navigation */}
+					<nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+						{navigationItems.map((item) => {
+							const Icon = item.icon;
+							const hasSubItems = item.subItems && item.subItems.length > 0;
+							const isExpanded = expandedSections.includes(item.name);
+							const itemIsActive = isActive(item.href);
+
+							return (
+								<div key={item.name}>
+									{/* Main Navigation Item */}
+									{hasSubItems ? (
+										<button
+											onClick={() => toggleSection(item.name)}
+											className={`
+												w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+												${
+													itemIsActive
+														? "bg-[#E7F6EC] text-[#014F01]"
+														: "text-gray-700 hover:bg-gray-50"
+												}
+												${isCollapsed ? 'justify-center' : ''}
+											`}
+											title={isCollapsed ? item.name : ''}
+										>
+											<Icon className="w-5 h-5 flex-shrink-0" />
+											{!isCollapsed && (
+												<>
+													<span className="flex-1 text-left">{item.name}</span>
+													{item.badge && (
+														<span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+															{item.badge}
+														</span>
+													)}
+													<ChevronDown
+														className={`w-4 h-4 transition-transform ${
+															isExpanded ? 'rotate-180' : ''
+														}`}
+													/>
+												</>
+											)}
+										</button>
+									) : (
+										<Link
+											href={item.href}
+											className={`
+												flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+												${
+													itemIsActive
+														? "bg-[#E7F6EC] text-[#014F01]"
+														: "text-gray-700 hover:bg-gray-50"
+												}
+												${isCollapsed ? 'justify-center' : ''}
+											`}
+											title={isCollapsed ? item.name : ''}
+										>
+											<Icon className="w-5 h-5 flex-shrink-0" />
+											{!isCollapsed && (
+												<>
+													<span className="flex-1">{item.name}</span>
+													{item.badge && (
+														<span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+															{item.badge}
+														</span>
+													)}
+												</>
+											)}
+										</Link>
+									)}
+
+									{/* Sub Items */}
+									{hasSubItems && isExpanded && !isCollapsed && (
+										<div className="mt-1 ml-3 pl-5 border-l-2 border-gray-100 space-y-0.5">
+											{item.subItems!.map((subItem) => (
+												<Link
+													key={subItem.href}
+													href={subItem.href}
+													className={`
+														block px-3 py-1.5 rounded-lg text-sm transition-colors
+														${
+															isSubItemActive(subItem.href)
+																? "bg-[#E7F6EC] text-[#014F01] font-medium"
+																: "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+														}
+													`}
+												>
+													{subItem.name}
+												</Link>
+											))}
+										</div>
+									)}
+								</div>
+							);
+						})}
+					</nav>
+
+					{/* Quick Stats (when expanded) */}
 					{!isCollapsed && (
-						<p className="text-xs text-gray-500 mt-2">Admin Panel</p>
+						<div className="px-4 pb-4 hidden lg:block">
+							<div className="bg-gradient-to-br from-blue-50/50 to-white rounded-lg p-3 border border-blue-100/50">
+								<div className="flex items-center gap-2 mb-3">
+									<div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
+										<Activity className="w-3.5 h-3.5 text-blue-600" />
+									</div>
+									<span className="text-xs font-semibold text-gray-700">Quick Stats</span>
+								</div>
+								<div className="space-y-2.5">
+									<div className="flex items-center justify-between">
+										<div className="flex items-center gap-2">
+											<div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+											<span className="text-xs text-gray-600">Active Users</span>
+										</div>
+										<span className="text-sm font-bold text-gray-900">3,245</span>
+									</div>
+									<div className="flex items-center justify-between">
+										<div className="flex items-center gap-2">
+											<div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
+											<span className="text-xs text-gray-600">Pending KYC</span>
+										</div>
+										<span className="text-sm font-bold text-gray-900">124</span>
+									</div>
+									<div className="flex items-center justify-between">
+										<div className="flex items-center gap-2">
+											<div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+											<span className="text-xs text-gray-600">Today's Volume</span>
+										</div>
+										<span className="text-sm font-bold text-gray-900">$2.4M</span>
+									</div>
+								</div>
+							</div>
+						</div>
 					)}
-				</div>
 
-				{/* Navigation */}
-				<nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-					{navigationItems.map((item) => {
-						const Icon = item.icon;
-						const hasSubItems = item.subItems && item.subItems.length > 0;
-						const isExpanded = expandedSections.includes(item.name);
-						const itemIsActive = isActive(item.href);
-
-						return (
-							<div key={item.name}>
-								{/* Main Navigation Item */}
-								{hasSubItems ? (
-									<button
-										onClick={() => toggleSection(item.name)}
-										className={`
-											w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-											${
-												itemIsActive
-													? "bg-[#E7F6EC] text-[#014F01]"
-													: "text-gray-700 hover:bg-gray-50"
-											}
-											${isCollapsed ? 'justify-center' : ''}
-										`}
-										title={isCollapsed ? item.name : ''}
-									>
-										<Icon className="w-5 h-5 flex-shrink-0" />
-										{!isCollapsed && (
-											<>
-												<span className="flex-1 text-left">{item.name}</span>
-												{item.badge && (
-													<span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-														{item.badge}
-													</span>
-												)}
-												<ChevronDown
-													className={`w-4 h-4 transition-transform ${
-														isExpanded ? 'rotate-180' : ''
-													}`}
-												/>
-											</>
-										)}
-									</button>
-								) : (
-									<Link
-										href={item.href}
-										className={`
-											flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-											${
-												itemIsActive
-													? "bg-[#E7F6EC] text-[#014F01]"
-													: "text-gray-700 hover:bg-gray-50"
-											}
-											${isCollapsed ? 'justify-center' : ''}
-										`}
-										title={isCollapsed ? item.name : ''}
-									>
-										<Icon className="w-5 h-5 flex-shrink-0" />
-										{!isCollapsed && (
-											<>
-												<span className="flex-1">{item.name}</span>
-												{item.badge && (
-													<span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-														{item.badge}
-													</span>
-												)}
-											</>
-										)}
-									</Link>
-								)}
-
-								{/* Sub Items */}
-								{hasSubItems && isExpanded && !isCollapsed && (
-									<div className="mt-1 ml-3 pl-5 border-l-2 border-gray-100 space-y-0.5">
-										{item.subItems!.map((subItem) => (
-											<Link
-												key={subItem.href}
-												href={subItem.href}
-												className={`
-													block px-3 py-1.5 rounded-lg text-sm transition-colors
-													${
-														isSubItemActive(subItem.href)
-															? "bg-[#E7F6EC] text-[#014F01] font-medium"
-															: "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-													}
-												`}
-											>
-												{subItem.name}
-											</Link>
-										))}
-									</div>
-								)}
+					{/* User Profile */}
+					<div className="p-4 border-t border-[#E9EAEB]">
+						<div className={`flex items-center gap-3 p-2 rounded-lg hover:bg-[#FAFAFA] cursor-pointer transition-colors group ${isCollapsed ? 'justify-center' : ''}`}>
+							<div className="w-10 h-10 bg-gradient-to-br from-[#014F01] to-[#013d01] rounded-full flex items-center justify-center flex-shrink-0">
+								<span className="text-white font-semibold text-sm">AD</span>
 							</div>
-						);
-					})}
-				</nav>
-
-				{/* Quick Stats (when expanded) */}
-				{!isCollapsed && (
-					<div className="px-4 pb-4">
-						<div className="bg-gradient-to-br from-blue-50/50 to-white rounded-lg p-3 border border-blue-100/50">
-							<div className="flex items-center gap-2 mb-3">
-								<div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
-									<Activity className="w-3.5 h-3.5 text-blue-600" />
+							{!isCollapsed && (
+								<div className="flex-1 min-w-0">
+									<p className="text-sm font-medium text-gray-900 truncate">
+										Admin User
+									</p>
+									<p className="text-xs text-gray-500 truncate">
+										admin@clusteer.com
+									</p>
 								</div>
-								<span className="text-xs font-semibold text-gray-700">Quick Stats</span>
-							</div>
-							<div className="space-y-2.5">
-								<div className="flex items-center justify-between">
-									<div className="flex items-center gap-2">
-										<div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-										<span className="text-xs text-gray-600">Active Users</span>
-									</div>
-									<span className="text-sm font-bold text-gray-900">3,245</span>
-								</div>
-								<div className="flex items-center justify-between">
-									<div className="flex items-center gap-2">
-										<div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
-										<span className="text-xs text-gray-600">Pending KYC</span>
-									</div>
-									<span className="text-sm font-bold text-gray-900">124</span>
-								</div>
-								<div className="flex items-center justify-between">
-									<div className="flex items-center gap-2">
-										<div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-										<span className="text-xs text-gray-600">Today's Volume</span>
-									</div>
-									<span className="text-sm font-bold text-gray-900">$2.4M</span>
-								</div>
-							</div>
+							)}
+							{!isCollapsed && (
+								<button
+									className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-gray-100 rounded"
+									title="Logout"
+								>
+									<LogOut className="w-4 h-4 text-gray-500" />
+								</button>
+							)}
 						</div>
 					</div>
-				)}
-
-				{/* User Profile */}
-				<div className="p-4 border-t border-[#E9EAEB]">
-					<div className={`flex items-center gap-3 p-2 rounded-lg hover:bg-[#FAFAFA] cursor-pointer transition-colors group ${isCollapsed ? 'justify-center' : ''}`}>
-						<div className="w-10 h-10 bg-gradient-to-br from-[#014F01] to-[#013d01] rounded-full flex items-center justify-center flex-shrink-0">
-							<span className="text-white font-semibold text-sm">AD</span>
-						</div>
-						{!isCollapsed && (
-							<div className="flex-1 min-w-0">
-								<p className="text-sm font-medium text-gray-900 truncate">
-									Admin User
-								</p>
-								<p className="text-xs text-gray-500 truncate">
-									admin@clusteer.com
-								</p>
-							</div>
-						)}
-						{!isCollapsed && (
-							<button
-								className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-gray-100 rounded"
-								title="Logout"
-							>
-								<LogOut className="w-4 h-4 text-gray-500" />
-							</button>
-						)}
-					</div>
 				</div>
-			</div>
-		</aside>
+			</aside>
+		</>
 	);
 }
