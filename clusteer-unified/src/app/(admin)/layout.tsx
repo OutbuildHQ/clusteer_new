@@ -14,7 +14,7 @@ export default function AdminLayout({
 
   return (
     <ToastProvider>
-      <div className="flex h-screen bg-[#FAFAFA]">
+      <div className="flex h-screen bg-[#FAFAFA] overflow-hidden">
         {/* Sidebar */}
         <AdminSidebar
           isMobileOpen={isMobileMenuOpen}
@@ -22,7 +22,7 @@ export default function AdminLayout({
         />
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden relative">
           {/* Header */}
           <AdminHeader
             onMobileMenuOpen={() => setIsMobileMenuOpen(true)}

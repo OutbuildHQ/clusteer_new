@@ -26,19 +26,19 @@ export default function AdminHeader({ onMobileMenuOpen }: AdminHeaderProps) {
 	};
 
 	return (
-		<header className="h-16 bg-white border-b border-[#E9EAEB] px-4 lg:px-6 flex items-center justify-between gap-4">
+		<header className="h-16 bg-white border-b border-[#E9EAEB] px-4 lg:px-6 flex items-center gap-2 lg:gap-4">
 			{/* Mobile Menu Button */}
 			<button
 				onClick={onMobileMenuOpen}
-				className="lg:hidden p-2 text-[#414651] hover:bg-[#FAFAFA] rounded-lg transition-colors"
+				className="lg:hidden p-2 -ml-2 text-[#414651] hover:bg-[#FAFAFA] rounded-lg transition-colors flex-shrink-0"
 				aria-label="Open menu"
 			>
 				<Menu className="w-6 h-6" />
 			</button>
 
-			{/* Search Bar */}
-			<div className="flex-1 max-w-xl">
-				<div className="relative">
+			{/* Search Bar - Hidden on small mobile, visible on larger screens */}
+			<div className="hidden sm:flex flex-1 max-w-xl">
+				<div className="relative w-full">
 					<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
 					<input
 						type="text"
@@ -48,8 +48,16 @@ export default function AdminHeader({ onMobileMenuOpen }: AdminHeaderProps) {
 				</div>
 			</div>
 
+			{/* Mobile Search Icon - Only on very small screens */}
+			<button className="sm:hidden p-2 text-[#414651] hover:bg-[#FAFAFA] rounded-lg transition-colors flex-shrink-0">
+				<Search className="w-5 h-5" />
+			</button>
+
+			{/* Spacer for mobile */}
+			<div className="flex-1 sm:hidden"></div>
+
 			{/* Right Section */}
-			<div className="flex items-center gap-4 flex-shrink-0">
+			<div className="flex items-center gap-1 sm:gap-2 lg:gap-4 flex-shrink-0">
 				{/* Notifications */}
 				<button className="relative p-2 text-[#414651] hover:bg-[#FAFAFA] rounded-lg transition-colors">
 					<Bell className="w-5 h-5" />
@@ -60,13 +68,13 @@ export default function AdminHeader({ onMobileMenuOpen }: AdminHeaderProps) {
 				<div className="relative">
 					<button
 						onClick={() => setShowDropdown(!showDropdown)}
-						className="flex items-center gap-2 px-3 py-2 hover:bg-[#FAFAFA] rounded-lg transition-colors"
+						className="flex items-center gap-2 px-2 sm:px-3 py-2 hover:bg-[#FAFAFA] rounded-lg transition-colors"
 					>
-						<div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+						<div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
 							<span className="text-gray-600 font-medium text-xs">AD</span>
 						</div>
-						<span className="text-sm font-medium text-[#414651]">Admin</span>
-						<ChevronDown className="w-4 h-4 text-gray-500" />
+						<span className="hidden sm:inline text-sm font-medium text-[#414651]">Admin</span>
+						<ChevronDown className="w-4 h-4 text-gray-500 hidden sm:block" />
 					</button>
 
 					{/* Dropdown */}
