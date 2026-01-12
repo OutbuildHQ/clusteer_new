@@ -63,6 +63,9 @@ export interface IOrder {
 	date: string;
 	crypto: string;
 	fiat: string;
+	chain?: string;
+	dateOrdered?: string;
+	rate?: number;
 }
 
 export interface PageParams {
