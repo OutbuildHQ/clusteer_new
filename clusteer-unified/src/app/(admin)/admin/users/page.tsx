@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserPlus, MoreVertical, RefreshCw, User, Phone, Mail, Lock, Shuffle } from "lucide-react";
 import { useToast } from "@/components/admin/Toast";
@@ -12,87 +12,11 @@ import BatchActions, { useBatchSelection, SelectCheckbox } from "@/components/ad
 import { exportTableData } from "@/lib/export-utils";
 import { getKYCStatusColor, getStatusColor } from "@/lib/status-utils";
 import { formatDate } from "@/lib/date-utils";
-
-interface User {
-	id: string;
-	name: string;
-	email: string;
-	phone: string;
-	kycStatus: "Approved" | "Pending" | "Rejected";
-	accountStatus: "Active" | "Suspended";
-	dateJoined: string;
-}
-
-const mockUsers: User[] = [
-	{
-		id: "1",
-		name: "Jacob Jones",
-		email: "jacob@clusteer.com",
-		phone: "+234 4405765",
-		kycStatus: "Approved",
-		accountStatus: "Active",
-		dateJoined: "2025-01-16",
-	},
-	{
-		id: "2",
-		name: "Marting Rios",
-		email: "marting@clusteer.com",
-		phone: "+234 4405766",
-		kycStatus: "Approved",
-		accountStatus: "Active",
-		dateJoined: "2025-01-16",
-	},
-	{
-		id: "3",
-		name: "Will Copper",
-		email: "will@clusteer.com",
-		phone: "+234 4405767",
-		kycStatus: "Approved",
-		accountStatus: "Active",
-		dateJoined: "2025-01-15",
-	},
-	{
-		id: "4",
-		name: "Marco Kelly",
-		email: "marco@clusteer.com",
-		phone: "+234 4405768",
-		kycStatus: "Approved",
-		accountStatus: "Active",
-		dateJoined: "2025-01-14",
-	},
-	{
-		id: "5",
-		name: "Alex Morrison",
-		email: "alex@clusteer.com",
-		phone: "+234 4405769",
-		kycStatus: "Approved",
-		accountStatus: "Suspended",
-		dateJoined: "2025-01-14",
-	},
-	{
-		id: "6",
-		name: "Mikey Lawrence",
-		email: "mikey@clusteer.com",
-		phone: "+234 4405770",
-		kycStatus: "Pending",
-		accountStatus: "Active",
-		dateJoined: "2025-01-14",
-	},
-	{
-		id: "7",
-		name: "Freya Browning",
-		email: "freya@clusteer.com",
-		phone: "+234 4405771",
-		kycStatus: "Rejected",
-		accountStatus: "Active",
-		dateJoined: "2025-01-14",
-	},
-];
+import { useAdminUsers } from "@/hooks/use-admin-users";
 
 export default function UsersPage() {
 	const router = useRouter();
 	const toast = useToast();
-	const [isLoading, setIsLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [pageSize, setPageSize] = useState(10);
 	const [showActionMenu, setShowActionMenu] = useState<string | null>(null);
@@ -103,12 +27,22 @@ export default function UsersPage() {
 	const [showConfirmModal, setShowConfirmModal] = useState<string | null>(null);
 	const [confirmReason, setConfirmReason] = useState("");
 	const [showAddUserModal, setShowAddUserModal] = useState(false);
+	const [isCreatingUser, setIsCreatingUser] = useState(false);
 	const [newUser, setNewUser] = useState({
 		name: "",
 		email: "",
 		phone: "",
 		password: "",
 		sendWelcomeEmail: true,
+	});
+
+	// Fetch users from API with filters
+	const { users, pagination, isLoading, error, refetch } = useAdminUsers({
+		page: currentPage,
+		limit: pageSize,
+		search: searchQuery,
+		kycStatus: kycFilter,
+		accountStatus: accountFilter,
 	});
 
 	const {
@@ -119,33 +53,23 @@ export default function UsersPage() {
 		clearSelection,
 		isAllSelected,
 		isSomeSelected,
-	} = useBatchSelection(mockUsers);
+	} = useBatchSelection(users);
 
-	// Filter users based on search and filters
-	const filteredUsers = mockUsers.filter((user) => {
-		const matchesSearch =
-			user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			user.phone.includes(searchQuery);
+	// Show error toast if API fetch fails
+	useEffect(() => {
+		if (error) {
+			toast.error("Failed to load users", error);
+		}
+	}, [error, toast]);
 
-		const matchesKyc = kycFilter === "all" || user.kycStatus === kycFilter;
-		const matchesAccount = accountFilter === "all" || user.accountStatus === accountFilter;
-
-		return matchesSearch && matchesKyc && matchesAccount;
-	});
-
-	// Pagination
-	const totalItems = filteredUsers.length;
-	const totalPages = Math.ceil(totalItems / pageSize);
-	const paginatedUsers = filteredUsers.slice(
-		(currentPage - 1) * pageSize,
-		currentPage * pageSize
-	);
+	// Use API pagination data
+	const totalItems = pagination.total;
+	const totalPages = pagination.totalPages;
 
 	const handleExport = (format: 'csv' | 'json' | 'xlsx') => {
 		const usersToExport = selectedIds.length > 0
-			? filteredUsers.filter(u => selectedIds.includes(u.id))
-			: filteredUsers;
+			? users.filter(u => selectedIds.includes(u.id))
+			: users;
 
 		exportTableData({
 			filename: `users-export-${new Date().toISOString().split('T')[0]}`,
@@ -228,18 +152,20 @@ export default function UsersPage() {
 			return;
 		}
 
-		setIsLoading(true);
+		setIsCreatingUser(true);
 		try {
-			// Simulate API call
-			await new Promise(resolve => setTimeout(resolve, 1500));
-
-			console.log("Creating new user:", {
-				...newUser,
-				password: "***hidden***",
+			const response = await fetch('/api/admin/users', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(newUser),
 			});
 
-			// TODO: Send to backend API
-			// await fetch('/api/admin/users', { method: 'POST', body: JSON.stringify(newUser) })
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || 'Failed to create user');
+			}
+
+			const result = await response.json();
 
 			// Reset form
 			setNewUser({
@@ -252,10 +178,13 @@ export default function UsersPage() {
 			setShowAddUserModal(false);
 
 			toast.success('User created', 'The user account has been created successfully');
+
+			// Refresh users list
+			refetch();
 		} catch (error) {
-			toast.error('Creation failed', 'An error occurred while creating the user');
+			toast.error('Creation failed', error instanceof Error ? error.message : 'An error occurred while creating the user');
 		} finally {
-			setIsLoading(false);
+			setIsCreatingUser(false);
 		}
 	};
 
@@ -279,7 +208,7 @@ export default function UsersPage() {
 				<div>
 					<h1 className="text-2xl font-semibold text-gray-900">Users</h1>
 					<p className="text-sm text-gray-600 mt-1">
-						{filteredUsers.length} {filteredUsers.length === 1 ? 'user' : 'users'}
+						{totalItems} {totalItems === 1 ? 'user' : 'users'}
 						{selectedIds.length > 0 && ` (${selectedIds.length} selected)`}
 					</p>
 				</div>
@@ -363,9 +292,9 @@ export default function UsersPage() {
 			{/* Batch Actions */}
 			{selectedIds.length > 0 && (
 				<BatchActions
-					
+
 				selectedIds={selectedIds}
-				totalItems={filteredUsers?.length ?? 0}
+				totalItems={totalItems}
 					onClearSelection={clearSelection}
 					actions={[
 						{
@@ -410,7 +339,7 @@ export default function UsersPage() {
 					<div className="py-16">
 						<LoadingSpinner size="lg" text="Loading users..." />
 					</div>
-				) : filteredUsers.length === 0 ? (
+				) : users.length === 0 ? (
 					<div className="text-center py-16">
 						<div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
 							<User className="w-8 h-8 text-gray-400" />
@@ -463,7 +392,7 @@ export default function UsersPage() {
 								</tr>
 							</thead>
 							<tbody>
-								{paginatedUsers.map((user) => (
+								{users.map((user) => (
 									<tr
 										key={user.id}
 										onClick={(e) => {
@@ -563,7 +492,7 @@ export default function UsersPage() {
 				)}
 
 				{/* Pagination */}
-				{filteredUsers.length > 0 && (
+				{users.length > 0 && (
 					<div className="border-t border-[#E9EAEB]">
 						<Pagination
 							currentPage={currentPage}
@@ -601,16 +530,16 @@ export default function UsersPage() {
 								});
 							}}
 							className="flex-1 px-4 py-2.5 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors font-medium"
-							disabled={isLoading}
+							disabled={isCreatingUser}
 						>
 							Cancel
 						</button>
 						<button
 							onClick={handleAddUser}
 							className="flex-1 px-4 py-2.5 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors font-medium shadow-sm"
-							disabled={isLoading}
+							disabled={isCreatingUser}
 						>
-							{isLoading ? 'Creating...' : 'Create User'}
+							{isCreatingUser ? 'Creating...' : 'Create User'}
 						</button>
 					</div>
 				}

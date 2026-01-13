@@ -1,13 +1,9 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
-	// IMPORTANT: These should be removed after fixing all TypeScript/ESLint errors
-	// Temporarily disabled for development - must be fixed before production
-	eslint: {
-		ignoreDuringBuilds: false, // Changed from true - fix ESLint errors
-	},
 	typescript: {
-		ignoreBuildErrors: false, // Changed from true - fix TypeScript errors
+		ignoreBuildErrors: false,
 	},
 
 	// Security headers
@@ -63,7 +59,6 @@ const nextConfig: NextConfig = {
 
 	// Image optimization configuration
 	images: {
-		domains: ["supabase.co"], // Add your Supabase storage domain
 		remotePatterns: [
 			{
 				protocol: "https",
@@ -73,4 +68,15 @@ const nextConfig: NextConfig = {
 	},
 };
 
-export default nextConfig;
+// Sentry configuration options
+const sentryWebpackPluginOptions = {
+	// Suppresses source map uploading logs during build
+	silent: true,
+	org: process.env.SENTRY_ORG || "clusteer",
+	project: process.env.SENTRY_PROJECT || "clusteer-frontend",
+	// Auth token for uploading source maps
+	authToken: process.env.SENTRY_AUTH_TOKEN,
+};
+
+// Export config wrapped with Sentry
+export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);

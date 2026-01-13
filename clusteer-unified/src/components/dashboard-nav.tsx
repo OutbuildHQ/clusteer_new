@@ -286,9 +286,9 @@ function AppSidebar() {
 											<span className="group-data-[collapsible=icon]:hidden">Support</span>
 											<Badge
 												variant="outline"
-												className="ml-auto border-[#D5D7DA] rounded-[6px] px-1.5 group-data-[collapsible=icon]:hidden"
+												className="ml-auto border-[#D5D7DA] rounded-[6px] px-1.5 py-0.5 gap-x-1 group-data-[collapsible=icon]:hidden"
 											>
-												<div className="bg-green-500 size-2 rounded-full"></div>
+												<div className="bg-green-500 size-2 rounded-full" />
 												<span className="text-[#414651] font-medium text-xs">
 													Online
 												</span>
