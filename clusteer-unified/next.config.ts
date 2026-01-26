@@ -1,13 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-	// IMPORTANT: These should be removed after fixing all TypeScript/ESLint errors
-	// Temporarily disabled for development - must be fixed before production
-	eslint: {
-		ignoreDuringBuilds: false, // Changed from true - fix ESLint errors
-	},
 	typescript: {
-		ignoreBuildErrors: false, // Changed from true - fix TypeScript errors
+		ignoreBuildErrors: false,
 	},
 
 	// Security headers

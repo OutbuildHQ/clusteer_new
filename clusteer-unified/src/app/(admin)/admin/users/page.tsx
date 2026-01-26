@@ -36,6 +36,9 @@ export default function UsersPage() {
 		sendWelcomeEmail: true,
 	});
 
+	// Local loading state for bulk actions
+	const [actionLoading, setActionLoading] = useState(false);
+
 	// Fetch users from API with filters
 	const { users, pagination, isLoading, error, refetch } = useAdminUsers({
 		page: currentPage,
@@ -98,7 +101,7 @@ export default function UsersPage() {
 			return;
 		}
 
-		setIsLoading(true);
+		setActionLoading(true);
 		try {
 			// Simulate API call
 			await new Promise(resolve => setTimeout(resolve, 1500));
@@ -113,7 +116,7 @@ export default function UsersPage() {
 		} catch (error) {
 			toast.error('Action failed', 'An error occurred while processing the action');
 		} finally {
-			setIsLoading(false);
+			setActionLoading(false);
 		}
 	};
 

@@ -40,7 +40,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 		// Get additional profile data from Firestore
 		const db = getAdminDb();
 		const userDoc = await db.collection("users").doc(id).get();
-		const profile = userDoc.exists ? userDoc.data() : {};
+		const profile = (userDoc.exists ? userDoc.data() : {}) as Record<string, any>;
 
 		// Get user's transactions count
 		const transactionsSnapshot = await db
