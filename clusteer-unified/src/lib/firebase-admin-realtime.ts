@@ -1,29 +1,24 @@
 /**
- * Firebase Admin SDK Configuration
- * For server-side operations (API routes)
+ * Firebase Admin SDK with Realtime Database
+ * Alternative to Firestore for storing user profiles
  */
 
 import { initializeApp, getApps, cert, App } from "firebase-admin/app";
 import { getAuth, Auth } from "firebase-admin/auth";
-import { getFirestore, Firestore } from "firebase-admin/firestore";
+import { getDatabase, Database } from "firebase-admin/database";
 
 let adminApp: App;
 let adminAuth: Auth;
-let adminDb: Firestore;
+let adminDb: Database;
 
 /**
- * Initialize Firebase Admin SDK
- * Only initializes once (singleton pattern)
+ * Initialize Firebase Admin SDK with Realtime Database
  */
 function initializeFirebaseAdmin() {
 	if (getApps().length === 0) {
-		// Initialize with environment variables
-		// For production, use service account JSON
 		adminApp = initializeApp({
 			credential: cert({
 				projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-				// Note: In production, use proper service account credentials
-				// For now, using basic auth (should be replaced)
 				clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
 				privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n") || "",
 			}),
@@ -32,11 +27,11 @@ function initializeFirebaseAdmin() {
 		});
 
 		adminAuth = getAuth(adminApp);
-		adminDb = getFirestore(adminApp);
+		adminDb = getDatabase(adminApp);
 	} else {
 		adminApp = getApps()[0];
 		adminAuth = getAuth(adminApp);
-		adminDb = getFirestore(adminApp);
+		adminDb = getDatabase(adminApp);
 	}
 
 	return { adminApp, adminAuth, adminDb };
@@ -53,11 +48,9 @@ export function getAdminAuth(): Auth {
 }
 
 /**
- * Get Firestore Admin instance
- * Note: This project uses Firestore in Datastore Mode
- * For user profiles, use Firebase Realtime Database instead
+ * Get Realtime Database Admin instance
  */
-export function getAdminDb(): Firestore {
+export function getRealtimeDb(): Database {
 	if (!adminDb) {
 		initializeFirebaseAdmin();
 	}
@@ -65,13 +58,7 @@ export function getAdminDb(): Firestore {
 }
 
 /**
- * IMPORTANT: This project uses Firestore in Datastore Mode
- * Do not use Firestore for storing user data
- * Use Firebase Realtime Database or Firebase Auth custom claims instead
- */
-
-/**
- * Verify Firebase ID token (from client)
+ * User management functions (same as before)
  */
 export async function verifyIdToken(token: string) {
 	try {
@@ -84,9 +71,6 @@ export async function verifyIdToken(token: string) {
 	}
 }
 
-/**
- * Get user by UID
- */
 export async function getUserByUid(uid: string) {
 	try {
 		const auth = getAdminAuth();
@@ -98,9 +82,6 @@ export async function getUserByUid(uid: string) {
 	}
 }
 
-/**
- * Get user by email
- */
 export async function getUserByEmail(email: string) {
 	try {
 		const auth = getAdminAuth();
@@ -112,9 +93,6 @@ export async function getUserByEmail(email: string) {
 	}
 }
 
-/**
- * List all users (paginated)
- */
 export async function listUsers(maxResults: number = 1000, pageToken?: string) {
 	try {
 		const auth = getAdminAuth();
@@ -126,9 +104,6 @@ export async function listUsers(maxResults: number = 1000, pageToken?: string) {
 	}
 }
 
-/**
- * Update user
- */
 export async function updateUser(uid: string, properties: any) {
 	try {
 		const auth = getAdminAuth();
@@ -140,9 +115,6 @@ export async function updateUser(uid: string, properties: any) {
 	}
 }
 
-/**
- * Delete user
- */
 export async function deleteUser(uid: string) {
 	try {
 		const auth = getAdminAuth();
@@ -154,9 +126,6 @@ export async function deleteUser(uid: string) {
 	}
 }
 
-/**
- * Set custom user claims (for roles/permissions)
- */
 export async function setCustomUserClaims(uid: string, customClaims: any) {
 	try {
 		const auth = getAdminAuth();
@@ -165,5 +134,71 @@ export async function setCustomUserClaims(uid: string, customClaims: any) {
 	} catch (error) {
 		console.error("Set custom claims error:", error);
 		return false;
+	}
+}
+
+/**
+ * Realtime Database helpers for user profiles
+ */
+
+export async function getUserProfile(uid: string) {
+	try {
+		const db = getRealtimeDb();
+		const snapshot = await db.ref(`users/${uid}`).once("value");
+		return snapshot.val();
+	} catch (error) {
+		console.error("Get user profile error:", error);
+		return null;
+	}
+}
+
+export async function updateUserProfile(uid: string, data: any) {
+	try {
+		const db = getRealtimeDb();
+		await db.ref(`users/${uid}`).update({
+			...data,
+			lastUpdated: new Date().toISOString(),
+		});
+		return true;
+	} catch (error) {
+		console.error("Update user profile error:", error);
+		return false;
+	}
+}
+
+export async function createUserProfile(uid: string, data: any) {
+	try {
+		const db = getRealtimeDb();
+		await db.ref(`users/${uid}`).set({
+			...data,
+			createdAt: new Date().toISOString(),
+			lastUpdated: new Date().toISOString(),
+		});
+		return true;
+	} catch (error) {
+		console.error("Create user profile error:", error);
+		return false;
+	}
+}
+
+export async function deleteUserProfile(uid: string) {
+	try {
+		const db = getRealtimeDb();
+		await db.ref(`users/${uid}`).remove();
+		return true;
+	} catch (error) {
+		console.error("Delete user profile error:", error);
+		return false;
+	}
+}
+
+export async function getAllUserProfiles() {
+	try {
+		const db = getRealtimeDb();
+		const snapshot = await db.ref("users").once("value");
+		return snapshot.val() || {};
+	} catch (error) {
+		console.error("Get all user profiles error:", error);
+		return {};
 	}
 }
