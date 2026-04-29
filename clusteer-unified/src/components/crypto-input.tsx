@@ -23,11 +23,11 @@ function CryptoInput({ name }: CryptoInputProps) {
 	);
 
 	return (
-		<div className="bg-white flex items-center h-[65px] px-3.5 rounded-xl">
+		<div className="bg-[var(--cl-surface)] flex items-center h-[65px] px-3.5 rounded-xl">
 			<Input
 				disabled
 				value={displayValue}
-				className="border-0 font-avenir-next bg-none shadow-none h-11 border-none p-0 rounded-none font-bold text-base w-full disabled:opacity-100"
+				className="border-0  bg-none shadow-none h-11 border-none p-0 rounded-none font-bold text-base w-full disabled:opacity-100"
 				aria-label="Amount input"
 			/>
 			<Image

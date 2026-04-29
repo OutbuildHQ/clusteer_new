@@ -14,8 +14,12 @@ const customJestConfig = {
   },
   testEnvironment: 'jest-environment-jsdom',
   testMatch: [
-    '**/__tests__/**/*.{js,jsx,ts,tsx}',
+    '**/__tests__/**/*.test.{js,jsx,ts,tsx}',
     '**/*.{spec,test}.{js,jsx,ts,tsx}',
+  ],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/src/test-helpers/',
   ],
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',

@@ -291,8 +291,8 @@ export default function AdminsPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-bold text-gray-900">Admin Management</h1>
-					<p className="text-sm text-gray-600 mt-1">Manage administrator accounts and permissions</p>
+					<h1 className="text-2xl font-bold text-[var(--cl-text)]">Admin Management</h1>
+					<p className="text-sm text-[var(--cl-text-2)] mt-1">Manage administrator accounts and permissions</p>
 				</div>
 				<button
 					onClick={() => setShowCreateModal(true)}
@@ -311,51 +311,51 @@ export default function AdminsPage() {
 							<Shield className="w-6 h-6 text-purple-600" />
 						</div>
 					</div>
-					<p className="text-sm text-gray-600 font-medium mb-1">Total Admins</p>
-					<p className="text-3xl font-bold text-gray-900 mb-2">{admins.length}</p>
+					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Total Admins</p>
+					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">{admins.length}</p>
 					<p className="text-xs text-purple-600 font-medium">All administrators</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-green-100 rounded-lg">
-							<CheckCircle className="w-6 h-6 text-green-600" />
+						<div className="p-3 bg-[var(--cl-up-soft)] rounded-lg">
+							<CheckCircle className="w-6 h-6 text-[var(--cl-up)]" />
 						</div>
 					</div>
-					<p className="text-sm text-gray-600 font-medium mb-1">Active</p>
-					<p className="text-3xl font-bold text-gray-900 mb-2">
+					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Active</p>
+					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">
 						{admins.filter((a) => a.status === "Active").length}
 					</p>
-					<p className="text-xs text-green-600 font-medium">Currently active</p>
+					<p className="text-xs text-[var(--cl-up)] font-medium">Currently active</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-red-50 to-white rounded-xl border border-red-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-red-100 rounded-lg">
-							<AlertCircle className="w-6 h-6 text-red-600" />
+						<div className="p-3 bg-[var(--cl-down-soft)] rounded-lg">
+							<AlertCircle className="w-6 h-6 text-[var(--cl-down)]" />
 						</div>
 					</div>
-					<p className="text-sm text-gray-600 font-medium mb-1">Suspended</p>
-					<p className="text-3xl font-bold text-gray-900 mb-2">
+					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Suspended</p>
+					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">
 						{admins.filter((a) => a.status === "Suspended").length}
 					</p>
-					<p className="text-xs text-red-600 font-medium">Temporarily blocked</p>
+					<p className="text-xs text-[var(--cl-down)] font-medium">Temporarily blocked</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-blue-100 rounded-lg">
-							<Activity className="w-6 h-6 text-blue-600" />
+						<div className="p-3 bg-[var(--cl-info-soft)] rounded-lg">
+							<Activity className="w-6 h-6 text-[var(--cl-brand-600)]" />
 						</div>
 					</div>
-					<p className="text-sm text-gray-600 font-medium mb-1">Online Now</p>
-					<p className="text-3xl font-bold text-gray-900 mb-2">3</p>
-					<p className="text-xs text-blue-600 font-medium">Currently online</p>
+					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Online Now</p>
+					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">3</p>
+					<p className="text-xs text-[var(--cl-brand-600)] font-medium">Currently online</p>
 				</div>
 			</div>
 
 			{/* Filters */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-4">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4">
 				<div className="flex flex-col md:flex-row items-start md:items-center gap-4">
 					<div className="flex-1">
 						<SearchBar
@@ -368,7 +368,7 @@ export default function AdminsPage() {
 					<select
 						value={selectedRole}
 						onChange={(e) => setSelectedRole(e.target.value)}
-						className="px-4 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+						className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
 					>
 						{roles.map((role) => (
 							<option key={role} value={role}>
@@ -380,7 +380,7 @@ export default function AdminsPage() {
 					<select
 						value={selectedStatus}
 						onChange={(e) => setSelectedStatus(e.target.value)}
-						className="px-4 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+						className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
 					>
 						{statuses.map((status) => (
 							<option key={status} value={status}>
@@ -392,10 +392,10 @@ export default function AdminsPage() {
 			</div>
 
 			{/* Admins Table */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB]">
-				<div className="p-6 border-b border-[#E9EAEB]">
-					<h2 className="text-lg font-semibold text-gray-900">Administrator Accounts</h2>
-					<p className="text-sm text-gray-600 mt-1">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)]">
+				<div className="p-6 border-b border-[var(--cl-line)]">
+					<h2 className="text-lg font-semibold text-[var(--cl-text)]">Administrator Accounts</h2>
+					<p className="text-sm text-[var(--cl-text-2)] mt-1">
 						Showing {filteredAdmins.length} of {admins.length} admins
 					</p>
 				</div>
@@ -403,50 +403,50 @@ export default function AdminsPage() {
 				<div className="overflow-x-auto">
 					<table className="w-full">
 						<thead>
-							<tr className="border-b border-[#E9EAEB] bg-gray-50">
-								<th className="text-left py-3 px-6 text-xs font-semibold text-gray-600 uppercase">
+							<tr className="border-b border-[var(--cl-line)] bg-[var(--cl-bg)]">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Admin
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Contact
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-gray-600 uppercase">Role</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">Role</th>
+								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Status
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Last Login
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Permissions
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Actions
 								</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-[#E9EAEB]">
 							{filteredAdmins.map((admin) => (
-								<tr key={admin.id} className="hover:bg-[#FAFAFA] transition-colors">
+								<tr key={admin.id} className="hover:bg-[var(--cl-bg)] transition-colors">
 									<td className="py-4 px-6">
 										<div className="flex items-center gap-3">
 											<div className="w-10 h-10 bg-gradient-to-br from-[#014F01] to-[#013d01] rounded-full flex items-center justify-center">
 												<span className="text-white font-semibold text-sm">{admin.avatar}</span>
 											</div>
 											<div>
-												<div className="text-sm font-medium text-gray-900">{admin.name}</div>
-												<div className="text-xs text-gray-500">Joined {formatDate(admin.createdDate)}</div>
+												<div className="text-sm font-medium text-[var(--cl-text)]">{admin.name}</div>
+												<div className="text-xs text-[var(--cl-text-3)]">Joined {formatDate(admin.createdDate)}</div>
 											</div>
 										</div>
 									</td>
 									<td className="py-4 px-6">
 										<div className="space-y-1">
-											<div className="flex items-center gap-2 text-sm text-gray-900">
-												<Mail className="w-3 h-3 text-gray-400" />
+											<div className="flex items-center gap-2 text-sm text-[var(--cl-text)]">
+												<Mail className="w-3 h-3 text-[var(--cl-text-3)]" />
 												{admin.email}
 											</div>
-											<div className="flex items-center gap-2 text-sm text-gray-600">
-												<Phone className="w-3 h-3 text-gray-400" />
+											<div className="flex items-center gap-2 text-sm text-[var(--cl-text-2)]">
+												<Phone className="w-3 h-3 text-[var(--cl-text-3)]" />
 												{admin.phone}
 											</div>
 										</div>
@@ -471,8 +471,8 @@ export default function AdminsPage() {
 										</span>
 									</td>
 									<td className="py-4 px-6">
-										<div className="flex items-center gap-2 text-sm text-gray-900">
-											<Clock className="w-3 h-3 text-gray-400" />
+										<div className="flex items-center gap-2 text-sm text-[var(--cl-text)]">
+											<Clock className="w-3 h-3 text-[var(--cl-text-3)]" />
 											{admin.lastLogin}
 										</div>
 									</td>
@@ -481,13 +481,13 @@ export default function AdminsPage() {
 											{admin.permissions.slice(0, 2).map((permission) => (
 												<span
 													key={permission}
-													className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded border border-gray-200"
+													className="px-2 py-0.5 bg-[var(--cl-surface-2)] text-[var(--cl-text-2)] text-xs rounded border border-[var(--cl-line)]"
 												>
 													{permission}
 												</span>
 											))}
 											{admin.permissions.length > 2 && (
-												<span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded border border-gray-200">
+												<span className="px-2 py-0.5 bg-[var(--cl-surface-2)] text-[var(--cl-text-2)] text-xs rounded border border-[var(--cl-line)]">
 													+{admin.permissions.length - 2}
 												</span>
 											)}
@@ -497,28 +497,28 @@ export default function AdminsPage() {
 										<div className="flex items-center gap-2">
 											<button
 												onClick={() => openEditModal(admin)}
-												className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+												className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
 												title="Edit"
 											>
-												<Edit className="w-4 h-4 text-gray-600" />
+												<Edit className="w-4 h-4 text-[var(--cl-text-2)]" />
 											</button>
 											<button
 												onClick={() => handleSuspendAdmin(admin.id)}
-												className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+												className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
 												title={admin.status === "Suspended" ? "Activate" : "Suspend"}
 											>
 												{admin.status === "Suspended" ? (
-													<Unlock className="w-4 h-4 text-green-600" />
+													<Unlock className="w-4 h-4 text-[var(--cl-up)]" />
 												) : (
 													<Lock className="w-4 h-4 text-orange-600" />
 												)}
 											</button>
 											<button
 												onClick={() => setShowDeleteModal(admin.id)}
-												className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+												className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
 												title="Delete"
 											>
-												<Trash2 className="w-4 h-4 text-red-600" />
+												<Trash2 className="w-4 h-4 text-[var(--cl-down)]" />
 											</button>
 										</div>
 									</td>
@@ -544,22 +544,22 @@ export default function AdminsPage() {
 					<div className="space-y-6">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div>
-									<label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+									<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Full Name *</label>
 									<input
 										type="text"
 										value={formData.name}
 										onChange={(e) => setFormData({ ...formData, name: e.target.value })}
 										placeholder="e.g., John Doe"
-										className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+										className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
 									/>
 								</div>
 
 								<div>
-									<label className="block text-sm font-medium text-gray-700 mb-2">Role *</label>
+									<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Role *</label>
 									<select
 										value={formData.role}
 										onChange={(e) => setFormData({ ...formData, role: e.target.value as Admin["role"] })}
-										className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+										className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
 									>
 										<option value="Admin">Admin</option>
 										<option value="Super Admin">Super Admin</option>
@@ -570,36 +570,36 @@ export default function AdminsPage() {
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Email Address *</label>
 								<input
 									type="email"
 									value={formData.email}
 									onChange={(e) => setFormData({ ...formData, email: e.target.value })}
 									placeholder="admin@clusteer.com"
-									className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+									className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
 								/>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Phone Number *</label>
 								<input
 									type="tel"
 									value={formData.phone}
 									onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
 									placeholder="+234 801 234 5678"
-									className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+									className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
 								/>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-3">
+								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-3">
 									Permissions ({formData.permissions.length} selected)
 								</label>
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-3 bg-gray-50 rounded-lg">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-3 bg-[var(--cl-bg)] rounded-lg">
 									{availablePermissions.map((permission) => (
 										<label
 											key={permission.id}
-											className="flex items-start gap-3 p-3 border border-[#E9EAEB] bg-white rounded-lg cursor-pointer hover:border-[#014F01]/20 transition-colors"
+											className="flex items-start gap-3 p-3 border border-[var(--cl-line)] bg-[var(--cl-surface)] rounded-lg cursor-pointer hover:border-[#014F01]/20 transition-colors"
 										>
 											<input
 												type="checkbox"
@@ -608,8 +608,8 @@ export default function AdminsPage() {
 												className="mt-1"
 											/>
 											<div>
-												<div className="text-sm font-medium text-gray-900">{permission.label}</div>
-												<div className="text-xs text-gray-600">{permission.description}</div>
+												<div className="text-sm font-medium text-[var(--cl-text)]">{permission.label}</div>
+												<div className="text-xs text-[var(--cl-text-2)]">{permission.description}</div>
 											</div>
 										</label>
 									))}
@@ -623,7 +623,7 @@ export default function AdminsPage() {
 										setShowEditModal(null);
 										setFormData({ name: "", email: "", phone: "", role: "Admin", permissions: [] });
 									}}
-									className="px-4 py-2 text-gray-700 bg-white border border-[#E9EAEB] rounded-lg hover:bg-gray-50 transition-colors"
+									className="px-4 py-2 text-[var(--cl-text-2)] bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 								>
 									Cancel
 								</button>

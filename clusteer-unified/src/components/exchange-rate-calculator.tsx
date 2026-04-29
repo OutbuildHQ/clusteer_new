@@ -103,7 +103,7 @@ export default function ExchangeRateCalculator() {
 	const toCurrencyData = CURRENCIES.find((c) => c.code === toCurrency);
 
 	return (
-		<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6">
+		<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
 			<div className="flex items-center justify-between mb-6">
 				<h3 className="text-xl font-bold text-[#0D0D0D]">
 					Transfer calculator
@@ -137,7 +137,7 @@ export default function ExchangeRateCalculator() {
 						stroke="currentColor"
 						strokeWidth="2"
 						fill="none"
-						className="text-dark-green"
+						className="text-[var(--cl-brand-500)]"
 					/>
 				</svg>
 				<div className="absolute inset-0 flex items-center justify-center">
@@ -153,14 +153,14 @@ export default function ExchangeRateCalculator() {
 						type="number"
 						value={amount}
 						onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-						className="flex-1 px-4 py-3 border border-[#E9EAEB] rounded-xl font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-dark-green"
+						className="flex-1 px-4 py-3 border border-[var(--cl-line)] rounded-xl font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-dark-green"
 						min="0"
 						step="0.01"
 					/>
 					<select
 						value={fromCurrency}
 						onChange={(e) => setFromCurrency(e.target.value)}
-						className="px-4 py-3 border border-[#E9EAEB] rounded-xl font-medium bg-white focus:outline-none focus:ring-2 focus:ring-dark-green min-w-[120px]"
+						className="px-4 py-3 border border-[var(--cl-line)] rounded-xl font-medium bg-[var(--cl-surface)] focus:outline-none focus:ring-2 focus:ring-dark-green min-w-[120px]"
 					>
 						{CURRENCIES.map((currency) => (
 							<option key={currency.code} value={currency.code}>
@@ -183,7 +183,7 @@ export default function ExchangeRateCalculator() {
 
 				{/* To Currency */}
 				<div className="flex items-center gap-3">
-					<div className="flex-1 px-4 py-3 border border-[#E9EAEB] rounded-xl bg-[#F9FAFB]">
+					<div className="flex-1 px-4 py-3 border border-[var(--cl-line)] rounded-xl bg-[#F9FAFB]">
 						<p className="font-semibold text-lg text-[#0D0D0D]">
 							{formatNumber(convertedAmount)}
 						</p>
@@ -191,7 +191,7 @@ export default function ExchangeRateCalculator() {
 					<select
 						value={toCurrency}
 						onChange={(e) => setToCurrency(e.target.value)}
-						className="px-4 py-3 border border-[#E9EAEB] rounded-xl font-medium bg-white focus:outline-none focus:ring-2 focus:ring-dark-green min-w-[120px]"
+						className="px-4 py-3 border border-[var(--cl-line)] rounded-xl font-medium bg-[var(--cl-surface)] focus:outline-none focus:ring-2 focus:ring-dark-green min-w-[120px]"
 					>
 						{CURRENCIES.map((currency) => (
 							<option key={currency.code} value={currency.code}>

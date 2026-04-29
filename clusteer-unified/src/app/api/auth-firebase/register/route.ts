@@ -3,6 +3,13 @@ import { registerWithFirebase } from "@/lib/auth-firebase";
 import { isFirebaseConfigured } from "@/lib/firebase";
 
 export async function POST(request: NextRequest) {
+  // Rate limiting
+  const { rateLimit, RateLimitPresets } = await import("@/lib/rate-limiter");
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.strict);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   // Check if Firebase is configured
   if (!isFirebaseConfigured) {
     return NextResponse.json(
@@ -12,7 +19,16 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { username, email, phone, password } = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { status: false, message: "Invalid request body" },
+        { status: 400 }
+      );
+    }
+    const { username, email, phone, password } = body;
 
     // Validate input
     if (!username || !email || !phone || !password) {

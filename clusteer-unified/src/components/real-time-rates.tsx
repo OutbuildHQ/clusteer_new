@@ -36,9 +36,9 @@ export default function RealTimeRates({ transactionType = "buy" }: RealTimeRates
 	};
 
 	return (
-		<div className="flex gap-x-4 sm:gap-x-6 lg:gap-x-12 justify-between items-center font-avenir-next">
+		<div className="flex gap-x-4 sm:gap-x-6 lg:gap-x-12 justify-between items-center ">
 			<div>
-				<p className="text-sm sm:text-base font-medium text-[#414651] mb-2.5">
+				<p className="text-sm sm:text-base font-medium text-[var(--cl-text-2)] mb-2.5">
 					Rates (Real-time update)
 				</p>
 				<span className="text-2xl font-bold">

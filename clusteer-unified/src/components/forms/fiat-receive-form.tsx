@@ -24,7 +24,7 @@ export default function FiatReceiveForm() {
 		resolver: zodResolver(PaymentFormSchema),
 		defaultValues: {
 			accountNo: "",
-			accoutName: "",
+			accountName: "",
 			bank: "",
 		},
 	});
@@ -55,7 +55,7 @@ export default function FiatReceiveForm() {
 							</FormDescription>
 							<FormControl>
 								<Input
-									className="h-[54px] border border-[#E9EAEB] rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
+									className="h-[54px] border border-[var(--cl-line)] rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
 									placeholder="0000000000"
 									{...field}
 								/>
@@ -66,7 +66,7 @@ export default function FiatReceiveForm() {
 				/>
 				<FormField
 					control={form.control}
-					name="accoutName"
+					name="accountName"
 					render={({ field }) => (
 						<FormItem className="gap-1.5">
 							<FormLabel className="font-bold text-[#21241D]">
@@ -77,7 +77,7 @@ export default function FiatReceiveForm() {
 							</FormDescription>
 							<FormControl>
 								<Input
-									className="h-[54px] border border-[#E9EAEB] rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
+									className="h-[54px] border border-[var(--cl-line)] rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
 									placeholder="John Doe"
 									{...field}
 								/>
@@ -99,7 +99,7 @@ export default function FiatReceiveForm() {
 							</FormDescription>
 							<FormControl>
 								<Input
-									className="h-[54px] border border-[#E9EAEB] rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
+									className="h-[54px] border border-[var(--cl-line)] rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
 									placeholder="Access Bank"
 									{...field}
 								/>

@@ -135,8 +135,8 @@ export default function InternalSendModal({
 
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
-						<div className="bg-green-50 border border-green-200 rounded-lg p-4">
-							<p className="text-sm text-gray-700">
+						<div className="bg-[var(--cl-up-soft)] border border-[var(--cl-up)] rounded-lg p-4">
+							<p className="text-sm text-[var(--cl-text-2)]">
 								<span className="font-semibold">Available Balance:</span>{" "}
 								{balance.toFixed(4)} {asset}
 							</p>
@@ -157,7 +157,7 @@ export default function InternalSendModal({
 											/>
 											{isVerifying && (
 												<div className="absolute right-3 top-3">
-													<Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+													<Loader2 className="h-5 w-5 animate-spin text-[var(--cl-text-3)]" />
 												</div>
 											)}
 										</div>
@@ -166,14 +166,14 @@ export default function InternalSendModal({
 										You can find User IDs in the recipient's profile
 									</FormDescription>
 									{recipientInfo && (
-										<div className="flex items-center gap-2 mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-											<UserCheck className="h-5 w-5 text-dark-green" />
+										<div className="flex items-center gap-2 mt-2 p-3 bg-[var(--cl-up-soft)] border border-[var(--cl-up)] rounded-lg">
+											<UserCheck className="h-5 w-5 text-[var(--cl-brand-500)]" />
 											<div>
-												<p className="text-sm font-semibold text-gray-900">
+												<p className="text-sm font-semibold text-[var(--cl-text)]">
 													@{recipientInfo.username}
 												</p>
 												{recipientInfo.verified && (
-													<p className="text-xs text-dark-green">
+													<p className="text-xs text-[var(--cl-brand-500)]">
 														✓ Verified User
 													</p>
 												)}
@@ -203,7 +203,7 @@ export default function InternalSendModal({
 													field.onChange(parseFloat(e.target.value) || 0)
 												}
 											/>
-											<span className="absolute right-3 top-3 text-sm font-semibold text-gray-600">
+											<span className="absolute right-3 top-3 text-sm font-semibold text-[var(--cl-text-2)]">
 												{asset}
 											</span>
 										</div>
@@ -237,8 +237,8 @@ export default function InternalSendModal({
 							)}
 						/>
 
-						<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-							<p className="text-sm text-gray-700">
+						<div className="bg-[var(--cl-warn-soft)] border border-[var(--cl-warn)] rounded-lg p-4">
+							<p className="text-sm text-[var(--cl-text-2)]">
 								<span className="font-semibold">Note:</span> Internal transfers are instant and free.
 								Make sure you verify the recipient's User ID before sending.
 							</p>

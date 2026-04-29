@@ -54,25 +54,25 @@ export default function BatchActions({
 	const getVariantClass = (variant?: string) => {
 		switch (variant) {
 			case 'danger':
-				return 'text-red-700 hover:bg-red-50';
+				return 'text-[var(--cl-down)] hover:bg-[var(--cl-down-soft)]';
 			case 'warning':
 				return 'text-orange-700 hover:bg-orange-50';
 			case 'success':
-				return 'text-green-700 hover:bg-green-50';
+				return 'text-[var(--cl-up)] hover:bg-[var(--cl-up-soft)]';
 			default:
-				return 'text-gray-700 hover:bg-gray-50';
+				return 'text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)]';
 		}
 	};
 
 	return (
 		<div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 animate-in slide-in-from-bottom duration-300">
-			<div className="bg-white rounded-lg shadow-lg border border-[#E9EAEB] px-6 py-4 flex items-center gap-4 min-w-[500px]">
+			<div className="bg-[var(--cl-surface)] rounded-lg shadow-lg border border-[var(--cl-line)] px-6 py-4 flex items-center gap-4 min-w-[500px]">
 				{/* Selection count */}
 				<div className="flex items-center gap-2">
 					<div className="w-8 h-8 bg-[#014F01] text-white rounded-full flex items-center justify-center text-sm font-semibold">
 						{selectedIds.length}
 					</div>
-					<span className="text-sm font-medium text-gray-900">
+					<span className="text-sm font-medium text-[var(--cl-text)]">
 						{selectedIds.length} of {totalItems} selected
 					</span>
 				</div>
@@ -92,7 +92,7 @@ export default function BatchActions({
 
 					{/* Dropdown menu */}
 					{isOpen && (
-						<div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-lg border border-[#E9EAEB] py-1 max-h-60 overflow-y-auto">
+						<div className="absolute bottom-full left-0 right-0 mb-2 bg-[var(--cl-surface)] rounded-lg shadow-lg border border-[var(--cl-line)] py-1 max-h-60 overflow-y-auto">
 							{actions.map((action) => (
 								<button
 									key={action.id}
@@ -110,10 +110,10 @@ export default function BatchActions({
 				{/* Clear selection */}
 				<button
 					onClick={onClearSelection}
-					className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+					className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 					aria-label="Clear selection"
 				>
-					<X className="w-5 h-5 text-gray-600" />
+					<X className="w-5 h-5 text-[var(--cl-text-2)]" />
 				</button>
 			</div>
 		</div>
@@ -140,12 +140,12 @@ export function SelectCheckbox({ checked, onChange, indeterminate = false }: Sel
 				className={`w-5 h-5 border-2 rounded flex items-center justify-center transition-colors ${
 					checked || indeterminate
 						? 'bg-[#014F01] border-[#014F01]'
-						: 'bg-white border-gray-300'
+						: 'bg-[var(--cl-surface)] border-[var(--cl-line)]'
 				}`}
 			>
 				{checked && <Check className="w-3 h-3 text-white" />}
 				{indeterminate && !checked && (
-					<div className="w-2 h-0.5 bg-white rounded"></div>
+					<div className="w-2 h-0.5 bg-[var(--cl-surface)] rounded"></div>
 				)}
 			</div>
 		</label>

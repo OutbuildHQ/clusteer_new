@@ -195,7 +195,7 @@ export default function BillingPage() {
 		<div className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8 max-w-[1200px]">
 			{/* Header */}
 			<div className="mb-8">
-				<h1 className="text-[#181D27] font-semibold text-2xl mb-2">Billing</h1>
+				<h1 className="text-[var(--cl-text)] font-semibold text-2xl mb-2">Billing</h1>
 				<p className="text-[#667085] text-sm">
 					Manage your payment methods and view transaction history
 				</p>
@@ -216,7 +216,7 @@ export default function BillingPage() {
 
 				{PAYMENT_METHODS.length === 0 ? (
 					/* Empty State for Payment Methods */
-					<div className="bg-white border border-[#E9EAEB] rounded-xl p-12">
+					<div className="bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl p-12">
 						<div className="max-w-md mx-auto text-center">
 							<div className="w-16 h-16 bg-[#F9FAFB] rounded-full flex items-center justify-center mx-auto mb-4">
 								<CreditCard className="w-8 h-8 text-[#667085]" />
@@ -243,7 +243,7 @@ export default function BillingPage() {
 								</div>
 								<div className="flex items-center gap-2">
 									<div className="w-10 h-6 bg-[#EB001B] rounded flex items-center justify-center">
-										<div className="w-2 h-2 bg-white rounded-full"></div>
+										<div className="w-2 h-2 bg-[var(--cl-surface)] rounded-full"></div>
 									</div>
 									<span className="text-xs text-[#667085]">Mastercard</span>
 								</div>
@@ -261,10 +261,10 @@ export default function BillingPage() {
 						{PAYMENT_METHODS.map((method) => (
 							<div
 								key={method.id}
-								className="bg-white border border-[#E9EAEB] rounded-xl p-6 relative"
+								className="bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl p-6 relative"
 							>
 								{method.isDefault && (
-									<Badge className="absolute top-4 right-4 bg-[#E7F6EC] text-[#0D4222] border-[#0D4222]/10">
+									<Badge className="absolute top-4 right-4 bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)] border-[#0D4222]/10">
 										Default
 									</Badge>
 								)}
@@ -301,7 +301,7 @@ export default function BillingPage() {
 												Edit
 											</DropdownMenuItem>
 											<DropdownMenuItem
-												className="text-red-600"
+												className="text-[var(--cl-down)]"
 												onClick={() => handleRemoveCard(method.id)}
 											>
 												Remove
@@ -315,7 +315,7 @@ export default function BillingPage() {
 						{/* Add Payment Method Placeholder */}
 						<button
 							onClick={() => setShowAddPaymentMethod(true)}
-							className="bg-white border-2 border-dashed border-[#E9EAEB] rounded-xl p-6 flex flex-col items-center justify-center min-h-[160px] hover:border-[#11C211] hover:bg-[#F9FAFB] transition-colors"
+							className="bg-[var(--cl-surface)] border-2 border-dashed border-[var(--cl-line)] rounded-xl p-6 flex flex-col items-center justify-center min-h-[160px] hover:border-[#11C211] hover:bg-[#F9FAFB] transition-colors"
 						>
 							<div className="w-12 h-12 bg-[#F9FAFB] rounded-lg flex items-center justify-center mb-3">
 								<Plus className="w-6 h-6 text-[#667085]" />
@@ -336,7 +336,7 @@ export default function BillingPage() {
 							<select
 								value={filterStatus}
 								onChange={(e) => setFilterStatus(e.target.value as any)}
-								className="px-4 py-2 border border-[#E9EAEB] rounded-lg text-sm focus:ring-2 focus:ring-[#11C211] focus:border-transparent"
+								className="px-4 py-2 border border-[var(--cl-line)] rounded-lg text-sm focus:ring-2 focus:ring-[#11C211] focus:border-transparent"
 							>
 								<option value="all">All Transactions</option>
 								<option value="completed">Completed</option>
@@ -345,7 +345,7 @@ export default function BillingPage() {
 							<Button
 								onClick={handleExportTransactions}
 								variant="outline"
-								className="border-[#D5D7DA] h-10 px-4 rounded-lg font-semibold"
+								className="border-[var(--cl-line-strong)] h-10 px-4 rounded-lg font-semibold"
 							>
 								<Download className="w-4 h-4 mr-2" />
 								Export
@@ -356,7 +356,7 @@ export default function BillingPage() {
 
 				{TRANSACTIONS.length === 0 ? (
 					/* Empty State for Transactions */
-					<div className="bg-white border border-[#E9EAEB] rounded-xl p-12">
+					<div className="bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl p-12">
 						<div className="max-w-md mx-auto text-center">
 							<div className="w-16 h-16 bg-[#F9FAFB] rounded-full flex items-center justify-center mx-auto mb-4">
 								<DollarSign className="w-8 h-8 text-[#667085]" />
@@ -377,15 +377,15 @@ export default function BillingPage() {
 								<Button
 									onClick={() => router.push('/trade')}
 									variant="outline"
-									className="border-[#D5D7DA] h-11 px-6 rounded-full font-semibold"
+									className="border-[var(--cl-line-strong)] h-11 px-6 rounded-full font-semibold"
 								>
 									Start Trading
 								</Button>
 							</div>
-							<div className="mt-8 grid grid-cols-3 gap-4 pt-6 border-t border-[#E9EAEB]">
+							<div className="mt-8 grid grid-cols-3 gap-4 pt-6 border-t border-[var(--cl-line)]">
 								<div className="text-center">
-									<div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mx-auto mb-2">
-										<ArrowDownLeft className="w-6 h-6 text-green-600" />
+									<div className="w-12 h-12 bg-[var(--cl-up-soft)] rounded-lg flex items-center justify-center mx-auto mb-2">
+										<ArrowDownLeft className="w-6 h-6 text-[var(--cl-up)]" />
 									</div>
 									<p className="text-xs text-[#667085]">Deposits</p>
 								</div>
@@ -396,8 +396,8 @@ export default function BillingPage() {
 									<p className="text-xs text-[#667085]">Withdrawals</p>
 								</div>
 								<div className="text-center">
-									<div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-2">
-										<DollarSign className="w-6 h-6 text-gray-600" />
+									<div className="w-12 h-12 bg-[var(--cl-bg)] rounded-lg flex items-center justify-center mx-auto mb-2">
+										<DollarSign className="w-6 h-6 text-[var(--cl-text-2)]" />
 									</div>
 									<p className="text-xs text-[#667085]">Fees</p>
 								</div>
@@ -405,7 +405,7 @@ export default function BillingPage() {
 						</div>
 					</div>
 				) : (
-					<div className="bg-white border border-[#E9EAEB] rounded-xl overflow-hidden">
+					<div className="bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl overflow-hidden">
 						{filteredTransactions.length === 0 ? (
 							/* Empty State for Filtered Transactions */
 							<div className="py-12 text-center">
@@ -419,7 +419,7 @@ export default function BillingPage() {
 								<Button
 									onClick={() => setFilterStatus("all")}
 									variant="outline"
-									className="border-[#D5D7DA] h-10 px-6 rounded-full font-semibold"
+									className="border-[var(--cl-line-strong)] h-10 px-6 rounded-full font-semibold"
 								>
 									View All Transactions
 								</Button>
@@ -427,7 +427,7 @@ export default function BillingPage() {
 						) : (
 							<div className="overflow-x-auto">
 								<table className="w-full">
-									<thead className="bg-[#F9FAFB] border-b border-[#E9EAEB]">
+									<thead className="bg-[#F9FAFB] border-b border-[var(--cl-line)]">
 										<tr>
 											<th className="text-left px-6 py-3 text-xs font-medium text-[#667085] uppercase tracking-wider">
 												Transaction
@@ -453,17 +453,17 @@ export default function BillingPage() {
 													<div className="flex items-center gap-3">
 														<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
 															transaction.type === "deposit"
-																? "bg-green-50"
+																? "bg-[var(--cl-up-soft)]"
 																: transaction.type === "withdrawal"
 																? "bg-orange-50"
-																: "bg-gray-50"
+																: "bg-[var(--cl-bg)]"
 														}`}>
 															{transaction.type === "deposit" ? (
-																<ArrowDownLeft className="w-5 h-5 text-green-600" />
+																<ArrowDownLeft className="w-5 h-5 text-[var(--cl-up)]" />
 															) : transaction.type === "withdrawal" ? (
 																<ArrowUpRight className="w-5 h-5 text-orange-600" />
 															) : (
-																<DollarSign className="w-5 h-5 text-gray-600" />
+																<DollarSign className="w-5 h-5 text-[var(--cl-text-2)]" />
 															)}
 														</div>
 														<div>
@@ -475,10 +475,10 @@ export default function BillingPage() {
 												<td className="px-6 py-4">
 													<p className={`font-semibold ${
 														transaction.type === "deposit"
-															? "text-green-600"
+															? "text-[var(--cl-up)]"
 															: transaction.type === "withdrawal"
 															? "text-orange-600"
-															: "text-gray-600"
+															: "text-[var(--cl-text-2)]"
 													}`}>
 														{transaction.type === "deposit" ? "+" : "-"}
 														{formatCurrency(transaction.amount, transaction.currency)}
@@ -497,7 +497,7 @@ export default function BillingPage() {
 													<Badge
 														className={`${
 															transaction.status === "completed"
-																? "bg-green-100 text-green-800 border-green-200"
+																? "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]"
 																: "bg-orange-100 text-orange-800 border-orange-200"
 														}`}
 													>
@@ -517,7 +517,7 @@ export default function BillingPage() {
 			{/* Add Payment Method Modal */}
 			{showAddPaymentMethod && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-white rounded-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+					<div className="bg-[var(--cl-surface)] rounded-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
 						<div className="flex items-center justify-between mb-6">
 							<h3 className="font-semibold text-xl text-[#0D0D0D]">Add Payment Method</h3>
 							<button
@@ -538,8 +538,8 @@ export default function BillingPage() {
 
 						{/* Card Preview */}
 						<div className="mb-6 bg-gradient-to-br from-[#0D4222] to-[#11C211] rounded-xl p-6 text-white relative overflow-hidden">
-							<div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-							<div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+							<div className="absolute top-0 right-0 w-32 h-32 bg-[var(--cl-surface)]/10 rounded-full -mr-16 -mt-16"></div>
+							<div className="absolute bottom-0 left-0 w-24 h-24 bg-[var(--cl-surface)]/10 rounded-full -ml-12 -mb-12"></div>
 							<div className="relative z-10">
 								<div className="flex justify-between items-start mb-8">
 									<div className="w-12 h-8 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded"></div>
@@ -578,7 +578,7 @@ export default function BillingPage() {
 									value={cardDetails.cardNumber}
 									onChange={handleCardNumberChange}
 									placeholder="1234 5678 9012 3456"
-									className="w-full px-4 py-3 border border-[#E9EAEB] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent font-mono"
+									className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent font-mono"
 									required
 								/>
 							</div>
@@ -594,7 +594,7 @@ export default function BillingPage() {
 										setCardDetails({ ...cardDetails, cardName: e.target.value.toUpperCase() })
 									}
 									placeholder="JOHN DOE"
-									className="w-full px-4 py-3 border border-[#E9EAEB] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent uppercase"
+									className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent uppercase"
 									required
 								/>
 							</div>
@@ -609,7 +609,7 @@ export default function BillingPage() {
 										value={cardDetails.expiryDate}
 										onChange={handleExpiryDateChange}
 										placeholder="MM / YY"
-										className="w-full px-4 py-3 border border-[#E9EAEB] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent font-mono"
+										className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent font-mono"
 										required
 									/>
 								</div>
@@ -622,13 +622,13 @@ export default function BillingPage() {
 										value={cardDetails.cvv}
 										onChange={handleCvvChange}
 										placeholder="123"
-										className="w-full px-4 py-3 border border-[#E9EAEB] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent font-mono"
+										className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent font-mono"
 										required
 									/>
 								</div>
 							</div>
 
-							<div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+							<div className="bg-[var(--cl-info-soft)] border border-[var(--cl-brand-200)] rounded-lg p-4">
 								<p className="text-xs text-[#667085]">
 									🔒 Your card information is encrypted and secure. We use industry-standard security measures to protect your data.
 								</p>
@@ -647,7 +647,7 @@ export default function BillingPage() {
 										});
 									}}
 									variant="outline"
-									className="flex-1 border-[#D5D7DA] h-11 rounded-full font-semibold"
+									className="flex-1 border-[var(--cl-line-strong)] h-11 rounded-full font-semibold"
 									disabled={isProcessing}
 								>
 									Cancel

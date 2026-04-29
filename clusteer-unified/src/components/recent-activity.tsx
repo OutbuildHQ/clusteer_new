@@ -48,20 +48,20 @@ function getTransactionIcon(type: string) {
 	switch (type) {
 		case "in":
 			return (
-				<div className="p-2 rounded-full bg-green-100">
-					<ArrowDownLeft className="w-4 h-4 text-green-600" />
+				<div className="p-2 rounded-full bg-[var(--cl-up-soft)]">
+					<ArrowDownLeft className="w-4 h-4 text-[var(--cl-up)]" />
 				</div>
 			);
 		case "out":
 			return (
-				<div className="p-2 rounded-full bg-gray-100">
-					<ArrowUpRight className="w-4 h-4 text-gray-600" />
+				<div className="p-2 rounded-full bg-[var(--cl-surface-2)]">
+					<ArrowUpRight className="w-4 h-4 text-[var(--cl-text-2)]" />
 				</div>
 			);
 		case "convert":
 			return (
-				<div className="p-2 rounded-full bg-blue-100">
-					<Repeat className="w-4 h-4 text-blue-600" />
+				<div className="p-2 rounded-full bg-[var(--cl-info-soft)]">
+					<Repeat className="w-4 h-4 text-[var(--cl-brand-600)]" />
 				</div>
 			);
 		default:
@@ -109,16 +109,16 @@ export default function RecentActivity() {
 				<div className="flex items-center justify-between">
 					<h3 className="text-xl font-bold text-[#0D0D0D]">Recent Activity</h3>
 				</div>
-				<div className="bg-white rounded-2xl border border-[#E9EAEB] p-8">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-8">
 					<div className="animate-pulse space-y-4">
 						{[1, 2, 3].map((i) => (
 							<div key={i} className="flex items-center gap-4">
-								<div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+								<div className="w-10 h-10 bg-[var(--cl-surface-2)] rounded-full"></div>
 								<div className="flex-1 space-y-2">
-									<div className="h-4 bg-gray-200 rounded w-3/4"></div>
-									<div className="h-3 bg-gray-200 rounded w-1/2"></div>
+									<div className="h-4 bg-[var(--cl-surface-2)] rounded w-3/4"></div>
+									<div className="h-3 bg-[var(--cl-surface-2)] rounded w-1/2"></div>
 								</div>
-								<div className="h-4 bg-gray-200 rounded w-20"></div>
+								<div className="h-4 bg-[var(--cl-surface-2)] rounded w-20"></div>
 							</div>
 						))}
 					</div>
@@ -133,9 +133,9 @@ export default function RecentActivity() {
 				<div className="flex items-center justify-between">
 					<h3 className="text-xl font-bold text-[#0D0D0D]">Recent Activity</h3>
 				</div>
-				<div className="bg-white rounded-2xl border border-[#E9EAEB] p-8 text-center">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-8 text-center">
 					<div className="w-16 h-16 mx-auto bg-pale-green rounded-full flex items-center justify-center mb-4">
-						<Clock className="w-8 h-8 text-dark-green" />
+						<Clock className="w-8 h-8 text-[var(--cl-brand-500)]" />
 					</div>
 					<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">
 						No transactions yet
@@ -179,18 +179,18 @@ export default function RecentActivity() {
 					</DropdownMenu>
 					<Link
 						href="/transaction-history"
-						className="text-sm font-medium text-dark-green hover:underline"
+						className="text-sm font-medium text-[var(--cl-brand-500)] hover:underline"
 					>
 						View all
 					</Link>
 				</div>
 			</div>
 
-			<div className="bg-white rounded-2xl border border-[#E9EAEB] divide-y divide-[#E9EAEB] overflow-hidden">
+			<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] divide-y divide-[var(--cl-line)] overflow-hidden">
 				{transactions.map((transaction) => (
 					<div
 						key={transaction.id}
-						className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+						className="flex items-center justify-between p-4 hover:bg-[var(--cl-bg)] transition-colors"
 					>
 						<div className="flex items-center gap-3 flex-1 min-w-0">
 							{getTransactionIcon(transaction.type)}
@@ -201,7 +201,7 @@ export default function RecentActivity() {
 								<div className="flex items-center gap-2 mt-0.5">
 									<p className="text-sm text-[#667085]">{transaction.date}</p>
 									{transaction.status === "pending" && (
-										<span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+										<span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--cl-warn-soft)] text-[var(--cl-warn)]">
 											Pending
 										</span>
 									)}
@@ -212,7 +212,7 @@ export default function RecentActivity() {
 							<p
 								className={`font-semibold ${
 									transaction.type === "in"
-										? "text-green-600"
+										? "text-[var(--cl-up)]"
 										: "text-[#0D0D0D]"
 								}`}
 							>

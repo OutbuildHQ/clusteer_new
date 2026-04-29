@@ -48,9 +48,9 @@ export default function ComplianceReportPage() {
 	const [riskFilter, setRiskFilter] = useState<"All" | "Low" | "Medium" | "High">("All");
 
 	const kycStats: KYCStatus[] = [
-		{ status: "Approved", count: 2187, percentage: 67.3, color: "bg-green-500" },
+		{ status: "Approved", count: 2187, percentage: 67.3, color: "bg-[var(--cl-up-soft)]0" },
 		{ status: "Pending", count: 892, percentage: 27.5, color: "bg-orange-500" },
-		{ status: "Rejected", count: 166, percentage: 5.2, color: "bg-red-500" },
+		{ status: "Rejected", count: 166, percentage: 5.2, color: "bg-[var(--cl-down-soft)]0" },
 	];
 
 	const metrics: ComplianceMetric[] = [
@@ -58,19 +58,19 @@ export default function ComplianceReportPage() {
 			title: "Total KYC Submissions",
 			value: "3,245",
 			icon: <FileText className="w-6 h-6" />,
-			color: "bg-blue-50 text-blue-600",
+			color: "bg-[var(--cl-info-soft)] text-[var(--cl-brand-600)]",
 		},
 		{
 			title: "Compliance Rate",
 			value: "94.8%",
 			icon: <CheckCircle className="w-6 h-6" />,
-			color: "bg-green-50 text-green-600",
+			color: "bg-[var(--cl-up-soft)] text-[var(--cl-up)]",
 		},
 		{
 			title: "Flagged Accounts",
 			value: "47",
 			icon: <Flag className="w-6 h-6" />,
-			color: "bg-red-50 text-red-600",
+			color: "bg-[var(--cl-down-soft)] text-[var(--cl-down)]",
 		},
 		{
 			title: "Pending Reviews",
@@ -168,42 +168,42 @@ export default function ComplianceReportPage() {
 	const getRiskColor = (risk: string) => {
 		switch (risk) {
 			case "High":
-				return "bg-red-50 text-red-700 border-red-200";
+				return "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]";
 			case "Medium":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 			case "Low":
-				return "bg-yellow-50 text-yellow-700 border-yellow-200";
+				return "bg-[var(--cl-warn-soft)] text-[var(--cl-warn)] border-[var(--cl-warn)]";
 			default:
-				return "bg-gray-50 text-gray-700 border-gray-200";
+				return "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
 		}
 	};
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case "Under Review":
-				return "bg-blue-50 text-blue-700 border-blue-200";
+				return "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]";
 			case "Resolved":
-				return "bg-green-50 text-green-700 border-green-200";
+				return "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]";
 			case "Escalated":
-				return "bg-red-50 text-red-700 border-red-200";
+				return "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]";
 			default:
-				return "bg-gray-50 text-gray-700 border-gray-200";
+				return "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
 		}
 	};
 
 	return (
 		<div className="space-y-6">
 			{/* Breadcrumb */}
-			<nav className="flex items-center gap-2 text-sm text-gray-500">
-				<button onClick={() => router.push("/admin")} className="hover:text-gray-900">
+			<nav className="flex items-center gap-2 text-sm text-[var(--cl-text-3)]">
+				<button onClick={() => router.push("/admin")} className="hover:text-[var(--cl-text)]">
 					Dashboard
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<button onClick={() => router.push("/admin/reports")} className="hover:text-gray-900">
+				<button onClick={() => router.push("/admin/reports")} className="hover:text-[var(--cl-text)]">
 					Reports
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<span className="font-medium text-gray-900">Compliance Report</span>
+				<span className="font-medium text-[var(--cl-text)]">Compliance Report</span>
 			</nav>
 
 			{/* Header */}
@@ -211,13 +211,13 @@ export default function ComplianceReportPage() {
 				<div className="flex items-center gap-4">
 					<button
 						onClick={() => router.push("/admin/reports")}
-						className="p-2 hover:bg-[#FAFAFA] rounded-lg transition-colors"
+						className="p-2 hover:bg-[var(--cl-bg)] rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-gray-600" />
+						<ArrowLeft className="w-5 h-5 text-[var(--cl-text-2)]" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">Compliance Report</h1>
-						<p className="text-sm text-gray-600 mt-1">
+						<h1 className="text-2xl font-bold text-[var(--cl-text)]">Compliance Report</h1>
+						<p className="text-sm text-[var(--cl-text-2)] mt-1">
 							KYC status, flagged accounts, and regulatory compliance data
 						</p>
 					</div>
@@ -234,17 +234,17 @@ export default function ComplianceReportPage() {
 			</div>
 
 			{/* Period Selector */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-4">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
-						<Calendar className="w-5 h-5 text-gray-400" />
-						<span className="text-sm font-medium text-gray-700">Report Period:</span>
+						<Calendar className="w-5 h-5 text-[var(--cl-text-3)]" />
+						<span className="text-sm font-medium text-[var(--cl-text-2)]">Report Period:</span>
 					</div>
 					<div className="flex gap-2">
 						{["Today", "Week", "Month", "Quarter", "Year"].map((period) => (
 							<button
 								key={period}
-								className="px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
+								className="px-4 py-2 text-sm font-medium bg-[var(--cl-surface-2)] text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 							>
 								{period}
 							</button>
@@ -256,23 +256,23 @@ export default function ComplianceReportPage() {
 			{/* Key Metrics */}
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 				{metrics.map((metric, index) => (
-					<div key={index} className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+					<div key={index} className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 						<div className="flex items-center justify-between mb-4">
 							<div className={`p-3 rounded-lg ${metric.color}`}>
 								{metric.icon}
 							</div>
 						</div>
-						<h3 className="text-sm text-gray-600 font-medium mb-1">{metric.title}</h3>
-						<p className="text-2xl font-bold text-gray-900">{metric.value}</p>
+						<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">{metric.title}</h3>
+						<p className="text-2xl font-bold text-[var(--cl-text)]">{metric.value}</p>
 					</div>
 				))}
 			</div>
 
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 				{/* KYC Status Breakdown */}
-				<div className="lg:col-span-2 bg-white rounded-lg border border-[#E9EAEB] p-6">
-					<h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-						<Shield className="w-5 h-5 text-gray-600" />
+				<div className="lg:col-span-2 bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+					<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-6 flex items-center gap-2">
+						<Shield className="w-5 h-5 text-[var(--cl-text-2)]" />
 						KYC Status Distribution
 					</h2>
 
@@ -282,16 +282,16 @@ export default function ComplianceReportPage() {
 								<div className="flex items-center justify-between mb-2">
 									<div className="flex items-center gap-2">
 										<div className={`w-3 h-3 rounded-full ${stat.color}`}></div>
-										<span className="text-sm font-medium text-gray-700">{stat.status}</span>
+										<span className="text-sm font-medium text-[var(--cl-text-2)]">{stat.status}</span>
 									</div>
 									<div className="flex items-center gap-3">
-										<span className="text-sm text-gray-600">{stat.count.toLocaleString()}</span>
-										<span className="text-sm font-semibold text-gray-900 min-w-[50px] text-right">
+										<span className="text-sm text-[var(--cl-text-2)]">{stat.count.toLocaleString()}</span>
+										<span className="text-sm font-semibold text-[var(--cl-text)] min-w-[50px] text-right">
 											{stat.percentage}%
 										</span>
 									</div>
 								</div>
-								<div className="w-full bg-gray-100 rounded-full h-3">
+								<div className="w-full bg-[var(--cl-surface-2)] rounded-full h-3">
 									<div
 										className={`${stat.color} h-full rounded-full transition-all duration-500`}
 										style={{ width: `${stat.percentage}%` }}
@@ -301,43 +301,43 @@ export default function ComplianceReportPage() {
 						))}
 					</div>
 
-					<div className="mt-6 pt-6 border-t border-[#E9EAEB] grid grid-cols-3 gap-4">
+					<div className="mt-6 pt-6 border-t border-[var(--cl-line)] grid grid-cols-3 gap-4">
 						<div className="text-center">
 							<div className="flex items-center justify-center gap-2 mb-2">
-								<CheckCircle className="w-5 h-5 text-green-600" />
-								<span className="text-sm font-medium text-gray-700">Approved</span>
+								<CheckCircle className="w-5 h-5 text-[var(--cl-up)]" />
+								<span className="text-sm font-medium text-[var(--cl-text-2)]">Approved</span>
 							</div>
-							<p className="text-2xl font-bold text-gray-900">{kycStats[0].count.toLocaleString()}</p>
+							<p className="text-2xl font-bold text-[var(--cl-text)]">{kycStats[0].count.toLocaleString()}</p>
 						</div>
-						<div className="text-center border-x border-[#E9EAEB]">
+						<div className="text-center border-x border-[var(--cl-line)]">
 							<div className="flex items-center justify-center gap-2 mb-2">
 								<Clock className="w-5 h-5 text-orange-600" />
-								<span className="text-sm font-medium text-gray-700">Pending</span>
+								<span className="text-sm font-medium text-[var(--cl-text-2)]">Pending</span>
 							</div>
-							<p className="text-2xl font-bold text-gray-900">{kycStats[1].count.toLocaleString()}</p>
+							<p className="text-2xl font-bold text-[var(--cl-text)]">{kycStats[1].count.toLocaleString()}</p>
 						</div>
 						<div className="text-center">
 							<div className="flex items-center justify-center gap-2 mb-2">
-								<XCircle className="w-5 h-5 text-red-600" />
-								<span className="text-sm font-medium text-gray-700">Rejected</span>
+								<XCircle className="w-5 h-5 text-[var(--cl-down)]" />
+								<span className="text-sm font-medium text-[var(--cl-text-2)]">Rejected</span>
 							</div>
-							<p className="text-2xl font-bold text-gray-900">{kycStats[2].count.toLocaleString()}</p>
+							<p className="text-2xl font-bold text-[var(--cl-text)]">{kycStats[2].count.toLocaleString()}</p>
 						</div>
 					</div>
 				</div>
 
 				{/* Compliance Overview */}
-				<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
-					<h2 className="text-lg font-semibold text-gray-900 mb-6">Compliance Overview</h2>
+				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+					<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-6">Compliance Overview</h2>
 
 					<div className="space-y-4">
-						<div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+						<div className="p-4 bg-[var(--cl-up-soft)] border border-[var(--cl-up)] rounded-lg">
 							<div className="flex items-center gap-2 mb-2">
-								<CheckCircle className="w-5 h-5 text-green-600" />
-								<span className="text-sm font-semibold text-green-900">Compliant</span>
+								<CheckCircle className="w-5 h-5 text-[var(--cl-up)]" />
+								<span className="text-sm font-semibold text-[var(--cl-up)]">Compliant</span>
 							</div>
-							<p className="text-2xl font-bold text-green-900">94.8%</p>
-							<p className="text-xs text-green-700 mt-1">3,079 users</p>
+							<p className="text-2xl font-bold text-[var(--cl-up)]">94.8%</p>
+							<p className="text-xs text-[var(--cl-up)] mt-1">3,079 users</p>
 						</div>
 
 						<div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
@@ -349,40 +349,40 @@ export default function ComplianceReportPage() {
 							<p className="text-xs text-orange-700 mt-1">892 submissions</p>
 						</div>
 
-						<div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+						<div className="p-4 bg-[var(--cl-down-soft)] border border-[var(--cl-down)] rounded-lg">
 							<div className="flex items-center gap-2 mb-2">
-								<AlertTriangle className="w-5 h-5 text-red-600" />
-								<span className="text-sm font-semibold text-red-900">Flagged</span>
+								<AlertTriangle className="w-5 h-5 text-[var(--cl-down)]" />
+								<span className="text-sm font-semibold text-[var(--cl-down)]">Flagged</span>
 							</div>
-							<p className="text-2xl font-bold text-red-900">47</p>
-							<p className="text-xs text-red-700 mt-1">Requires attention</p>
+							<p className="text-2xl font-bold text-[var(--cl-down)]">47</p>
+							<p className="text-xs text-[var(--cl-down)] mt-1">Requires attention</p>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			{/* Flagged Accounts */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-						<Flag className="w-5 h-5 text-red-600" />
+					<h2 className="text-lg font-semibold text-[var(--cl-text)] flex items-center gap-2">
+						<Flag className="w-5 h-5 text-[var(--cl-down)]" />
 						Flagged Accounts
 					</h2>
 					<div className="flex items-center gap-3">
 						<div className="relative">
-							<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+							<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--cl-text-3)]" />
 							<input
 								type="text"
 								placeholder="Search..."
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
-								className="pl-9 pr-4 py-2 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="pl-9 pr-4 py-2 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							/>
 						</div>
 						<select
 							value={riskFilter}
 							onChange={(e) => setRiskFilter(e.target.value as any)}
-							className="px-4 py-2 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+							className="px-4 py-2 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 						>
 							<option value="All">All Risk Levels</option>
 							<option value="High">High</option>
@@ -394,21 +394,21 @@ export default function ComplianceReportPage() {
 
 				<div className="overflow-x-auto">
 					<table className="w-full">
-						<thead className="bg-[#FAFAFA] border-b border-[#E9EAEB]">
+						<thead className="bg-[var(--cl-bg)] border-b border-[var(--cl-line)]">
 							<tr>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									User
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Reason
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Risk Level
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Status
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-gray-600 uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
 									Flagged Date
 								</th>
 							</tr>
@@ -417,17 +417,17 @@ export default function ComplianceReportPage() {
 							{filteredAccounts.map((account) => (
 								<tr
 									key={account.userId}
-									className="hover:bg-[#FAFAFA] transition-colors cursor-pointer"
+									className="hover:bg-[var(--cl-bg)] transition-colors cursor-pointer"
 									onClick={() => router.push(`/admin/users/${account.userId}`)}
 								>
 									<td className="py-4 px-6">
 										<div>
-											<p className="text-sm font-medium text-gray-900">{account.name}</p>
-											<p className="text-xs text-gray-500">{account.email}</p>
+											<p className="text-sm font-medium text-[var(--cl-text)]">{account.name}</p>
+											<p className="text-xs text-[var(--cl-text-3)]">{account.email}</p>
 										</div>
 									</td>
 									<td className="py-4 px-6">
-										<span className="text-sm text-gray-600">{account.reason}</span>
+										<span className="text-sm text-[var(--cl-text-2)]">{account.reason}</span>
 									</td>
 									<td className="py-4 px-6">
 										<span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border ${getRiskColor(account.riskLevel)}`}>
@@ -440,7 +440,7 @@ export default function ComplianceReportPage() {
 										</span>
 									</td>
 									<td className="py-4 px-6">
-										<span className="text-sm text-gray-600">{account.flaggedDate}</span>
+										<span className="text-sm text-[var(--cl-text-2)]">{account.flaggedDate}</span>
 									</td>
 								</tr>
 							))}

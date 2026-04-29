@@ -19,7 +19,7 @@ const quickActions = [
 		icon: Download,
 		href: "/receive",
 		color: "bg-[#E8F5E9] hover:bg-[#D0EBD6]",
-		iconColor: "text-dark-green",
+		iconColor: "text-[var(--cl-brand-500)]",
 	},
 	{
 		title: "Convert",
@@ -27,14 +27,14 @@ const quickActions = [
 		icon: Repeat,
 		href: "/trade",
 		color: "bg-[#E8F5E9] hover:bg-[#D0EBD6]",
-		iconColor: "text-dark-green",
+		iconColor: "text-[var(--cl-brand-500)]",
 	},
 	{
 		title: "QR Code",
 		description: "Scan to receive",
 		icon: QrCode,
 		href: "/receive?tab=qr",
-		color: "bg-white hover:bg-gray-50",
+		color: "bg-[var(--cl-surface)] hover:bg-[var(--cl-bg)]",
 		iconColor: "text-[#667085]",
 		border: true,
 	},
@@ -43,7 +43,7 @@ const quickActions = [
 		description: "Ask for payment",
 		icon: ArrowUpDown,
 		href: "/request",
-		color: "bg-white hover:bg-gray-50",
+		color: "bg-[var(--cl-surface)] hover:bg-[var(--cl-bg)]",
 		iconColor: "text-[#667085]",
 		border: true,
 	},
@@ -52,7 +52,7 @@ const quickActions = [
 		description: "Manage accounts",
 		icon: CreditCard,
 		href: "/settings/payment-methods",
-		color: "bg-white hover:bg-gray-50",
+		color: "bg-[var(--cl-surface)] hover:bg-[var(--cl-bg)]",
 		iconColor: "text-[#667085]",
 		border: true,
 	},
@@ -70,10 +70,10 @@ export default function QuickActions() {
 							<Button
 								variant="outline"
 								className={`h-auto w-full flex flex-col items-center justify-center p-4 gap-2 ${action.color} ${
-									action.border ? "border-2 border-[#E9EAEB]" : "border-0"
+									action.border ? "border-2 border-[var(--cl-line)]" : "border-0"
 								} transition-all hover:shadow-md`}
 							>
-								<div className={`w-10 h-10 rounded-full bg-white flex items-center justify-center ${action.border ? 'shadow-sm' : ''}`}>
+								<div className={`w-10 h-10 rounded-full bg-[var(--cl-surface)] flex items-center justify-center ${action.border ? 'shadow-sm' : ''}`}>
 									<Icon className={`w-5 h-5 ${action.iconColor}`} />
 								</div>
 								<div className="text-center">

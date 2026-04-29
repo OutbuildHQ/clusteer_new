@@ -26,11 +26,11 @@ export default function AdminHeader({ onMobileMenuOpen }: AdminHeaderProps) {
 	};
 
 	return (
-		<header className="h-16 bg-white border-b border-[#E9EAEB] px-4 lg:px-6 flex items-center gap-2 lg:gap-4">
+		<header className="h-16 bg-[var(--cl-surface)] border-b border-[var(--cl-line)] px-4 lg:px-6 flex items-center gap-2 lg:gap-4">
 			{/* Mobile Menu Button */}
 			<button
 				onClick={onMobileMenuOpen}
-				className="lg:hidden p-2 -ml-2 text-[#414651] hover:bg-[#FAFAFA] rounded-lg transition-colors flex-shrink-0"
+				className="lg:hidden p-2 -ml-2 text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] rounded-lg transition-colors flex-shrink-0"
 				aria-label="Open menu"
 			>
 				<Menu className="w-6 h-6" />
@@ -39,17 +39,17 @@ export default function AdminHeader({ onMobileMenuOpen }: AdminHeaderProps) {
 			{/* Search Bar - Hidden on small mobile, visible on larger screens */}
 			<div className="hidden sm:flex flex-1 max-w-xl">
 				<div className="relative w-full">
-					<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+					<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--cl-text-3)]" />
 					<input
 						type="text"
 						placeholder="Search..."
-						className="w-full pl-10 pr-4 py-2 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+						className="w-full pl-10 pr-4 py-2 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 					/>
 				</div>
 			</div>
 
 			{/* Mobile Search Icon - Only on very small screens */}
-			<button className="sm:hidden p-2 text-[#414651] hover:bg-[#FAFAFA] rounded-lg transition-colors flex-shrink-0">
+			<button className="sm:hidden p-2 text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] rounded-lg transition-colors flex-shrink-0">
 				<Search className="w-5 h-5" />
 			</button>
 
@@ -59,31 +59,31 @@ export default function AdminHeader({ onMobileMenuOpen }: AdminHeaderProps) {
 			{/* Right Section */}
 			<div className="flex items-center gap-1 sm:gap-2 lg:gap-4 flex-shrink-0">
 				{/* Notifications */}
-				<button className="relative p-2 text-[#414651] hover:bg-[#FAFAFA] rounded-lg transition-colors">
+				<button className="relative p-2 text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] rounded-lg transition-colors">
 					<Bell className="w-5 h-5" />
-					<span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+					<span className="absolute top-1 right-1 w-2 h-2 bg-[var(--cl-down-soft)]0 rounded-full" />
 				</button>
 
 				{/* Admin Profile */}
 				<div className="relative">
 					<button
 						onClick={() => setShowDropdown(!showDropdown)}
-						className="flex items-center gap-2 px-2 sm:px-3 py-2 hover:bg-[#FAFAFA] rounded-lg transition-colors"
+						className="flex items-center gap-2 px-2 sm:px-3 py-2 hover:bg-[var(--cl-bg)] rounded-lg transition-colors"
 					>
-						<div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-							<span className="text-gray-600 font-medium text-xs">AD</span>
+						<div className="w-8 h-8 bg-[var(--cl-surface-2)] rounded-full flex items-center justify-center flex-shrink-0">
+							<span className="text-[var(--cl-text-2)] font-medium text-xs">AD</span>
 						</div>
-						<span className="hidden sm:inline text-sm font-medium text-[#414651]">Admin</span>
-						<ChevronDown className="w-4 h-4 text-gray-500 hidden sm:block" />
+						<span className="hidden sm:inline text-sm font-medium text-[var(--cl-text-2)]">Admin</span>
+						<ChevronDown className="w-4 h-4 text-[var(--cl-text-3)] hidden sm:block" />
 					</button>
 
 					{/* Dropdown */}
 					{showDropdown && (
-						<div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-[#E9EAEB] py-1 z-50">
+						<div className="absolute right-0 mt-2 w-48 bg-[var(--cl-surface)] rounded-lg shadow-lg border border-[var(--cl-line)] py-1 z-50">
 							<button
 								onClick={handleLogout}
 								disabled={loggingOut}
-								className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#414651] hover:bg-[#FAFAFA] transition-colors disabled:opacity-50"
+								className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] transition-colors disabled:opacity-50"
 							>
 								<LogOut className="w-4 h-4" />
 								{loggingOut ? "Logging out..." : "Logout"}

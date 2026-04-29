@@ -38,52 +38,52 @@ export function ManualTopupModal({
 
 	return (
 		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-			<div className="bg-white rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
+			<div className="bg-[var(--cl-surface)] rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center gap-3">
-						<div className="w-12 h-12 bg-[#E7F6EC] rounded-full flex items-center justify-center">
+						<div className="w-12 h-12 bg-[var(--cl-brand-50)] rounded-full flex items-center justify-center">
 							<Plus className="w-6 h-6 text-[#014F01]" />
 						</div>
 						<div>
-							<h3 className="text-lg font-semibold text-gray-900">Manual Top-up</h3>
-							<p className="text-sm text-gray-600">Credit user wallet directly</p>
+							<h3 className="text-lg font-semibold text-[var(--cl-text)]">Manual Top-up</h3>
+							<p className="text-sm text-[var(--cl-text-2)]">Credit user wallet directly</p>
 						</div>
 					</div>
 					<button
 						onClick={onClose}
-						className="p-2 hover:bg-gray-100 rounded-lg transition-all hover:scale-110 active:scale-90"
+						className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-all hover:scale-110 active:scale-90"
 					>
-						<X className="w-5 h-5 text-gray-400" />
+						<X className="w-5 h-5 text-[var(--cl-text-3)]" />
 					</button>
 				</div>
 
 				<div className="space-y-4">
 					{/* User ID or Email */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							User ID or Email <span className="text-red-600">*</span>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							User ID or Email <span className="text-[var(--cl-down)]">*</span>
 						</label>
 						<div className="relative">
-							<User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+							<User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--cl-text-3)]" />
 							<input
 								type="text"
 								value={formData.userId}
 								onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
 								placeholder="Enter user ID or email..."
-								className="w-full pl-10 pr-4 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full pl-10 pr-4 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							/>
 						</div>
 					</div>
 
 					{/* Currency */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Currency <span className="text-red-600">*</span>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							Currency <span className="text-[var(--cl-down)]">*</span>
 						</label>
 						<select
 							value={formData.currency}
 							onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-							className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+							className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 						>
 							<option value="USDT">USDT</option>
 							<option value="USDC">USDC</option>
@@ -93,37 +93,37 @@ export function ManualTopupModal({
 
 					{/* Amount */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Amount <span className="text-red-600">*</span>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							Amount <span className="text-[var(--cl-down)]">*</span>
 						</label>
 						<div className="relative">
-							<DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+							<DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--cl-text-3)]" />
 							<input
 								type="number"
 								value={formData.amount}
 								onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
 								placeholder="0.00"
-								className="w-full pl-10 pr-4 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full pl-10 pr-4 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							/>
 						</div>
 					</div>
 
 					{/* Reason */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Reason <span className="text-red-600">*</span>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							Reason <span className="text-[var(--cl-down)]">*</span>
 						</label>
 						<textarea
 							value={formData.reason}
 							onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
 							placeholder="Enter reason for top-up..."
-							className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+							className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							rows={3}
 						/>
 					</div>
 
 					{/* Send Notification */}
-					<div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+					<div className="flex items-center gap-3 p-4 bg-[var(--cl-info-soft)] border border-[var(--cl-brand-200)] rounded-lg">
 						<input
 							type="checkbox"
 							id="sendNotification"
@@ -131,23 +131,23 @@ export function ManualTopupModal({
 							onChange={(e) =>
 								setFormData({ ...formData, sendNotification: e.target.checked })
 							}
-							className="w-4 h-4 rounded border-gray-300 text-[#014F01] focus:ring-[#014F01]"
+							className="w-4 h-4 rounded border-[var(--cl-line)] text-[#014F01] focus:ring-[#014F01]"
 						/>
 						<label htmlFor="sendNotification" className="flex-1">
-							<span className="text-sm font-medium text-gray-900 block">
+							<span className="text-sm font-medium text-[var(--cl-text)] block">
 								Send notification to user
 							</span>
-							<span className="text-xs text-gray-600">
+							<span className="text-xs text-[var(--cl-text-2)]">
 								User will receive email about this top-up
 							</span>
 						</label>
 					</div>
 				</div>
 
-				<div className="flex items-center gap-3 mt-6 pt-6 border-t border-[#E9EAEB]">
+				<div className="flex items-center gap-3 mt-6 pt-6 border-t border-[var(--cl-line)]">
 					<button
 						onClick={onClose}
-						className="flex-1 px-4 py-2.5 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors font-medium"
+						className="flex-1 px-4 py-2.5 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors font-medium"
 					>
 						Cancel
 					</button>
@@ -186,29 +186,29 @@ export function ExportTransactionsModal({
 
 	return (
 		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-			<div className="bg-white rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
+			<div className="bg-[var(--cl-surface)] rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center gap-3">
-						<div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-							<Download className="w-6 h-6 text-blue-600" />
+						<div className="w-12 h-12 bg-[var(--cl-info-soft)] rounded-full flex items-center justify-center">
+							<Download className="w-6 h-6 text-[var(--cl-brand-600)]" />
 						</div>
 						<div>
-							<h3 className="text-lg font-semibold text-gray-900">Export Transactions</h3>
-							<p className="text-sm text-gray-600">Download transaction data</p>
+							<h3 className="text-lg font-semibold text-[var(--cl-text)]">Export Transactions</h3>
+							<p className="text-sm text-[var(--cl-text-2)]">Download transaction data</p>
 						</div>
 					</div>
 					<button
 						onClick={onClose}
-						className="p-2 hover:bg-gray-100 rounded-lg transition-all hover:scale-110 active:scale-90"
+						className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-all hover:scale-110 active:scale-90"
 					>
-						<X className="w-5 h-5 text-gray-400" />
+						<X className="w-5 h-5 text-[var(--cl-text-3)]" />
 					</button>
 				</div>
 
 				<div className="space-y-4">
 					{/* Export Format */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">Export Format</label>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Export Format</label>
 						<div className="grid grid-cols-2 gap-3">
 							{["CSV", "PDF"].map((format) => (
 								<button
@@ -216,8 +216,8 @@ export function ExportTransactionsModal({
 									onClick={() => setExportConfig({ ...exportConfig, format })}
 									className={`px-4 py-3 border-2 rounded-lg text-sm font-medium transition-all ${
 										exportConfig.format === format
-											? "border-[#014F01] bg-[#E7F6EC] text-[#014F01]"
-											: "border-[#E9EAEB] bg-white text-gray-700 hover:bg-[#FAFAFA]"
+											? "border-[#014F01] bg-[var(--cl-brand-50)] text-[#014F01]"
+											: "border-[var(--cl-line)] bg-[var(--cl-surface)] text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)]"
 									}`}
 								>
 									<FileText className="w-5 h-5 mx-auto mb-1" />
@@ -229,11 +229,11 @@ export function ExportTransactionsModal({
 
 					{/* Date Range */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Date Range</label>
 						<select
 							value={exportConfig.dateRange}
 							onChange={(e) => setExportConfig({ ...exportConfig, dateRange: e.target.value })}
-							className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+							className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 						>
 							<option value="today">Today</option>
 							<option value="last7days">Last 7 Days</option>
@@ -248,32 +248,32 @@ export function ExportTransactionsModal({
 					{exportConfig.dateRange === "custom" && (
 						<div className="grid grid-cols-2 gap-3">
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Start Date</label>
 								<input
 									type="date"
 									value={exportConfig.customStartDate}
 									onChange={(e) =>
 										setExportConfig({ ...exportConfig, customStartDate: e.target.value })
 									}
-									className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+									className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 								/>
 							</div>
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">End Date</label>
 								<input
 									type="date"
 									value={exportConfig.customEndDate}
 									onChange={(e) =>
 										setExportConfig({ ...exportConfig, customEndDate: e.target.value })
 									}
-									className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+									className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 								/>
 							</div>
 						</div>
 					)}
 
 					{/* Include Current Filters */}
-					<div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+					<div className="flex items-center gap-3 p-4 bg-[var(--cl-bg)] border border-[var(--cl-line)] rounded-lg">
 						<input
 							type="checkbox"
 							id="includeFilters"
@@ -281,34 +281,34 @@ export function ExportTransactionsModal({
 							onChange={(e) =>
 								setExportConfig({ ...exportConfig, includeFilters: e.target.checked })
 							}
-							className="w-4 h-4 rounded border-gray-300 text-[#014F01] focus:ring-[#014F01]"
+							className="w-4 h-4 rounded border-[var(--cl-line)] text-[#014F01] focus:ring-[#014F01]"
 						/>
 						<label htmlFor="includeFilters" className="flex-1">
-							<span className="text-sm font-medium text-gray-900 block">
+							<span className="text-sm font-medium text-[var(--cl-text)] block">
 								Apply current filters
 							</span>
-							<span className="text-xs text-gray-600">
+							<span className="text-xs text-[var(--cl-text-2)]">
 								Export only transactions matching current filters
 							</span>
 						</label>
 					</div>
 
 					{/* Summary */}
-					<div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-						<div className="flex items-center gap-2 text-sm text-blue-900">
+					<div className="p-4 bg-[var(--cl-info-soft)] border border-[var(--cl-brand-200)] rounded-lg">
+						<div className="flex items-center gap-2 text-sm text-[var(--cl-info)]">
 							<CheckCircle2 className="w-4 h-4" />
 							<span className="font-medium">Ready to export</span>
 						</div>
-						<p className="text-xs text-blue-700 mt-1">
+						<p className="text-xs text-[var(--cl-brand-700)] mt-1">
 							Estimated: ~1,234 transactions • File size: ~250 KB
 						</p>
 					</div>
 				</div>
 
-				<div className="flex items-center gap-3 mt-6 pt-6 border-t border-[#E9EAEB]">
+				<div className="flex items-center gap-3 mt-6 pt-6 border-t border-[var(--cl-line)]">
 					<button
 						onClick={onClose}
-						className="flex-1 px-4 py-2.5 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors font-medium"
+						className="flex-1 px-4 py-2.5 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors font-medium"
 					>
 						Cancel
 					</button>
@@ -343,22 +343,22 @@ export function TransferModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
 	return (
 		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-			<div className="bg-white rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
+			<div className="bg-[var(--cl-surface)] rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center gap-3">
 						<div className="w-12 h-12 bg-gradient-to-br from-[#014F01] to-[#B8E632] rounded-full flex items-center justify-center">
 							<Send className="w-6 h-6 text-white" />
 						</div>
 						<div>
-							<h3 className="text-lg font-semibold text-gray-900">Transfer USDT/USDC</h3>
-							<p className="text-sm text-gray-600">Send funds to external wallet</p>
+							<h3 className="text-lg font-semibold text-[var(--cl-text)]">Transfer USDT/USDC</h3>
+							<p className="text-sm text-[var(--cl-text-2)]">Send funds to external wallet</p>
 						</div>
 					</div>
 					<button
 						onClick={onClose}
-						className="p-2 hover:bg-gray-100 rounded-lg transition-all hover:scale-110 active:scale-90"
+						className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-all hover:scale-110 active:scale-90"
 					>
-						<X className="w-5 h-5 text-gray-400" />
+						<X className="w-5 h-5 text-[var(--cl-text-3)]" />
 					</button>
 				</div>
 
@@ -366,22 +366,22 @@ export function TransferModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 					{/* Currency & Network */}
 					<div className="grid grid-cols-2 gap-3">
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+							<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Currency</label>
 							<select
 								value={formData.currency}
 								onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-								className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							>
 								<option value="USDT">USDT</option>
 								<option value="USDC">USDC</option>
 							</select>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Network</label>
+							<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Network</label>
 							<select
 								value={formData.network}
 								onChange={(e) => setFormData({ ...formData, network: e.target.value })}
-								className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							>
 								<option value="TRC20">TRC20</option>
 								<option value="BEP20">BEP20</option>
@@ -392,33 +392,33 @@ export function TransferModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
 					{/* To Address */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							To Address <span className="text-red-600">*</span>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							To Address <span className="text-[var(--cl-down)]">*</span>
 						</label>
 						<input
 							type="text"
 							value={formData.toAddress}
 							onChange={(e) => setFormData({ ...formData, toAddress: e.target.value })}
 							placeholder="Enter wallet address..."
-							className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent font-mono"
+							className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent font-mono"
 						/>
 					</div>
 
 					{/* Amount */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Amount <span className="text-red-600">*</span>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							Amount <span className="text-[var(--cl-down)]">*</span>
 						</label>
 						<div className="relative">
-							<DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+							<DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--cl-text-3)]" />
 							<input
 								type="number"
 								value={formData.amount}
 								onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
 								placeholder="0.00"
-								className="w-full pl-10 pr-20 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full pl-10 pr-20 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							/>
-							<span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
+							<span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[var(--cl-text-3)]">
 								Available: $15,200
 							</span>
 						</div>
@@ -426,20 +426,20 @@ export function TransferModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
 					{/* Purpose */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">Purpose</label>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Purpose</label>
 						<textarea
 							value={formData.purpose}
 							onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
 							placeholder="Enter purpose for transfer..."
-							className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+							className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							rows={2}
 						/>
 					</div>
 
 					{/* 2FA Code */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							2FA Code <span className="text-red-600">*</span>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							2FA Code <span className="text-[var(--cl-down)]">*</span>
 						</label>
 						<input
 							type="text"
@@ -447,7 +447,7 @@ export function TransferModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 							onChange={(e) => setFormData({ ...formData, twoFACode: e.target.value })}
 							placeholder="Enter 6-digit code"
 							maxLength={6}
-							className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent text-center text-2xl tracking-widest font-mono"
+							className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent text-center text-2xl tracking-widest font-mono"
 						/>
 					</div>
 
@@ -463,10 +463,10 @@ export function TransferModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 					</div>
 				</div>
 
-				<div className="flex items-center gap-3 mt-6 pt-6 border-t border-[#E9EAEB]">
+				<div className="flex items-center gap-3 mt-6 pt-6 border-t border-[var(--cl-line)]">
 					<button
 						onClick={onClose}
-						className="flex-1 px-4 py-2.5 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors font-medium"
+						className="flex-1 px-4 py-2.5 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors font-medium"
 					>
 						Cancel
 					</button>
@@ -501,33 +501,33 @@ export function ReconcileModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
 	return (
 		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-			<div className="bg-white rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
+			<div className="bg-[var(--cl-surface)] rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center gap-3">
 						<div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
 							<RefreshCw className="w-6 h-6 text-purple-600" />
 						</div>
 						<div>
-							<h3 className="text-lg font-semibold text-gray-900">Reconcile Bank Float</h3>
-							<p className="text-sm text-gray-600">Match bank balance with system</p>
+							<h3 className="text-lg font-semibold text-[var(--cl-text)]">Reconcile Bank Float</h3>
+							<p className="text-sm text-[var(--cl-text-2)]">Match bank balance with system</p>
 						</div>
 					</div>
 					<button
 						onClick={onClose}
-						className="p-2 hover:bg-gray-100 rounded-lg transition-all hover:scale-110 active:scale-90"
+						className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-all hover:scale-110 active:scale-90"
 					>
-						<X className="w-5 h-5 text-gray-400" />
+						<X className="w-5 h-5 text-[var(--cl-text-3)]" />
 					</button>
 				</div>
 
 				<div className="space-y-4">
 					{/* System Balance (Read-only) */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
 							System Balance (Current)
 						</label>
-						<div className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
-							<p className="text-2xl font-bold text-gray-900">
+						<div className="px-4 py-3 bg-[var(--cl-bg)] border border-[var(--cl-line)] rounded-lg">
+							<p className="text-2xl font-bold text-[var(--cl-text)]">
 								₦{parseFloat(reconcileData.systemBalance).toLocaleString()}
 							</p>
 						</div>
@@ -535,11 +535,11 @@ export function ReconcileModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
 					{/* Bank Balance (Input) */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Actual Bank Balance <span className="text-red-600">*</span>
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							Actual Bank Balance <span className="text-[var(--cl-down)]">*</span>
 						</label>
 						<div className="relative">
-							<span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">
+							<span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--cl-text-3)] font-medium">
 								₦
 							</span>
 							<input
@@ -549,7 +549,7 @@ export function ReconcileModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
 									setReconcileData({ ...reconcileData, bankBalance: e.target.value })
 								}
 								placeholder="0.00"
-								className="w-full pl-8 pr-4 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full pl-8 pr-4 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							/>
 						</div>
 					</div>
@@ -559,25 +559,25 @@ export function ReconcileModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
 						<div
 							className={`p-4 rounded-lg border-2 ${
 								Math.abs(difference) < 1
-									? "bg-green-50 border-green-200"
+									? "bg-[var(--cl-up-soft)] border-[var(--cl-up)]"
 									: "bg-orange-50 border-orange-200"
 							}`}
 						>
 							<div className="flex items-center justify-between">
-								<span className="text-sm font-medium text-gray-700">Difference</span>
+								<span className="text-sm font-medium text-[var(--cl-text-2)]">Difference</span>
 								<span
 									className={`text-2xl font-bold ${
 										difference === 0
-											? "text-green-700"
+											? "text-[var(--cl-up)]"
 											: difference > 0
 											? "text-orange-700"
-											: "text-red-700"
+											: "text-[var(--cl-down)]"
 									}`}
 								>
 									{difference >= 0 ? "+" : ""}₦{Math.abs(difference).toLocaleString()}
 								</span>
 							</div>
-							<p className="text-xs text-gray-600 mt-2">
+							<p className="text-xs text-[var(--cl-text-2)] mt-2">
 								{Math.abs(difference) < 1
 									? "✓ Balances match"
 									: difference > 0
@@ -589,23 +589,23 @@ export function ReconcileModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
 					{/* Notes */}
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
+						<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
 							Reconciliation Notes
 						</label>
 						<textarea
 							value={reconcileData.notes}
 							onChange={(e) => setReconcileData({ ...reconcileData, notes: e.target.value })}
 							placeholder="Add notes about this reconciliation..."
-							className="w-full px-3 py-2.5 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+							className="w-full px-3 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 							rows={3}
 						/>
 					</div>
 				</div>
 
-				<div className="flex items-center gap-3 mt-6 pt-6 border-t border-[#E9EAEB]">
+				<div className="flex items-center gap-3 mt-6 pt-6 border-t border-[var(--cl-line)]">
 					<button
 						onClick={onClose}
-						className="flex-1 px-4 py-2.5 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors font-medium"
+						className="flex-1 px-4 py-2.5 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors font-medium"
 					>
 						Cancel
 					</button>

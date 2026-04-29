@@ -141,22 +141,22 @@ export default function UserDetailPage() {
 	return (
 		<div className="space-y-6">
 			{/* Breadcrumb */}
-			<div className="flex items-center gap-2 text-sm text-gray-600">
+			<div className="flex items-center gap-2 text-sm text-[var(--cl-text-2)]">
 				<button
 					onClick={() => router.push("/admin")}
-					className="hover:text-gray-900 transition-colors"
+					className="hover:text-[var(--cl-text)] transition-colors"
 				>
 					Dashboard
 				</button>
 				<span>/</span>
 				<button
 					onClick={() => router.push("/admin/users")}
-					className="hover:text-gray-900 transition-colors"
+					className="hover:text-[var(--cl-text)] transition-colors"
 				>
 					Users
 				</button>
 				<span>/</span>
-				<span className="text-gray-900 font-medium">Jacob</span>
+				<span className="text-[var(--cl-text)] font-medium">Jacob</span>
 			</div>
 
 			{/* Header with Back Button and User Info */}
@@ -164,38 +164,38 @@ export default function UserDetailPage() {
 				<div className="flex items-start gap-4">
 					<button
 						onClick={() => router.push("/admin/users")}
-						className="p-2 hover:bg-[#FAFAFA] rounded-lg transition-colors"
+						className="p-2 hover:bg-[var(--cl-bg)] rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-gray-600" />
+						<ArrowLeft className="w-5 h-5 text-[var(--cl-text-2)]" />
 					</button>
 					<div className="flex items-start gap-3">
 						<div className="relative">
-							<div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-								<User className="w-8 h-8 text-gray-500" />
+							<div className="w-16 h-16 bg-[var(--cl-surface-2)] rounded-full flex items-center justify-center">
+								<User className="w-8 h-8 text-[var(--cl-text-3)]" />
 							</div>
-							<div className="absolute bottom-0 right-0 w-5 h-5 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center">
+							<div className="absolute bottom-0 right-0 w-5 h-5 bg-[var(--cl-info-soft)]0 rounded-full border-2 border-white flex items-center justify-center">
 								<Check className="w-3 h-3 text-white" strokeWidth={3} />
 							</div>
 						</div>
 						<div>
-							<h1 className="text-2xl font-semibold text-gray-900">{user.name}</h1>
+							<h1 className="text-2xl font-semibold text-[var(--cl-text)]">{user.name}</h1>
 							<div className="flex items-center gap-2 mt-1">
 								<span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
 									user.status === "Active"
-										? "bg-green-50 text-green-700"
+										? "bg-[var(--cl-up-soft)] text-[var(--cl-up)]"
 										: "bg-orange-50 text-orange-700"
 								}`}>
 									<span className={`w-1.5 h-1.5 rounded-full ${
-										user.status === "Active" ? "bg-green-600" : "bg-orange-600"
+										user.status === "Active" ? "bg-[var(--cl-up)]" : "bg-orange-600"
 									}`} />
 									{user.status}
 								</span>
 								<span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
 									user.kycStatus === "Approved"
-										? "bg-green-50 text-green-700"
+										? "bg-[var(--cl-up-soft)] text-[var(--cl-up)]"
 										: user.kycStatus === "Pending"
 										? "bg-orange-50 text-orange-700"
-										: "bg-red-50 text-red-700"
+										: "bg-[var(--cl-down-soft)] text-[var(--cl-down)]"
 								}`}>
 									<CheckCircle2 className="w-3 h-3" />
 									KYC {user.kycStatus}
@@ -209,24 +209,24 @@ export default function UserDetailPage() {
 				<div className="flex items-center gap-3">
 					<button
 						onClick={() => handleAction("archive")}
-						className="px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors"
+						className="px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 					>
 						Archive
 					</button>
 					<button
 						onClick={() => handleAction("suspend")}
-						className="px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors"
+						className="px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 					>
 						Suspend
 					</button>
 					<button
 						onClick={() => handleAction("reject-kyc")}
-						className="px-4 py-2 bg-white border border-[#E9EAEB] text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2"
+						className="px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-down)] rounded-lg hover:bg-[var(--cl-down-soft)] transition-colors flex items-center gap-2"
 					>
 						<X className="w-4 h-4" />
 						Reject KYC
 					</button>
-					<button className="px-4 py-2 bg-[#9EE76E] text-gray-900 rounded-lg hover:bg-[#9EE76E]/90 transition-colors flex items-center gap-2">
+					<button className="px-4 py-2 bg-[#9EE76E] text-[var(--cl-text)] rounded-lg hover:bg-[#9EE76E]/90 transition-colors flex items-center gap-2">
 						<Check className="w-4 h-4" />
 						Verify KYC
 					</button>
@@ -234,18 +234,18 @@ export default function UserDetailPage() {
 			</div>
 
 			{/* Account Health & Risk Score */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-						<Shield className="w-5 h-5 text-gray-600" />
+					<h2 className="text-lg font-semibold text-[var(--cl-text)] flex items-center gap-2">
+						<Shield className="w-5 h-5 text-[var(--cl-text-2)]" />
 						Account Health & Security
 					</h2>
 					<span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium ${
 						user.riskScore === "Low"
-							? "bg-green-50 text-green-700 border border-green-200"
+							? "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border border-[var(--cl-up)]"
 							: user.riskScore === "Medium"
 							? "bg-orange-50 text-orange-700 border border-orange-200"
-							: "bg-red-50 text-red-700 border border-red-200"
+							: "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border border-[var(--cl-down)]"
 					}`}>
 						<Shield className="w-4 h-4" />
 						Risk: {user.riskScore}
@@ -254,12 +254,12 @@ export default function UserDetailPage() {
 
 				<div className="grid grid-cols-4 gap-6">
 					<div className="flex items-start gap-3">
-						<div className="p-2 bg-blue-50 rounded-lg">
-							<Clock className="w-5 h-5 text-blue-600" />
+						<div className="p-2 bg-[var(--cl-info-soft)] rounded-lg">
+							<Clock className="w-5 h-5 text-[var(--cl-brand-600)]" />
 						</div>
 						<div>
-							<p className="text-xs text-gray-600 mb-1">Last Login</p>
-							<p className="text-sm font-medium text-gray-900">{user.lastLogin}</p>
+							<p className="text-xs text-[var(--cl-text-2)] mb-1">Last Login</p>
+							<p className="text-sm font-medium text-[var(--cl-text)]">{user.lastLogin}</p>
 						</div>
 					</div>
 					<div className="flex items-start gap-3">
@@ -267,17 +267,17 @@ export default function UserDetailPage() {
 							<Monitor className="w-5 h-5 text-purple-600" />
 						</div>
 						<div>
-							<p className="text-xs text-gray-600 mb-1">Device</p>
-							<p className="text-sm font-medium text-gray-900">{user.deviceInfo}</p>
+							<p className="text-xs text-[var(--cl-text-2)] mb-1">Device</p>
+							<p className="text-sm font-medium text-[var(--cl-text)]">{user.deviceInfo}</p>
 						</div>
 					</div>
 					<div className="flex items-start gap-3">
-						<div className="p-2 bg-green-50 rounded-lg">
-							<MapPin className="w-5 h-5 text-green-600" />
+						<div className="p-2 bg-[var(--cl-up-soft)] rounded-lg">
+							<MapPin className="w-5 h-5 text-[var(--cl-up)]" />
 						</div>
 						<div>
-							<p className="text-xs text-gray-600 mb-1">Location</p>
-							<p className="text-sm font-medium text-gray-900">{user.location}</p>
+							<p className="text-xs text-[var(--cl-text-2)] mb-1">Location</p>
+							<p className="text-sm font-medium text-[var(--cl-text)]">{user.location}</p>
 						</div>
 					</div>
 					<div className="flex items-start gap-3">
@@ -285,63 +285,63 @@ export default function UserDetailPage() {
 							<MapPin className="w-5 h-5 text-orange-600" />
 						</div>
 						<div>
-							<p className="text-xs text-gray-600 mb-1">IP Address</p>
-							<p className="text-sm font-medium text-gray-900">{user.ipAddress}</p>
+							<p className="text-xs text-[var(--cl-text-2)] mb-1">IP Address</p>
+							<p className="text-sm font-medium text-[var(--cl-text)]">{user.ipAddress}</p>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			{/* User Info Card - Grid Layout */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
-				<h2 className="text-lg font-semibold text-gray-900 mb-6">Contact Information</h2>
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-6">Contact Information</h2>
 				<div className="grid grid-cols-2 gap-6">
 					<div className="flex items-center gap-3">
-						<div className="p-2 bg-gray-50 rounded-lg">
-							<Mail className="w-5 h-5 text-gray-600" />
+						<div className="p-2 bg-[var(--cl-bg)] rounded-lg">
+							<Mail className="w-5 h-5 text-[var(--cl-text-2)]" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs text-gray-600 mb-1">Email Address</p>
-							<p className="text-sm font-medium text-gray-900">{user.email}</p>
+							<p className="text-xs text-[var(--cl-text-2)] mb-1">Email Address</p>
+							<p className="text-sm font-medium text-[var(--cl-text)]">{user.email}</p>
 						</div>
 						<button
 							onClick={() => copyToClipboard(user.email)}
-							className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+							className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 						>
-							<Copy className="w-4 h-4 text-gray-400" />
+							<Copy className="w-4 h-4 text-[var(--cl-text-3)]" />
 						</button>
 					</div>
 					<div className="flex items-center gap-3">
-						<div className="p-2 bg-gray-50 rounded-lg">
-							<Phone className="w-5 h-5 text-gray-600" />
+						<div className="p-2 bg-[var(--cl-bg)] rounded-lg">
+							<Phone className="w-5 h-5 text-[var(--cl-text-2)]" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs text-gray-600 mb-1">Phone Number</p>
-							<p className="text-sm font-medium text-gray-900">{user.phone}</p>
+							<p className="text-xs text-[var(--cl-text-2)] mb-1">Phone Number</p>
+							<p className="text-sm font-medium text-[var(--cl-text)]">{user.phone}</p>
 						</div>
 						<button
 							onClick={() => copyToClipboard(user.phone)}
-							className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+							className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 						>
-							<Copy className="w-4 h-4 text-gray-400" />
+							<Copy className="w-4 h-4 text-[var(--cl-text-3)]" />
 						</button>
 					</div>
 					<div className="flex items-center gap-3">
-						<div className="p-2 bg-gray-50 rounded-lg">
-							<CalendarDays className="w-5 h-5 text-gray-600" />
+						<div className="p-2 bg-[var(--cl-bg)] rounded-lg">
+							<CalendarDays className="w-5 h-5 text-[var(--cl-text-2)]" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs text-gray-600 mb-1">Member Since</p>
-							<p className="text-sm font-medium text-gray-900">{user.joinDate}</p>
+							<p className="text-xs text-[var(--cl-text-2)] mb-1">Member Since</p>
+							<p className="text-sm font-medium text-[var(--cl-text)]">{user.joinDate}</p>
 						</div>
 					</div>
 					<div className="flex items-center gap-3">
-						<div className="p-2 bg-gray-50 rounded-lg">
-							<TrendingUp className="w-5 h-5 text-gray-600" />
+						<div className="p-2 bg-[var(--cl-bg)] rounded-lg">
+							<TrendingUp className="w-5 h-5 text-[var(--cl-text-2)]" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs text-gray-600 mb-1">Total Volume</p>
-							<p className="text-sm font-medium text-gray-900">{user.volume}</p>
+							<p className="text-xs text-[var(--cl-text-2)] mb-1">Total Volume</p>
+							<p className="text-sm font-medium text-[var(--cl-text)]">{user.volume}</p>
 						</div>
 					</div>
 				</div>
@@ -350,45 +350,45 @@ export default function UserDetailPage() {
 			{/* Wallets with Frozen Funds Warning */}
 			<div className="grid grid-cols-2 gap-6">
 				{/* USDT Wallet */}
-				<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 					<div className="flex items-center justify-between mb-4">
-						<span className="text-sm text-gray-600">USDT Wallet</span>
+						<span className="text-sm text-[var(--cl-text-2)]">USDT Wallet</span>
 						<button
 							onClick={() => copyToClipboard(user.usdtWallet)}
-							className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+							className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 							title="Copy balance"
 						>
-							<Copy className="w-4 h-4 text-gray-400" />
+							<Copy className="w-4 h-4 text-[var(--cl-text-3)]" />
 						</button>
 					</div>
-					<div className="text-3xl font-bold text-gray-900 mb-1">
+					<div className="text-3xl font-bold text-[var(--cl-text)] mb-1">
 						{user.usdtWallet}
 					</div>
-					<div className="text-sm text-green-600 font-medium">{user.usdtChange}</div>
+					<div className="text-sm text-[var(--cl-up)] font-medium">{user.usdtChange}</div>
 				</div>
 
 				{/* Naira Wallet with Frozen Funds */}
-				<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 					<div className="flex items-center justify-between mb-4">
-						<span className="text-sm text-gray-600">Naira Wallet</span>
+						<span className="text-sm text-[var(--cl-text-2)]">Naira Wallet</span>
 						<button
 							onClick={() => copyToClipboard(user.nairaWallet)}
-							className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+							className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 							title="Copy balance"
 						>
-							<Copy className="w-4 h-4 text-gray-400" />
+							<Copy className="w-4 h-4 text-[var(--cl-text-3)]" />
 						</button>
 					</div>
-					<div className="text-3xl font-bold text-gray-900 mb-1">
+					<div className="text-3xl font-bold text-[var(--cl-text)] mb-1">
 						{user.nairaWallet}
 					</div>
 
 					{/* Frozen Funds Warning */}
-					<div className="mt-4 pt-4 border-t border-[#E9EAEB]">
+					<div className="mt-4 pt-4 border-t border-[var(--cl-line)]">
 						<div className="flex items-center justify-between mb-2">
 							<div className="flex items-center gap-2">
 								<AlertTriangle className="w-4 h-4 text-orange-600" />
-								<span className="text-sm font-medium text-gray-900">Frozen Funds</span>
+								<span className="text-sm font-medium text-[var(--cl-text)]">Frozen Funds</span>
 							</div>
 							<span className="text-lg font-bold text-orange-600">{user.frozenFund}</span>
 						</div>
@@ -411,25 +411,25 @@ export default function UserDetailPage() {
 			</div>
 
 			{/* KYC Documents with Click to View */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
-				<h2 className="text-lg font-semibold text-gray-900 mb-6">KYC Documents</h2>
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-6">KYC Documents</h2>
 				<div className="grid grid-cols-2 gap-8">
 					<div className="space-y-3">
-						<div className="flex justify-between items-center py-2 border-b border-gray-100">
-							<span className="text-sm text-gray-600">Document Type</span>
-							<span className="text-sm font-medium text-gray-900">{user.kycDocumentType}</span>
+						<div className="flex justify-between items-center py-2 border-b border-[var(--cl-line)]">
+							<span className="text-sm text-[var(--cl-text-2)]">Document Type</span>
+							<span className="text-sm font-medium text-[var(--cl-text)]">{user.kycDocumentType}</span>
 						</div>
-						<div className="flex justify-between items-center py-2 border-b border-gray-100">
-							<span className="text-sm text-gray-600">ID Number</span>
-							<span className="text-sm font-medium text-gray-900">{user.kycIdNumber}</span>
+						<div className="flex justify-between items-center py-2 border-b border-[var(--cl-line)]">
+							<span className="text-sm text-[var(--cl-text-2)]">ID Number</span>
+							<span className="text-sm font-medium text-[var(--cl-text)]">{user.kycIdNumber}</span>
 						</div>
-						<div className="flex justify-between items-center py-2 border-b border-gray-100">
-							<span className="text-sm text-gray-600">Upload Date</span>
-							<span className="text-sm font-medium text-gray-900">{user.kycUploadDate}</span>
+						<div className="flex justify-between items-center py-2 border-b border-[var(--cl-line)]">
+							<span className="text-sm text-[var(--cl-text-2)]">Upload Date</span>
+							<span className="text-sm font-medium text-[var(--cl-text)]">{user.kycUploadDate}</span>
 						</div>
 						<div className="flex justify-between items-center py-2">
-							<span className="text-sm text-gray-600">Face Match</span>
-							<span className="inline-flex items-center gap-1.5 text-sm font-medium text-green-700">
+							<span className="text-sm text-[var(--cl-text-2)]">Face Match</span>
+							<span className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--cl-up)]">
 								<Check className="w-4 h-4" />
 								{user.kycFaceMatch}
 							</span>
@@ -441,11 +441,11 @@ export default function UserDetailPage() {
 								setSelectedDocument("document");
 								setShowKycModal(true);
 							}}
-							className="relative w-32 h-32 bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 hover:border-[#014F01] transition-all group"
+							className="relative w-32 h-32 bg-[var(--cl-surface-2)] rounded-lg overflow-hidden border-2 border-dashed border-[var(--cl-line)] hover:border-[#014F01] transition-all group"
 						>
 							<div className="w-full h-full flex flex-col items-center justify-center">
-								<ZoomIn className="w-6 h-6 text-gray-400 group-hover:text-[#014F01] mb-2" />
-								<span className="text-xs text-gray-600 group-hover:text-[#014F01]">View Document</span>
+								<ZoomIn className="w-6 h-6 text-[var(--cl-text-3)] group-hover:text-[#014F01] mb-2" />
+								<span className="text-xs text-[var(--cl-text-2)] group-hover:text-[#014F01]">View Document</span>
 							</div>
 						</button>
 						<button
@@ -453,11 +453,11 @@ export default function UserDetailPage() {
 								setSelectedDocument("selfie");
 								setShowKycModal(true);
 							}}
-							className="relative w-32 h-32 bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 hover:border-[#014F01] transition-all group"
+							className="relative w-32 h-32 bg-[var(--cl-surface-2)] rounded-lg overflow-hidden border-2 border-dashed border-[var(--cl-line)] hover:border-[#014F01] transition-all group"
 						>
 							<div className="w-full h-full flex flex-col items-center justify-center">
-								<ZoomIn className="w-6 h-6 text-gray-400 group-hover:text-[#014F01] mb-2" />
-								<span className="text-xs text-gray-600 group-hover:text-[#014F01]">View Selfie</span>
+								<ZoomIn className="w-6 h-6 text-[var(--cl-text-3)] group-hover:text-[#014F01] mb-2" />
+								<span className="text-xs text-[var(--cl-text-2)] group-hover:text-[#014F01]">View Selfie</span>
 							</div>
 						</button>
 					</div>
@@ -465,15 +465,15 @@ export default function UserDetailPage() {
 			</div>
 
 			{/* Recent Transactions - Fixed Amount Display */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
+					<h2 className="text-lg font-semibold text-[var(--cl-text)]">Recent Transactions</h2>
 					<div className="flex items-center gap-3">
-						<button className="flex items-center gap-2 px-3 py-2 border border-[#E9EAEB] rounded-lg text-sm text-gray-700 hover:bg-[#FAFAFA] transition-colors">
+						<button className="flex items-center gap-2 px-3 py-2 border border-[var(--cl-line)] rounded-lg text-sm text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] transition-colors">
 							<Calendar className="w-4 h-4" />
 							Select dates
 						</button>
-						<button className="flex items-center gap-2 px-3 py-2 border border-[#E9EAEB] rounded-lg text-sm text-gray-700 hover:bg-[#FAFAFA] transition-colors">
+						<button className="flex items-center gap-2 px-3 py-2 border border-[var(--cl-line)] rounded-lg text-sm text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] transition-colors">
 							<Filter className="w-4 h-4" />
 							Apply filter
 						</button>
@@ -485,24 +485,24 @@ export default function UserDetailPage() {
 						<div className="overflow-x-auto">
 							<table className="w-full">
 								<thead>
-									<tr className="border-b border-[#E9EAEB]">
-										<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Txn ID</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Type</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Amount</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Date</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Status</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Action</th>
+									<tr className="border-b border-[var(--cl-line)]">
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Txn ID</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Type</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Amount</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Date</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Status</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									{mockTransactions.map((tx, index) => (
-										<tr key={index} className="border-b border-[#E9EAEB] last:border-b-0 hover:bg-[#FAFAFA] transition-colors">
-											<td className="py-3 px-4 text-sm text-gray-900">{tx.id}</td>
+										<tr key={index} className="border-b border-[var(--cl-line)] last:border-b-0 hover:bg-[var(--cl-bg)] transition-colors">
+											<td className="py-3 px-4 text-sm text-[var(--cl-text)]">{tx.id}</td>
 											<td className="py-3 px-4">
 												<span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
 													tx.type === "Buy"
-														? "bg-green-50 text-green-700"
-														: "bg-red-50 text-red-700"
+														? "bg-[var(--cl-up-soft)] text-[var(--cl-up)]"
+														: "bg-[var(--cl-down-soft)] text-[var(--cl-down)]"
 												}`}>
 													{tx.type}
 												</span>
@@ -510,29 +510,29 @@ export default function UserDetailPage() {
 											<td className="py-3 px-4">
 												<span className={`text-sm font-semibold ${
 													tx.type === "Buy"
-														? "text-green-600"
-														: "text-red-600"
+														? "text-[var(--cl-up)]"
+														: "text-[var(--cl-down)]"
 												}`}>
 													{tx.type === "Buy" ? "+" : "-"}${tx.amount.toFixed(2)}
 												</span>
 											</td>
-											<td className="py-3 px-4 text-sm text-gray-900">{tx.date}</td>
+											<td className="py-3 px-4 text-sm text-[var(--cl-text)]">{tx.date}</td>
 											<td className="py-3 px-4">
 												<span className={`inline-flex items-center gap-1.5 text-xs font-medium ${
-													tx.status === 'Success' ? 'text-green-700' :
-													tx.status === 'Failed' ? 'text-red-600' :
+													tx.status === 'Success' ? 'text-[var(--cl-up)]' :
+													tx.status === 'Failed' ? 'text-[var(--cl-down)]' :
 													'text-orange-600'
 												}`}>
 													<span className={`w-1.5 h-1.5 rounded-full ${
-														tx.status === 'Success' ? 'bg-green-600' :
-														tx.status === 'Failed' ? 'bg-red-600' :
+														tx.status === 'Success' ? 'bg-[var(--cl-up)]' :
+														tx.status === 'Failed' ? 'bg-[var(--cl-down)]' :
 														'bg-orange-600'
 													}`} />
 													{tx.status}
 												</span>
 											</td>
 											<td className="py-3 px-4">
-												<button className="text-gray-400 hover:text-gray-600">
+												<button className="text-[var(--cl-text-3)] hover:text-[var(--cl-text-2)]">
 													<svg className="w-4 h-4" fill="currentColor" viewBox="0 0 4 16">
 														<circle cx="2" cy="2" r="2"/>
 														<circle cx="2" cy="8" r="2"/>
@@ -547,8 +547,8 @@ export default function UserDetailPage() {
 						</div>
 
 						{/* Pagination */}
-						<div className="flex items-center justify-between mt-6 pt-6 border-t border-[#E9EAEB]">
-							<button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAFAFA] rounded-lg transition-colors">
+						<div className="flex items-center justify-between mt-6 pt-6 border-t border-[var(--cl-line)]">
+							<button className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] rounded-lg transition-colors">
 								<ArrowLeft className="w-4 h-4" />
 								Previous
 							</button>
@@ -559,15 +559,15 @@ export default function UserDetailPage() {
 										disabled={page === "..."}
 										className={`w-8 h-8 text-sm rounded-lg transition-colors ${
 											page === 1
-												? "bg-[#E7F6EC] text-[#0D4222] font-medium"
-												: "text-gray-700 hover:bg-[#FAFAFA]"
+												? "bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)] font-medium"
+												: "text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)]"
 										} ${page === "..." ? "cursor-default" : ""}`}
 									>
 										{page}
 									</button>
 								))}
 							</div>
-							<button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAFAFA] rounded-lg transition-colors">
+							<button className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] rounded-lg transition-colors">
 								Next
 								<ArrowLeft className="w-4 h-4 rotate-180" />
 							</button>
@@ -575,48 +575,48 @@ export default function UserDetailPage() {
 					</>
 				) : (
 					<div className="text-center py-12">
-						<div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-							<TrendingUp className="w-8 h-8 text-gray-400" />
+						<div className="w-16 h-16 bg-[var(--cl-surface-2)] rounded-full flex items-center justify-center mx-auto mb-4">
+							<TrendingUp className="w-8 h-8 text-[var(--cl-text-3)]" />
 						</div>
-						<p className="text-gray-600 font-medium mb-2">No transactions yet</p>
-						<p className="text-sm text-gray-500">This user hasn't made any transactions</p>
+						<p className="text-[var(--cl-text-2)] font-medium mb-2">No transactions yet</p>
+						<p className="text-sm text-[var(--cl-text-3)]">This user hasn't made any transactions</p>
 					</div>
 				)}
 			</div>
 
 			{/* Support Tickets */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
-				<h2 className="text-lg font-semibold text-gray-900 mb-6">Support Tickets</h2>
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-6">Support Tickets</h2>
 				{mockSupportTickets.length > 0 ? (
 					<div className="overflow-x-auto">
 						<table className="w-full">
 							<thead>
-								<tr className="border-b border-[#E9EAEB]">
-									<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Ticket ID</th>
-									<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Subject</th>
-									<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Amount</th>
-									<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Date Opened</th>
-									<th className="text-left py-3 px-4 text-xs font-medium text-gray-600">Status</th>
+								<tr className="border-b border-[var(--cl-line)]">
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Ticket ID</th>
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Subject</th>
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Amount</th>
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Date Opened</th>
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)]">Status</th>
 								</tr>
 							</thead>
 							<tbody>
 								{mockSupportTickets.map((ticket) => (
-									<tr key={ticket.id} className="border-b border-[#E9EAEB] last:border-b-0 hover:bg-[#FAFAFA] transition-colors">
-										<td className="py-3 px-4 text-sm text-gray-900">{ticket.id}</td>
-										<td className="py-3 px-4 text-sm text-gray-900">{ticket.subject}</td>
-										<td className="py-3 px-4 text-sm text-gray-900">{ticket.amount}</td>
-										<td className="py-3 px-4 text-sm text-gray-900">{ticket.dateOpened}</td>
+									<tr key={ticket.id} className="border-b border-[var(--cl-line)] last:border-b-0 hover:bg-[var(--cl-bg)] transition-colors">
+										<td className="py-3 px-4 text-sm text-[var(--cl-text)]">{ticket.id}</td>
+										<td className="py-3 px-4 text-sm text-[var(--cl-text)]">{ticket.subject}</td>
+										<td className="py-3 px-4 text-sm text-[var(--cl-text)]">{ticket.amount}</td>
+										<td className="py-3 px-4 text-sm text-[var(--cl-text)]">{ticket.dateOpened}</td>
 										<td className="py-3 px-4">
 											<span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
 												ticket.status === "Resolved"
-													? "bg-green-50 text-green-700"
+													? "bg-[var(--cl-up-soft)] text-[var(--cl-up)]"
 													: ticket.status === "Pending"
 													? "bg-orange-50 text-orange-700"
-													: "bg-blue-50 text-blue-700"
+													: "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)]"
 											}`}>
 												<span className={`w-1.5 h-1.5 rounded-full ${
-													ticket.status === "Resolved" ? "bg-green-600" :
-													ticket.status === "Pending" ? "bg-orange-600" : "bg-blue-600"
+													ticket.status === "Resolved" ? "bg-[var(--cl-up)]" :
+													ticket.status === "Pending" ? "bg-orange-600" : "bg-[var(--cl-brand-600)]"
 												}`} />
 												{ticket.status}
 											</span>
@@ -628,38 +628,38 @@ export default function UserDetailPage() {
 					</div>
 				) : (
 					<div className="text-center py-12">
-						<div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-							<AlertTriangle className="w-8 h-8 text-gray-400" />
+						<div className="w-16 h-16 bg-[var(--cl-surface-2)] rounded-full flex items-center justify-center mx-auto mb-4">
+							<AlertTriangle className="w-8 h-8 text-[var(--cl-text-3)]" />
 						</div>
-						<p className="text-gray-600 font-medium mb-2">No support tickets</p>
-						<p className="text-sm text-gray-500">This user hasn't created any support tickets</p>
+						<p className="text-[var(--cl-text-2)] font-medium mb-2">No support tickets</p>
+						<p className="text-sm text-[var(--cl-text-3)]">This user hasn't created any support tickets</p>
 					</div>
 				)}
 			</div>
 
 			{/* Internal Admin Notes - Timeline Format */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-lg font-semibold text-gray-900">Internal Admin Notes</h2>
-					<button className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors">
+					<h2 className="text-lg font-semibold text-[var(--cl-text)]">Internal Admin Notes</h2>
+					<button className="flex items-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
 						<span className="text-lg leading-none">+</span>
 						Add a note
 					</button>
 				</div>
 				<div className="space-y-4">
 					{mockAdminNotes.map((note, index) => (
-						<div key={note.id} className="flex gap-4 pb-4 border-b border-gray-100 last:border-b-0 last:pb-0">
-							<div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-								<span className="text-xs font-medium text-gray-600">
+						<div key={note.id} className="flex gap-4 pb-4 border-b border-[var(--cl-line)] last:border-b-0 last:pb-0">
+							<div className="w-8 h-8 bg-[var(--cl-surface-2)] rounded-full flex items-center justify-center flex-shrink-0">
+								<span className="text-xs font-medium text-[var(--cl-text-2)]">
 									{note.author.split(' ')[1].charAt(0)}
 								</span>
 							</div>
 							<div className="flex-1">
 								<div className="flex items-center justify-between mb-1">
-									<span className="text-sm font-medium text-gray-900">{note.author}</span>
-									<span className="text-xs text-gray-500">{note.timestamp}</span>
+									<span className="text-sm font-medium text-[var(--cl-text)]">{note.author}</span>
+									<span className="text-xs text-[var(--cl-text-3)]">{note.timestamp}</span>
 								</div>
-								<p className="text-sm text-gray-700">{note.content}</p>
+								<p className="text-sm text-[var(--cl-text-2)]">{note.content}</p>
 							</div>
 						</div>
 					))}
@@ -669,39 +669,39 @@ export default function UserDetailPage() {
 			{/* KYC Document Modal */}
 			{showKycModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-white rounded-lg max-w-4xl w-full p-6">
+					<div className="bg-[var(--cl-surface)] rounded-lg max-w-4xl w-full p-6">
 						<div className="flex items-center justify-between mb-6">
-							<h3 className="text-lg font-semibold text-gray-900">
+							<h3 className="text-lg font-semibold text-[var(--cl-text)]">
 								KYC Document - {selectedDocument === "document" ? "ID Card" : "Selfie"}
 							</h3>
 							<div className="flex items-center gap-3">
-								<button className="flex items-center gap-2 px-3 py-2 border border-[#E9EAEB] rounded-lg text-sm text-gray-700 hover:bg-[#FAFAFA] transition-colors">
+								<button className="flex items-center gap-2 px-3 py-2 border border-[var(--cl-line)] rounded-lg text-sm text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] transition-colors">
 									<Download className="w-4 h-4" />
 									Download
 								</button>
 								<button
 									onClick={() => setShowKycModal(false)}
-									className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+									className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 								>
-									<X className="w-5 h-5 text-gray-600" />
+									<X className="w-5 h-5 text-[var(--cl-text-2)]" />
 								</button>
 							</div>
 						</div>
-						<div className="bg-gray-100 rounded-lg aspect-video flex items-center justify-center">
+						<div className="bg-[var(--cl-surface-2)] rounded-lg aspect-video flex items-center justify-center">
 							<div className="text-center">
-								<ZoomIn className="w-16 h-16 text-gray-400 mx-auto mb-3" />
-								<p className="text-gray-600">KYC Document Preview</p>
-								<p className="text-sm text-gray-500 mt-1">Document would be displayed here</p>
+								<ZoomIn className="w-16 h-16 text-[var(--cl-text-3)] mx-auto mb-3" />
+								<p className="text-[var(--cl-text-2)]">KYC Document Preview</p>
+								<p className="text-sm text-[var(--cl-text-3)] mt-1">Document would be displayed here</p>
 							</div>
 						</div>
 						<div className="flex items-center justify-end gap-3 mt-6">
 							<button
 								onClick={() => handleAction("reject-kyc")}
-								className="px-4 py-2 bg-white border border-[#E9EAEB] text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+								className="px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-down)] rounded-lg hover:bg-[var(--cl-down-soft)] transition-colors"
 							>
 								Reject Document
 							</button>
-							<button className="px-4 py-2 bg-[#9EE76E] text-gray-900 rounded-lg hover:bg-[#9EE76E]/90 transition-colors">
+							<button className="px-4 py-2 bg-[#9EE76E] text-[var(--cl-text)] rounded-lg hover:bg-[#9EE76E]/90 transition-colors">
 								Approve Document
 							</button>
 						</div>
@@ -712,26 +712,26 @@ export default function UserDetailPage() {
 			{/* Confirmation Modal for Actions */}
 			{showConfirmModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-white rounded-lg max-w-md w-full p-6">
+					<div className="bg-[var(--cl-surface)] rounded-lg max-w-md w-full p-6">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
 								<AlertTriangle className="w-6 h-6 text-orange-600" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-gray-900 capitalize">
+								<h3 className="text-lg font-semibold text-[var(--cl-text)] capitalize">
 									Confirm {showConfirmModal.replace("-", " ")}
 								</h3>
-								<p className="text-sm text-gray-600">This action requires confirmation</p>
+								<p className="text-sm text-[var(--cl-text-2)]">This action requires confirmation</p>
 							</div>
 						</div>
 						<div className="mb-6">
-							<label className="block text-sm font-medium text-gray-700 mb-2">
+							<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
 								Reason (required)
 							</label>
 							<textarea
 								value={confirmReason}
 								onChange={(e) => setConfirmReason(e.target.value)}
-								className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 								rows={3}
 								placeholder="Enter reason for this action..."
 							/>
@@ -739,14 +739,14 @@ export default function UserDetailPage() {
 						<div className="flex items-center gap-3">
 							<button
 								onClick={() => setShowConfirmModal(null)}
-								className="flex-1 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors"
+								className="flex-1 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 							>
 								Cancel
 							</button>
 							<button
 								onClick={confirmAction}
 								disabled={!confirmReason.trim()}
-								className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+								className="flex-1 px-4 py-2 bg-[var(--cl-down)] text-white rounded-lg hover:bg-[var(--cl-down)]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								Confirm
 							</button>
@@ -758,40 +758,40 @@ export default function UserDetailPage() {
 			{/* Release Frozen Funds Modal */}
 			{showReleaseFundsModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-white rounded-lg max-w-md w-full p-6">
+					<div className="bg-[var(--cl-surface)] rounded-lg max-w-md w-full p-6">
 						<div className="flex items-center gap-3 mb-4">
-							<div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-								<Check className="w-6 h-6 text-green-600" />
+							<div className="w-12 h-12 bg-[var(--cl-up-soft)] rounded-full flex items-center justify-center">
+								<Check className="w-6 h-6 text-[var(--cl-up)]" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-gray-900">Release Frozen Funds</h3>
-								<p className="text-sm text-gray-600">Confirm to release {user.frozenFund}</p>
+								<h3 className="text-lg font-semibold text-[var(--cl-text)]">Release Frozen Funds</h3>
+								<p className="text-sm text-[var(--cl-text-2)]">Confirm to release {user.frozenFund}</p>
 							</div>
 						</div>
-						<div className="bg-gray-50 rounded-lg p-4 mb-6">
+						<div className="bg-[var(--cl-bg)] rounded-lg p-4 mb-6">
 							<div className="flex justify-between mb-2">
-								<span className="text-sm text-gray-600">Amount to release:</span>
-								<span className="text-sm font-semibold text-gray-900">{user.frozenFund}</span>
+								<span className="text-sm text-[var(--cl-text-2)]">Amount to release:</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">{user.frozenFund}</span>
 							</div>
 							<div className="flex justify-between mb-2">
-								<span className="text-sm text-gray-600">Frozen by:</span>
-								<span className="text-sm text-gray-900">{user.frozenBy}</span>
+								<span className="text-sm text-[var(--cl-text-2)]">Frozen by:</span>
+								<span className="text-sm text-[var(--cl-text)]">{user.frozenBy}</span>
 							</div>
 							<div className="flex justify-between">
-								<span className="text-sm text-gray-600">Frozen on:</span>
-								<span className="text-sm text-gray-900">{user.frozenDate}</span>
+								<span className="text-sm text-[var(--cl-text-2)]">Frozen on:</span>
+								<span className="text-sm text-[var(--cl-text)]">{user.frozenDate}</span>
 							</div>
 						</div>
 						<div className="flex items-center gap-3">
 							<button
 								onClick={() => setShowReleaseFundsModal(false)}
-								className="flex-1 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors"
+								className="flex-1 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 							>
 								Cancel
 							</button>
 							<button
 								onClick={handleReleaseFunds}
-								className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+								className="flex-1 px-4 py-2 bg-[var(--cl-up)] text-white rounded-lg hover:bg-[var(--cl-up)]/90 transition-colors"
 							>
 								Release Funds
 							</button>

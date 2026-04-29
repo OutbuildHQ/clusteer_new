@@ -9,7 +9,7 @@ import MobileMenu from "./mobile-menu";
 export default function NavBar() {
 	return (
 		<nav>
-			<Container className="flex items-center py-[18px] px-4 w-full lg:h-[94px] bg-white">
+			<Container className="flex items-center py-[18px] px-4 w-full lg:h-[94px] bg-[var(--cl-surface)]">
 				<Link href="/" className="shrink-0">
 					<Image
 						src="/assets/icons/logo_with_name.svg"

@@ -9,7 +9,7 @@ interface BannerProps {
 
 export default function Banner({ title, description, link }: BannerProps) {
 	return (
-		<div className="bg-[#F0EBE6] border-l-4 border-light-green w-full rounded-lg p-4 gap-x-3 flex font-avenir-next text-sm">
+		<div className="bg-[#F0EBE6] border-l-4 border-light-green w-full rounded-lg p-4 gap-x-3 flex  text-sm">
 			<Info className="stroke-dark-green shrink-0 size-5" />
 			<div>
 				<span className="font-semibold">{title}</span>
@@ -18,7 +18,7 @@ export default function Banner({ title, description, link }: BannerProps) {
 					href={link}
 					className="text-start !p-0 mt-3 block !h-fit"
 				>
-					<div className="text-dark-green font-semibold flex items-center gap-x-2 italic">
+					<div className="text-[var(--cl-brand-500)] font-semibold flex items-center gap-x-2 italic">
 						Verify
 						<ArrowRight className="stroke-dark-green" />
 					</div>

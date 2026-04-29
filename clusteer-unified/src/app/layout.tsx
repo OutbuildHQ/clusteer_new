@@ -1,15 +1,9 @@
+import type { Metadata } from "next";
+import { Inter, JetBrains_Mono, Sora } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import ReactQueryClientProvider from "@/providers/ReactQueryClientProvider";
-import type { Metadata } from "next";
-import { Inter, Lexend } from "next/font/google";
-import localFont from "next/font/local";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import "./globals.css";
-
-const lexend = Lexend({
-	variable: "--font-lexend",
-	subsets: ["latin"],
-	display: "swap",
-});
 
 const inter = Inter({
 	variable: "--font-inter",
@@ -17,51 +11,38 @@ const inter = Inter({
 	display: "swap",
 });
 
-const avenirNext = localFont({
-	variable: "--font-avenir-next",
+const sora = Sora({
+	variable: "--font-sora",
+	subsets: ["latin"],
 	display: "swap",
-	src: [
-		{
-			path: "./../fonts/avenir-next/AvenirNext-UltraLight-11.ttf",
-			weight: "200",
-			style: "normal",
-		},
-		{
-			path: "./../fonts/avenir-next/AvenirNext-Medium-06.ttf",
-			weight: "500",
-			style: "normal",
-		},
-		{
-			path: "./../fonts/avenir-next/AvenirNext-DemiBold-03.ttf",
-			weight: "600",
-			style: "normal",
-		},
-		{
-			path: "./../fonts/avenir-next/AvenirNext-Regular-08.ttf",
-			weight: "400",
-			style: "normal",
-		},
-		{
-			path: "./../fonts/avenir-next/AvenirNext-Bold-01.ttf",
-			weight: "700",
-			style: "normal",
-		},
-		{
-			path: "./../fonts/avenir-next/AvenirNext-Heavy-09.ttf",
-			weight: "800",
-			style: "normal",
-		},
-	],
+	weight: ["400", "500", "600", "700", "800"],
+});
+
+const jetbrains = JetBrains_Mono({
+	variable: "--font-jetbrains",
+	subsets: ["latin"],
+	display: "swap",
 });
 
 export const metadata: Metadata = {
-	title: "Clusteer - Buy & Sell USDT to Naira Instantly | Fast Crypto Exchange Nigeria",
-	description: "Convert USDT to Naira in 5 minutes. Trusted by 1,000+ Nigerian traders. Real-time rates, transparent fees, secure escrow, and 24/7 support. Start trading cryptocurrency now!",
-	keywords: ["USDT to Naira", "Buy USDT Nigeria", "Sell USDT", "Crypto exchange Nigeria", "P2P trading Nigeria", "stablecoin exchange", "Bitcoin to Naira", "cryptocurrency Nigeria"],
+	title: "Clusteer — Bridge your Naira into the global digital economy",
+	description:
+		"Buy, sell and hold stablecoins with Naira. Licensed, audited, and built for Nigeria.",
+	keywords: [
+		"USDT to Naira",
+		"Buy USDT Nigeria",
+		"Sell USDT",
+		"Stablecoin exchange Nigeria",
+		"P2P trading Nigeria",
+		"stablecoin exchange",
+		"USDT to Naira exchange",
+		"stablecoin exchange Nigeria",
+	],
 	authors: [{ name: "Clusteer" }],
 	openGraph: {
-		title: "Clusteer - Buy & Sell USDT to Naira Instantly",
-		description: "Convert USDT to Naira in 5 minutes. Trusted by 1,000+ Nigerian traders. Real-time rates, transparent fees, and secure escrow.",
+		title: "Clusteer — Bridge your Naira into the global digital economy",
+		description:
+			"Buy, sell and hold stablecoins with Naira. Licensed, audited, and built for Nigeria.",
 		url: "https://clusteer.com",
 		siteName: "Clusteer",
 		type: "website",
@@ -70,14 +51,15 @@ export const metadata: Metadata = {
 				url: "/og-image.png",
 				width: 1200,
 				height: 630,
-				alt: "Clusteer - USDT to Naira Exchange",
+				alt: "Clusteer — Stablecoin Exchange Nigeria",
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Clusteer - Buy & Sell USDT to Naira Instantly",
-		description: "Convert USDT to Naira in 5 minutes. Trusted by 1,000+ Nigerian traders.",
+		title: "Clusteer — Bridge your Naira into the global digital economy",
+		description:
+			"Buy, sell and hold stablecoins with Naira. Licensed, audited, and built for Nigeria.",
 		images: ["/og-image.png"],
 	},
 	robots: {
@@ -94,23 +76,16 @@ export const viewport = {
 
 export default function RootLayout({
 	children,
-}: Readonly<{
-	children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
 	return (
-		<html lang="en" className="h-full">
+		<html lang="en" suppressHydrationWarning>
 			<body
-				className={`${lexend.variable} ${inter.variable} ${avenirNext.variable} antialiased h-full overflow-x-hidden`}
+				className={`${inter.variable} ${sora.variable} ${jetbrains.variable} antialiased min-h-screen`}
 			>
-				<ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-				<Toaster
-					position="bottom-center"
-					toastOptions={{
-						classNames: {
-							toast: "w-full",
-						},
-					}}
-				/>
+				<ThemeProvider>
+					<ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+					<Toaster position="bottom-center" richColors closeButton />
+				</ThemeProvider>
 			</body>
 		</html>
 	);

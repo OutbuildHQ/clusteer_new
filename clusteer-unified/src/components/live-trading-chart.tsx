@@ -50,11 +50,11 @@ export default function LiveTradingChart({ symbol = "USDT/NGN", transactionType 
       height: 300,
       grid: {
         vertLines: {
-          color: "#E9EAEB",
+          color: getComputedStyle(document.documentElement).getPropertyValue("--cl-line").trim() || "#E3E6EE",
           style: 1,
         },
         horzLines: {
-          color: "#E9EAEB",
+          color: getComputedStyle(document.documentElement).getPropertyValue("--cl-line").trim() || "#E3E6EE",
           style: 1,
         },
       },
@@ -72,14 +72,14 @@ export default function LiveTradingChart({ symbol = "USDT/NGN", transactionType 
         },
       },
       rightPriceScale: {
-        borderColor: "#E9EAEB",
+        borderColor: getComputedStyle(document.documentElement).getPropertyValue("--cl-line").trim() || "#E3E6EE",
         scaleMargins: {
           top: 0.1,
           bottom: 0.1,
         },
       },
       timeScale: {
-        borderColor: "#E9EAEB",
+        borderColor: getComputedStyle(document.documentElement).getPropertyValue("--cl-line").trim() || "#E3E6EE",
         timeVisible: true,
         secondsVisible: false,
       },

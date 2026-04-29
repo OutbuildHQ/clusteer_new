@@ -1,3 +1,59 @@
+/**
+ * Auth Utilities Tests
+ *
+ * @jest-environment node
+ */
+
+// Mock jose to avoid ESM import issues with next/jest
+const mockSign = jest.fn();
+const mockJwtVerify = jest.fn();
+
+jest.mock('jose', () => {
+  class MockSignJWT {
+    private payload: any;
+    private header: any;
+    constructor(payload: any) {
+      this.payload = payload;
+    }
+    setProtectedHeader(header: any) {
+      this.header = header;
+      return this;
+    }
+    setIssuedAt() {
+      return this;
+    }
+    setExpirationTime(_exp: string) {
+      return this;
+    }
+    async sign(_secret: any) {
+      const header = Buffer.from(JSON.stringify(this.header)).toString('base64');
+      const payload = Buffer.from(
+        JSON.stringify({
+          ...this.payload,
+          iat: Math.floor(Date.now() / 1000),
+          exp: Math.floor(Date.now() / 1000) + 604800,
+        })
+      ).toString('base64');
+      const signature = Buffer.from('test-signature').toString('base64');
+      return `${header}.${payload}.${signature}`;
+    }
+  }
+
+  return {
+    SignJWT: MockSignJWT,
+    jwtVerify: async (token: string, _secret: any) => {
+      const parts = token.split('.');
+      if (parts.length !== 3) throw new Error('Invalid token');
+      try {
+        const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+        return { payload };
+      } catch {
+        throw new Error('Invalid token');
+      }
+    },
+  };
+});
+
 import { generateToken, verifyToken, isTokenExpired } from '../auth';
 
 describe('Auth Utilities', () => {
@@ -35,15 +91,17 @@ describe('Auth Utilities', () => {
     });
 
     it('should return null for invalid token', async () => {
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
       const verified = await verifyToken('invalid-token');
-
       expect(verified).toBeNull();
+      errorSpy.mockRestore();
     });
 
     it('should return null for empty token', async () => {
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
       const verified = await verifyToken('');
-
       expect(verified).toBeNull();
+      errorSpy.mockRestore();
     });
   });
 

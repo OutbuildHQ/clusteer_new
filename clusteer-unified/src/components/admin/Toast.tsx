@@ -109,17 +109,17 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
 	};
 
 	const styles = {
-		success: "bg-green-50 border-green-200 text-green-800",
-		error: "bg-red-50 border-red-200 text-red-800",
+		success: "bg-[var(--cl-up-soft)] border-[var(--cl-up)] text-[var(--cl-up)]",
+		error: "bg-[var(--cl-down-soft)] border-[var(--cl-down)] text-[var(--cl-down)]",
 		warning: "bg-orange-50 border-orange-200 text-orange-800",
-		info: "bg-blue-50 border-blue-200 text-blue-800",
+		info: "bg-[var(--cl-info-soft)] border-[var(--cl-brand-200)] text-[var(--cl-info)]",
 	};
 
 	const iconStyles = {
-		success: "text-green-600",
-		error: "text-red-600",
+		success: "text-[var(--cl-up)]",
+		error: "text-[var(--cl-down)]",
 		warning: "text-orange-600",
-		info: "text-blue-600",
+		info: "text-[var(--cl-brand-600)]",
 	};
 
 	return (

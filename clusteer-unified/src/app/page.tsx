@@ -1,619 +1,713 @@
-import AnimatedButton from "@/components/animated-button";
-import NavBar from "@/components/nav-bar";
-import StableCoinConverter from "@/components/stable-coin-converter";
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FAQs, REASONS_TO_LOVE_CLUSTEER, REVIEWS } from "@/lib/data";
-import { getInitials } from "@/lib/utils";
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
-import CryptoCurrencies from "../../public/assets/images/crypto_currencies.svg";
-import Container from "../components/container";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView, useScroll, useTransform, AnimatePresence } from "motion/react";
+import { Logo } from "@/components/brand/logo";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { AssetLogo } from "@/components/primitives/asset-logo";
+import { ChainBadge } from "@/components/primitives/chain-badge";
+import { Num } from "@/components/primitives/num";
+import { HeroSwap } from "@/components/hero-swap";
+import { PixelRain } from "@/components/pixel-rain";
+import { ASSETS } from "@/lib/mock-data";
+import { formatMoney, formatPct } from "@/lib/utils";
+import {
+	ArrowRight,
+	ShieldCheck,
+	Zap,
+	Lock,
+	Smartphone,
+	Building2,
+	Repeat,
+	UserCheck,
+	CreditCard,
+	ArrowDownUp,
+	ChevronDown,
+	Shield,
+	Server,
+	KeyRound,
+	FileCheck,
+	Star,
+	Menu,
+	X,
+	Users,
+	TrendingUp,
+} from "lucide-react";
+
+/* ------------------------------------------------------------------ */
+/*  Shared animation config                                           */
+/* ------------------------------------------------------------------ */
+
+const fadeUp = {
+	initial: { opacity: 0, y: 24 },
+	animate: { opacity: 1, y: 0 },
+};
+const transition = { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] };
+const stagger = { staggerChildren: 0.08 };
+
+function Section({ children, className, id }: { children: React.ReactNode; className?: string; id?: string }) {
+	const ref = useRef(null);
+	const inView = useInView(ref, { once: true, margin: "-60px" });
+	return (
+		<motion.section
+			ref={ref}
+			id={id}
+			initial="initial"
+			animate={inView ? "animate" : "initial"}
+			variants={{ animate: { transition: stagger } }}
+			className={className}
+		>
+			{children}
+		</motion.section>
+	);
+}
+
+function FadeUp({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+	return (
+		<motion.div variants={fadeUp} transition={{ ...transition, delay }} className={className}>
+			{children}
+		</motion.div>
+	);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Counter animation                                                  */
+/* ------------------------------------------------------------------ */
+
+function Counter({ target, prefix = "", suffix = "" }: { target: number; prefix?: string; suffix?: string }) {
+	const ref = useRef(null);
+	const inView = useInView(ref, { once: true });
+	const [count, setCount] = useState(0);
+
+	useEffect(() => {
+		if (!inView) return;
+		let start = 0;
+		const end = target;
+		const duration = 1500;
+		const step = end / (duration / 16);
+		const timer = setInterval(() => {
+			start += step;
+			if (start >= end) {
+				setCount(end);
+				clearInterval(timer);
+			} else {
+				setCount(Math.floor(start));
+			}
+		}, 16);
+		return () => clearInterval(timer);
+	}, [inView, target]);
+
+	return (
+		<span ref={ref} className="tabular-nums font-display font-bold">
+			{prefix}{count.toLocaleString()}{suffix}
+		</span>
+	);
+}
+
+/* ------------------------------------------------------------------ */
+/*  FAQ Accordion                                                      */
+/* ------------------------------------------------------------------ */
+
+function FAQ({ q, a }: { q: string; a: string }) {
+	const [open, setOpen] = useState(false);
+	const id = q.replace(/\s+/g, "-").toLowerCase().slice(0, 30);
+	return (
+		<div className="border-b border-border">
+			<button
+				onClick={() => setOpen(!open)}
+				aria-expanded={open}
+				aria-controls={`faq-${id}`}
+				className="flex w-full items-center justify-between gap-4 py-4 sm:py-5 text-left text-sm sm:text-base font-medium hover:text-primary transition-colors"
+			>
+				{q}
+				<ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+			</button>
+			<AnimatePresence initial={false}>
+				{open && (
+					<motion.div
+						id={`faq-${id}`}
+						role="region"
+						aria-labelledby={`faq-btn-${id}`}
+						initial={{ height: 0, opacity: 0 }}
+						animate={{ height: "auto", opacity: 1 }}
+						exit={{ height: 0, opacity: 0 }}
+						transition={{ duration: 0.25 }}
+						className="overflow-hidden"
+					>
+						<p className="pb-5 text-sm text-muted-foreground leading-relaxed">{a}</p>
+					</motion.div>
+				)}
+			</AnimatePresence>
+		</div>
+	);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
 
 export default function Home() {
-	return (
-		<>
-			<NavBar />
-			<div className="pt-16 lg:pt-20 font-mona bg-[#FAFAFA]">
-				<Container>
-					<section className="flex flex-col items-center pb-16 lg:pb-20">
-						<header className="text-center">
-							<h1 className="font-bold text-[40px] leading-tight lg:text-6xl">
-								Buy & Sell USDT <br /> instantly to <br />
-								<span className="text-light-green">Naira</span>
-							</h1>
-							<p className="mt-6 lg:mt-8 text-[32px] leading-11 lg:text-4xl tracking-[-0.02em] font-avenir-next">
-								Trade stablecoins. Receive Naira. No delays.
-							</p>
-						</header>
-						<div className="mt-10 lg:mt-16 w-full">
-							<StableCoinConverter />
-						</div>
-						<AnimatedButton
-							className="h-[60px] max-w-[228px] rounded-[50px] mx-auto justify-center lg:hidden mt-10"
-							text="Get Started"
-							to="/signup"
-						/>
-						<div className="relative hidden lg:flex h-[60px] rounded-[50px] border-2 border-black font-avenir-next shrink-0 max-w-[456px] w-full overflow-hidden mt-12">
-							<AnimatedButton
-								className="!h-full rounded-none border-0 border-r-2 gap-x-3"
-								text="Buy USDT"
-								to="/login"
-							/>
-							<AnimatedButton
-								variant="secondary"
-								className="!h-full rounded-none border-0"
-								text="Sell USDT"
-								to="/login"
-							/>
-						</div>
-						<div className="flex flex-col md:flex-row justify-between gap-x-5 gap-y-8 mt-16 lg:mt-20 w-fit md:w-full mx-auto md:items-center font-avenir-next">
-							<div className="flex items-center gap-x-3.5 sm:gap-x-4">
-								<Image
-									className="lg:w-[67px] lg:h-[62px]"
-									src="/assets/icons/customer_service.svg"
-									alt="customer service icon"
-									width={62}
-									height={62}
-								/>
-								<span className="font-semibold text-xl">
-									24/7 customer support
-								</span>
-							</div>
-							<div className="flex items-center gap-x-3.5 sm:gap-x-4">
-								<Image
-									className="lg:w-[67px] lg:h-[62px]"
-									src="/assets/icons/retry.svg"
-									alt="customer service icon"
-									width={62}
-									height={62}
-								/>
-								<span className="font-semibold text-xl">Real-time rate</span>
-							</div>
-							<div className="flex items-center gap-x-3.5 sm:gap-x-4">
-								<Image
-									className="lg:w-[67px] lg:h-[62px]"
-									src="/assets/icons/fees.svg"
-									alt="customer service icon"
-									width={62}
-									height={62}
-								/>
-								<span className="font-semibold text-xl">Transparent fees</span>
-							</div>
-						</div>
-						<Image
-							className="mt-16 lg:mt-20 max-h-[388px] shrink"
-							src={CryptoCurrencies}
-							alt="an image of Multiple crypto currencies"
-						/>
-					</section>
-				</Container>
-				<Container id="how-it-works">
-					<section className="py-16 lg:py-20">
-						<header className="text-center">
-							<h2 className="font-bold text-[40px] leading-snug lg:text-5xl tracking-[-0.02em]">
-								How It Works
-							</h2>
-							<p className="mt-6 lg:mt-8 text-xl leading-[30px]">
-								Get started with Clusteer in four simple steps. <br className="hidden md:block" /> Fast, secure, and straightforward.
-							</p>
-						</header>
-						<div className="mt-12 lg:mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-							<div className="flex flex-col items-center text-center">
-								<div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-light-green border-2 border-black flex items-center justify-center text-2xl lg:text-3xl font-bold mb-6">
-									1
-								</div>
-								<h3 className="text-xl font-bold font-avenir-next mb-3">Sign Up</h3>
-								<p className="text-reviews-text font-lexend">
-									Create your free account with your email or phone number. Quick verification in minutes.
-								</p>
-							</div>
-							<div className="flex flex-col items-center text-center">
-								<div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-light-green border-2 border-black flex items-center justify-center text-2xl lg:text-3xl font-bold mb-6">
-									2
-								</div>
-								<h3 className="text-xl font-bold font-avenir-next mb-3">Choose Action</h3>
-								<p className="text-reviews-text font-lexend">
-									Select whether you want to buy USDT with Naira or sell USDT for Naira.
-								</p>
-							</div>
-							<div className="flex flex-col items-center text-center">
-								<div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-light-green border-2 border-black flex items-center justify-center text-2xl lg:text-3xl font-bold mb-6">
-									3
-								</div>
-								<h3 className="text-xl font-bold font-avenir-next mb-3">Complete Transaction</h3>
-								<p className="text-reviews-text font-lexend">
-									Send crypto to the provided wallet address or make payment via bank transfer.
-								</p>
-							</div>
-							<div className="flex flex-col items-center text-center">
-								<div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-light-green border-2 border-black flex items-center justify-center text-2xl lg:text-3xl font-bold mb-6">
-									4
-								</div>
-								<h3 className="text-xl font-bold font-avenir-next mb-3">Receive Funds</h3>
-								<p className="text-reviews-text font-lexend">
-									Get Naira in your bank account within 5 minutes or USDT in your wallet instantly.
-								</p>
-							</div>
-						</div>
-					</section>
-				</Container>
-				<Container id="features">
-					<section className="py-16 lg:py-20">
-						<header className="text-center">
-							<h2 className="font-bold text-[40px] leading-snug lg:text-5xl tracking-[-0.02em]">
-								Why you'll love Clusteer
-							</h2>
-							<p className="mt-6 lg:mt-8 text-xl leading-[30px]">
-								Enjoy fast, secure, and hassle-free trading on a platform designed
-								to make your <br className="hidden md:block" /> crypto-to-fiat
-								exchanges simple and trustworthy.
-							</p>
-						</header>
-						<ul className="grid grid-cols-1 text-center sm:grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-8 gap-y-8 lg:gap-y-16 mt-12 lg:mt-16 xl:p-8">
-							{REASONS_TO_LOVE_CLUSTEER.map((reason, _i) => (
-								<li
-									key={_i}
-									className="bg-[#F0EBE6] rounded-2xl px-6 pt-[54px] pb-8 max-w-[384px] relative flex flex-col justify-center mt-8"
-								>
-									<div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-										<Image
-											src={reason.image}
-											alt="Data transfer icon"
-											width={64}
-											height={64}
-										/>
-									</div>
-									<span className="text-xl font-bold font-avenir-next">
-										{reason.title}
-									</span>
-									<p className="mt-2 font-lexend text-base text-real-black">
-										{reason.content}
-									</p>
-								</li>
-							))}
-						</ul>
-						<AnimatedButton
-							className="mt-12 lg:mt-16 h-[60px] max-w-[228px] rounded-[50px] mx-auto justify-center"
-							text="Start Now"
-							to="/signup"
-						/>
-					</section>
-				</Container>
-				<section id="reviews" className="mt-16 lg:mt-20 pt-16 lg:pt-20 font-avenir-next">
-					<Container className="pb-16 lg:pb-20">
-						<header className="text-center">
-							<h2 className="font-semibold text-3xl lg:text-5xl tracking-normal">
-								Our reviews
-							</h2>
-							<p className="mt-6 lg:mt-8 text-lg lg:text-xl">
-								Hear first-hand from our incredible community of customers.
-							</p>
-						</header>
-						<div className="relative mt-12 lg:mt-16">
-							<div className="flex justify-center xl:px-8 gap-x-8">
-								<ul className="font-inter flex flex-col items-center gap-y-5 lg:gap-y-8 lg:pt-8">
-									{REVIEWS.slice(1, 4).map((review) => (
-										<li
-											key={review.name}
-											className="p-6 border border-[#E9EAEB] shadow-xs rounded-xl max-w-[384px]"
-										>
-											<div className="flex gap-x-1 mb-3">
-												{[...Array(5)].map((_, i) => (
-													<span
-														key={i}
-														className={`text-lg ${
-															i < review.rating
-																? "text-yellow-500"
-																: "text-gray-300"
-														}`}
-													>
-														★
-													</span>
-												))}
-											</div>
-											<p className="text-reviews-text">{review.content}</p>
-											<div className="mt-8 flex gap-x-3">
-												<Avatar className="size-12 border-[0.75px] border-[#00000014]">
-													<AvatarImage
-														src={review.image}
-														alt="profile picture"
-													/>
-													<AvatarFallback>
-														{getInitials(review.name)}
-													</AvatarFallback>
-												</Avatar>
-												<div>
-													<div className="flex gap-x-2">
-														<span className="font-semibold text-base">
-															{review.name}
-														</span>
-														<Image
-															src="/assets/icons/verified.svg"
-															alt="verified icon"
-															width={16}
-															height={16}
-														/>
-													</div>
-													<p className="text-reviews-text text-sm">
-														{review.position}
-													</p>
-												</div>
-											</div>
-										</li>
-									))}
-								</ul>
-								<ul className="font-inter hidden md:flex flex-col items-center gap-y-5 lg:gap-y-8">
-									{REVIEWS.slice(4, 7).map((review) => (
-										<li
-											key={review.name}
-											className="p-6 border border-[#E9EAEB] shadow-xs rounded-xl max-w-[384px]"
-										>
-											<div className="flex gap-x-1 mb-3">
-												{[...Array(5)].map((_, i) => (
-													<span
-														key={i}
-														className={`text-lg ${
-															i < review.rating
-																? "text-yellow-500"
-																: "text-gray-300"
-														}`}
-													>
-														★
-													</span>
-												))}
-											</div>
-											<p className="text-reviews-text">{review.content}</p>
-											<div className="mt-8 flex gap-x-3">
-												<Avatar className="size-12 border-[0.75px] border-[#00000014]">
-													<AvatarImage
-														src={review.image}
-														alt="profile picture"
-													/>
-													<AvatarFallback>
-														{getInitials(review.name)}
-													</AvatarFallback>
-												</Avatar>
-												<div>
-													<div className="flex gap-x-2">
-														<span className="font-semibold text-base">
-															{review.name}
-														</span>
-														<Image
-															src="/assets/icons/verified.svg"
-															alt="verified icon"
-															width={16}
-															height={16}
-														/>
-													</div>
-													<p className="text-reviews-text text-sm">
-														{review.position}
-													</p>
-												</div>
-											</div>
-										</li>
-									))}
-								</ul>
-								<ul className="font-inter hidden lg:flex flex-col items-center gap-y-5 lg:gap-y-8 lg:pt-8">
-									{REVIEWS.slice(1, 4).map((review) => (
-										<li
-											key={review.name}
-											className="p-6 border border-[#E9EAEB] shadow-xs rounded-xl max-w-[384px]"
-										>
-											<div className="flex gap-x-1 mb-3">
-												{[...Array(5)].map((_, i) => (
-													<span
-														key={i}
-														className={`text-lg ${
-															i < review.rating
-																? "text-yellow-500"
-																: "text-gray-300"
-														}`}
-													>
-														★
-													</span>
-												))}
-											</div>
-											<p className="text-reviews-text">{review.content}</p>
-											<div className="mt-8 flex gap-x-3">
-												<Avatar className="size-12 border-[0.75px] border-[#00000014]">
-													<AvatarImage
-														src={review.image}
-														alt="profile picture"
-													/>
-													<AvatarFallback>
-														{getInitials(review.name)}
-													</AvatarFallback>
-												</Avatar>
-												<div>
-													<div className="flex gap-x-2">
-														<span className="font-semibold text-base">
-															{review.name}
-														</span>
-														<Image
-															src="/assets/icons/verified.svg"
-															alt="verified icon"
-															width={16}
-															height={16}
-														/>
-													</div>
-													<p className="text-reviews-text text-sm">
-														{review.position}
-													</p>
-												</div>
-											</div>
-										</li>
-									))}
-								</ul>
-							</div>
-							<div className="absolute bottom-0 left-0 right-0 h-3/12 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent pointer-events-none" />
-						</div>
-					</Container>
-				</section>
-				<Container>
-					<section className="py-16 lg:py-20">
-						<div className="flex flex-col lg:flex-row justify-between items-center lg:items-start gap-12 lg:gap-16 font-avenir-next">
-							<div className="space-y-4 max-w-[394px] w-full">
-								<Image
-									src="/assets/icons/traders.svg"
-									alt="traders icon"
-									width={76}
-									height={76}
-								/>
-								<p className="text-xl font-bold">
-									Trusted by 1,000+ traders across Nigeria
-								</p>
-								<p className="text-reviews-text text-lg">
-									Big traders, small traders, side hustlers — they all hang with
-									Clusteer. You're next  😘
-								</p>
-							</div>
-							<div className="space-y-4 max-w-[394px] w-full">
-								<Image
-									src="/assets/icons/2fa_security.svg"
-									alt="traders icon"
-									width={76}
-									height={76}
-								/>
-								<p className="text-xl font-bold">
-									2FA Security, Fingerprint-Level Trust
-								</p>
-								<p className="text-reviews-text text-lg">
-									Because passwords are so last season. Add 2FA and keep the nosy
-									folks out — like a digital bouncer with your fingerprint.
-								</p>
-							</div>
-							<div className="space-y-4 max-w-[394px] w-full">
-								<Image
-									src="/assets/icons/code.svg"
-									alt="traders icon"
-									width={76}
-									height={76}
-								/>
-								<p className="text-xl font-bold">Built by Crypto-Natives</p>
-								<p className="text-reviews-text text-lg">
-									We use Clusteer too. That's why we made it bulletproof.
-								</p>
-							</div>
-						</div>
-					</section>
-				</Container>
-				<Container>
-					<section id="faq" className="py-16 lg:py-20">
-						<h2 className="font-bold text-center text-[40px] leading-snug lg:text-5xl tracking-normal">
-							Frequently Asked Questions
-						</h2>
-						<div className="mt-12 lg:mt-16 font-lexend text-left max-w-[768px] mx-auto">
-							<Accordion
-								type="single"
-								collapsible
-							>
-								{FAQs.map(({ question, answer }, _i) => (
-									<AccordionItem
-										key={`faq-${_i}`}
-										className="p-8 border-b border-real-black last:border-b"
-										value={`faq-${_i}`}
-									>
-										<AccordionTrigger className="text-lg font-medium">
-											{question}
-										</AccordionTrigger>
-										<AccordionContent className="text-base pl-12 pb-0">
-											{answer}
-										</AccordionContent>
-									</AccordionItem>
-								))}
-							</Accordion>
-						</div>
-					</section>
-				</Container>
-				<Container>
-					<section className="border-b border-[#21241D4D] py-16 lg:py-20 text-center">
-						<h3 className="font-semibold text-[30px] leading-10 text-center">
-							Instant Naira payouts to your preferred bank
-						</h3>
-						<p className="mt-6 font-lexend text-base text-real-black">
-							Once your crypto is received and confirmed on the network, Naira is
-							sent directly to your bank account within 5 minutes.
-						</p>
+	const [mobileMenu, setMobileMenu] = useState(false);
+	const { scrollY } = useScroll();
+	const navShadow = useTransform(scrollY, [0, 50], [0, 1]);
+	const [shadow, setShadow] = useState(0);
 
-						<AnimatedButton
-							className="mt-8 h-[60px] max-w-[228px] rounded-[50px] mx-auto"
-							text="Sell USDT for Naira"
-							to="/login"
-						/>
-					</section>
-				</Container>
-				<Container>
-					<footer className="py-12 lg:py-16">
-						<div className="flex flex-col sm:flex-row justify-between items-center sm:items-end">
-							<div className="flex flex-col items-center sm:items-start text-center">
-								<Link href="/">
-									<Image
-										src="/assets/icons/logo_with_name.svg"
-										alt="Clusteer logo"
-										className="shrink-0"
-										width={160}
-										height={38}
-									/>
-								</Link>
-								<p className="max-w-[320px] text-center sm:text-left mt-6">
-									Clusteer is a fast, secure platform for seamless USDT to Naira
-									exchanges, offering instant transfers and transparent pricing.
+	useEffect(() => {
+		return navShadow.on("change", (v) => setShadow(v));
+	}, [navShadow]);
+
+	return (
+		<div className="min-h-screen bg-background">
+			{/* ─── Nav ─── */}
+			<nav
+				className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur transition-shadow"
+				style={{ boxShadow: shadow > 0.5 ? "0 1px 8px rgba(0,0,0,0.06)" : "none" }}
+			>
+				<div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+					<Logo />
+					<div className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex">
+						<a href="#rates" className="hover:text-foreground transition-colors">Rates</a>
+						<a href="#how" className="hover:text-foreground transition-colors">How it works</a>
+						<a href="#features" className="hover:text-foreground transition-colors">Features</a>
+						<a href="#security" className="hover:text-foreground transition-colors">Security</a>
+						<a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
+					</div>
+					<div className="flex items-center gap-2">
+						<Button variant="ghost" asChild size="sm" className="hidden sm:inline-flex font-semibold">
+							<Link href="/login">Log in</Link>
+						</Button>
+						<Button asChild size="sm" >
+							<Link href="/signup">Get started</Link>
+						</Button>
+						<button onClick={() => setMobileMenu(!mobileMenu)} className="ml-1 md:hidden p-2 text-muted-foreground" aria-label={mobileMenu ? "Close menu" : "Open menu"} aria-expanded={mobileMenu}>
+							{mobileMenu ? <X className="size-5" /> : <Menu className="size-5" />}
+						</button>
+					</div>
+				</div>
+				{/* Mobile menu */}
+				<AnimatePresence>
+					{mobileMenu && (
+						<motion.div
+							initial={{ height: 0, opacity: 0 }}
+							animate={{ height: "auto", opacity: 1 }}
+							exit={{ height: 0, opacity: 0 }}
+							transition={{ duration: 0.2 }}
+							className="overflow-hidden border-t border-border md:hidden"
+						>
+							<div className="flex flex-col gap-1 px-4 sm:px-6 py-4 text-sm font-medium">
+								{[["#rates", "Rates"], ["#how", "How it works"], ["#features", "Features"], ["#security", "Security"], ["#faq", "FAQ"]].map(([href, label]) => (
+									<a key={href} href={href} onClick={() => setMobileMenu(false)} className="py-2 text-muted-foreground hover:text-foreground">{label}</a>
+								))}
+								<Link href="/login" onClick={() => setMobileMenu(false)} className="py-2 text-muted-foreground hover:text-foreground">Log in</Link>
+							</div>
+						</motion.div>
+					)}
+				</AnimatePresence>
+			</nav>
+
+			{/* ─── Hero ──�� */}
+			<section className="relative overflow-hidden border-b border-border">
+				<PixelRain className="z-0" variant="dark" columns={18} seed={42} />
+				<div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 lg:py-28">
+					<div className="grid items-center gap-12 lg:grid-cols-[1fr_420px]">
+						<motion.div initial="initial" animate="animate" variants={{ animate: { transition: stagger } }}>
+							<FadeUp>
+								<Badge variant="info" className="mb-6 gap-2">
+									<span className="size-1.5 rounded-full bg-info animate-pulse" /> SEC Nigeria Licensed VASP
+								</Badge>
+							</FadeUp>
+							<FadeUp delay={0.05}>
+								<h1 className="max-w-2xl font-display text-[28px] font-bold leading-[1.08] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+									Buy & Sell USDT{" "}<br className="hidden sm:block" />instantly to{" "}<span className="text-light-green">Naira</span>
+								</h1>
+							</FadeUp>
+							<FadeUp delay={0.1}>
+								<p className="mt-6 max-w-xl text-lg text-muted-foreground">
+									Convert Naira to USDT and USDC across multiple chains. Fair rates, transparent fees,
+									multi-sig custody — built for Nigeria.
 								</p>
-								<div className="flex flex-col sm:flex-row gap-6 sm:gap-8 mt-6 sm:mt-8">
-									<Link
-										href="/security-info"
-										className="text-base font-semibold hover:text-dark-green"
-									>
-										Security
-									</Link>
-									<Link
-										href="#"
-										className="text-base font-semibold hover:text-dark-green"
-									>
-										Anti-money Laundering
-									</Link>
-									<Link
-										href="#"
-										className="text-base font-semibold hover:text-dark-green"
-									>
-										Terms & Conditions
-									</Link>
-									<Link
-										href="#"
-										className="text-base font-semibold hover:text-dark-green"
-									>
-										Privacy
-									</Link>
+							</FadeUp>
+							<FadeUp delay={0.15}>
+								<div className="mt-8 flex flex-col sm:flex-row gap-3">
+									<Button size="xl" asChild className="w-full sm:w-auto">
+										<Link href="/signup">Create free account <ArrowRight className="size-4" /></Link>
+									</Button>
+									<Button size="xl" variant="outline" asChild className="w-full sm:w-auto">
+										<Link href="#rates">See today&#39;s rates</Link>
+									</Button>
+								</div>
+							</FadeUp>
+							<FadeUp delay={0.2}>
+								<div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-2 text-xs">
+									<span className="inline-flex items-center gap-1.5 rounded-full border border-custom-black/10 bg-warm-beige/50 px-3 py-1.5 font-semibold text-custom-black"><Users className="size-3.5 text-brand-600" /><Counter target={12000} suffix="+" /> <span className="font-normal text-custom-black/50">users</span></span>
+									<span className="inline-flex items-center gap-1.5 rounded-full border border-custom-black/10 bg-warm-beige/50 px-3 py-1.5 font-semibold text-custom-black"><TrendingUp className="size-3.5 text-success" /><Counter target={4} prefix="₦" suffix="B+" /> <span className="font-normal text-custom-black/50">traded</span></span>
+									<span className="inline-flex items-center gap-1.5 rounded-full border border-custom-black/10 bg-warm-beige/50 px-3 py-1.5 font-semibold text-custom-black"><Zap className="size-3.5 text-warning" /><Counter target={99} suffix=".9%" /> <span className="font-normal text-custom-black/50">uptime</span></span>
+									<span className="inline-flex items-center gap-1.5 rounded-full border border-custom-black/10 bg-warm-beige/50 px-3 py-1.5"><ShieldCheck className="size-3.5 text-success" /> <span className="text-custom-black/50">SEC Licensed</span></span>
+								</div>
+							</FadeUp>
+
+							{/* Mobile swap — simplified inline converter */}
+							<FadeUp delay={0.25}>
+								<div className="mt-8 lg:hidden">
+									<MobileSwapPreview />
+								</div>
+							</FadeUp>
+						</motion.div>
+
+						{/* Desktop swap widget */}
+						<motion.div
+							initial={{ opacity: 0, scale: 0.96, y: 16 }}
+							animate={{ opacity: 1, scale: 1, y: 0 }}
+							transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+						>
+							<HeroSwap />
+						</motion.div>
+					</div>
+				</div>
+			</section>
+
+			{/* Social proof merged into hero above — no separate section */}
+
+			{/* ─── Rate strip ─── */}
+			<Section id="rates" className="border-b border-border bg-card/40">
+				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
+					<FadeUp>
+						<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 sm:gap-4">
+							<div>
+								<h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight">Live Naira rates</h2>
+								<p className="mt-1 text-sm text-muted-foreground">The rate you see is the rate you get. No hidden spread.</p>
+							</div>
+							<div className="flex items-center gap-2 text-xs text-muted-foreground">
+								<span className="size-2 rounded-full bg-success animate-pulse" />
+								Updated live
+							</div>
+						</div>
+					</FadeUp>
+					<div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+						{ASSETS.map((a, i) => (
+							<FadeUp key={a.symbol} delay={i * 0.08}>
+								<div className="rounded-xl border border-border bg-card p-4 sm:p-5 hover:border-primary/30 transition-colors">
+									<div className="flex items-center gap-3">
+										<AssetLogo symbol={a.symbol} size="lg" />
+										<div>
+											<div className="flex items-center gap-2">
+												<span className="font-semibold">{a.name}</span>
+												<Badge variant="secondary" className="text-[10px] px-1.5 py-0">{a.symbol}</Badge>
+											</div>
+											<div className="mt-0.5 text-xs text-muted-foreground">
+												{a.chains.join(" · ")}
+											</div>
+										</div>
+										<Num
+											className="ml-auto text-xs"
+											tone={a.change24h >= 0 ? "positive" : "negative"}
+											value={formatPct(a.change24h)}
+										/>
+									</div>
+									<div className="mt-4 grid grid-cols-2 gap-3">
+										<div className="rounded-lg bg-success-bg p-3">
+											<p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Buy rate</p>
+											<Num className="mt-1 text-lg font-bold text-success" value={formatMoney(a.priceNgn, "NGN", { decimals: 0 })} />
+										</div>
+										<div className="rounded-lg bg-danger-bg p-3">
+											<p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Sell rate</p>
+											<Num className="mt-1 text-lg font-bold text-danger" value={formatMoney(Math.round(a.priceNgn * 0.985), "NGN", { decimals: 0 })} />
+										</div>
+									</div>
+								</div>
+							</FadeUp>
+						))}
+					</div>
+					<FadeUp>
+						<div className="mt-10">
+							<Button size="lg" asChild className="w-full sm:w-auto sm:mx-auto sm:flex">
+								<Link href="/signup">Start Now <ArrowRight className="size-4" /></Link>
+							</Button>
+						</div>
+					</FadeUp>
+				</div>
+			</Section>
+
+			{/* ─── How it works ─── */}
+			<Section id="how" className="border-b border-border">
+				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+					<FadeUp>
+						<div className="text-center">
+							<Badge variant="secondary" className="mb-4">Simple onboarding</Badge>
+							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Three steps to your first stablecoin</h2>
+							<p className="mt-2 text-sm sm:text-base text-muted-foreground">No debit card. No crypto experience needed.</p>
+						</div>
+					</FadeUp>
+					<div className="mt-8 sm:mt-10 md:mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
+						{[
+							{ step: "1", icon: UserCheck, title: "Sign Up", body: "Create your free account with your email or phone number. Verify your BVN in under 2 minutes." },
+							{ step: "2", icon: CreditCard, title: "Fund with Naira", body: "Send Naira via bank transfer. Funds arrive instantly. No debit card needed, no extra charges." },
+							{ step: "3", icon: ArrowDownUp, title: "Buy USDT", body: "Pick your stablecoin and chain. Confirm the rate, tap buy — USDT lands in your wallet immediately." },
+						].map((s, i) => (
+							<FadeUp key={s.step} delay={i * 0.1}>
+								<div className="relative flex flex-col items-center text-center">
+									{i < 2 && (
+										<div className="absolute top-8 left-full hidden w-8 border-t-2 border-dashed border-border md:block" style={{ transform: "translateX(-16px)" }} />
+									)}
+									<div className="flex size-16 items-center justify-center rounded-full bg-light-green border-2 border-custom-black text-2xl font-bold">
+										{s.step}
+									</div>
+									<h3 className="mt-4 text-xl font-bold">{s.title}</h3>
+									<p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.body}</p>
+								</div>
+							</FadeUp>
+						))}
+					</div>
+				</div>
+			</Section>
+
+			{/* ─── Features (hero feature + grid) ─── */}
+			<Section id="features" className="border-b border-border bg-warm-beige/50">
+				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+					{/* Hero feature */}
+					<FadeUp>
+						<div className="rounded-2xl border border-border bg-card p-5 sm:p-6 md:p-8 lg:p-10">
+							<div className="grid items-center gap-8 md:grid-cols-2">
+								<div>
+									<Badge variant="info" className="mb-4">Core product</Badge>
+									<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">USDT ↔ Naira in minutes</h2>
+									<p className="mt-4 text-muted-foreground leading-relaxed">
+										Buy USDT with a simple bank transfer. Sell back to Naira anytime — funds hit your bank account
+										within minutes. Rates update in real time, fees shown before you confirm. No surprises.
+									</p>
+									<div className="mt-6 flex flex-wrap gap-2">
+										{["Real-time rates", "0.75% transparent fee", "Instant settlement", "Multi-chain"].map((t) => (
+											<span key={t} className="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground">{t}</span>
+										))}
+									</div>
+								</div>
+								<div className="rounded-xl border border-border bg-muted/50 p-4 sm:p-6">
+									<div className="space-y-3 text-sm">
+										<div className="flex items-center justify-between rounded-lg bg-background p-3">
+											<span className="text-muted-foreground">You send</span>
+											<span className="font-display font-bold">₦500,000</span>
+										</div>
+										<div className="flex justify-center"><ArrowDownUp className="size-4 text-muted-foreground" /></div>
+										<div className="flex items-center justify-between rounded-lg bg-background p-3">
+											<span className="text-muted-foreground">You receive</span>
+											<span className="inline-flex items-center gap-2 font-display font-bold"><AssetLogo symbol="USDT" size="sm" /> 318.47 USDT</span>
+										</div>
+										<div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
+											<span>Fee (0.75%)</span>
+											<span>₦3,750</span>
+										</div>
+										<div className="flex items-center justify-between text-xs text-muted-foreground">
+											<span>Rate</span>
+											<span>1 USDT = ₦1,570</span>
+										</div>
+									</div>
 								</div>
 							</div>
-							<div className="flex flex-col gap-4 sm:ml-auto mt-8 sm:mt-0">
-								<span className="font-inter font-medium text-center md:text-start">
-									Coming Soon
-								</span>
-								<Link
-									href="#"
-									className="relative overflow-hidden grey-button flex items-center pl-[10px] gap-x-2 w-[135px] justify-start h-[40px] rounded-[30px] border border-black"
-								>
-									<Image
-										src="/assets/icons/apple_logo.svg"
-										alt="apple logo"
-										width={18}
-										height={22}
-									/>
-									<div className="space-y-[3px]">
-										<Image
-											src="/assets/icons/apple_download_text.svg"
-											alt="download from the app store"
-											width={75}
-											height={16}
-										/>
-										<Image
-											src="/assets/icons/apple_store_text.svg"
-											alt="apple app store"
-											width={70}
-											height={7}
-										/>
-									</div>
-								</Link>
-								<Link
-									href="#"
-									className="relative overflow-hidden grey-button flex items-center pl-[10px] gap-x-2 w-[135px] justify-start h-[40px] rounded-[30px] border border-black"
-								>
-									<Image
-										src="/assets/icons/google_play_logo.svg"
-										alt="google play store logo"
-										width={23}
-										height={26}
-									/>
-									<div className="space-y-[3px]">
-										<Image
-											src="/assets/icons/google_play_download_text.svg"
-											alt="Download from the play store"
-											width={39}
-											height={6}
-										/>
-										<Image
-											src="/assets/icons/google_play_text.svg"
-											alt="google play store"
-											width={85}
-											height={17}
-										/>
-									</div>
-								</Link>
-							</div>
 						</div>
-						<div className="mt-12 pt-8 px-8 sm:px-0 flex flex-col sm:flex-row gap-y-6 justify-between border-t border-grey-200">
-							<p className="text-gray-500 text-base text-center">
-								© 2025 Clusteer. All rights reserved.
+					</FadeUp>
+
+					{/* Supporting features */}
+					<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						{[
+							{ icon: ShieldCheck, title: "Multi-sig custody", body: "Cold storage with multi-signature controls. Hot wallets monitored and rebalanced around the clock." },
+							{ icon: Smartphone, title: "Built mobile-first", body: "Receive via QR, send to any wallet, track every transaction — optimised for your phone." },
+							{ icon: Building2, title: "Naira rails that work", body: "Fund via NIP bank transfer. Withdraw to any Nigerian bank. No debit cards needed." },
+							{ icon: Zap, title: "Tiered KYC", body: "Start with BVN (Tier 1). Upgrade to NIN + ID for higher limits. Self-service, no wait." },
+							{ icon: Lock, title: "You stay in control", body: "2FA, wallet PIN, session management, and withdrawal allow-lists. Your rules." },
+						].map((f, i) => (
+							<FadeUp key={f.title} delay={i * 0.06}>
+								<div className="rounded-xl border border-border bg-card p-6 h-full hover:border-primary/20 transition-colors">
+									<div className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-700">
+										<f.icon className="size-5" />
+									</div>
+									<h3 className="mt-4 font-semibold">{f.title}</h3>
+									<p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
+								</div>
+							</FadeUp>
+						))}
+					</div>
+				</div>
+			</Section>
+
+			{/* ─── Fee transparency ─── */}
+			<Section className="border-b border-border">
+				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+					<FadeUp>
+						<div className="text-center">
+							<Badge variant="secondary" className="mb-4">No hidden fees</Badge>
+							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Transparent pricing</h2>
+							<p className="mt-2 text-sm sm:text-base text-muted-foreground">What you see is what you pay. Always.</p>
+						</div>
+					</FadeUp>
+					<FadeUp delay={0.1}>
+						{/* Desktop table */}
+						<div className="mx-auto mt-10 max-w-2xl rounded-xl border border-border bg-card overflow-hidden hidden sm:block">
+							<table className="w-full text-sm">
+								<thead>
+									<tr className="border-b border-border bg-muted/50">
+										<th className="px-4 sm:px-6 py-3 text-left font-medium text-muted-foreground">Action</th>
+										<th className="px-4 sm:px-6 py-3 text-right font-medium text-muted-foreground">Fee</th>
+									</tr>
+								</thead>
+								<tbody>
+									{[
+										["Buy stablecoins (NGN → USDT/USDC)", "0.75%"],
+										["Sell stablecoins (USDT/USDC → NGN)", "0.75%"],
+										["Internal send (Clusteer → Clusteer)", "Free"],
+										["External withdrawal", "Network fee only"],
+										["Receive stablecoins", "Free"],
+										["Naira deposit (bank transfer)", "Free"],
+										["Naira withdrawal (to bank)", "Free"],
+									].map(([action, fee], i) => (
+										<tr key={i} className="border-b border-border last:border-0">
+											<td className="px-4 sm:px-6 py-3.5">{action}</td>
+											<td className="px-4 sm:px-6 py-3.5 text-right font-medium">
+												<span className={fee === "Free" ? "text-success" : ""}>{fee === "Free" ? "✓ Free" : fee}</span>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+						{/* Mobile stacked cards */}
+						<div className="mt-8 space-y-2 sm:hidden">
+							{[
+								["Buy stablecoins", "NGN → USDT/USDC", "0.75%"],
+								["Sell stablecoins", "USDT/USDC → NGN", "0.75%"],
+								["Internal send", "Clusteer → Clusteer", "Free"],
+								["External withdrawal", "To external wallet", "Network fee only"],
+								["Receive stablecoins", "From any wallet", "Free"],
+								["Naira deposit", "Bank transfer", "Free"],
+								["Naira withdrawal", "To your bank", "Free"],
+							].map(([action, desc, fee], i) => (
+								<div key={i} className="flex items-center justify-between rounded-lg border border-border bg-card p-3.5">
+									<div>
+										<p className="text-sm font-medium">{action}</p>
+										<p className="text-xs text-muted-foreground">{desc}</p>
+									</div>
+									<span className={`text-sm font-semibold shrink-0 ml-3 ${fee === "Free" ? "text-success" : ""}`}>{fee === "Free" ? "✓ Free" : fee}</span>
+								</div>
+							))}
+						</div>
+					</FadeUp>
+				</div>
+			</Section>
+
+			{/* ─── Security ��── */}
+			<Section id="security" className="border-b border-border bg-warm-beige/50">
+				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+					<FadeUp>
+						<div className="text-center">
+							<Badge variant="secondary" className="mb-4">Bank-grade security</Badge>
+							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Your stablecoins are safe with us</h2>
+							<p className="mt-2 max-w-xl mx-auto text-muted-foreground">
+								We built Clusteer with the same security standards used by banks and institutional custodians.
 							</p>
-							<div className="flex gap-x-6 justify-center items-center">
-								<Link
-									href="https://twitter.com/clusteer"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="hover:opacity-70 transition-opacity"
-								>
-									<Image
-										src="/assets/icons/twitter_icon.svg"
-										alt="twitter logo"
-										className="h-auto"
-										width={24}
-										height={24}
-									/>
-								</Link>
-								<Link
-									href="https://linkedin.com/company/clusteer"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="hover:opacity-70 transition-opacity"
-								>
-									<Image
-										src="/assets/icons/linkedin_logo.svg"
-										alt="linkedin logo"
-										className="h-auto"
-										width={24}
-										height={24}
-									/>
-								</Link>
-								<Link
-									href="https://facebook.com/clusteer"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="hover:opacity-70 transition-opacity"
-								>
-									<Image
-										src="/assets/icons/facebook_logo.svg"
-										alt="facebook logo"
-										className="h-auto"
-										width={24}
-										height={24}
-									/>
-								</Link>
-								<Link
-									href="https://instagram.com/clusteer"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="hover:opacity-70 transition-opacity"
-								>
-									<Image
-										src="/assets/icons/instagram_logo.svg"
-										alt="instagram logo"
-										className="h-auto"
-										width={24}
-										height={24}
-									/>
-								</Link>
+						</div>
+					</FadeUp>
+					<div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+						{[
+							{ icon: Shield, title: "Multi-sig wallets", body: "Hot, warm, and cold wallets with multi-signature approval. No single point of compromise." },
+							{ icon: Server, title: "Cold storage", body: "The majority of stablecoins are held offline in air-gapped cold storage." },
+							{ icon: KeyRound, title: "AES-256 encryption", body: "Private keys and PII encrypted at rest with AES-256-GCM. Column-level encryption on all sensitive fields." },
+							{ icon: FileCheck, title: "Audit trail", body: "Every action — admin or user — is logged immutably. Full compliance with SEC Nigeria requirements." },
+						].map((s, i) => (
+							<FadeUp key={s.title} delay={i * 0.08}>
+								<div className="rounded-xl border border-border bg-card p-6 text-center h-full">
+									<div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+										<s.icon className="size-6" />
+									</div>
+									<h3 className="mt-4 font-semibold">{s.title}</h3>
+									<p className="mt-2 text-xs text-muted-foreground leading-relaxed">{s.body}</p>
+								</div>
+							</FadeUp>
+						))}
+					</div>
+					{/* Networks inline */}
+					<FadeUp delay={0.2}>
+						<div className="mt-12 rounded-xl border border-border bg-card p-6 text-center">
+							<p className="text-sm font-medium">Supported networks</p>
+							<p className="mt-1 text-xs text-muted-foreground">USDT and USDC across five chains. We auto-route for the lowest fee.</p>
+							<div className="mt-4 flex flex-wrap justify-center gap-2">
+								{["Tron", "BSC", "Ethereum", "Solana", "Polygon"].map((c) => (
+									<ChainBadge key={c} chain={c} className="px-3 py-1.5 text-sm" />
+								))}
 							</div>
 						</div>
-					</footer>
-				</Container>
+					</FadeUp>
+				</div>
+			</Section>
+
+			{/* ─── Testimonials ─── */}
+			<Section className="border-b border-border">
+				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+					<FadeUp>
+						<div className="text-center">
+							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Trusted by Nigerians</h2>
+							<p className="mt-2 text-muted-foreground">What our users say.</p>
+						</div>
+					</FadeUp>
+					<div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+						{[
+							{ name: "Adaeze O.", role: "Freelancer, Lagos", quote: "I receive USDT from clients abroad and sell to Naira on Clusteer. The rate is always fair and money hits my bank in minutes. Better than any P2P platform I've used.", rating: 5 },
+							{ name: "Tunde B.", role: "Trader, Abuja", quote: "The BVN verification was instant — I was buying USDT within 5 minutes of signing up. The multi-chain support means I can always pick the cheapest network.", rating: 5 },
+							{ name: "Fatima Y.", role: "Student, Kano", quote: "I use Clusteer to save in USDT instead of keeping Naira. The app is simple, fees are clear, and I feel safe knowing my funds are in cold storage.", rating: 5 },
+						].map((t, i) => (
+							<FadeUp key={t.name} delay={i * 0.1}>
+								<div className="rounded-xl border border-border bg-card p-6 h-full flex flex-col">
+									<div className="flex gap-0.5 mb-3">
+										{Array.from({ length: t.rating }).map((_, j) => (
+											<Star key={j} className="size-4 fill-warning text-warning" />
+										))}
+									</div>
+									<p className="text-sm text-muted-foreground leading-relaxed flex-1">&ldquo;{t.quote}&rdquo;</p>
+									<div className="mt-4 pt-4 border-t border-border">
+										<p className="font-semibold text-sm">{t.name}</p>
+										<p className="text-xs text-muted-foreground">{t.role}</p>
+									</div>
+								</div>
+							</FadeUp>
+						))}
+					</div>
+				</div>
+			</Section>
+
+			{/* ─── FAQ ─── */}
+			<Section id="faq" className="border-b border-border bg-muted/30">
+				<div className="mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+					<FadeUp>
+						<div className="text-center mb-8 sm:mb-10">
+							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Frequently asked questions</h2>
+						</div>
+					</FadeUp>
+					<FadeUp delay={0.1}>
+						<div>
+							{[
+								{ q: "What is USDT?", a: "USDT (Tether) is a stablecoin — a digital currency pegged 1:1 to the US Dollar. 1 USDT always equals approximately $1. It's the most widely used stablecoin in the world and the easiest way to hold dollar-value without a domiciliary account." },
+								{ q: "How do I buy USDT with Naira?", a: "Sign up, verify your BVN (takes under 2 minutes), fund your account via bank transfer, and buy USDT at the live rate. The whole process takes under 10 minutes for first-time users." },
+								{ q: "What are your fees?", a: "Buy and sell: 0.75%. Internal transfers between Clusteer users are free. External withdrawals only cost the blockchain network fee. Naira deposits and withdrawals are free." },
+								{ q: "Is my money safe?", a: "Yes. Stablecoins are held in multi-signature cold storage wallets. All private keys are encrypted with AES-256-GCM. We maintain full audit trails and are licensed by the SEC Nigeria as a VASP." },
+								{ q: "Which chains do you support?", a: "USDT is available on Tron (TRC-20), BSC (BEP-20), and Ethereum (ERC-20). USDC is available on Ethereum, Solana, and Polygon. We auto-suggest the cheapest network for each transfer." },
+								{ q: "How long do withdrawals take?", a: "Naira withdrawals to your bank arrive within minutes during business hours. Stablecoin withdrawals to external wallets depend on the chain — typically 1-5 minutes for Tron, 2-10 minutes for others." },
+								{ q: "Do I need a bank account?", a: "Yes, you need a Nigerian bank account to deposit and withdraw Naira. You can add multiple bank accounts in your settings." },
+								{ q: "What KYC documents do I need?", a: "Tier 1 requires only your BVN. Tier 2 adds NIN and a government-issued ID. Tier 3 adds proof of address. Higher tiers unlock higher transaction limits." },
+							].map((item) => (
+								<FAQ key={item.q} q={item.q} a={item.a} />
+							))}
+						</div>
+					</FadeUp>
+				</div>
+			</Section>
+
+			{/* ─── CTA ─── */}
+			<Section className="border-b-2 border-custom-black bg-gradient-to-br from-brand-800 via-brand-700 to-brand-900 text-white">
+				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+					<div className="grid items-center gap-8 sm:gap-10 md:grid-cols-2">
+						<FadeUp>
+							<div>
+								<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Start trading stablecoins today.</h2>
+								<p className="mt-3 text-white/70 text-sm sm:text-base">Join thousands of Nigerians already using Clusteer.</p>
+								<div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-white/80">
+									{["1. Create account", "2. Verify BVN", "3. Buy USDT"].map((s, i) => (
+										<span key={s} className="inline-flex items-center gap-2">
+											{i > 0 && <ArrowRight className="size-3 text-white/40 hidden sm:block" />}
+											<span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs sm:text-sm">{s}</span>
+										</span>
+									))}
+								</div>
+							</div>
+						</FadeUp>
+						<FadeUp delay={0.1}>
+							<div className="flex flex-col items-stretch sm:items-start md:items-end gap-4">
+								<Button size="xl" asChild  className="w-full sm:w-auto">
+									<Link href="/signup">Create free account <ArrowRight className="size-4" /></Link>
+								</Button>
+								<p className="text-xs text-white/50 text-center sm:text-left md:text-right">No debit card required. All you need is a BVN.</p>
+							</div>
+						</FadeUp>
+					</div>
+				</div>
+			</Section>
+
+			{/* ─── Footer ─── */}
+			<footer className="border-t border-border">
+				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
+					<div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 md:grid-cols-4">
+						<div className="col-span-2 md:col-span-1">
+							<Logo />
+							<p className="mt-3 text-xs text-muted-foreground leading-relaxed">
+								Buy, sell, and hold stablecoins with Naira. Licensed by the SEC Nigeria.
+							</p>
+						</div>
+						<div>
+							<p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Product</p>
+							<div className="mt-3 flex flex-col gap-2 text-sm">
+								<Link href="/signup" className="text-muted-foreground hover:text-foreground transition-colors">Get started</Link>
+								<a href="#rates" className="text-muted-foreground hover:text-foreground transition-colors">Rates</a>
+								<a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
+								<a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
+							</div>
+						</div>
+						<div>
+							<p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Legal</p>
+							<div className="mt-3 flex flex-col gap-2 text-sm">
+								<Link href="/terms-of-service" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link>
+								<Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
+								<Link href="/security-info" className="text-muted-foreground hover:text-foreground transition-colors">Security</Link>
+							</div>
+						</div>
+						<div>
+							<p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Support</p>
+							<div className="mt-3 flex flex-col gap-2 text-sm">
+								<Link href="/help" className="text-muted-foreground hover:text-foreground transition-colors">Help centre</Link>
+								<a href="mailto:support@clusteer.com" className="text-muted-foreground hover:text-foreground transition-colors">support@clusteer.com</a>
+							</div>
+						</div>
+					</div>
+					<div className="mt-8 sm:mt-10 border-t border-border pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-muted-foreground text-center sm:text-left">
+						<p>© {new Date().getFullYear()} Clusteer Technologies Ltd. RC 1234567. Licensed by the Securities and Exchange Commission, Nigeria (VASP).</p>
+						<p className="text-muted-foreground/60">All stablecoin balances are held in multi-signature custodial wallets.</p>
+					</div>
+				</div>
+			</footer>
+		</div>
+	);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Mobile swap preview                                                */
+/* ------------------------------------------------------------------ */
+
+function MobileSwapPreview() {
+	const rate = ASSETS[0]?.priceNgn ?? 1570;
+	return (
+		<div className="pointer-events-auto rounded-xl border border-border bg-card p-4 shadow-sm">
+			<div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+				<div className="flex items-center gap-2">
+					<AssetLogo symbol="NGN" size="sm" />
+					<div className="min-w-0">
+						<p className="text-[10px] text-muted-foreground">You pay</p>
+						<p className="font-display font-bold text-sm truncate">₦100,000</p>
+					</div>
+				</div>
+				<ArrowRight className="size-3.5 text-muted-foreground" />
+				<div className="flex items-center gap-2 justify-end">
+					<div className="min-w-0 text-right">
+						<p className="text-[10px] text-muted-foreground">You receive</p>
+						<p className="font-display font-bold text-sm truncate">63.69 USDT</p>
+					</div>
+					<AssetLogo symbol="USDT" size="sm" />
+				</div>
 			</div>
-		</>
+			<div className="mt-3 flex items-center justify-between text-[11px] text-muted-foreground">
+				<span>1 USDT = {formatMoney(rate, "NGN", { decimals: 0 })}</span>
+				<span className="text-success font-medium">Fee: 0.75%</span>
+			</div>
+			<Button asChild className="mt-3 w-full" size="sm">
+				<Link href="/signup">Buy USDT now</Link>
+			</Button>
+		</div>
 	);
 }

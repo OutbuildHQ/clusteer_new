@@ -121,7 +121,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 			</header>
 
 			<div className="mt-6 lg:max-w-xl">
-				<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6 space-y-6">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6 space-y-6">
 					{/* Amount Input */}
 					<div>
 						<label className="text-sm font-medium text-[#0D0D0D] mb-2 block">
@@ -136,7 +136,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 								value={amount}
 								onChange={(e) => setAmount(e.target.value)}
 								placeholder="0.00"
-								className="w-full pl-10 pr-4 py-3 text-lg font-semibold border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
+								className="w-full pl-10 pr-4 py-3 text-lg font-semibold border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
 								min="0"
 								step="0.01"
 							/>
@@ -156,7 +156,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 							value={note}
 							onChange={(e) => setNote(e.target.value)}
 							placeholder="Add a note for the payer..."
-							className="w-full px-4 py-3 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870] resize-none"
+							className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870] resize-none"
 							rows={3}
 							maxLength={200}
 						/>
@@ -217,7 +217,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 				</div>
 
 				{/* Info Section */}
-				<div className="mt-6 bg-[#F9FAFB] rounded-2xl border border-[#E9EAEB] p-5">
+				<div className="mt-6 bg-[#F9FAFB] rounded-2xl border border-[var(--cl-line)] p-5">
 					<h3 className="font-semibold text-base text-[#0D0D0D] mb-3">
 						How it works
 					</h3>

@@ -36,10 +36,10 @@ export default function FeeDetailsModal() {
 					</DialogClose>
 				</div>
 				<DialogDescription className="text-[#21241D]">
-					According to the Clusteer Terms of Fee, transaction fees of
-					cryptocurrency will be charged in this fiat currency. Fees range from
-					a minimum of 0.1 USDT to a maximum of 1000 USDT per transaction. The
-					exact fee amount will be displayed on the order page
+					According to the Clusteer Terms of Fee, a 0.75% transaction fee
+					is charged on all stablecoin trades (buy/sell). Fees range from
+					a minimum of 0.1 USDT to a maximum of 1,000 USDT per transaction. The
+					exact fee amount will be displayed on the order confirmation page.
 				</DialogDescription>
 			</DialogHeader>
 			<div className="flex items-center gap-x-2.5">

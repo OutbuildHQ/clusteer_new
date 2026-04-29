@@ -33,12 +33,12 @@ function AnimatedStat({ end, label, prefix = "", suffix = "" }: StatProps) {
 
 	return (
 		<div className="flex flex-col items-center text-center">
-			<div className="text-3xl lg:text-4xl font-bold text-dark-green mb-2">
+			<div className="text-3xl lg:text-4xl font-bold text-[var(--cl-brand-500)] mb-2">
 				{prefix}
 				{count.toLocaleString()}
 				{suffix}
 			</div>
-			<div className="text-sm lg:text-base text-gray-600 font-medium">
+			<div className="text-sm lg:text-base text-[var(--cl-text-2)] font-medium">
 				{label}
 			</div>
 		</div>

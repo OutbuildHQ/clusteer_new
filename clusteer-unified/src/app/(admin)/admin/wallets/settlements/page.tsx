@@ -219,29 +219,29 @@ export default function SettlementDashboardPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Completed":
-        return "text-green-700 bg-green-50 border-green-200";
+        return "text-[var(--cl-up)] bg-[var(--cl-up-soft)] border-[var(--cl-up)]";
       case "Processing":
-        return "text-blue-700 bg-blue-50 border-blue-200";
+        return "text-[var(--cl-brand-700)] bg-[var(--cl-info-soft)] border-[var(--cl-brand-200)]";
       case "Scheduled":
       case "Pending":
         return "text-orange-700 bg-orange-50 border-orange-200";
       case "Failed":
-        return "text-red-700 bg-red-50 border-red-200";
+        return "text-[var(--cl-down)] bg-[var(--cl-down-soft)] border-[var(--cl-down)]";
       default:
-        return "text-gray-700 bg-gray-50 border-gray-200";
+        return "text-[var(--cl-text-2)] bg-[var(--cl-bg)] border-[var(--cl-line)]";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "High":
-        return "text-red-700 bg-red-50 border-red-200";
+        return "text-[var(--cl-down)] bg-[var(--cl-down-soft)] border-[var(--cl-down)]";
       case "Normal":
-        return "text-gray-700 bg-gray-50 border-gray-200";
+        return "text-[var(--cl-text-2)] bg-[var(--cl-bg)] border-[var(--cl-line)]";
       case "Low":
-        return "text-blue-700 bg-blue-50 border-blue-200";
+        return "text-[var(--cl-brand-700)] bg-[var(--cl-info-soft)] border-[var(--cl-brand-200)]";
       default:
-        return "text-gray-700 bg-gray-50 border-gray-200";
+        return "text-[var(--cl-text-2)] bg-[var(--cl-bg)] border-[var(--cl-line)]";
     }
   };
 
@@ -282,7 +282,7 @@ export default function SettlementDashboardPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014F01] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading settlement data...</p>
+          <p className="mt-4 text-[var(--cl-text-2)]">Loading settlement data...</p>
         </div>
       </div>
     );
@@ -293,22 +293,22 @@ export default function SettlementDashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settlement Dashboard</h1>
-          <p className="text-gray-600 mt-1">Monitor and manage automated bank settlements</p>
+          <h1 className="text-2xl font-bold text-[var(--cl-text)]">Settlement Dashboard</h1>
+          <p className="text-[var(--cl-text-2)] mt-1">Monitor and manage automated bank settlements</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setAutoProcess(!autoProcess)}
             className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors ${
               autoProcess
-                ? "border-[#014F01] bg-green-50 text-[#014F01]"
-                : "border-[#E9EAEB] hover:bg-gray-50"
+                ? "border-[#014F01] bg-[var(--cl-up-soft)] text-[#014F01]"
+                : "border-[var(--cl-line)] hover:bg-[var(--cl-bg)]"
             }`}
           >
             {autoProcess ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
             Auto-Process {autoProcess ? "ON" : "OFF"}
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 border border-[#E9EAEB] rounded-lg hover:bg-gray-50 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
             <Download className="h-4 w-4" />
             Export Report
           </button>
@@ -317,55 +317,55 @@ export default function SettlementDashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <CheckCircle className="h-5 w-5 text-green-600" />
-            <span className="text-xs text-gray-600">Success Rate</span>
+            <CheckCircle className="h-5 w-5 text-[var(--cl-up)]" />
+            <span className="text-xs text-[var(--cl-text-2)]">Success Rate</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{completedCount}</p>
-          <p className="text-sm text-gray-600 mt-1">Completed</p>
+          <p className="text-2xl font-bold text-[var(--cl-text)]">{completedCount}</p>
+          <p className="text-sm text-[var(--cl-text-2)] mt-1">Completed</p>
         </div>
 
-        <div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <RefreshCw className="h-5 w-5 text-blue-600 animate-spin" />
-            <span className="text-xs text-gray-600">In Progress</span>
+            <RefreshCw className="h-5 w-5 text-[var(--cl-brand-600)] animate-spin" />
+            <span className="text-xs text-[var(--cl-text-2)]">In Progress</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{processingCount}</p>
-          <p className="text-sm text-gray-600 mt-1">Processing</p>
+          <p className="text-2xl font-bold text-[var(--cl-text)]">{processingCount}</p>
+          <p className="text-sm text-[var(--cl-text-2)] mt-1">Processing</p>
         </div>
 
-        <div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <XCircle className="h-5 w-5 text-red-600" />
-            <span className="text-xs text-gray-600">Requires Action</span>
+            <XCircle className="h-5 w-5 text-[var(--cl-down)]" />
+            <span className="text-xs text-[var(--cl-text-2)]">Requires Action</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{failedCount}</p>
-          <p className="text-sm text-gray-600 mt-1">Failed</p>
+          <p className="text-2xl font-bold text-[var(--cl-text)]">{failedCount}</p>
+          <p className="text-sm text-[var(--cl-text-2)] mt-1">Failed</p>
         </div>
 
-        <div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
           <div className="flex items-center justify-between mb-2">
             <TrendingUp className="h-5 w-5 text-[#014F01]" />
-            <span className="text-xs text-gray-600">Total Volume</span>
+            <span className="text-xs text-[var(--cl-text-2)]">Total Volume</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalAmount)}</p>
-          <p className="text-sm text-gray-600 mt-1">Settlement Value</p>
+          <p className="text-2xl font-bold text-[var(--cl-text)]">{formatCurrency(totalAmount)}</p>
+          <p className="text-sm text-[var(--cl-text-2)] mt-1">Settlement Value</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg border border-[#E9EAEB] p-4 mb-6">
+      <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4 mb-6">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex-1 min-w-[300px]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--cl-text-3)]" />
               <input
                 type="text"
                 placeholder="Search by batch ID, bank, or settlement ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                className="w-full pl-10 pr-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
               />
             </div>
           </div>
@@ -373,7 +373,7 @@ export default function SettlementDashboardPage() {
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="px-4 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+            className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
           >
             <option value="today">Today</option>
             <option value="yesterday">Yesterday</option>
@@ -385,7 +385,7 @@ export default function SettlementDashboardPage() {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+            className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
           >
             <option value="all">All Status</option>
             <option value="Scheduled">Scheduled</option>
@@ -397,7 +397,7 @@ export default function SettlementDashboardPage() {
           <select
             value={filterBank}
             onChange={(e) => setFilterBank(e.target.value)}
-            className="px-4 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+            className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
           >
             <option value="all">All Banks</option>
             {uniqueBanks.map((bank) => (
@@ -414,7 +414,7 @@ export default function SettlementDashboardPage() {
         {filteredSettlements.map((settlement) => (
           <div
             key={settlement.id}
-            className="bg-white rounded-lg border border-[#E9EAEB] p-6 hover:shadow-lg transition-shadow"
+            className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-4">
@@ -422,11 +422,11 @@ export default function SettlementDashboardPage() {
                   <ArrowRightLeft className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 text-lg">{settlement.batchId}</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold text-[var(--cl-text)] text-lg">{settlement.batchId}</h3>
+                  <p className="text-sm text-[var(--cl-text-2)]">
                     {settlement.bankAccount.bankName} - {settlement.bankAccount.accountNumber}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                  <p className="text-xs text-[var(--cl-text-3)] mt-1 flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
                     {new Date(settlement.date).toLocaleDateString("en-NG", {
                       weekday: "long",
@@ -449,24 +449,24 @@ export default function SettlementDashboardPage() {
 
             {/* Settlement Details */}
             <div className="grid grid-cols-4 gap-6 mb-4">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Total Amount</p>
-                <p className="text-xl font-bold text-gray-900">{formatCurrency(settlement.totalAmount)}</p>
+              <div className="bg-[var(--cl-bg)] rounded-lg p-4">
+                <p className="text-sm text-[var(--cl-text-2)] mb-1">Total Amount</p>
+                <p className="text-xl font-bold text-[var(--cl-text)]">{formatCurrency(settlement.totalAmount)}</p>
               </div>
-              <div className="bg-green-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Deposits</p>
-                <p className="text-lg font-semibold text-green-700">
+              <div className="bg-[var(--cl-up-soft)] rounded-lg p-4">
+                <p className="text-sm text-[var(--cl-text-2)] mb-1">Deposits</p>
+                <p className="text-lg font-semibold text-[var(--cl-up)]">
                   {settlement.settlements.deposits.count} • {formatCurrency(settlement.settlements.deposits.amount)}
                 </p>
               </div>
-              <div className="bg-red-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Withdrawals</p>
-                <p className="text-lg font-semibold text-red-700">
+              <div className="bg-[var(--cl-down-soft)] rounded-lg p-4">
+                <p className="text-sm text-[var(--cl-text-2)] mb-1">Withdrawals</p>
+                <p className="text-lg font-semibold text-[var(--cl-down)]">
                   {settlement.settlements.withdrawals.count} • {formatCurrency(settlement.settlements.withdrawals.amount)}
                 </p>
               </div>
               <div className="bg-orange-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Fees</p>
+                <p className="text-sm text-[var(--cl-text-2)] mb-1">Fees</p>
                 <p className="text-lg font-semibold text-orange-700">
                   {settlement.settlements.fees.count} • {formatCurrency(settlement.settlements.fees.amount)}
                 </p>
@@ -474,8 +474,8 @@ export default function SettlementDashboardPage() {
             </div>
 
             {/* Timeline */}
-            <div className="pt-4 border-t border-[#E9EAEB]">
-              <div className="flex items-center justify-between text-sm text-gray-600">
+            <div className="pt-4 border-t border-[var(--cl-line)]">
+              <div className="flex items-center justify-between text-sm text-[var(--cl-text-2)]">
                 <div className="flex items-center gap-4">
                   {settlement.startedAt && (
                     <span className="flex items-center gap-1">
@@ -485,7 +485,7 @@ export default function SettlementDashboardPage() {
                   )}
                   {settlement.completedAt && (
                     <span className="flex items-center gap-1">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="h-4 w-4 text-[var(--cl-up)]" />
                       Completed: {formatDateTime(settlement.completedAt)}
                     </span>
                   )}
@@ -499,7 +499,7 @@ export default function SettlementDashboardPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleViewDetails(settlement)}
-                    className="flex items-center gap-1 px-3 py-1 border border-[#E9EAEB] rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-1 px-3 py-1 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
                   >
                     <Eye className="h-4 w-4" />
                     View Details
@@ -517,11 +517,11 @@ export default function SettlementDashboardPage() {
               </div>
 
               {settlement.failureReason && (
-                <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
-                  <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="mt-3 bg-[var(--cl-down-soft)] border border-[var(--cl-down)] rounded-lg p-3 flex items-start gap-2">
+                  <AlertTriangle className="h-5 w-5 text-[var(--cl-down)] flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-red-900">Settlement Failed</p>
-                    <p className="text-sm text-red-700">{settlement.failureReason}</p>
+                    <p className="text-sm font-medium text-[var(--cl-down)]">Settlement Failed</p>
+                    <p className="text-sm text-[var(--cl-down)]">{settlement.failureReason}</p>
                   </div>
                 </div>
               )}
@@ -531,47 +531,47 @@ export default function SettlementDashboardPage() {
       </div>
 
       {filteredSettlements.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-lg border border-[#E9EAEB]">
-          <ArrowRightLeft className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">No settlements found</p>
-          <p className="text-sm text-gray-500 mt-2">Try adjusting your filters</p>
+        <div className="text-center py-12 bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)]">
+          <ArrowRightLeft className="h-12 w-12 text-[var(--cl-text-3)] mx-auto mb-4" />
+          <p className="text-[var(--cl-text-2)]">No settlements found</p>
+          <p className="text-sm text-[var(--cl-text-3)] mt-2">Try adjusting your filters</p>
         </div>
       )}
 
       {/* Detail Modal */}
       {showDetailModal && selectedSettlement && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-lg max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Settlement Details</h3>
+          <div className="bg-[var(--cl-surface)] rounded-lg max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+            <h3 className="text-lg font-semibold text-[var(--cl-text)] mb-4">Settlement Details</h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">Batch ID</p>
-                  <p className="font-medium text-gray-900">{selectedSettlement.batchId}</p>
+                  <p className="text-sm text-[var(--cl-text-2)]">Batch ID</p>
+                  <p className="font-medium text-[var(--cl-text)]">{selectedSettlement.batchId}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Settlement ID</p>
-                  <p className="font-medium text-gray-900">{selectedSettlement.id}</p>
+                  <p className="text-sm text-[var(--cl-text-2)]">Settlement ID</p>
+                  <p className="font-medium text-[var(--cl-text)]">{selectedSettlement.id}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Bank Account</p>
-                  <p className="font-medium text-gray-900">
+                  <p className="text-sm text-[var(--cl-text-2)]">Bank Account</p>
+                  <p className="font-medium text-[var(--cl-text)]">
                     {selectedSettlement.bankAccount.bankName} - {selectedSettlement.bankAccount.accountNumber}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Status</p>
+                  <p className="text-sm text-[var(--cl-text-2)]">Status</p>
                   <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(selectedSettlement.status)}`}>
                     {selectedSettlement.status}
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Total Amount</p>
-                  <p className="font-medium text-gray-900">{formatCurrency(selectedSettlement.totalAmount)}</p>
+                  <p className="text-sm text-[var(--cl-text-2)]">Total Amount</p>
+                  <p className="font-medium text-[var(--cl-text)]">{formatCurrency(selectedSettlement.totalAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Transaction Count</p>
-                  <p className="font-medium text-gray-900">{selectedSettlement.transactionCount}</p>
+                  <p className="text-sm text-[var(--cl-text-2)]">Transaction Count</p>
+                  <p className="font-medium text-[var(--cl-text)]">{selectedSettlement.transactionCount}</p>
                 </div>
               </div>
             </div>
@@ -581,7 +581,7 @@ export default function SettlementDashboardPage() {
                   setShowDetailModal(false);
                   setSelectedSettlement(null);
                 }}
-                className="flex-1 px-4 py-2 border border-[#E9EAEB] rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
               >
                 Close
               </button>

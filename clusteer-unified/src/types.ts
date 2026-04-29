@@ -4,7 +4,8 @@ export interface IResponse<T = null> {
 	data: T;
 }
 
-export type Crypto = "SOL" | "TRON" | "ETH" | "BSC";
+/** Blockchain network codes used for chain selection (NOT tradeable assets) */
+export type Crypto = "TRON" | "ETH" | "BSC" | "SOL";
 
 export type Fiat = "NGN";
 

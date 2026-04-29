@@ -21,7 +21,7 @@ export default function ModalWrapper({
 			<DialogContent
 				showCloseButton={false}
 				className={cn(
-					"font-avenir-next border-none rounded-xl gap-y-5 !max-w-[482px] px-7.5 py-10",
+					" border-none rounded-xl gap-y-5 !max-w-[482px] px-7.5 py-10",
 					className
 				)}
 			>

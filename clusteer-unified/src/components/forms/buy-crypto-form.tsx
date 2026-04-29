@@ -121,7 +121,7 @@ export default function BuyCryptoForm({ onSwap }: BuyCryptoFormProps) {
 
 	return (
 		<Form {...form}>
-			<form className="font-avenir-next flex flex-col gap-y-3 lg:gap-y-1.5">
+			<form className=" flex flex-col gap-y-3 lg:gap-y-1.5">
 				<FormItem className="gap-1.5">
 					<FormLabel className="font-medium">Pay</FormLabel>
 					<FormControl>
@@ -130,7 +130,7 @@ export default function BuyCryptoForm({ onSwap }: BuyCryptoFormProps) {
 								type="number"
 								value={form.watch("pay") || ""}
 								onChange={(e) => form.setValue("pay", parseFloat(e.target.value) || 0)}
-								className="h-12 w-full px-4 pr-16 rounded-xl border border-[#E9EAEB] focus:outline-none focus:ring-2 focus:ring-dark-green text-lg font-semibold"
+								className="h-12 w-full px-4 pr-16 rounded-xl border border-[var(--cl-line)] focus:outline-none focus:ring-2 focus:ring-dark-green text-lg font-semibold"
 								placeholder="0.00"
 								min="0"
 								step="0.01"
@@ -141,11 +141,11 @@ export default function BuyCryptoForm({ onSwap }: BuyCryptoFormProps) {
 						</div>
 					</FormControl>
 					<FormDescription className="space-y-1.5">
-						<span className="block text-[#535862]">
+						<span className="block text-[var(--cl-text-2)]">
 							Limit: {MINIMUM_VALUE.toLocaleString()} -{" "}
 							{MAXIMUM_VALUE.toLocaleString()} NGN
 						</span>
-						<span className="block text-[#535862]">
+						<span className="block text-[var(--cl-text-2)]">
 							Transaction fees: 0 {selectedCurrency}
 						</span>
 					</FormDescription>
@@ -155,7 +155,7 @@ export default function BuyCryptoForm({ onSwap }: BuyCryptoFormProps) {
 				<button
 					type="button"
 					onClick={onSwap}
-					className="bg-white rounded-full size-11 flex items-center justify-center mx-auto hover:bg-gray-100 transition-colors cursor-pointer"
+					className="bg-[var(--cl-surface)] rounded-full size-11 flex items-center justify-center mx-auto hover:bg-[var(--cl-surface-2)] transition-colors cursor-pointer"
 					aria-label="Swap to sell"
 				>
 					<Image
@@ -169,7 +169,7 @@ export default function BuyCryptoForm({ onSwap }: BuyCryptoFormProps) {
 				<FormItem className="gap-1.5">
 					<FormLabel className="font-medium">Receive</FormLabel>
 					<FormControl>
-						<div className="h-12 px-4 rounded-xl border border-[#E9EAEB] bg-[#F9FAFB] flex items-center justify-between">
+						<div className="h-12 px-4 rounded-xl border border-[var(--cl-line)] bg-[#F9FAFB] flex items-center justify-between">
 							<span className="text-lg font-semibold">
 								{formatNumber(receiveAmount)}
 							</span>
@@ -184,7 +184,7 @@ export default function BuyCryptoForm({ onSwap }: BuyCryptoFormProps) {
 							</select>
 						</div>
 					</FormControl>
-					<FormDescription className="text-[#535862]">
+					<FormDescription className="text-[var(--cl-text-2)]">
 						Available: <span className="font-bold">{formatNumber(selectedBalance)}</span> {selectedCurrency}
 					</FormDescription>
 					<FormMessage />
@@ -192,7 +192,7 @@ export default function BuyCryptoForm({ onSwap }: BuyCryptoFormProps) {
 
 				<div className="mt-6.5 grid lg:grid-cols-[2fr_1fr] items-center divide-[#00000066] lg:divide-x-[0.5px] px-7.5 py-2.5 lg:py-4 border border-[#21241D4D] rounded-xl text-sm">
 					<div>
-						<span className="text-[#535862]">Pay with:</span>
+						<span className="text-[var(--cl-text-2)]">Pay with:</span>
 						<div className="flex items-start sm:items-center gap-x-1">
 							<Image
 								src="/assets/icons/credit_card.svg"
@@ -205,7 +205,7 @@ export default function BuyCryptoForm({ onSwap }: BuyCryptoFormProps) {
 					</div>
 					<div className="border-b-[0.5px] border-[#00000066] my-6 lg:hidden" />
 					<div className="w-fit lg:pl-4 lg:ml-auto">
-						<p className="text-[#535862]">Pay within:</p>
+						<p className="text-[var(--cl-text-2)]">Pay within:</p>
 						<p className="font-semibold">15 mins</p>
 					</div>
 				</div>
@@ -214,10 +214,10 @@ export default function BuyCryptoForm({ onSwap }: BuyCryptoFormProps) {
 					type="button"
 					onClick={form.handleSubmit(onSubmit)}
 					disabled={isLoading || !form.formState.isValid}
-					className="flex items-center gap-x-3 text-black bg-light-green w-full justify-center h-11 rounded-4xl border border-black mx-auto mt-7.5 disabled:opacity-50 disabled:cursor-not-allowed"
+					className="flex items-center gap-x-3 text-[var(--cl-text)] bg-light-green w-full justify-center h-11 rounded-4xl border border-black mx-auto mt-7.5 disabled:opacity-50 disabled:cursor-not-allowed"
 				>
 					{isLoading && <Loader2 className="size-4 animate-spin" />}
-					<span className="text-base font-semibold text-black">
+					<span className="text-base font-semibold text-[var(--cl-text)]">
 						{isLoading ? "Processing..." : "Buy"}
 					</span>
 				</button>

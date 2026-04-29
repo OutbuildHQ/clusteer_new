@@ -13,8 +13,8 @@ export default function CompactWalletList() {
 
 	if (allWallets.length === 0) {
 		return (
-			<div className="bg-[#F7F9FA] rounded-xl border border-[#E9EAEB] p-8 text-center">
-				<div className="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center mb-4">
+			<div className="bg-[#F7F9FA] rounded-xl border border-[var(--cl-line)] p-8 text-center">
+				<div className="w-16 h-16 mx-auto bg-[var(--cl-surface)] rounded-full flex items-center justify-center mb-4">
 					<svg
 						className="w-8 h-8 text-[#667085]"
 						fill="none"
@@ -63,10 +63,10 @@ export default function CompactWalletList() {
 					>
 						<Link
 							href={`/assets/${wallet.currency}`}
-							className="group bg-[#F7F9FA] hover:bg-white border border-[#E9EAEB] rounded-xl p-5 transition-all hover:shadow-md hover:scale-[1.02] block"
+							className="group bg-[#F7F9FA] hover:bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl p-5 transition-all hover:shadow-md hover:scale-[1.02] block"
 						>
 						<div className="flex items-center gap-3 mb-4">
-							<div className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm">
+							<div className="w-10 h-10 flex items-center justify-center bg-[var(--cl-surface)] rounded-full shadow-sm">
 								{iconSrc ? (
 									<Image
 										src={iconSrc}
@@ -97,7 +97,7 @@ export default function CompactWalletList() {
 							{wallet.balance === 0 ? (
 								<p className="text-xs text-[#667085]">No balance</p>
 							) : (
-								<p className="text-xs text-green-600 flex items-center gap-1">
+								<p className="text-xs text-[var(--cl-up)] flex items-center gap-1">
 									<TrendingUp className="w-3 h-3" />
 									Available
 								</p>
@@ -111,10 +111,10 @@ export default function CompactWalletList() {
 			{/* Add Another Currency Card */}
 			<Link
 				href="/receive"
-				className="group bg-white hover:bg-[#F7F9FA] border-2 border-dashed border-[#E9EAEB] rounded-xl p-5 transition-all flex flex-col items-center justify-center text-center min-h-[140px]"
+				className="group bg-[var(--cl-surface)] hover:bg-[#F7F9FA] border-2 border-dashed border-[var(--cl-line)] rounded-xl p-5 transition-all flex flex-col items-center justify-center text-center min-h-[140px]"
 			>
 				<div className="w-12 h-12 flex items-center justify-center bg-[#F7F9FA] group-hover:bg-pale-green rounded-full mb-3 transition-colors">
-					<Plus className="w-6 h-6 text-[#667085] group-hover:text-dark-green transition-colors" />
+					<Plus className="w-6 h-6 text-[#667085] group-hover:text-[var(--cl-brand-500)] transition-colors" />
 				</div>
 				<p className="font-semibold text-[#0D0D0D] text-sm mb-1">
 					Add another currency

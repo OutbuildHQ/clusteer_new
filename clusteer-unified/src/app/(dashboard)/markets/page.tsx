@@ -87,7 +87,7 @@ export default function Page() {
 	};
 
 	return (
-		<div className="font-avenir-next pb-6 lg:pt-[50px]">
+		<div className=" pb-6 lg:pt-[50px]">
 			<header className="mb-6">
 				<div className="flex justify-between items-start">
 					<div>
@@ -95,7 +95,7 @@ export default function Page() {
 							Markets
 						</h1>
 						<p className="text-sm lg:text-base text-[#667085] mt-1">
-							Track cryptocurrency prices and market trends
+							Track stablecoin rates and market trends
 						</p>
 						{lastUpdated && (
 							<p className="text-xs text-[#98A2B3] mt-1">
@@ -122,24 +122,24 @@ export default function Page() {
 
 			<div className="mb-6">
 				<div className="relative max-w-md">
-					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--cl-text-3)]" />
 					<Input
 						type="text"
-						placeholder="Search cryptocurrencies..."
+						placeholder="Search stablecoins..."
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
-						className="pl-10 h-11 rounded-[12px] border-[#E9EAEB]"
+						className="pl-10 h-11 rounded-[12px] border-[var(--cl-line)]"
 					/>
 				</div>
 			</div>
 
 			{error && (
-				<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-					<p className="text-sm text-red-600">{error}</p>
+				<div className="mb-6 p-4 bg-[var(--cl-down-soft)] border border-[var(--cl-down)] rounded-lg">
+					<p className="text-sm text-[var(--cl-down)]">{error}</p>
 				</div>
 			)}
 
-			<Card className="rounded-[20px] border-[#E9EAEB] overflow-hidden">
+			<Card className="rounded-[20px] border-[var(--cl-line)] overflow-hidden">
 				{loading && markets.length === 0 ? (
 					<div className="flex items-center justify-center py-12">
 						<Loader2 className="h-8 w-8 animate-spin text-[#667085]" />
@@ -147,7 +147,7 @@ export default function Page() {
 				) : (
 					<div className="overflow-x-auto">
 						<table className="w-full">
-							<thead className="bg-[#FAFAFA] border-b border-[#E9EAEB]">
+							<thead className="bg-[var(--cl-bg)] border-b border-[var(--cl-line)]">
 								<tr>
 									<th className="text-left py-4 px-6 text-sm font-semibold text-[#667085]">
 										#
@@ -173,9 +173,9 @@ export default function Page() {
 								{filteredMarkets.map((market) => (
 									<tr
 										key={market.id}
-										className="border-b border-[#E9EAEB] hover:bg-[#FAFAFA] transition-colors cursor-pointer"
+										className="border-b border-[var(--cl-line)] hover:bg-[var(--cl-bg)] transition-colors cursor-pointer"
 									>
-										<td className="py-4 px-6 text-sm text-[#414651]">{market.rank}</td>
+										<td className="py-4 px-6 text-sm text-[var(--cl-text-2)]">{market.rank}</td>
 										<td className="py-4 px-6">
 											<div className="flex items-center gap-3">
 												<Image
@@ -202,18 +202,18 @@ export default function Page() {
 											<span
 												className={`font-semibold ${
 													market.change24h >= 0
-														? "text-green-600"
-														: "text-red-600"
+														? "text-[var(--cl-up)]"
+														: "text-[var(--cl-down)]"
 												}`}
 											>
 												{market.change24h >= 0 ? "+" : ""}
 												{market.change24h.toFixed(2)}%
 											</span>
 										</td>
-										<td className="py-4 px-6 text-right text-[#414651]">
+										<td className="py-4 px-6 text-right text-[var(--cl-text-2)]">
 											{formatLargeNumber(market.volume)}
 										</td>
-										<td className="py-4 px-6 text-right text-[#414651]">
+										<td className="py-4 px-6 text-right text-[var(--cl-text-2)]">
 											{formatLargeNumber(market.marketCap)}
 										</td>
 									</tr>
@@ -223,7 +223,7 @@ export default function Page() {
 
 						{!loading && filteredMarkets.length === 0 && markets.length > 0 && (
 							<div className="text-center py-12 text-[#667085]">
-								No cryptocurrencies found matching your search.
+								No stablecoins found matching your search.
 							</div>
 						)}
 

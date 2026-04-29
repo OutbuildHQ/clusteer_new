@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 
 export default function PrivacyPolicyPage() {
 	return (
-		<div className="min-h-screen bg-white">
-			<div className="max-w-4xl mx-auto px-6 py-12">
+		<div className="min-h-screen bg-background">
+			<div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
 				<header className="mb-12">
 					<Link href="/">
 						<Button
@@ -16,15 +16,15 @@ export default function PrivacyPolicyPage() {
 							Back to Home
 						</Button>
 					</Link>
-					<h1 className="text-4xl font-bold mb-4">Privacy Policy</h1>
-					<p className="text-gray-600">Last Updated: October 30, 2025</p>
+					<h1 className="text-3xl sm:text-4xl font-bold mb-4">Privacy Policy</h1>
+					<p className="text-muted-foreground">Last Updated: October 30, 2025</p>
 				</header>
 
-				<div className="space-y-8 text-gray-800">
+				<div className="space-y-8 text-foreground">
 					<section>
 						<h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
 						<p className="mb-4">
-							Welcome to Clusteer. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our cryptocurrency exchange platform.
+							Welcome to Clusteer. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our stablecoin exchange platform.
 						</p>
 						<p>
 							By using Clusteer, you agree to the collection and use of information in accordance with this Privacy Policy. If you do not agree with our policies and practices, please do not use our services.
@@ -59,7 +59,7 @@ export default function PrivacyPolicyPage() {
 						<ul className="list-disc pl-6 space-y-2">
 							<li><strong>Account Management:</strong> Create and manage your account</li>
 							<li><strong>Identity Verification:</strong> Comply with Know Your Customer (KYC) and Anti-Money Laundering (AML) regulations</li>
-							<li><strong>Transaction Processing:</strong> Execute and record cryptocurrency transactions</li>
+							<li><strong>Transaction Processing:</strong> Execute and record stablecoin transactions</li>
 							<li><strong>Security:</strong> Prevent fraud, unauthorized access, and other illegal activities</li>
 							<li><strong>Customer Support:</strong> Respond to your inquiries and provide technical assistance</li>
 							<li><strong>Legal Compliance:</strong> Comply with applicable laws, regulations, and legal processes</li>
@@ -127,7 +127,7 @@ export default function PrivacyPolicyPage() {
 							<li><strong>Withdraw Consent:</strong> Revoke consent for data processing (where applicable)</li>
 						</ul>
 						<p className="mt-4">
-							To exercise these rights, please contact us at <a href="mailto:privacy@clusteer.com" className="text-dark-green underline">privacy@clusteer.com</a>
+							To exercise these rights, please contact us at <a href="mailto:privacy@clusteer.com" className="text-primary underline">privacy@clusteer.com</a>
 						</p>
 					</section>
 
@@ -146,7 +146,7 @@ export default function PrivacyPolicyPage() {
 					</section>
 
 					<section>
-						<h2 className="text-2xl font-semibold mb-4">10. Children's Privacy</h2>
+						<h2 className="text-2xl font-semibold mb-4">10. Children&apos;s Privacy</h2>
 						<p>
 							Clusteer is not intended for individuals under 18 years of age. We do not knowingly collect personal information from minors. If you believe we have collected information from a child, please contact us immediately.
 						</p>
@@ -179,14 +179,14 @@ export default function PrivacyPolicyPage() {
 						<p className="mb-4">
 							If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
 						</p>
-						<div className="bg-gray-50 p-6 rounded-lg">
-							<p className="mb-2"><strong>Email:</strong> <a href="mailto:privacy@clusteer.com" className="text-dark-green underline">privacy@clusteer.com</a></p>
-							<p className="mb-2"><strong>Support:</strong> <a href="mailto:support@clusteer.com" className="text-dark-green underline">support@clusteer.com</a></p>
-							<p><strong>Data Protection Officer:</strong> <a href="mailto:dpo@clusteer.com" className="text-dark-green underline">dpo@clusteer.com</a></p>
+						<div className="bg-card border border-border p-6 rounded-lg">
+							<p className="mb-2"><strong>Email:</strong> <a href="mailto:privacy@clusteer.com" className="text-primary underline">privacy@clusteer.com</a></p>
+							<p className="mb-2"><strong>Support:</strong> <a href="mailto:support@clusteer.com" className="text-primary underline">support@clusteer.com</a></p>
+							<p><strong>Data Protection Officer:</strong> <a href="mailto:dpo@clusteer.com" className="text-primary underline">dpo@clusteer.com</a></p>
 						</div>
 					</section>
 
-					<section className="border-t pt-8 mt-12">
+					<section className="border-t border-border pt-8 mt-12">
 						<h2 className="text-2xl font-semibold mb-4">Nigeria-Specific Privacy Rights</h2>
 						<p className="mb-4">
 							As a Nigerian user, you have rights under the Nigeria Data Protection Regulation (NDPR):
@@ -203,8 +203,8 @@ export default function PrivacyPolicyPage() {
 					</section>
 				</div>
 
-				<footer className="mt-16 pt-8 border-t text-center text-gray-600">
-					<p>&copy; 2025 Clusteer. All rights reserved.</p>
+				<footer className="mt-16 pt-8 border-t border-border text-center text-muted-foreground">
+					<p>&copy; {new Date().getFullYear()} Clusteer. All rights reserved.</p>
 				</footer>
 			</div>
 		</div>

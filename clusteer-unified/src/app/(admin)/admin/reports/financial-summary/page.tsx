@@ -51,7 +51,7 @@ export default function FinancialSummaryReportPage() {
 			change: 15.3,
 			trend: "up",
 			icon: <DollarSign className="w-6 h-6" />,
-			color: "bg-green-50 text-green-600",
+			color: "bg-[var(--cl-up-soft)] text-[var(--cl-up)]",
 		},
 		{
 			title: "Transaction Fees",
@@ -59,7 +59,7 @@ export default function FinancialSummaryReportPage() {
 			change: 12.1,
 			trend: "up",
 			icon: <Percent className="w-6 h-6" />,
-			color: "bg-blue-50 text-blue-600",
+			color: "bg-[var(--cl-info-soft)] text-[var(--cl-brand-600)]",
 		},
 		{
 			title: "Processing Volume",
@@ -80,8 +80,8 @@ export default function FinancialSummaryReportPage() {
 	];
 
 	const revenueBreakdown: RevenueBreakdown[] = [
-		{ category: "Buy Transaction Fees", amount: 25430, percentage: 56.3, color: "bg-green-500" },
-		{ category: "Sell Transaction Fees", amount: 15680, percentage: 34.7, color: "bg-blue-500" },
+		{ category: "Buy Transaction Fees", amount: 25430, percentage: 56.3, color: "bg-[var(--cl-up-soft)]0" },
+		{ category: "Sell Transaction Fees", amount: 15680, percentage: 34.7, color: "bg-[var(--cl-info-soft)]0" },
 		{ category: "Withdrawal Fees", amount: 4120, percentage: 9.0, color: "bg-purple-500" },
 	];
 
@@ -121,16 +121,16 @@ export default function FinancialSummaryReportPage() {
 	return (
 		<div className="space-y-6">
 			{/* Breadcrumb */}
-			<nav className="flex items-center gap-2 text-sm text-gray-500">
-				<button onClick={() => router.push("/admin")} className="hover:text-gray-900">
+			<nav className="flex items-center gap-2 text-sm text-[var(--cl-text-3)]">
+				<button onClick={() => router.push("/admin")} className="hover:text-[var(--cl-text)]">
 					Dashboard
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<button onClick={() => router.push("/admin/reports")} className="hover:text-gray-900">
+				<button onClick={() => router.push("/admin/reports")} className="hover:text-[var(--cl-text)]">
 					Reports
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<span className="font-medium text-gray-900">Financial Summary</span>
+				<span className="font-medium text-[var(--cl-text)]">Financial Summary</span>
 			</nav>
 
 			{/* Header */}
@@ -138,13 +138,13 @@ export default function FinancialSummaryReportPage() {
 				<div className="flex items-center gap-4">
 					<button
 						onClick={() => router.push("/admin/reports")}
-						className="p-2 hover:bg-[#FAFAFA] rounded-lg transition-colors"
+						className="p-2 hover:bg-[var(--cl-bg)] rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-gray-600" />
+						<ArrowLeft className="w-5 h-5 text-[var(--cl-text-2)]" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">Financial Summary Report</h1>
-						<p className="text-sm text-gray-600 mt-1">
+						<h1 className="text-2xl font-bold text-[var(--cl-text)]">Financial Summary Report</h1>
+						<p className="text-sm text-[var(--cl-text-2)] mt-1">
 							Complete overview of revenue, fees, and financial metrics
 						</p>
 					</div>
@@ -161,17 +161,17 @@ export default function FinancialSummaryReportPage() {
 			</div>
 
 			{/* Period Selector */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-4">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
-						<Calendar className="w-5 h-5 text-gray-400" />
-						<span className="text-sm font-medium text-gray-700">Report Period:</span>
+						<Calendar className="w-5 h-5 text-[var(--cl-text-3)]" />
+						<span className="text-sm font-medium text-[var(--cl-text-2)]">Report Period:</span>
 					</div>
 					<div className="flex gap-2">
 						{["Today", "Week", "Month", "Quarter", "Year"].map((period) => (
 							<button
 								key={period}
-								className="px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
+								className="px-4 py-2 text-sm font-medium bg-[var(--cl-surface-2)] text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 							>
 								{period}
 							</button>
@@ -183,13 +183,13 @@ export default function FinancialSummaryReportPage() {
 			{/* Key Metrics */}
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 				{metrics.map((metric, index) => (
-					<div key={index} className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+					<div key={index} className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 						<div className="flex items-center justify-between mb-4">
 							<div className={`p-3 rounded-lg ${metric.color}`}>
 								{metric.icon}
 							</div>
 							<div className={`flex items-center gap-1 text-sm font-medium ${
-								metric.trend === "up" ? "text-green-600" : "text-red-600"
+								metric.trend === "up" ? "text-[var(--cl-up)]" : "text-[var(--cl-down)]"
 							}`}>
 								{metric.trend === "up" ? (
 									<ArrowUpRight className="w-4 h-4" />
@@ -199,31 +199,31 @@ export default function FinancialSummaryReportPage() {
 								{Math.abs(metric.change)}%
 							</div>
 						</div>
-						<h3 className="text-sm text-gray-600 font-medium mb-1">{metric.title}</h3>
-						<p className="text-2xl font-bold text-gray-900">{metric.value}</p>
-						<p className="text-xs text-gray-500 mt-2">vs. previous period</p>
+						<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">{metric.title}</h3>
+						<p className="text-2xl font-bold text-[var(--cl-text)]">{metric.value}</p>
+						<p className="text-xs text-[var(--cl-text-3)] mt-2">vs. previous period</p>
 					</div>
 				))}
 			</div>
 
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 				{/* Daily Revenue Chart */}
-				<div className="lg:col-span-2 bg-white rounded-lg border border-[#E9EAEB] p-6">
-					<h2 className="text-lg font-semibold text-gray-900 mb-6">Daily Revenue Trend</h2>
+				<div className="lg:col-span-2 bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+					<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-6">Daily Revenue Trend</h2>
 
 					<div className="space-y-4">
 						{dailyRevenue.map((data, index) => (
 							<div key={index}>
 								<div className="flex items-center justify-between mb-2">
-									<span className="text-sm font-medium text-gray-700">{data.date}</span>
+									<span className="text-sm font-medium text-[var(--cl-text-2)]">{data.date}</span>
 									<div className="flex items-center gap-4">
-										<span className="text-xs text-gray-600">{data.transactions} txns</span>
-										<span className="text-sm font-semibold text-gray-900">
+										<span className="text-xs text-[var(--cl-text-2)]">{data.transactions} txns</span>
+										<span className="text-sm font-semibold text-[var(--cl-text)]">
 											${data.revenue.toLocaleString()}
 										</span>
 									</div>
 								</div>
-								<div className="w-full bg-gray-100 rounded-full h-10 relative overflow-hidden">
+								<div className="w-full bg-[var(--cl-surface-2)] rounded-full h-10 relative overflow-hidden">
 									<div
 										className="bg-[#014F01] h-full rounded-full transition-all duration-500 flex items-center justify-between px-4"
 										style={{ width: `${(data.revenue / maxRevenue) * 100}%` }}
@@ -240,10 +240,10 @@ export default function FinancialSummaryReportPage() {
 						))}
 					</div>
 
-					<div className="mt-6 pt-6 border-t border-[#E9EAEB]">
+					<div className="mt-6 pt-6 border-t border-[var(--cl-line)]">
 						<div className="flex items-center justify-between">
-							<span className="text-sm font-medium text-gray-700">Total Revenue</span>
-							<span className="text-xl font-bold text-gray-900">
+							<span className="text-sm font-medium text-[var(--cl-text-2)]">Total Revenue</span>
+							<span className="text-xl font-bold text-[var(--cl-text)]">
 								${dailyRevenue.reduce((sum, d) => sum + d.revenue, 0).toLocaleString()}
 							</span>
 						</div>
@@ -251,8 +251,8 @@ export default function FinancialSummaryReportPage() {
 				</div>
 
 				{/* Revenue Breakdown */}
-				<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
-					<h2 className="text-lg font-semibold text-gray-900 mb-6">Revenue Breakdown</h2>
+				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+					<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-6">Revenue Breakdown</h2>
 
 					<div className="space-y-4">
 						{revenueBreakdown.map((item, index) => (
@@ -260,29 +260,29 @@ export default function FinancialSummaryReportPage() {
 								<div className="flex items-center justify-between mb-2">
 									<div className="flex items-center gap-2">
 										<div className={`w-3 h-3 rounded-full ${item.color}`}></div>
-										<span className="text-sm font-medium text-gray-700">{item.category}</span>
+										<span className="text-sm font-medium text-[var(--cl-text-2)]">{item.category}</span>
 									</div>
-									<span className="text-sm font-semibold text-gray-900">
+									<span className="text-sm font-semibold text-[var(--cl-text)]">
 										{item.percentage}%
 									</span>
 								</div>
-								<div className="w-full bg-gray-100 rounded-full h-2">
+								<div className="w-full bg-[var(--cl-surface-2)] rounded-full h-2">
 									<div
 										className={`${item.color} h-full rounded-full transition-all duration-500`}
 										style={{ width: `${item.percentage}%` }}
 									></div>
 								</div>
 								<div className="flex items-center justify-between mt-1">
-									<span className="text-xs text-gray-500">${item.amount.toLocaleString()}</span>
+									<span className="text-xs text-[var(--cl-text-3)]">${item.amount.toLocaleString()}</span>
 								</div>
 							</div>
 						))}
 					</div>
 
-					<div className="mt-6 pt-6 border-t border-[#E9EAEB]">
+					<div className="mt-6 pt-6 border-t border-[var(--cl-line)]">
 						<div className="flex items-center justify-between">
-							<span className="text-sm font-medium text-gray-700">Total Fees</span>
-							<span className="text-lg font-bold text-gray-900">
+							<span className="text-sm font-medium text-[var(--cl-text-2)]">Total Fees</span>
+							<span className="text-lg font-bold text-[var(--cl-text)]">
 								${revenueBreakdown.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}
 							</span>
 						</div>
@@ -291,77 +291,77 @@ export default function FinancialSummaryReportPage() {
 			</div>
 
 			{/* Financial Details Table */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
-				<h2 className="text-lg font-semibold text-gray-900 mb-6">Detailed Breakdown</h2>
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-6">Detailed Breakdown</h2>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 					{/* Income */}
 					<div>
-						<h3 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-							<TrendingUp className="w-4 h-4 text-green-600" />
+						<h3 className="text-sm font-semibold text-[var(--cl-text-2)] mb-4 flex items-center gap-2">
+							<TrendingUp className="w-4 h-4 text-[var(--cl-up)]" />
 							Income
 						</h3>
 						<div className="space-y-3">
-							<div className="flex items-center justify-between py-2 border-b border-gray-100">
-								<span className="text-sm text-gray-600">Buy Fees</span>
-								<span className="text-sm font-semibold text-gray-900">$25,430</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--cl-line)]">
+								<span className="text-sm text-[var(--cl-text-2)]">Buy Fees</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">$25,430</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-gray-100">
-								<span className="text-sm text-gray-600">Sell Fees</span>
-								<span className="text-sm font-semibold text-gray-900">$15,680</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--cl-line)]">
+								<span className="text-sm text-[var(--cl-text-2)]">Sell Fees</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">$15,680</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-gray-100">
-								<span className="text-sm text-gray-600">Withdrawal Fees</span>
-								<span className="text-sm font-semibold text-gray-900">$4,120</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--cl-line)]">
+								<span className="text-sm text-[var(--cl-text-2)]">Withdrawal Fees</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">$4,120</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-gray-100">
-								<span className="text-sm text-gray-600">Interest Income</span>
-								<span className="text-sm font-semibold text-gray-900">$660</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--cl-line)]">
+								<span className="text-sm text-[var(--cl-text-2)]">Interest Income</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">$660</span>
 							</div>
 							<div className="flex items-center justify-between py-2 pt-4">
-								<span className="text-sm font-semibold text-gray-900">Total Income</span>
-								<span className="text-lg font-bold text-green-600">$45,890</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">Total Income</span>
+								<span className="text-lg font-bold text-[var(--cl-up)]">$45,890</span>
 							</div>
 						</div>
 					</div>
 
 					{/* Expenses */}
 					<div>
-						<h3 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-							<TrendingDown className="w-4 h-4 text-red-600" />
+						<h3 className="text-sm font-semibold text-[var(--cl-text-2)] mb-4 flex items-center gap-2">
+							<TrendingDown className="w-4 h-4 text-[var(--cl-down)]" />
 							Expenses
 						</h3>
 						<div className="space-y-3">
-							<div className="flex items-center justify-between py-2 border-b border-gray-100">
-								<span className="text-sm text-gray-600">Payment Gateway</span>
-								<span className="text-sm font-semibold text-gray-900">$12,340</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--cl-line)]">
+								<span className="text-sm text-[var(--cl-text-2)]">Payment Gateway</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">$12,340</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-gray-100">
-								<span className="text-sm text-gray-600">Infrastructure</span>
-								<span className="text-sm font-semibold text-gray-900">$8,500</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--cl-line)]">
+								<span className="text-sm text-[var(--cl-text-2)]">Infrastructure</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">$8,500</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-gray-100">
-								<span className="text-sm text-gray-600">Operations</span>
-								<span className="text-sm font-semibold text-gray-900">$15,200</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--cl-line)]">
+								<span className="text-sm text-[var(--cl-text-2)]">Operations</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">$15,200</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-gray-100">
-								<span className="text-sm text-gray-600">Other Expenses</span>
-								<span className="text-sm font-semibold text-gray-900">$11,400</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--cl-line)]">
+								<span className="text-sm text-[var(--cl-text-2)]">Other Expenses</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">$11,400</span>
 							</div>
 							<div className="flex items-center justify-between py-2 pt-4">
-								<span className="text-sm font-semibold text-gray-900">Total Expenses</span>
-								<span className="text-lg font-bold text-red-600">$47,440</span>
+								<span className="text-sm font-semibold text-[var(--cl-text)]">Total Expenses</span>
+								<span className="text-lg font-bold text-[var(--cl-down)]">$47,440</span>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div className="mt-8 pt-6 border-t-2 border-[#E9EAEB]">
+				<div className="mt-8 pt-6 border-t-2 border-[var(--cl-line)]">
 					<div className="flex items-center justify-between">
-						<span className="text-lg font-semibold text-gray-900">Net Profit/Loss</span>
-						<span className="text-2xl font-bold text-red-600">-$1,550</span>
+						<span className="text-lg font-semibold text-[var(--cl-text)]">Net Profit/Loss</span>
+						<span className="text-2xl font-bold text-[var(--cl-down)]">-$1,550</span>
 					</div>
-					<p className="text-xs text-gray-500 mt-2">This period</p>
+					<p className="text-xs text-[var(--cl-text-3)] mt-2">This period</p>
 				</div>
 			</div>
 		</div>

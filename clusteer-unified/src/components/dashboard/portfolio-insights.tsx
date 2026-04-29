@@ -50,8 +50,8 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 		if (cryptoPercentage > 80) {
 			recommendations.push({
 				type: "warning" as const,
-				title: "High crypto exposure",
-				message: "Your portfolio is heavily weighted in cryptocurrency",
+				title: "High stablecoin exposure",
+				message: "Your portfolio is heavily weighted in stablecoins. Consider converting some to Naira.",
 			});
 		}
 		if (totalBalance < 10000) {
@@ -79,21 +79,21 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 	}
 
 	return (
-		<div className="bg-gradient-to-br from-[#E7F6EC] to-[#F7F9FA] rounded-2xl border border-[#E9EAEB] p-6 relative">
+		<div className="bg-gradient-to-br from-[var(--cl-brand-50)] to-[var(--cl-surface-2)] rounded-2xl border border-[var(--cl-line)] p-6 relative">
 			{onClose && (
 				<Button
 					onClick={onClose}
 					variant="ghost"
 					size="icon"
-					className="absolute top-4 right-4 h-8 w-8 rounded-full hover:bg-white"
+					className="absolute top-4 right-4 h-8 w-8 rounded-full hover:bg-[var(--cl-surface)]"
 				>
 					<X className="h-4 w-4 text-[#667085]" />
 				</Button>
 			)}
 
 			<div className="flex items-start gap-4 mb-6">
-				<div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-					<TrendingUp className="w-6 h-6 text-dark-green" />
+				<div className="w-12 h-12 rounded-full bg-[var(--cl-surface)] flex items-center justify-center shadow-sm">
+					<TrendingUp className="w-6 h-6 text-[var(--cl-brand-500)]" />
 				</div>
 				<div className="flex-1">
 					<h3 className="text-xl font-bold text-[#0D0D0D] mb-1">Portfolio Insights</h3>
@@ -105,11 +105,11 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 
 			{/* Portfolio Breakdown */}
 			<div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-				<div className="bg-white rounded-xl p-4 border border-[#E9EAEB]">
+				<div className="bg-[var(--cl-surface)] rounded-xl p-4 border border-[var(--cl-line)]">
 					<p className="text-xs text-[#667085] mb-1">Total Assets</p>
 					<p className="text-2xl font-bold text-[#0D0D0D]">{insights.totalAssets}</p>
 				</div>
-				<div className="bg-white rounded-xl p-4 border border-[#E9EAEB]">
+				<div className="bg-[var(--cl-surface)] rounded-xl p-4 border border-[var(--cl-line)]">
 					<p className="text-xs text-[#667085] mb-1">Crypto</p>
 					<p className="text-2xl font-bold text-[#0D0D0D]">
 						{insights.cryptoPercentage.toFixed(0)}%
@@ -118,7 +118,7 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 						₦{formatNumber(insights.cryptoBalance)}
 					</p>
 				</div>
-				<div className="bg-white rounded-xl p-4 border border-[#E9EAEB]">
+				<div className="bg-[var(--cl-surface)] rounded-xl p-4 border border-[var(--cl-line)]">
 					<p className="text-xs text-[#667085] mb-1">Fiat</p>
 					<p className="text-2xl font-bold text-[#0D0D0D]">
 						{insights.fiatPercentage.toFixed(0)}%
@@ -136,19 +136,19 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 						key={index}
 						className={`flex items-start gap-3 p-4 rounded-xl ${
 							rec.type === "warning"
-								? "bg-yellow-50 border border-yellow-200"
-								: "bg-blue-50 border border-blue-200"
+								? "bg-[var(--cl-warn-soft)] border border-[var(--cl-warn)]"
+								: "bg-[var(--cl-info-soft)] border border-[var(--cl-brand-200)]"
 						}`}
 					>
 						<div
 							className={`w-8 h-8 rounded-full flex items-center justify-center ${
-								rec.type === "warning" ? "bg-yellow-100" : "bg-blue-100"
+								rec.type === "warning" ? "bg-[var(--cl-warn-soft)]" : "bg-[var(--cl-info-soft)]"
 							}`}
 						>
 							{rec.type === "warning" ? (
-								<AlertCircle className="w-4 h-4 text-yellow-600" />
+								<AlertCircle className="w-4 h-4 text-[var(--cl-warn)]" />
 							) : (
-								<TrendingUp className="w-4 h-4 text-blue-600" />
+								<TrendingUp className="w-4 h-4 text-[var(--cl-brand-600)]" />
 							)}
 						</div>
 						<div className="flex-1">

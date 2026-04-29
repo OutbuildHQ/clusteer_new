@@ -19,9 +19,9 @@ export default function AssetClient({ asset }: { asset: string }) {
 	const iconSrc = WALLET_CURRENCY_ICONS[asset as WalletCurrency];
 
 	return (
-		<section className="font-avenir-next pb-6 lg:pt-[50px]">
+		<section className=" pb-6 lg:pt-[50px]">
 			{/* Balance Card - Wise style */}
-			<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6 mb-6">
+			<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6 mb-6">
 				<div className="flex items-center gap-4 mb-6">
 					<div className="w-12 h-12 flex items-center justify-center bg-[#F7F9FA] rounded-full">
 						<Image
@@ -65,7 +65,7 @@ export default function AssetClient({ asset }: { asset: string }) {
 			</div>
 
 			{/* Orders Section */}
-			<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6">
+			<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
 				<h2 className="text-xl lg:text-2xl font-bold text-[#0D0D0D] mb-4">Orders</h2>
 				{/* Orders content will go here */}
 			</div>

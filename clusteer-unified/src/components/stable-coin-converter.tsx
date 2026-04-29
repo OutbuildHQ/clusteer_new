@@ -52,7 +52,7 @@ export default function StableCoinConverter() {
 		select: (coins) => coins.map((coin) => coin.code),
 	});
 
-	const [currentStableCoin, setCurrentStableCoin] = useState<Crypto>("ETH");
+	const [currentStableCoin, setCurrentStableCoin] = useState<Crypto>("TRON");
 
 	const [amount, setAmount] = useState(MINIMUM_VALUE);
 
@@ -160,7 +160,7 @@ export default function StableCoinConverter() {
 				</div>
 			</div>
 			<div className="flex flex-col md:flex-row justify-center items-center gap-y-3.5 md:gap-x-[55px]">
-				<div className="flex items-center h-[59px] max-w-[261px] md:max-w-[320px] gap-x-2 md:gap-x-2.5 rounded-[52px] border-[0.52px] border-gray-500 focus-visible:ring-0 outline-none overflow-hidden">
+				<div className="flex items-center h-[59px] max-w-[261px] md:max-w-[320px] gap-x-2 md:gap-x-2.5 rounded-[52px] border-[0.52px] border-[var(--cl-line-strong)] focus-visible:ring-0 outline-none overflow-hidden">
 					<div className="flex items-center gap-x-1.5 md:gap-x-2 pl-3 md:pl-3.5">
 						<div className="text-left flex flex-col justify-center">
 							<span className="font-medium text-[6px] md:text-[8px]">
@@ -217,7 +217,7 @@ export default function StableCoinConverter() {
 					width={10}
 					height={10}
 				/>
-				<div className="flex items-center h-[59px] max-w-[261px] md:max-w-[320px] gap-x-2 md:gap-x-2.5 rounded-[52px] border-[0.52px] border-gray-500 focus-visible:ring-0 outline-none overflow-hidden">
+				<div className="flex items-center h-[59px] max-w-[261px] md:max-w-[320px] gap-x-2 md:gap-x-2.5 rounded-[52px] border-[0.52px] border-[var(--cl-line-strong)] focus-visible:ring-0 outline-none overflow-hidden">
 					<div className="flex items-center gap-x-1.5 md:gap-x-2 pl-3 md:pl-3.5">
 						<div className="text-left flex flex-col justify-center">
 							<span className="font-medium text-[6px] md:text-[8px]">

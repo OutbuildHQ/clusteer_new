@@ -102,7 +102,7 @@ export default function Page() {
 					>
 						<ArrowLeft className="shrink-0 size-full" />
 					</Button>
-					<h1 className="text-[#181D27] font-semibold text-xl sm:text2xl">
+					<h1 className="text-[var(--cl-text)] font-semibold text-xl sm:text2xl">
 						Configure Google Authenticator
 					</h1>
 				</div>
@@ -123,8 +123,8 @@ export default function Page() {
 											className={`
 												relative flex items-center justify-center w-6 h-6 rounded-full border transition-all duration-300
 												${isCompleted ? 'bg-[#9FE870] border-[#9FE870]' : ''}
-												${isActive ? 'bg-white border-[#9FE870] shadow-[0_0_0_2px_rgba(159,232,112,0.15)]' : ''}
-												${!isActive && !isCompleted ? 'bg-white border-[#E9EAEB]' : ''}
+												${isActive ? 'bg-[var(--cl-surface)] border-[#9FE870] shadow-[0_0_0_2px_rgba(159,232,112,0.15)]' : ''}
+												${!isActive && !isCompleted ? 'bg-[var(--cl-surface)] border-[var(--cl-line)]' : ''}
 											`}
 										>
 											{isCompleted ? (

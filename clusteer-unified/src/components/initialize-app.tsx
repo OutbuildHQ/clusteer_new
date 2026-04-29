@@ -40,16 +40,26 @@ export default function InitializeApp({ children }: Props) {
 			return;
 		}
 
-		// If we have user data, hydrate (wallet data is optional)
+		// Wait for user query to complete before hydrating
+		if (isPending) {
+			return;
+		}
+
+		// If we have user data, set it
 		if (data) {
 			setUser(data);
-			// Only set wallets if we have wallet data
-			if (walletData && !isWalletError) {
-				setWallets(walletData.walletAssets);
-			}
+		}
+
+		// Set wallets if available (don't block hydration on wallet data)
+		if (walletData && !isWalletError) {
+			setWallets(walletData.walletAssets);
+		}
+
+		// Hydrate once user query is settled (wallet is non-blocking)
+		if (!isPending) {
 			setHydrated(true);
 		}
-	}, [data, walletData, isError, isWalletError, setUser, setWallets]);
+	}, [data, walletData, isError, isWalletError, isPending, setUser, setWallets]);
 
 	if (isPending || !hydrated)
 		return (

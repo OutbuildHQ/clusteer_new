@@ -3,266 +3,256 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* =========================================================
+   Clusteer Design Tokens
+   Source: original Clusteer brand (lime green + warm neutrals)
+   Neutral base → shadcn new-york; overlaid with brand green
+   + chain accents + mono numeric type.
+   ========================================================= */
+
 :root {
-	--real-black: hsl(0, 0%, 0%);
+	/* Brand — Clusteer Green (derived from hsl(78, 100%, 48%)) */
+	--clusteer-green-50: oklch(0.975 0.04 120);
+	--clusteer-green-100: oklch(0.945 0.08 118);
+	--clusteer-green-200: oklch(0.895 0.14 116);
+	--clusteer-green-300: oklch(0.835 0.19 112);
+	--clusteer-green-400: oklch(0.78 0.22 108);
+	--clusteer-green-500: oklch(0.72 0.2 106);
+	--clusteer-green-600: oklch(0.62 0.19 130);
+	--clusteer-green-700: oklch(0.52 0.16 134);
+	--clusteer-green-800: oklch(0.42 0.13 136);
+	--clusteer-green-900: oklch(0.32 0.09 138);
 
-	--custom-black: #21241d;
+	/* Old Clusteer palette — exact colors */
+	--light-green: hsl(78, 100%, 48%);
+	--medium-green: hsl(78, 100%, 48%);
+	--dark-green: hsl(120, 100%, 25%);
+	--button-bg: hsl(76, 96%, 91%);
+	--warm-beige: #F0EBE6;
+	--custom-black: hsl(86, 11%, 13%);
 
-	--pale-green: oklch(97.697% 0.05845 119.942);
+	/* Chain accents */
+	--chain-btc: oklch(0.742 0.163 64);
+	--chain-eth: oklch(0.52 0.12 268);
+	--chain-usdt: oklch(0.645 0.138 163);
+	--chain-usdc: oklch(0.618 0.168 244);
+	--chain-sol: oklch(0.605 0.243 298);
+	--chain-bnb: oklch(0.812 0.17 92);
+	--chain-polygon: oklch(0.56 0.215 295);
+	--chain-trx: oklch(0.58 0.222 27);
 
-	--light-green: oklch(88.759% 0.23335 128.416);
+	/* Semantic */
+	--success: oklch(0.648 0.164 149);
+	--success-bg: oklch(0.965 0.035 149);
+	--warning: oklch(0.735 0.158 75);
+	--warning-bg: oklch(0.972 0.04 85);
+	--danger: oklch(0.588 0.218 27);
+	--danger-bg: oklch(0.965 0.035 22);
+	--info: var(--clusteer-green-500);
+	--info-bg: var(--clusteer-green-50);
 
-	--medium-green: oklch(88.759% 0.23335 128.416);
-
-	--dark-green: oklch(51.976% 0.17685 142.511);
-
-	--button-bg: oklch(1 0 0);
-
-	--reviews-text: oklch(0.556 0 0);
-
-	--grey-200: oklch(0.922 0 0);
-
+	/* shadcn surfaces — light */
 	--radius: 0.625rem;
-
 	--background: oklch(1 0 0);
-
 	--foreground: oklch(0.145 0 0);
-
 	--card: oklch(1 0 0);
-
 	--card-foreground: oklch(0.145 0 0);
-
 	--popover: oklch(1 0 0);
-
 	--popover-foreground: oklch(0.145 0 0);
-
-	--primary: oklch(0.205 0 0);
-
-	--primary-foreground: oklch(0.985 0 0);
-
+	--primary: var(--clusteer-green-600);
+	--primary-foreground: oklch(0.13 0.02 120);
 	--secondary: oklch(0.97 0 0);
-
 	--secondary-foreground: oklch(0.205 0 0);
-
 	--muted: oklch(0.97 0 0);
+	--muted-foreground: oklch(0.45 0 0);
+	--accent: var(--clusteer-green-50);
+	--accent-foreground: var(--clusteer-green-700);
+	--destructive: var(--danger);
+	--border: oklch(0.918 0.005 254);
+	--input: oklch(0.918 0.005 254);
+	--ring: var(--clusteer-green-500);
 
-	--muted-foreground: oklch(0.556 0 0);
-
-	--accent: oklch(0.97 0 0);
-
-	--accent-foreground: oklch(0.205 0 0);
-
-	--destructive: oklch(0.577 0.245 27.325);
-
-	--border: oklch(0.922 0 0);
-
-	--input: oklch(54.443% 0.0351 265.132);
-
-	--ring: oklch(0.708 0 0);
-
-	--chart-1: oklch(0.646 0.222 41.116);
-
-	--chart-2: oklch(0.6 0.118 184.704);
-
-	--chart-3: oklch(0.398 0.07 227.392);
-
-	--chart-4: oklch(0.828 0.189 84.429);
-
-	--chart-5: oklch(0.769 0.188 70.08);
+	--chart-1: var(--clusteer-green-500);
+	--chart-2: var(--success);
+	--chart-3: var(--warning);
+	--chart-4: var(--chain-eth);
+	--chart-5: var(--chain-sol);
 
 	--sidebar: oklch(0.985 0 0);
-
 	--sidebar-foreground: oklch(0.145 0 0);
-
-	--sidebar-primary: oklch(0.205 0 0);
-
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-
-	--sidebar-accent: oklch(0.97 0 0);
-
+	--sidebar-primary: var(--clusteer-green-600);
+	--sidebar-primary-foreground: oklch(0.13 0.02 120);
+	--sidebar-accent: oklch(0.965 0 0);
 	--sidebar-accent-foreground: oklch(0.205 0 0);
-
 	--sidebar-border: oklch(0.922 0 0);
+	--sidebar-ring: var(--clusteer-green-500);
 
-	--sidebar-ring: oklch(0.708 0 0);
-
-	--toast-width: 90vw;
+	--toast-width: min(380px, 90vw);
 }
 
 @theme inline {
+	/* Tailwind theme mappings */
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
-	--color-black: var(--custom-black);
-	--color-real-black: var(--real-black);
-	--color-pale-green: var(--pale-green);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+
+	--color-brand-50: var(--clusteer-green-50);
+	--color-brand-100: var(--clusteer-green-100);
+	--color-brand-200: var(--clusteer-green-200);
+	--color-brand-300: var(--clusteer-green-300);
+	--color-brand-400: var(--clusteer-green-400);
+	--color-brand-500: var(--clusteer-green-500);
+	--color-brand-600: var(--clusteer-green-600);
+	--color-brand-700: var(--clusteer-green-700);
+	--color-brand-800: var(--clusteer-green-800);
+	--color-brand-900: var(--clusteer-green-900);
+
+	/* Old Clusteer palette utilities */
 	--color-light-green: var(--light-green);
 	--color-medium-green: var(--medium-green);
 	--color-dark-green: var(--dark-green);
+	--color-warm-beige: var(--warm-beige);
 	--color-button-bg: var(--button-bg);
-	--color-reviews-text: var(--reviews-text);
-	--color-grey-200: var(--grey-200);
-	--font-mona: var(--font-mona);
-	--font-lexend: var(--font-lexend);
-	--font-inter: var(--font-inter);
-	--font-avenir-next: var(--font-avenir-next);
-	--color-sidebar-ring: var(--sidebar-ring);
-	--color-sidebar-border: var(--sidebar-border);
-	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-	--color-sidebar-accent: var(--sidebar-accent);
-	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-	--color-sidebar-primary: var(--sidebar-primary);
-	--color-sidebar-foreground: var(--sidebar-foreground);
-	--color-sidebar: var(--sidebar);
-	--color-chart-5: var(--chart-5);
-	--color-chart-4: var(--chart-4);
-	--color-chart-3: var(--chart-3);
-	--color-chart-2: var(--chart-2);
-	--color-chart-1: var(--chart-1);
-	--color-ring: var(--ring);
-	--color-input: var(--input);
-	--color-border: var(--border);
-	--color-destructive: var(--destructive);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-accent: var(--accent);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-muted: var(--muted);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-secondary: var(--secondary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-primary: var(--primary);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-popover: var(--popover);
-	--color-card-foreground: var(--card-foreground);
-	--color-card: var(--card);
+	--color-custom-black: var(--custom-black);
+
+	--color-chain-btc: var(--chain-btc);
+	--color-chain-eth: var(--chain-eth);
+	--color-chain-usdt: var(--chain-usdt);
+	--color-chain-usdc: var(--chain-usdc);
+	--color-chain-sol: var(--chain-sol);
+	--color-chain-bnb: var(--chain-bnb);
+	--color-chain-polygon: var(--chain-polygon);
+	--color-chain-trx: var(--chain-trx);
+
+	--color-success: var(--success);
+	--color-success-bg: var(--success-bg);
+	--color-warning: var(--warning);
+	--color-warning-bg: var(--warning-bg);
+	--color-danger: var(--danger);
+	--color-danger-bg: var(--danger-bg);
+	--color-info: var(--info);
+	--color-info-bg: var(--info-bg);
+
+	--font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	--font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+	--font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
+	--radius-2xl: calc(var(--radius) + 8px);
 }
 
 .dark {
-	--background: oklch(0.145 0 0);
-
+	--background: oklch(0.14 0.015 254);
 	--foreground: oklch(0.985 0 0);
-
-	--card: oklch(0.205 0 0);
-
+	--card: oklch(0.185 0.015 254);
 	--card-foreground: oklch(0.985 0 0);
-
-	--popover: oklch(0.205 0 0);
-
+	--popover: oklch(0.185 0.015 254);
 	--popover-foreground: oklch(0.985 0 0);
-
-	--primary: oklch(0.922 0 0);
-
-	--primary-foreground: oklch(0.205 0 0);
-
-	--secondary: oklch(0.269 0 0);
-
+	--primary: var(--clusteer-green-400);
+	--primary-foreground: oklch(0.145 0.015 254);
+	--secondary: oklch(0.235 0.015 254);
 	--secondary-foreground: oklch(0.985 0 0);
-
-	--muted: oklch(0.269 0 0);
-
-	--muted-foreground: oklch(0.708 0 0);
-
-	--accent: oklch(0.269 0 0);
-
+	--muted: oklch(0.235 0.015 254);
+	--muted-foreground: oklch(0.68 0.01 254);
+	--accent: oklch(0.255 0.035 254);
 	--accent-foreground: oklch(0.985 0 0);
+	--destructive: oklch(0.68 0.19 27);
+	--border: oklch(1 0 0 / 0.1);
+	--input: oklch(1 0 0 / 0.12);
+	--ring: var(--clusteer-green-400);
 
-	--destructive: oklch(0.704 0.191 22.216);
-
-	--border: oklch(1 0 0 / 10%);
-
-	--input: oklch(1 0 0 / 15%);
-
-	--ring: oklch(0.556 0 0);
-
-	--chart-1: oklch(0.488 0.243 264.376);
-
-	--chart-2: oklch(0.696 0.17 162.48);
-
-	--chart-3: oklch(0.769 0.188 70.08);
-
-	--chart-4: oklch(0.627 0.265 303.9);
-
-	--chart-5: oklch(0.645 0.246 16.439);
-
-	--sidebar: oklch(0.205 0 0);
-
+	--sidebar: oklch(0.16 0.015 254);
 	--sidebar-foreground: oklch(0.985 0 0);
-
-	--sidebar-primary: oklch(0.488 0.243 264.376);
-
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-
-	--sidebar-accent: oklch(0.269 0 0);
-
+	--sidebar-primary: var(--clusteer-green-400);
+	--sidebar-primary-foreground: oklch(0.145 0.015 254);
+	--sidebar-accent: oklch(0.235 0.015 254);
 	--sidebar-accent-foreground: oklch(0.985 0 0);
-
-	--sidebar-border: oklch(1 0 0 / 10%);
-
-	--sidebar-ring: oklch(0.556 0 0);
+	--sidebar-border: oklch(1 0 0 / 0.1);
+	--sidebar-ring: var(--clusteer-green-400);
 }
 
 @layer base {
 	* {
-		@apply text-black;
+		@apply border-border outline-ring/50;
 	}
 	body {
-		@apply bg-background font-avenir-next;
+		@apply bg-background text-foreground font-sans;
+		font-feature-settings: "ss01", "cv11";
+	}
+	h1, h2, h3, h4, h5 {
+		font-family: var(--font-display);
+		letter-spacing: -0.02em;
 	}
 }
 
-img {
-	user-select: none; /* Prevents text/image selection */
-	-webkit-user-drag: none; /* Prevents dragging in WebKit browsers */
-	pointer-events: none; /* (Optional) disables mouse interaction */
+/* Hide scrollbar but keep scroll functionality */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Tabular numerics — apply to any element showing money / amounts */
+.tabular,
+.tabular-nums {
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: "tnum" 1;
+}
+
+.mono {
+	font-family: var(--font-mono);
+	font-variant-numeric: tabular-nums;
+}
+
+/* Subtle grid background used on marketing hero */
+.bg-grid {
+	background-image:
+		linear-gradient(to right, oklch(0 0 0 / 0.04) 1px, transparent 1px),
+		linear-gradient(to bottom, oklch(0 0 0 / 0.04) 1px, transparent 1px);
+	background-size: 40px 40px;
+}
+
+.dark .bg-grid {
+	background-image:
+		linear-gradient(to right, oklch(1 0 0 / 0.05) 1px, transparent 1px),
+		linear-gradient(to bottom, oklch(1 0 0 / 0.05) 1px, transparent 1px);
+}
+
+/* Focus ring tokens */
+.focus-ring {
+	@apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
 }
 
 button {
 	cursor: pointer;
-}
-
-.grey-button {
-	background-color: #F5F5F5;
-	transition: background-color 0.2s;
-}
-
-.grey-button:hover {
-	background-color: #E8E8E8;
-}
-
-.form-border {
-	border: 1px solid hsla(217, 23%, 27%, 1);
-}
-
-.google-login-border {
-	border: 1px solid hsla(216, 16%, 84%, 1);
-	box-shadow: 0px 1px 2px 0px hsla(220, 43%, 11%, 0.05);
-}
-
-.gradient-border {
-	box-shadow: 0px -2px 0px 0px #ffffff1f inset;
-	box-shadow: 0px 0px 0px 1px #ffffff1f inset;
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-	}
-  body {
-    @apply bg-background text-foreground;
-	}
-}
-
-/* Hide TradingView watermark/logo */
-.chart-container > div > div:last-child,
-.chart-container > div > table + div,
-.chart-container > div > canvas + div,
-div[class*="tv-lightweight-charts"] > div:last-child,
-div[class*="tv-lightweight-charts"] > table + div {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
 }

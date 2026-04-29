@@ -130,15 +130,15 @@ const CustomToast = ({
 	message: string;
 	icon: React.ReactNode;
 }) => (
-	<div className="flex items-center bg-white border border-zinc-200 rounded-lg h-[60px] px-[23px]">
-		<div className="flex items-center gap-2 text-sm font-medium text-[#414651]">
+	<div className="flex items-center bg-[var(--cl-surface)] border border-zinc-200 rounded-lg h-[60px] px-[23px]">
+		<div className="flex items-center gap-2 text-sm font-medium text-[var(--cl-text-2)]">
 			{icon}
 			<span>{message}</span>
 		</div>
 		<Button
 			variant="ghost"
 			onClick={() => toast.dismiss(id)}
-			className="ml-auto flex items-center gap-x-2 font-semibold text-sm text-[#535862] hover:[&>svg]:stroke-black"
+			className="ml-auto flex items-center gap-x-2 font-semibold text-sm text-[var(--cl-text-2)] hover:[&>svg]:stroke-black"
 		>
 			Dismiss
 			<X

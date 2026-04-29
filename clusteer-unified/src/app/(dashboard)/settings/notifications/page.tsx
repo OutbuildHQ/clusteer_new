@@ -131,7 +131,7 @@ export default function Page() {
 		return (
 			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 				<header className="mb-6">
-					<h1 className="text-[#181D27] font-semibold text-xl lg:text-2xl">
+					<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
 						Notification Preferences
 					</h1>
 					<p className="text-sm lg:text-base text-[#667085] mt-2">
@@ -145,7 +145,7 @@ export default function Page() {
 	return (
 		<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 			<header className="mb-6">
-				<h1 className="text-[#181D27] font-semibold text-xl lg:text-2xl">
+				<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
 					Notification Preferences
 				</h1>
 				<p className="text-sm lg:text-base text-[#667085] mt-2">
@@ -156,10 +156,10 @@ export default function Page() {
 
 			<div className="space-y-8">
 				{/* Email Notifications */}
-				<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[#E7F6EC] rounded-lg">
-							<Mail className="w-5 h-5 text-[#0D4222]" />
+						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
+							<Mail className="w-5 h-5 text-[var(--cl-brand-700)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-[#0D0D0D]">
@@ -172,7 +172,7 @@ export default function Page() {
 					</div>
 
 					<div className="space-y-4">
-						<div className="flex items-center justify-between py-3 border-b border-[#E9EAEB]">
+						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
 							<div>
 								<p className="font-medium text-[#0D0D0D]">
 									Transaction confirmations
@@ -187,7 +187,7 @@ export default function Page() {
 							/>
 						</div>
 
-						<div className="flex items-center justify-between py-3 border-b border-[#E9EAEB]">
+						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
 							<div>
 								<p className="font-medium text-[#0D0D0D]">Security alerts</p>
 								<p className="text-sm text-[#667085]">
@@ -200,7 +200,7 @@ export default function Page() {
 							/>
 						</div>
 
-						<div className="flex items-center justify-between py-3 border-b border-[#E9EAEB]">
+						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
 							<div>
 								<p className="font-medium text-[#0D0D0D]">Order updates</p>
 								<p className="text-sm text-[#667085]">
@@ -231,10 +231,10 @@ export default function Page() {
 				</div>
 
 				{/* SMS Notifications */}
-				<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[#E7F6EC] rounded-lg">
-							<MessageSquare className="w-5 h-5 text-[#0D4222]" />
+						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
+							<MessageSquare className="w-5 h-5 text-[var(--cl-brand-700)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-[#0D0D0D]">
@@ -247,7 +247,7 @@ export default function Page() {
 					</div>
 
 					<div className="space-y-4">
-						<div className="flex items-center justify-between py-3 border-b border-[#E9EAEB]">
+						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
 							<div>
 								<p className="font-medium text-[#0D0D0D]">
 									Transaction confirmations
@@ -262,7 +262,7 @@ export default function Page() {
 							/>
 						</div>
 
-						<div className="flex items-center justify-between py-3 border-b border-[#E9EAEB]">
+						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
 							<div>
 								<p className="font-medium text-[#0D0D0D]">Security alerts</p>
 								<p className="text-sm text-[#667085]">
@@ -291,10 +291,10 @@ export default function Page() {
 				</div>
 
 				{/* Push Notifications */}
-				<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6 opacity-60">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6 opacity-60">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[#E7F6EC] rounded-lg">
-							<Smartphone className="w-5 h-5 text-[#0D4222]" />
+						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
+							<Smartphone className="w-5 h-5 text-[var(--cl-brand-700)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-[#0D0D0D]">
@@ -307,7 +307,7 @@ export default function Page() {
 					</div>
 
 					<div className="space-y-4">
-						<div className="flex items-center justify-between py-3 border-b border-[#E9EAEB]">
+						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
 							<div>
 								<p className="font-medium text-[#0D0D0D]">
 									Transaction confirmations
@@ -319,7 +319,7 @@ export default function Page() {
 							<Switch disabled checked={preferences.push.transactions} />
 						</div>
 
-						<div className="flex items-center justify-between py-3 border-b border-[#E9EAEB]">
+						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
 							<div>
 								<p className="font-medium text-[#0D0D0D]">Security alerts</p>
 								<p className="text-sm text-[#667085]">

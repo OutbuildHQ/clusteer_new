@@ -70,13 +70,13 @@ function FiatInput({ name, control }: UseControllerProps) {
 	);
 
 	return (
-		<div className="bg-white flex items-center h-[65px] px-3.5 rounded-xl">
+		<div className="bg-[var(--cl-surface)] flex items-center h-[65px] px-3.5 rounded-xl">
 			<Input
 				{...field}
 				value={displayValue}
 				onChange={(e) => handleInputChange(e, (val) => field.onChange(val))}
 				onBlur={() => handleBlur(field.onChange, () => field.onBlur())}
-				className="border-0 font-avenir-next bg-none shadow-none h-11 border-none p-0 rounded-none font-bold text-base w-full"
+				className="border-0  bg-none shadow-none h-11 border-none p-0 rounded-none font-bold text-base w-full"
 				aria-label="Amount input"
 			/>
 			<Image

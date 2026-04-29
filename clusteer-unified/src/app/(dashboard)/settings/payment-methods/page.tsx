@@ -166,7 +166,7 @@ export default function Page() {
 		return (
 			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 				<header className="mb-6">
-					<h1 className="text-[#181D27] font-semibold text-xl lg:text-2xl">
+					<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
 						Payment Methods
 					</h1>
 					<p className="text-sm lg:text-base text-[#667085] mt-2">
@@ -180,7 +180,7 @@ export default function Page() {
 	return (
 		<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 			<header className="mb-6">
-				<h1 className="text-[#181D27] font-semibold text-xl lg:text-2xl">
+				<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
 					Payment Methods
 				</h1>
 				<p className="text-sm lg:text-base text-[#667085] mt-2">
@@ -194,14 +194,14 @@ export default function Page() {
 					<Button
 						variant="outline"
 						onClick={() => setShowAddForm(true)}
-						className="w-full lg:w-auto border-dashed border-2 border-[#D5D7DA] hover:border-[#9FE870] h-auto py-4 px-6 rounded-xl"
+						className="w-full lg:w-auto border-dashed border-2 border-[var(--cl-line-strong)] hover:border-[#9FE870] h-auto py-4 px-6 rounded-xl"
 						disabled={accounts.length >= 5}
 					>
 						<Plus className="w-5 h-5 mr-2" />
 						Add Bank Account {accounts.length >= 5 && "(Maximum reached)"}
 					</Button>
 				) : (
-					<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6">
+					<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
 						<h3 className="font-semibold text-lg text-[#0D0D0D] mb-4">
 							Add New Bank Account
 						</h3>
@@ -216,7 +216,7 @@ export default function Page() {
 									onChange={(e) =>
 										setNewAccount({ ...newAccount, bankName: e.target.value })
 									}
-									className="w-full px-4 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
+									className="w-full px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
 									placeholder="e.g., GTBank"
 								/>
 							</div>
@@ -234,7 +234,7 @@ export default function Page() {
 										})
 									}
 									maxLength={10}
-									className="w-full px-4 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
+									className="w-full px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
 									placeholder="0123456789"
 								/>
 							</div>
@@ -251,7 +251,7 @@ export default function Page() {
 											accountName: e.target.value,
 										})
 									}
-									className="w-full px-4 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
+									className="w-full px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
 									placeholder="John Doe"
 								/>
 							</div>
@@ -287,12 +287,12 @@ export default function Page() {
 					{accounts.map((account) => (
 						<div
 							key={account.id}
-							className="bg-white rounded-2xl border border-[#E9EAEB] p-5 lg:p-6"
+							className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-5 lg:p-6"
 						>
 							<div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
 								<div className="flex items-start gap-4">
-									<div className="p-3 bg-[#E7F6EC] rounded-lg">
-										<CreditCard className="w-6 h-6 text-[#0D4222]" />
+									<div className="p-3 bg-[var(--cl-brand-50)] rounded-lg">
+										<CreditCard className="w-6 h-6 text-[var(--cl-brand-700)]" />
 									</div>
 									<div>
 										<div className="flex items-center gap-2 mb-1">
@@ -302,13 +302,13 @@ export default function Page() {
 											{account.isDefault && (
 												<Badge
 													variant="secondary"
-													className="rounded-full h-6 py-1 text-[#0D4222] bg-[#E7F6EC]"
+													className="rounded-full h-6 py-1 text-[var(--cl-brand-700)] bg-[var(--cl-brand-50)]"
 												>
 													Default
 												</Badge>
 											)}
 											{account.isVerified && (
-												<CheckCircle2 className="w-4 h-4 text-green-600" />
+												<CheckCircle2 className="w-4 h-4 text-[var(--cl-up)]" />
 											)}
 										</div>
 										<p className="text-sm text-[#667085] mb-1">
@@ -335,7 +335,7 @@ export default function Page() {
 										variant="ghost"
 										size="sm"
 										onClick={() => openDeleteDialog(account.id)}
-										className="text-destructive hover:text-destructive hover:bg-red-50 h-9 w-9 p-0 rounded-full"
+										className="text-destructive hover:text-destructive hover:bg-[var(--cl-down-soft)] h-9 w-9 p-0 rounded-full"
 										disabled={account.isDefault}
 									>
 										<Trash2 className="w-4 h-4" />
@@ -348,9 +348,9 @@ export default function Page() {
 
 				{/* Empty State */}
 				{accounts.length === 0 && (
-					<div className="bg-white rounded-2xl border border-[#E9EAEB] p-12 text-center">
+					<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-12 text-center">
 						<div className="w-16 h-16 mx-auto bg-pale-green rounded-full flex items-center justify-center mb-4">
-							<CreditCard className="w-8 h-8 text-dark-green" />
+							<CreditCard className="w-8 h-8 text-[var(--cl-brand-500)]" />
 						</div>
 						<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">
 							No payment methods added
@@ -366,7 +366,7 @@ export default function Page() {
 				)}
 
 				{/* Info Card */}
-				<div className="bg-[#F9FAFB] rounded-2xl border border-[#E9EAEB] p-5">
+				<div className="bg-[#F9FAFB] rounded-2xl border border-[var(--cl-line)] p-5">
 					<h3 className="font-semibold text-base text-[#0D0D0D] mb-3">
 						Important Information
 					</h3>
@@ -419,7 +419,7 @@ export default function Page() {
 						</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={handleDelete}
-							className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+							className="bg-[var(--cl-down)] hover:bg-[var(--cl-down)]/90 focus:ring-[var(--cl-down)]"
 						>
 							Delete
 						</AlertDialogAction>

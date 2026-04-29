@@ -154,11 +154,11 @@ export default function AlertSettingsPage() {
 	const getCategoryColor = (category: AlertSetting["category"]) => {
 		switch (category) {
 			case "security":
-				return "text-red-600 bg-red-50";
+				return "text-[var(--cl-down)] bg-[var(--cl-down-soft)]";
 			case "transactions":
-				return "text-green-600 bg-green-50";
+				return "text-[var(--cl-up)] bg-[var(--cl-up-soft)]";
 			case "users":
-				return "text-blue-600 bg-blue-50";
+				return "text-[var(--cl-brand-600)] bg-[var(--cl-info-soft)]";
 			case "system":
 				return "text-orange-600 bg-orange-50";
 		}
@@ -219,14 +219,14 @@ export default function AlertSettingsPage() {
 		const categoryAlerts = groupedAlerts[category];
 
 		return (
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 				<div className="flex items-center gap-3 mb-6">
 					<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getCategoryColor(category)}`}>
 						<Icon className="w-5 h-5" />
 					</div>
 					<div>
-						<h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-						<p className="text-sm text-gray-600">{categoryAlerts.length} alert(s) configured</p>
+						<h3 className="text-lg font-semibold text-[var(--cl-text)]">{title}</h3>
+						<p className="text-sm text-[var(--cl-text-2)]">{categoryAlerts.length} alert(s) configured</p>
 					</div>
 				</div>
 
@@ -234,19 +234,19 @@ export default function AlertSettingsPage() {
 					{categoryAlerts.map((alert) => (
 						<div
 							key={alert.id}
-							className="p-4 border border-[#E9EAEB] rounded-lg hover:border-[#014F01]/20 transition-colors"
+							className="p-4 border border-[var(--cl-line)] rounded-lg hover:border-[#014F01]/20 transition-colors"
 						>
 							<div className="flex items-start justify-between mb-3">
 								<div className="flex-1">
 									<div className="flex items-center gap-3 mb-1">
-										<h4 className="text-sm font-semibold text-gray-900">{alert.name}</h4>
+										<h4 className="text-sm font-semibold text-[var(--cl-text)]">{alert.name}</h4>
 										{alert.enabled && (
-											<span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
+											<span className="px-2 py-0.5 bg-[var(--cl-up-soft)] text-[var(--cl-up)] text-xs font-medium rounded">
 												Active
 											</span>
 										)}
 									</div>
-									<p className="text-sm text-gray-600">{alert.description}</p>
+									<p className="text-sm text-[var(--cl-text-2)]">{alert.description}</p>
 								</div>
 								<label className="relative inline-flex items-center cursor-pointer ml-4">
 									<input
@@ -255,25 +255,25 @@ export default function AlertSettingsPage() {
 										onChange={() => toggleAlert(alert.id)}
 										className="sr-only peer"
 									/>
-									<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#014F01]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#014F01]"></div>
+									<div className="w-11 h-6 bg-[var(--cl-surface-2)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#014F01]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[var(--cl-surface)] after:border-[var(--cl-line)] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#014F01]"></div>
 								</label>
 							</div>
 
 							{alert.enabled && (
-								<div className="space-y-3 pt-3 border-t border-gray-100 animate-in fade-in slide-in-from-top-2 duration-200">
+								<div className="space-y-3 pt-3 border-t border-[var(--cl-line)] animate-in fade-in slide-in-from-top-2 duration-200">
 									{/* Threshold Settings */}
 									{alert.threshold && (
-										<div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+										<div className="flex items-center gap-3 p-3 bg-[var(--cl-bg)] rounded-lg">
 											<div className="flex-1">
-												<label className="block text-xs font-medium text-gray-700 mb-1">Threshold</label>
+												<label className="block text-xs font-medium text-[var(--cl-text-2)] mb-1">Threshold</label>
 												<div className="flex items-center gap-2">
 													<input
 														type="number"
 														value={alert.threshold.value}
 														onChange={(e) => updateThreshold(alert.id, Number(e.target.value))}
-														className="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+														className="w-24 px-2 py-1 text-sm border border-[var(--cl-line)] rounded focus:outline-none focus:ring-2 focus:ring-[#014F01]"
 													/>
-													<span className="text-sm text-gray-600">{alert.threshold.unit}</span>
+													<span className="text-sm text-[var(--cl-text-2)]">{alert.threshold.unit}</span>
 												</div>
 											</div>
 										</div>
@@ -281,14 +281,14 @@ export default function AlertSettingsPage() {
 
 									{/* Notification Channels */}
 									<div>
-										<label className="block text-xs font-medium text-gray-700 mb-2">Notification Channels</label>
+										<label className="block text-xs font-medium text-[var(--cl-text-2)] mb-2">Notification Channels</label>
 										<div className="grid grid-cols-4 gap-2">
 											<button
 												onClick={() => toggleChannel(alert.id, "email")}
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.email
 														? "bg-[#014F01] text-white border-[#014F01]"
-														: "bg-white text-gray-600 border-gray-200 hover:border-[#014F01]"
+														: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] border-[var(--cl-line)] hover:border-[#014F01]"
 												}`}
 											>
 												<Mail className="w-4 h-4" />
@@ -299,7 +299,7 @@ export default function AlertSettingsPage() {
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.sms
 														? "bg-[#014F01] text-white border-[#014F01]"
-														: "bg-white text-gray-600 border-gray-200 hover:border-[#014F01]"
+														: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] border-[var(--cl-line)] hover:border-[#014F01]"
 												}`}
 											>
 												<MessageSquare className="w-4 h-4" />
@@ -310,7 +310,7 @@ export default function AlertSettingsPage() {
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.push
 														? "bg-[#014F01] text-white border-[#014F01]"
-														: "bg-white text-gray-600 border-gray-200 hover:border-[#014F01]"
+														: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] border-[var(--cl-line)] hover:border-[#014F01]"
 												}`}
 											>
 												<Smartphone className="w-4 h-4" />
@@ -321,7 +321,7 @@ export default function AlertSettingsPage() {
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.sound
 														? "bg-[#014F01] text-white border-[#014F01]"
-														: "bg-white text-gray-600 border-gray-200 hover:border-[#014F01]"
+														: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] border-[var(--cl-line)] hover:border-[#014F01]"
 												}`}
 											>
 												<Volume2 className="w-4 h-4" />
@@ -343,19 +343,19 @@ export default function AlertSettingsPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-4">
-					<button onClick={() => router.push("/admin")} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-						<ArrowLeft className="w-5 h-5 text-gray-600" />
+					<button onClick={() => router.push("/admin")} className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors">
+						<ArrowLeft className="w-5 h-5 text-[var(--cl-text-2)]" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">Alert Settings</h1>
-						<p className="text-sm text-gray-600 mt-1">Configure system notifications and alerts</p>
+						<h1 className="text-2xl font-bold text-[var(--cl-text)]">Alert Settings</h1>
+						<p className="text-sm text-[var(--cl-text-2)] mt-1">Configure system notifications and alerts</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
 					{hasChanges && (
 						<button
 							onClick={handleReset}
-							className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-[#FAFAFA] transition-colors"
+							className="flex items-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 						>
 							<RotateCcw className="w-4 h-4" />
 							Reset
@@ -367,7 +367,7 @@ export default function AlertSettingsPage() {
 						className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
 							hasChanges && !isLoading
 								? "bg-[#014F01] text-white hover:bg-[#013d01] shadow-sm"
-								: "bg-gray-100 text-gray-400 cursor-not-allowed"
+								: "bg-[var(--cl-surface-2)] text-[var(--cl-text-3)] cursor-not-allowed"
 						}`}
 					>
 						<Save className="w-4 h-4" />
@@ -398,25 +398,25 @@ export default function AlertSettingsPage() {
 			</div>
 
 			{/* Test Alerts Section */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
-				<h3 className="text-lg font-semibold text-gray-900 mb-4">Test Alerts</h3>
-				<p className="text-sm text-gray-600 mb-4">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<h3 className="text-lg font-semibold text-[var(--cl-text)] mb-4">Test Alerts</h3>
+				<p className="text-sm text-[var(--cl-text-2)] mb-4">
 					Send a test notification to verify your alert configuration is working correctly.
 				</p>
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
 						<Mail className="w-4 h-4" />
 						Test Email
 					</button>
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
 						<MessageSquare className="w-4 h-4" />
 						Test SMS
 					</button>
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
 						<Smartphone className="w-4 h-4" />
 						Test Push
 					</button>
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
 						<Volume2 className="w-4 h-4" />
 						Test Sound
 					</button>

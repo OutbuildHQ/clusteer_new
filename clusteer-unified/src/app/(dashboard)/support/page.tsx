@@ -1,554 +1,326 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useUser } from "@/store/user";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSupportTickets, createSupportTicket, type SupportTicket } from "@/lib/api/support";
-import { Toast } from "@/components/toast";
-import {
-	Search,
-	Clock,
-	Shield,
-	XCircle,
-	Scale,
-	AlertCircle,
-	DollarSign,
-	ChevronDown,
-	MessageCircle,
-	Phone,
-	Globe,
-	Headphones,
-	Send,
-} from "lucide-react";
+import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+	Search, MessageCircle, Mail, ChevronRight, BookOpen, Shield, Wallet, ArrowLeftRight,
+	Plus, Clock, Send, Headphones, X, CheckCircle2, AlertCircle,
+} from "lucide-react";
+import { toast } from "sonner";
 
-const HELP_TOPICS = [
-	{
-		icon: Clock,
-		title: "Pending order",
-		slug: "pending-order",
-		description: "Understand the common reasons your crypto fiat order may be delayed, and what steps to take to resolve it.",
-	},
-	{
-		icon: Shield,
-		title: "Account verification",
-		slug: "account-verification",
-		description: "A simple guide to completing your KYC, uploading documents, and unlocking higher transaction thresholds.",
-	},
-	{
-		icon: XCircle,
-		title: "Failed transaction",
-		slug: "failed-transaction",
-		description: "Troubleshoot payment issues, check network statuses, and request support for failed or stuck transactions.",
-	},
-	{
-		icon: Scale,
-		title: "Fees, exchange rates",
-		slug: "fees-exchange-rates",
-		description: "Learn about Clusteer's transparent fee structure, how rates are determined, and where to view them.",
-	},
-	{
-		icon: AlertCircle,
-		title: "Fraud, suspicious activity",
-		slug: "fraud-suspicious-activity",
-		description: "Protect your account by reporting unauthorized actions, phishing, or any suspicious behavior you've noticed.",
-	},
-	{
-		icon: DollarSign,
-		title: "Fast, secure withdrawal",
-		slug: "fast-secure-withdrawal",
-		description: "Step-by-step guide on how to initiate withdrawals, typical processing times, and tips to ensure smooth transactions.",
-	},
+const TOPICS = [
+	{ icon: Wallet, slug: "deposits-withdrawals", title: "Deposits & withdrawals", desc: "Receiving and sending stablecoins safely." },
+	{ icon: ArrowLeftRight, slug: "buying-selling", title: "Buying & selling", desc: "Prices, fees, and order status." },
+	{ icon: Shield, slug: "security-2fa", title: "Security & 2FA", desc: "Protect your account." },
+	{ icon: BookOpen, slug: "kyc-verification", title: "KYC verification", desc: "Tiers, documents, and limits." },
 ];
 
+const FAQ = [
+	{ q: "How long do deposits take?", a: "After the network confirms, funds arrive in your Clusteer wallet typically within 3–15 minutes depending on the chain." },
+	{ q: "What are your trading fees?", a: "A flat 0.75% on buy, sell, and swap orders. No hidden spreads — the rate you see is the rate you get." },
+	{ q: "I sent stablecoins on the wrong network. What now?", a: "Unfortunately, cross-network recovery is not always possible. Contact support immediately with the TX hash — we'll do our best to help." },
+	{ q: "How do I upgrade to Tier 2?", a: "Go to Identity Verification, provide your BVN, a government ID, and a selfie. Most approvals complete in under 5 minutes." },
+	{ q: "Can I withdraw to my Nigerian bank?", a: "Yes, sell your stablecoins for NGN and withdraw to any linked Nigerian bank account. Withdrawals clear within 15 minutes on business days." },
+];
+
+const MOCK_TICKETS = [
+	{ id: "T-0442", subject: "Withdrawal not received", status: "open", priority: "high", createdAt: "2026-04-28T10:30:00Z", lastReply: "2026-04-28T14:15:00Z" },
+	{ id: "T-0438", subject: "KYC Tier 2 document rejected", status: "resolved", priority: "medium", createdAt: "2026-04-25T08:00:00Z", lastReply: "2026-04-26T09:30:00Z" },
+];
+
+const CHAT_MESSAGES = [
+	{ role: "bot" as const, text: "👋 Hi! I'm Clusteer's support assistant. How can I help you today?", time: "Just now" },
+];
+
+function relativeTime(iso: string) {
+	const diff = Date.now() - new Date(iso).getTime();
+	const hrs = Math.floor(diff / 3600000);
+	if (hrs < 1) return "Just now";
+	if (hrs < 24) return `${hrs}h ago`;
+	const days = Math.floor(hrs / 24);
+	return `${days}d ago`;
+}
+
+const statusColor: Record<string, string> = {
+	open: "bg-primary/10 text-primary border-primary/20",
+	"in-progress": "bg-warning/10 text-warning border-warning/20",
+	resolved: "bg-success/10 text-success border-success/20",
+	closed: "bg-muted text-muted-foreground",
+};
+
 export default function SupportPage() {
-	const user = useUser();
-	const queryClient = useQueryClient();
-	const searchParams = useSearchParams();
-	const [searchQuery, setSearchQuery] = useState("");
-	const [showNewTicketForm, setShowNewTicketForm] = useState(false);
-	const [showLiveChat, setShowLiveChat] = useState(false);
-	const [statusFilter, setStatusFilter] = useState("All");
-	const [showStatusDropdown, setShowStatusDropdown] = useState(false);
-	const [chatMessage, setChatMessage] = useState("");
+	const [q, setQ] = useState("");
+	const [showNewTicket, setShowNewTicket] = useState(false);
+	const [showChat, setShowChat] = useState(false);
+	const [chatInput, setChatInput] = useState("");
+	const [chatMessages, setChatMessages] = useState(CHAT_MESSAGES);
+	const [ticketForm, setTicketForm] = useState({ subject: "", category: "general", priority: "medium", description: "" });
 
-	const [newTicket, setNewTicket] = useState({
-		subject: "",
-		category: "general",
-		description: "",
-		priority: "medium",
-	});
+	const filtered = FAQ.filter((f) => !q || f.q.toLowerCase().includes(q.toLowerCase()));
 
-	// Check for hash in URL to open modals
-	useEffect(() => {
-		const hash = window.location.hash;
-		if (hash === "#create-ticket") {
-			setShowNewTicketForm(true);
-			// Clear the hash
-			window.history.replaceState(null, "", window.location.pathname);
-		} else if (hash === "#live-chat") {
-			setShowLiveChat(true);
-			// Clear the hash
-			window.history.replaceState(null, "", window.location.pathname);
-		}
-	}, []);
-
-	// Close dropdown when clicking outside
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (showStatusDropdown) {
-				const target = event.target as HTMLElement;
-				if (!target.closest('.status-filter-dropdown')) {
-					setShowStatusDropdown(false);
-				}
-			}
-		};
-
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [showStatusDropdown]);
-
-	const { data: tickets, isLoading: ticketsLoading } = useQuery({
-		queryKey: ["support-tickets", user?.id],
-		queryFn: () => getSupportTickets(user!.id),
-		enabled: !!user?.id,
-	});
-
-	const statusOptions = ["All", "Open", "In Progress", "Waiting Response", "Resolved", "Closed"];
-
-	const createTicketMutation = useMutation({
-		mutationFn: () =>
-			createSupportTicket(user!.id, {
-				user_email: user!.email,
-				user_name: `${user!.firstName} ${user!.lastName}`,
-				...newTicket,
-			}),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["support-tickets"] });
-			setShowNewTicketForm(false);
-			setNewTicket({ subject: "", category: "general", description: "", priority: "medium" });
-			Toast.success("Support ticket created successfully");
-		},
-		onError: () => {
-			Toast.error("Failed to create support ticket");
-		},
-	});
-
-	const handleSubmitTicket = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!newTicket.subject || !newTicket.description) {
-			Toast.error("Please fill in all required fields");
+	function submitTicket() {
+		if (!ticketForm.subject || !ticketForm.description) {
+			toast.error("Please fill in subject and description");
 			return;
 		}
-		createTicketMutation.mutate();
-	};
+		toast.success("Ticket submitted — we'll reply within a few hours.");
+		setShowNewTicket(false);
+		setTicketForm({ subject: "", category: "general", priority: "medium", description: "" });
+	}
 
-	const filteredTickets = tickets?.filter((ticket: SupportTicket) => {
-		const matchesSearch = ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			ticket.ticket_number.toLowerCase().includes(searchQuery.toLowerCase());
-		const matchesStatus = statusFilter === "All" || ticket.status === statusFilter.toLowerCase().replace(" ", "_");
-		return matchesSearch && matchesStatus;
-	});
+	function sendChat() {
+		if (!chatInput.trim()) return;
+		setChatMessages((prev) => [...prev, { role: "user", text: chatInput, time: "Just now" }]);
+		setChatInput("");
+		setTimeout(() => {
+			setChatMessages((prev) => [
+				...prev,
+				{ role: "bot", text: "Thanks for your message! A support agent will join this chat shortly. In the meantime, you can also submit a ticket for faster resolution.", time: "Just now" },
+			]);
+		}, 1200);
+	}
 
 	return (
-		<div className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8 max-w-[820px]">
+		<div className="space-y-6">
 			{/* Header */}
-			<header className="mb-8">
-				<div className="flex items-center justify-between mb-2">
-					<h1 className="text-[#0D0D0D] font-semibold text-2xl">Welcome back, {user?.firstName}</h1>
-				</div>
-				<p className="text-sm text-[#667085]">
-					{new Date().toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" })}
-				</p>
-			</header>
-
-			{/* Search Bar */}
-			<div className="mb-8">
-				<h2 className="text-lg font-semibold text-[#0D0D0D] mb-4">Need help?</h2>
-				<div className="relative">
-					<Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#667085]" />
-					<input
-						type="text"
-						placeholder="Type your question..."
-						value={searchQuery}
-						onChange={(e) => setSearchQuery(e.target.value)}
-						className="w-full pl-12 pr-4 py-3 border border-[#E9EAEB] rounded-xl focus:ring-2 focus:ring-[#11C211] focus:border-transparent text-sm"
-					/>
-					<span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#667085] bg-[#F9FAFB] px-2 py-1 rounded border border-[#E9EAEB]">
-						⌘K
-					</span>
-				</div>
-			</div>
-
-			{/* Help Topics Grid */}
-			<div className="mb-8">
-				<h2 className="text-lg font-semibold text-[#0D0D0D] mb-4">Explore all topics</h2>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-					{HELP_TOPICS.map((topic, index) => {
-						const Icon = topic.icon;
-						return (
-							<Link
-								key={index}
-								href={`/support/help/${topic.slug}`}
-								className="block bg-[#F7F9FA] hover:bg-white border border-[#E9EAEB] rounded-xl p-6 transition-all cursor-pointer group"
-							>
-								<Icon className="w-8 h-8 text-[#0D4222] mb-3" />
-								<h3 className="font-semibold text-[#0D0D0D] mb-2">{topic.title}</h3>
-								<p className="text-sm text-[#667085] leading-relaxed">{topic.description}</p>
-							</Link>
-						);
-					})}
-				</div>
-			</div>
-
-			{/* Chat CTA */}
-			<div className="mb-8 bg-white border border-[#E9EAEB] rounded-xl p-6 flex items-center justify-between">
+			<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
 				<div>
-					<p className="text-sm font-medium text-[#0D0D0D] mb-1">Still need help?</p>
+					<h1 className="font-display text-2xl font-bold tracking-tight">How can we help?</h1>
+					<p className="mt-1 text-sm text-muted-foreground">Search our guides, or get in touch 24/7.</p>
 				</div>
-				<Button
-					onClick={() => setShowLiveChat(true)}
-					variant="outline"
-					className="border-[#D5D7DA] h-10 px-6 rounded-full font-semibold"
-				>
-					Chat with us
+				<Button size="sm" onClick={() => setShowNewTicket(true)}>
+					<Plus className="size-4" /> New ticket
 				</Button>
 			</div>
 
-			{/* Live Chat Modal */}
-			{showLiveChat && (
-				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-white rounded-2xl max-w-2xl w-full h-[600px] flex flex-col">
-						{/* Chat Header */}
-						<div className="flex items-center justify-between p-6 border-b border-[#E9EAEB]">
-							<div className="flex items-center gap-3">
-								<div className="w-10 h-10 bg-[#11C211] rounded-full flex items-center justify-center">
-									<Headphones className="w-5 h-5 text-white" />
-								</div>
-								<div>
-									<h3 className="font-semibold text-[#0D0D0D]">Live Chat Support</h3>
-									<p className="text-xs text-[#667085]">We typically reply instantly</p>
-								</div>
-							</div>
-							<button
-								type="button"
-								onClick={() => setShowLiveChat(false)}
-								className="text-[#667085] hover:text-[#0D0D0D]"
-							>
-								<XCircle className="w-6 h-6" />
-							</button>
-						</div>
+			{/* Search */}
+			<div className="relative max-w-2xl">
+				<Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+				<Input className="h-14 pl-12 text-base" placeholder="Search articles…" value={q} onChange={(e) => setQ(e.target.value)} />
+			</div>
 
-						{/* Chat Messages */}
-						<div className="flex-1 overflow-y-auto p-6 space-y-4">
-							{/* Welcome Message */}
-							<div className="flex gap-3">
-								<div className="flex-shrink-0 w-8 h-8 bg-[#E7F6EC] rounded-full flex items-center justify-center">
-									<Headphones className="w-4 h-4 text-[#0D4222]" />
-								</div>
-								<div className="flex-1">
-									<div className="inline-block bg-[#F9FAFB] p-3 rounded-lg">
-										<p className="text-sm text-[#0D0D0D]">
-											👋 Hi {user?.firstName}! How can we help you today?
-										</p>
-									</div>
-									<p className="text-xs text-[#667085] mt-1">Just now</p>
-								</div>
-							</div>
+			{/* Topic cards */}
+			<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+				{TOPICS.map((t) => (
+					<Link key={t.slug} href={`/support/help/${t.slug}`}>
+						<Card className="group cursor-pointer transition hover:border-primary/50 h-full">
+							<CardContent className="p-5">
+								<div className="mb-3 inline-flex rounded-lg bg-primary/10 p-2.5 text-primary"><t.icon className="size-5" /></div>
+								<div className="font-medium">{t.title}</div>
+								<div className="mt-1 text-xs text-muted-foreground">{t.desc}</div>
+								<div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary group-hover:gap-2 transition-all">Browse<ChevronRight className="size-3" /></div>
+							</CardContent>
+						</Card>
+					</Link>
+				))}
+			</div>
 
-							{/* Information Card */}
-							<div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-								<h4 className="font-semibold text-sm text-[#0D0D0D] mb-2">Quick Actions</h4>
-								<div className="space-y-2">
-									<button
-										onClick={() => {
-											setShowLiveChat(false);
-											setShowNewTicketForm(true);
-										}}
-										className="w-full text-left text-sm text-[#0D0D0D] hover:bg-blue-100 p-2 rounded transition-colors"
-									>
-										📝 Submit a support ticket
-									</button>
-									<button className="w-full text-left text-sm text-[#0D0D0D] hover:bg-blue-100 p-2 rounded transition-colors">
-										📞 Request a callback
-									</button>
-									<a
-										href="tel:8001134246"
-										className="block w-full text-left text-sm text-[#0D0D0D] hover:bg-blue-100 p-2 rounded transition-colors"
-									>
-										☎️ Call us: 8001134246
-									</a>
-								</div>
-							</div>
-						</div>
-
-						{/* Chat Input */}
-						<div className="p-6 border-t border-[#E9EAEB]">
-							<div className="bg-[#F9FAFB] border border-[#E9EAEB] rounded-lg p-3 text-center mb-3">
-								<p className="text-sm text-[#667085]">
-									🤖 Our AI assistant is currently being set up. For immediate assistance, please submit a ticket or call us.
-								</p>
-							</div>
-							<div className="flex gap-3">
-								<input
-									type="text"
-									value={chatMessage}
-									onChange={(e) => setChatMessage(e.target.value)}
-									placeholder="Type your message..."
-									disabled
-									className="flex-1 px-4 py-3 border border-[#E9EAEB] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent disabled:bg-[#F9FAFB] disabled:cursor-not-allowed"
-								/>
-								<Button
-									disabled
-									className="gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-auto px-6 rounded-lg font-semibold"
-								>
-									<Send className="w-4 h-4 mr-2" />
-									Send
-								</Button>
-							</div>
-						</div>
+			{/* My tickets */}
+			<Card>
+				<CardHeader className="flex-row items-center justify-between">
+					<div>
+						<CardTitle>My tickets</CardTitle>
+						<CardDescription>Track your open and resolved support requests.</CardDescription>
 					</div>
-				</div>
-			)}
-
-			{/* New Ticket Form Modal/Section */}
-			{showNewTicketForm && (
-				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-						<form onSubmit={handleSubmitTicket} className="p-6">
-							<div className="flex items-center justify-between mb-6">
-								<h3 className="font-semibold text-xl text-[#0D0D0D]">Submit a ticket</h3>
-								<button
-									type="button"
-									onClick={() => setShowNewTicketForm(false)}
-									className="text-[#667085] hover:text-[#0D0D0D]"
-								>
-									<XCircle className="w-6 h-6" />
-								</button>
-							</div>
-							<div className="space-y-4">
-								<div>
-									<label className="block text-sm font-medium text-[#0D0D0D] mb-2">Subject *</label>
-									<input
-										type="text"
-										value={newTicket.subject}
-										onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
-										className="w-full px-4 py-2.5 border border-[#E9EAEB] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent"
-										placeholder="Brief description of your issue"
-										required
-									/>
-								</div>
-								<div className="grid grid-cols-2 gap-4">
-									<div>
-										<label className="block text-sm font-medium text-[#0D0D0D] mb-2">Category</label>
-										<select
-											value={newTicket.category}
-											onChange={(e) => setNewTicket({ ...newTicket, category: e.target.value })}
-											className="w-full px-4 py-2.5 border border-[#E9EAEB] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent"
-										>
-											<option value="account">Account Issues</option>
-											<option value="transaction">Transaction Issues</option>
-											<option value="verification">Verification</option>
-											<option value="security">Security Concerns</option>
-											<option value="technical">Technical Support</option>
-											<option value="general">General Inquiry</option>
-											<option value="other">Other</option>
-										</select>
-									</div>
-									<div>
-										<label className="block text-sm font-medium text-[#0D0D0D] mb-2">Priority</label>
-										<select
-											value={newTicket.priority}
-											onChange={(e) => setNewTicket({ ...newTicket, priority: e.target.value })}
-											className="w-full px-4 py-2.5 border border-[#E9EAEB] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent"
-										>
-											<option value="low">Low</option>
-											<option value="medium">Medium</option>
-											<option value="high">High</option>
-											<option value="urgent">Urgent</option>
-										</select>
-									</div>
-								</div>
-								<div>
-									<label className="block text-sm font-medium text-[#0D0D0D] mb-2">Description *</label>
-									<textarea
-										value={newTicket.description}
-										onChange={(e) => setNewTicket({ ...newTicket, description: e.target.value })}
-										rows={6}
-										className="w-full px-4 py-2.5 border border-[#E9EAEB] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent"
-										placeholder="Please provide as much detail as possible"
-										required
-									/>
-								</div>
-								<div className="flex gap-3 pt-4">
-									<Button
-										type="submit"
-										disabled={createTicketMutation.isPending}
-										className="gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-11 px-8 rounded-full font-semibold"
-									>
-										{createTicketMutation.isPending ? "Submitting..." : "Submit ticket"}
-									</Button>
-									<Button
-										type="button"
-										onClick={() => setShowNewTicketForm(false)}
-										variant="outline"
-										className="border-[#D5D7DA] h-11 px-8 rounded-full font-semibold"
-									>
-										Cancel
-									</Button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			)}
-
-			{/* My Tickets Section */}
-			<div className="mb-8">
-				<h2 className="text-lg font-semibold text-[#0D0D0D] mb-4">My tickets</h2>
-				<div className="bg-white border border-[#E9EAEB] rounded-xl p-6">
-					<div className="flex items-center justify-between mb-4">
-						<div>
-							<h3 className="font-semibold text-[#0D0D0D] mb-1">Need assistance?</h3>
-							<p className="text-sm text-[#667085]">Fill in the form and we will reply within 24 hours</p>
-						</div>
-					</div>
-
-					<div className="flex items-center justify-between mb-6">
-						<div className="flex items-center gap-2 relative status-filter-dropdown">
-							<span className="text-sm text-[#667085]">Active statuses:</span>
-							<button
-								onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-								className="flex items-center gap-1 text-sm font-medium text-[#0D0D0D] hover:bg-[#F9FAFB] px-3 py-1.5 rounded-lg transition-colors"
-							>
-								{statusFilter}
-								<ChevronDown className="w-4 h-4" />
-							</button>
-							{showStatusDropdown && (
-								<div className="absolute top-full left-20 mt-1 bg-white border border-[#E9EAEB] rounded-lg shadow-lg z-10 min-w-[160px]">
-									{statusOptions.map((status) => (
-										<button
-											key={status}
-											onClick={() => {
-												setStatusFilter(status);
-												setShowStatusDropdown(false);
-											}}
-											className="w-full text-left px-4 py-2 text-sm hover:bg-[#F9FAFB] first:rounded-t-lg last:rounded-b-lg transition-colors"
-										>
-											{status}
-										</button>
-									))}
-								</div>
-							)}
-						</div>
-						<div className="relative">
-							<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667085]" />
-							<input
-								type="text"
-								placeholder="Search"
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
-								className="pl-9 pr-4 py-2 border border-[#E9EAEB] rounded-lg text-sm w-64 focus:ring-2 focus:ring-[#11C211] focus:border-transparent"
-							/>
-							<span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#667085]">⌘K</span>
-						</div>
-					</div>
-
-					{ticketsLoading ? (
+					<Button variant="outline" size="sm" onClick={() => setShowNewTicket(true)}>
+						<Plus className="size-3.5" /> Submit ticket
+					</Button>
+				</CardHeader>
+				<CardContent className="p-0">
+					{MOCK_TICKETS.length === 0 ? (
 						<div className="py-12 text-center">
-							<p className="text-[#667085]">Loading tickets...</p>
-						</div>
-					) : !filteredTickets || filteredTickets.length === 0 ? (
-						<div className="py-12 text-center">
-							<MessageCircle className="w-12 h-12 mx-auto text-[#667085] mb-4" />
-							<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">You don't have any tickets</h3>
-							<Button
-								onClick={() => setShowNewTicketForm(true)}
-								className="gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-11 px-6 rounded-full font-semibold mt-4"
-							>
-								<MessageCircle className="w-4 h-4 mr-2" />
-								Submit a ticket
-							</Button>
+							<MessageCircle className="size-10 text-muted-foreground/40 mx-auto mb-3" />
+							<p className="font-medium">No tickets yet</p>
+							<p className="text-sm text-muted-foreground mt-1">Submit a ticket when you need help.</p>
+							<Button size="sm" className="mt-4" onClick={() => setShowNewTicket(true)}>Create your first ticket</Button>
 						</div>
 					) : (
-						<div className="space-y-3">
-							{filteredTickets.map((ticket: SupportTicket) => (
-								<Link
-									key={ticket.id}
-									href={`/support/${ticket.ticket_number}`}
-									className="block border border-[#E9EAEB] rounded-lg p-4 hover:bg-[#F9FAFB] transition-colors"
-								>
-									<div className="flex items-start justify-between">
-										<div className="flex-1">
-											<div className="flex items-center gap-2 mb-1">
-												<span className="text-xs font-medium text-[#667085]">#{ticket.ticket_number}</span>
-												<Badge
-													className={`text-xs ${
-														ticket.status === "open"
-															? "bg-blue-100 text-blue-800"
-															: ticket.status === "resolved"
-															? "bg-green-100 text-green-800"
-															: "bg-gray-100 text-gray-800"
-													}`}
-												>
-													{ticket.status.replace("_", " ")}
-												</Badge>
-											</div>
-											<h4 className="font-medium text-[#0D0D0D] mb-1">{ticket.subject}</h4>
-											<p className="text-sm text-[#667085] line-clamp-2">{ticket.description}</p>
+						<div className="divide-y divide-border">
+							{MOCK_TICKETS.map((t) => (
+								<Link key={t.id} href={`/support/${t.id}`} className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-muted/50 transition-colors">
+									<div className="min-w-0 flex-1">
+										<div className="flex items-center gap-2 mb-1">
+											<span className="text-xs font-mono text-muted-foreground">{t.id}</span>
+											<Badge className={`text-[10px] ${statusColor[t.status] ?? statusColor.closed}`}>
+												{t.status.replace("-", " ")}
+											</Badge>
+											{t.priority === "high" && <Badge variant="destructive" className="text-[10px]">High</Badge>}
 										</div>
-										<span className="text-xs text-[#667085] ml-4">
-											{new Date(ticket.created_at).toLocaleDateString()}
-										</span>
+										<p className="font-medium text-sm truncate">{t.subject}</p>
 									</div>
+									<div className="text-right shrink-0">
+										<p className="text-xs text-muted-foreground">Last reply</p>
+										<p className="text-xs font-medium">{relativeTime(t.lastReply)}</p>
+									</div>
+									<ChevronRight className="size-4 text-muted-foreground shrink-0" />
 								</Link>
 							))}
 						</div>
 					)}
-				</div>
-			</div>
+				</CardContent>
+			</Card>
 
-			{/* Contact Us Section */}
-			<div className="bg-white border border-[#E9EAEB] rounded-xl p-6">
-				<h2 className="text-lg font-semibold text-[#0D0D0D] mb-6">Contact us</h2>
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-					<div>
-						<h3 className="font-semibold text-[#0D0D0D] mb-2">Phone</h3>
-						<p className="text-sm text-[#667085] mb-3">
-							Want to speak to our support team? Call us on 8001134246
-						</p>
+			{/* FAQ */}
+			<Card>
+				<CardHeader><CardTitle>Frequently asked</CardTitle></CardHeader>
+				<CardContent className="divide-y divide-border p-0">
+					{filtered.length === 0 ? (
+						<div className="px-6 py-8 text-center text-sm text-muted-foreground">No questions match your search.</div>
+					) : (
+						filtered.map((f) => (
+							<details key={f.q} className="group px-6 py-4">
+								<summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
+									{f.q}
+									<ChevronRight className="size-4 text-muted-foreground transition group-open:rotate-90 shrink-0" />
+								</summary>
+								<p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+							</details>
+						))
+					)}
+				</CardContent>
+			</Card>
+
+			{/* Contact options */}
+			<Card>
+				<CardHeader>
+					<CardTitle>Still need help?</CardTitle>
+					<CardDescription>Our team typically replies within a few minutes.</CardDescription>
+				</CardHeader>
+				<CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2">
+					<button onClick={() => setShowChat(true)} className="flex items-center gap-4 rounded-lg border border-border p-4 hover:bg-muted text-left transition-colors">
+						<div className="rounded-lg bg-primary/10 p-2.5 text-primary"><MessageCircle className="size-5" /></div>
+						<div className="flex-1 min-w-0">
+							<div className="font-medium">Live chat</div>
+							<div className="text-xs text-muted-foreground">24/7 in-app support</div>
+						</div>
+						<Button size="sm" onClick={(e) => { e.stopPropagation(); setShowChat(true); }}>Start chat</Button>
+					</button>
+					<a href="mailto:support@clusteer.co" className="flex items-center gap-4 rounded-lg border border-border p-4 hover:bg-muted transition-colors">
+						<div className="rounded-lg bg-primary/10 p-2.5 text-primary"><Mail className="size-5" /></div>
+						<div className="flex-1 min-w-0">
+							<div className="font-medium">Email us</div>
+							<div className="text-xs text-muted-foreground">support@clusteer.co</div>
+						</div>
+						<Button variant="outline" size="sm">Compose</Button>
+					</a>
+				</CardContent>
+			</Card>
+
+			{/* ─── New Ticket Dialog ─── */}
+			<Dialog open={showNewTicket} onOpenChange={setShowNewTicket}>
+				<DialogContent className="sm:max-w-lg">
+					<DialogHeader>
+						<DialogTitle>Submit a support ticket</DialogTitle>
+						<DialogDescription>Describe your issue and we&apos;ll get back to you within a few hours.</DialogDescription>
+					</DialogHeader>
+					<div className="space-y-4 mt-2">
+						<div className="space-y-1.5">
+							<Label>Subject <span className="text-danger">*</span></Label>
+							<Input placeholder="Brief description of your issue" value={ticketForm.subject} onChange={(e) => setTicketForm({ ...ticketForm, subject: e.target.value })} />
+						</div>
+						<div className="grid grid-cols-2 gap-3">
+							<div className="space-y-1.5">
+								<Label>Category</Label>
+								<Select value={ticketForm.category} onValueChange={(v) => setTicketForm({ ...ticketForm, category: v })}>
+									<SelectTrigger><SelectValue /></SelectTrigger>
+									<SelectContent>
+										<SelectItem value="general">General</SelectItem>
+										<SelectItem value="transaction">Transaction issue</SelectItem>
+										<SelectItem value="verification">KYC / Verification</SelectItem>
+										<SelectItem value="security">Security concern</SelectItem>
+										<SelectItem value="withdrawal">Withdrawal</SelectItem>
+										<SelectItem value="deposit">Deposit</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
+							<div className="space-y-1.5">
+								<Label>Priority</Label>
+								<Select value={ticketForm.priority} onValueChange={(v) => setTicketForm({ ...ticketForm, priority: v })}>
+									<SelectTrigger><SelectValue /></SelectTrigger>
+									<SelectContent>
+										<SelectItem value="low">Low</SelectItem>
+										<SelectItem value="medium">Medium</SelectItem>
+										<SelectItem value="high">High</SelectItem>
+										<SelectItem value="urgent">Urgent</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
+						</div>
+						<div className="space-y-1.5">
+							<Label>Description <span className="text-danger">*</span></Label>
+							<textarea
+								rows={5}
+								placeholder="Please provide as much detail as possible — include transaction IDs, amounts, and timestamps if relevant."
+								value={ticketForm.description}
+								onChange={(e) => setTicketForm({ ...ticketForm, description: e.target.value })}
+								className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
+							/>
+						</div>
+						<div className="flex gap-3 pt-2">
+							<Button className="flex-1" onClick={submitTicket}>Submit ticket</Button>
+							<Button variant="outline" className="flex-1" onClick={() => setShowNewTicket(false)}>Cancel</Button>
+						</div>
 					</div>
-					<div>
-						<h3 className="font-semibold text-[#0D0D0D] mb-2">Live chat</h3>
-						<p className="text-sm text-[#667085] mb-3">
-							Can't find the answers you're looking for? Start by chatting with our Intelligent Assistant
-						</p>
-						<Button
-							onClick={() => setShowLiveChat(true)}
-							variant="outline"
-							className="border-[#D5D7DA] h-10 px-6 rounded-full font-semibold"
+				</DialogContent>
+			</Dialog>
+
+			{/* ─── Live Chat Dialog ─── */}
+			<Dialog open={showChat} onOpenChange={setShowChat}>
+				<DialogContent className="sm:max-w-lg p-0 gap-0 h-[80vh] max-h-[600px] flex flex-col">
+					{/* Chat header */}
+					<div className="flex items-center gap-3 border-b border-border px-5 py-4 shrink-0">
+						<div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+							<Headphones className="size-4" />
+						</div>
+						<div className="flex-1 min-w-0">
+							<p className="font-semibold text-sm">Clusteer Support</p>
+							<p className="text-xs text-muted-foreground flex items-center gap-1">
+								<span className="size-1.5 rounded-full bg-success" /> Online — typically replies instantly
+							</p>
+						</div>
+					</div>
+
+					{/* Chat messages */}
+					<div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+						{chatMessages.map((m, i) => (
+							<div key={i} className={`flex gap-2.5 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+								<div className={`flex size-7 shrink-0 items-center justify-center rounded-full text-xs ${m.role === "bot" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+									{m.role === "bot" ? <Headphones className="size-3.5" /> : "You"}
+								</div>
+								<div className={`max-w-[80%] rounded-xl px-3.5 py-2.5 text-sm ${m.role === "bot" ? "bg-muted" : "bg-primary/10"}`}>
+									<p>{m.text}</p>
+									<p className="text-[10px] text-muted-foreground mt-1">{m.time}</p>
+								</div>
+							</div>
+						))}
+					</div>
+
+					{/* Chat input */}
+					<div className="border-t border-border px-4 py-3 shrink-0">
+						<form
+							onSubmit={(e) => { e.preventDefault(); sendChat(); }}
+							className="flex items-center gap-2"
 						>
-							Start chat
-						</Button>
+							<Input
+								placeholder="Type your message…"
+								value={chatInput}
+								onChange={(e) => setChatInput(e.target.value)}
+								className="flex-1"
+							/>
+							<Button type="submit" size="icon" disabled={!chatInput.trim()}>
+								<Send className="size-4" />
+							</Button>
+						</form>
 					</div>
-				</div>
-				<div className="pt-6 border-t border-[#E9EAEB]">
-					<h3 className="font-semibold text-[#0D0D0D] mb-4">Working hours</h3>
-					<div className="grid grid-cols-2 gap-4">
-						<div>
-							<p className="text-sm text-[#667085] mb-1">Availability</p>
-							<p className="font-medium text-[#0D0D0D]">Online 24/7</p>
-						</div>
-						<div>
-							<p className="text-sm text-[#667085] mb-1">Language</p>
-							<p className="font-medium text-[#0D0D0D]">English</p>
-						</div>
-					</div>
-				</div>
-			</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

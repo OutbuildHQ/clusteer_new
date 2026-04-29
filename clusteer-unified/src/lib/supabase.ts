@@ -1,14 +1,10 @@
 /**
- * DEPRECATED: Supabase has been replaced with Firebase + Django backend
- * This file is kept for type definitions only
- * DO NOT import supabase or supabaseAdmin - they will cause errors
+ * DEPRECATED: Supabase has been fully replaced with Firebase + Django backend
+ * This file only contains type definitions for backward compatibility
+ * All Supabase client exports have been removed
  */
 
-// Deprecated exports - DO NOT USE
-export const supabase = null as any;
-export const supabaseAdmin = null as any;
-
-// Database types
+// Database types (kept for reference during migration)
 export type User = {
   id: string;
   username: string;

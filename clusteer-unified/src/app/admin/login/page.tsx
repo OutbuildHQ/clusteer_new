@@ -41,27 +41,27 @@ export default function AdminLoginPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+		<div className="min-h-screen bg-[var(--cl-bg)] flex items-center justify-center p-4">
 			<div className="w-full max-w-md">
 				{/* Logo & Title */}
 				<div className="text-center mb-8">
 					<div className="inline-flex items-center justify-center w-16 h-16 bg-[#014F01] rounded-2xl mb-4">
 						<Shield className="w-8 h-8 text-white" />
 					</div>
-					<h1 className="text-2xl font-bold text-gray-900">Admin Portal</h1>
-					<p className="text-sm text-gray-600 mt-2">
+					<h1 className="text-2xl font-bold text-[var(--cl-text)]">Admin Portal</h1>
+					<p className="text-sm text-[var(--cl-text-2)] mt-2">
 						Sign in to access the Clusteer admin dashboard
 					</p>
 				</div>
 
 				{/* Login Form */}
-				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+				<div className="bg-[var(--cl-surface)] rounded-lg shadow-sm border border-[var(--cl-line)] p-8">
 					{error && (
-						<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-							<AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+						<div className="mb-6 p-4 bg-[var(--cl-down-soft)] border border-[var(--cl-down)] rounded-lg flex items-start gap-3">
+							<AlertCircle className="w-5 h-5 text-[var(--cl-down)] flex-shrink-0 mt-0.5" />
 							<div>
-								<p className="text-sm font-medium text-red-800">Login Failed</p>
-								<p className="text-sm text-red-700 mt-1">{error}</p>
+								<p className="text-sm font-medium text-[var(--cl-down)]">Login Failed</p>
+								<p className="text-sm text-[var(--cl-down)] mt-1">{error}</p>
 							</div>
 						</div>
 					)}
@@ -70,7 +70,7 @@ export default function AdminLoginPage() {
 						<div>
 							<label
 								htmlFor="email"
-								className="block text-sm font-medium text-gray-700 mb-2"
+								className="block text-sm font-medium text-[var(--cl-text-2)] mb-2"
 							>
 								Email Address
 							</label>
@@ -82,7 +82,7 @@ export default function AdminLoginPage() {
 								onChange={(e) =>
 									setFormData({ ...formData, email: e.target.value })
 								}
-								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 								placeholder="admin@clusteer.io"
 								disabled={loading}
 							/>
@@ -91,7 +91,7 @@ export default function AdminLoginPage() {
 						<div>
 							<label
 								htmlFor="password"
-								className="block text-sm font-medium text-gray-700 mb-2"
+								className="block text-sm font-medium text-[var(--cl-text-2)] mb-2"
 							>
 								Password
 							</label>
@@ -103,7 +103,7 @@ export default function AdminLoginPage() {
 								onChange={(e) =>
 									setFormData({ ...formData, password: e.target.value })
 								}
-								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
 								placeholder="Enter your password"
 								disabled={loading}
 							/>
@@ -119,8 +119,8 @@ export default function AdminLoginPage() {
 					</form>
 
 					{/* Security Notice */}
-					<div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-						<p className="text-xs text-gray-600 text-center">
+					<div className="mt-6 p-4 bg-[var(--cl-bg)] rounded-lg border border-[var(--cl-line)]">
+						<p className="text-xs text-[var(--cl-text-2)] text-center">
 							🔒 This is a secure admin-only area. All access attempts are logged
 							and monitored.
 						</p>
@@ -131,7 +131,7 @@ export default function AdminLoginPage() {
 				<div className="text-center mt-6">
 					<a
 						href="/"
-						className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+						className="text-sm text-[var(--cl-text-2)] hover:text-[var(--cl-text)] transition-colors"
 					>
 						← Back to main site
 					</a>

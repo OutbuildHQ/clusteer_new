@@ -48,14 +48,14 @@ export default function TransactionSummaryModal() {
 					<span className="ml-auto w-fit font-semibold">0.3 USDT</span>
 				</div>
 			</div>
-			<Alert className="bg-[#F4E6D5] border border-[#D5D7DA] flex items-start p-4 h-[72px] gap-x-2.5">
+			<Alert className="bg-[#F4E6D5] border border-[var(--cl-line-strong)] flex items-start p-4 h-[72px] gap-x-2.5">
 				<Image
 					src="/assets/icons/alert_circle.svg"
 					alt="alert icon"
 					width={35}
 					height={35}
 				/>
-				<AlertDescription className="text-[#414651] font-semibold">
+				<AlertDescription className="text-[var(--cl-text-2)] font-semibold">
 					Upon confirmation, your USDT will be instantly credited to your USDT
 					Wallet
 				</AlertDescription>

@@ -5,7 +5,7 @@ import { LoginFormSchema } from "@/lib/validation";
 import { useUserActions } from "@/store/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { Loader2, Mail, Lock } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -16,7 +16,6 @@ import { Button } from "../ui/button";
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -36,7 +35,6 @@ export default function LoginForm() {
 	});
 
 	const { setUser } = useUserActions();
-
 	const router = useRouter();
 
 	const { isPending, mutate } = useMutation({
@@ -68,21 +66,26 @@ export default function LoginForm() {
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className="flex flex-col gap-y-5 w-full p-5 form-border rounded-2xl"
+				className="flex flex-col gap-y-4 w-full"
 			>
 				<FormField
 					control={form.control}
 					name="email"
 					render={({ field }) => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="font-medium">Email</FormLabel>
+							<FormLabel className="text-[13px] font-medium text-[var(--cl-text-2)]">
+								Email or username
+							</FormLabel>
 							<FormControl>
-								<Input
-									type="email"
-									className="h-11"
-									placeholder="Enter your email"
-									{...field}
-								/>
+								<div className="relative">
+									<Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--cl-text-3)]" />
+									<Input
+										type="email"
+										className="h-10 pl-10"
+										placeholder="you@example.com"
+										{...field}
+									/>
+								</div>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -93,44 +96,50 @@ export default function LoginForm() {
 					name="password"
 					render={() => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="font-medium">Password</FormLabel>
+							<FormLabel className="text-[13px] font-medium text-[var(--cl-text-2)]">
+								Password
+							</FormLabel>
 							<FormControl>
 								<PasswordInput name="password" control={form.control} />
 							</FormControl>
-							<FormDescription className="text-left text-black text-sm font-lexend">
-								Must be at least 8 characters.
-							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
-				<Button
-					type="submit"
-					disabled={isPending}
-					className="mt-1 font-mona border-black text-[#111111] bg-light-green border font-semibold text-base shadow-xs hover:bg-muted h-11"
-				>
-					{isPending ? (
-						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Logging In...
-						</>
-					) : (
-						<>Login</>
-					)}
-				</Button>
-				<div className="text-center">
+
+				<div className="flex justify-between items-center text-[13px]">
+					<label className="flex items-center gap-2 text-[var(--cl-text-2)] cursor-pointer">
+						<input type="checkbox" defaultChecked className="rounded" />
+						Keep me signed in
+					</label>
 					<Link
 						href="/forgot-password"
-						className="text-dark-green font-semibold text-sm hover:underline"
+						className="text-[var(--cl-brand-500)] font-medium hover:underline"
 					>
 						Forgot password?
 					</Link>
 				</div>
-				<div className="text-center">
-					Don't have an account?
-					<Link href="/signup">
-						<span className="text-dark-green font-semibold ml-1">Sign up</span>
-						<ChevronRight className="inline-block size-5 stroke-dark-green ml-2" />
+
+				<Button
+					type="submit"
+					disabled={isPending}
+					size="lg"
+					className="w-full mt-1"
+				>
+					{isPending ? (
+						<>
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							Signing in...
+						</>
+					) : (
+						"Sign in"
+					)}
+				</Button>
+
+				<div className="text-center text-[13px] text-[var(--cl-text-3)]">
+					New to Clusteer?{" "}
+					<Link href="/signup" className="text-[var(--cl-brand-500)] font-medium hover:underline">
+						Create account
 					</Link>
 				</div>
 			</form>

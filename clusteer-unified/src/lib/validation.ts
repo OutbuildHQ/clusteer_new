@@ -58,7 +58,7 @@ export const SellCryptoSchema = z.object({
 
 export const PaymentFormSchema = z.object({
 	accountNo: z.string(),
-	accoutName: z.string(),
+	accountName: z.string(),
 	bank: z.string(),
 });
 

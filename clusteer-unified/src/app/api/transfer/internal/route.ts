@@ -1,8 +1,27 @@
-import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
+
+/**
+ * Helper to extract user ID from Firebase JWT (already verified by middleware)
+ */
+function getUserIdFromToken(token: string): string | null {
+	try {
+		const parts = token.split(".");
+		if (parts.length !== 3) return null;
+		const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
+		return payload.user_id || payload.sub || null;
+	} catch {
+		return null;
+	}
+}
 
 export async function POST(request: NextRequest) {
 	try {
+		const rateLimitResponse = rateLimit(request, RateLimitPresets.moderate);
+		if (rateLimitResponse) {
+			return rateLimitResponse;
+		}
+
 		const token = request.cookies.get("auth_token")?.value;
 
 		if (!token) {
@@ -12,22 +31,26 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const {
-			data: { user: authUser },
-			error: authError,
-		} = await supabase.auth.getUser(token);
-
-		if (authError || !authUser) {
+		const userId = getUserIdFromToken(token);
+		if (!userId) {
 			return NextResponse.json(
 				{ status: false, message: "Invalid token" },
 				{ status: 401 }
 			);
 		}
 
-		const body = await request.json();
+		let body;
+		try {
+			body = await request.json();
+		} catch {
+			return NextResponse.json(
+				{ status: false, message: "Invalid request body" },
+				{ status: 400 }
+			);
+		}
+
 		const { recipientUserId, asset, amount, note } = body;
 
-		// Validate input
 		if (!recipientUserId || !asset || !amount) {
 			return NextResponse.json(
 				{ status: false, message: "Missing required fields" },
@@ -44,7 +67,6 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Validate amount is reasonable (max 1 million per transfer)
 		if (parsedAmount > 1000000) {
 			return NextResponse.json(
 				{ status: false, message: "Amount exceeds maximum transfer limit" },
@@ -52,69 +74,39 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Check if sender is trying to send to themselves
-		if (recipientUserId === authUser.id) {
+		if (recipientUserId === userId) {
 			return NextResponse.json(
 				{ status: false, message: "Cannot send to yourself" },
 				{ status: 400 }
 			);
 		}
 
-		// Verify recipient exists
-		const { data: recipient, error: recipientError } = await supabaseAdmin
-			.from("users")
-			.select("id, username, is_verified")
-			.eq("id", recipientUserId)
-			.single();
-
-		if (recipientError || !recipient) {
-			return NextResponse.json(
-				{ status: false, message: "Recipient not found" },
-				{ status: 404 }
-			);
-		}
-
-		// Check if recipient is verified
-		if (!recipient.is_verified) {
-			return NextResponse.json(
-				{ status: false, message: "Recipient must complete identity verification to receive transfers" },
-				{ status: 403 }
-			);
-		}
-
-		// CRITICAL: Validate sender has sufficient balance
-		// Fetch sender's balance from blockchain engine
 		const blockchainEngineUrl = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";
 		const blockchainEngineApiKey = process.env.BLOCKCHAIN_ENGINE_API_KEY;
 
 		if (!blockchainEngineApiKey) {
-			console.error("BLOCKCHAIN_ENGINE_API_KEY not configured");
 			return NextResponse.json(
-				{ status: false, message: "Unable to verify balance" },
-				{ status: 500 }
+				{ status: false, message: "Service temporarily unavailable" },
+				{ status: 503 }
 			);
 		}
 
+		// Verify sender balance
 		let senderBalance = 0;
 		try {
 			const balancesResponse = await fetch(
-				`${blockchainEngineUrl}/api/v1/user/${authUser.id}/balance/`,
+				`${blockchainEngineUrl}/api/v1/user/${userId}/balance/`,
 				{
 					method: "GET",
-					headers: {
-						"X-API-KEY": blockchainEngineApiKey,
-					},
+					headers: { "X-API-KEY": blockchainEngineApiKey },
 				}
 			);
 
 			if (balancesResponse.ok) {
 				const balancesData = await balancesResponse.json();
-
-				// Aggregate balance for the specific asset across all chains
 				Object.entries(balancesData.balances || {}).forEach(([chain, balance]) => {
-					const parts = chain.toLowerCase().split('_');
+					const parts = chain.toLowerCase().split("_");
 					const stablecoin = parts[parts.length - 1];
-
 					if (stablecoin === asset.toLowerCase()) {
 						senderBalance += parseFloat(balance as string) || 0;
 					}
@@ -128,52 +120,51 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Check if sender has sufficient balance
 		if (senderBalance < parsedAmount) {
 			return NextResponse.json(
 				{
 					status: false,
-					message: `Insufficient balance. You have ${senderBalance.toFixed(2)} ${asset.toUpperCase()}, but tried to send ${parsedAmount.toFixed(2)} ${asset.toUpperCase()}`
+					message: `Insufficient balance. You have ${senderBalance.toFixed(2)} ${asset.toUpperCase()}, but tried to send ${parsedAmount.toFixed(2)} ${asset.toUpperCase()}`,
 				},
 				{ status: 400 }
 			);
 		}
 
-		// Create internal transfer record
-		const { data: transfer, error: transferError } = await supabaseAdmin
-			.from("internal_transfers")
-			.insert({
-				sender_id: authUser.id,
-				recipient_id: recipientUserId,
-				asset: asset.toUpperCase(),
-				amount: parsedAmount,
-				note: note || null,
-				status: "completed",
-			})
-			.select()
-			.single();
+		// Execute internal transfer via blockchain engine
+		const transferResponse = await fetch(
+			`${blockchainEngineUrl}/api/v1/transfer/internal/`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-API-KEY": blockchainEngineApiKey,
+				},
+				body: JSON.stringify({
+					sender_id: userId,
+					recipient_id: recipientUserId,
+					asset: asset.toUpperCase(),
+					amount: parsedAmount,
+					note: note || null,
+				}),
+			}
+		);
 
-		if (transferError) {
-			console.error("Transfer error:", transferError);
+		if (!transferResponse.ok) {
+			const errorData = await transferResponse.json().catch(() => ({}));
 			return NextResponse.json(
-				{ status: false, message: "Failed to create transfer" },
+				{ status: false, message: errorData.error || "Failed to create transfer" },
 				{ status: 500 }
 			);
 		}
 
-		// TODO: Update wallet balances in blockchain engine
-		// For production, you should:
-		// 1. Deduct from sender's wallet via blockchain engine API
-		// 2. Add to recipient's wallet via blockchain engine API
-		// 3. Make these operations atomic (transaction)
-		// 4. Handle rollback if any step fails
+		const transferData = await transferResponse.json();
 
 		return NextResponse.json({
 			status: true,
 			message: "Transfer completed successfully",
 			data: {
-				transferId: transfer.id,
-				recipient: recipient.username,
+				transferId: transferData.id,
+				recipient: transferData.recipient_username || recipientUserId,
 				amount: parsedAmount,
 				asset: asset.toUpperCase(),
 			},

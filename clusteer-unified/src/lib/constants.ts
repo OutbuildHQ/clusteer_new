@@ -10,9 +10,8 @@ export const MINIMUM_CRYPTO_VALUE = 0; // No minimum for crypto
 export const MAXIMUM_CRYPTO_VALUE = 100_000; // 100k USDT
 
 export const STABLE_COIN_RATES = {
-	USDT: 1500,
-	SOL: 1600,
-	BTC: 2000,
+	USDT: 1570,
+	USDC: 1568,
 } as const;
 
 export const MAX_IMAGE_SIZE = 7 * 1024 * 1024; // 7MB

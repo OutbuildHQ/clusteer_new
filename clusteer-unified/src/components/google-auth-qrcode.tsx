@@ -28,7 +28,7 @@ export default function GoogleAuthQRCode() {
 
 	if (error) {
 		return (
-			<div className="text-red-600 bg-red-50 p-4 rounded-lg border border-red-200 mt-5">
+			<div className="text-[var(--cl-down)] bg-[var(--cl-down-soft)] p-4 rounded-lg border border-[var(--cl-down)] mt-5">
 				Failed to load QR Code.
 			</div>
 		);
@@ -60,7 +60,7 @@ export default function GoogleAuthQRCode() {
 					variant="outline"
 					onClick={handleCopy}
 					disabled={isPending || !data?.twoFactorSecret}
-					className="flex items-center gap-x-2.5 border-[#D6D6D6] bg-[#E5E5E5] rounded-full px-5 py-1"
+					className="flex items-center gap-x-2.5 border-[var(--cl-line-strong)] bg-[#E5E5E5] rounded-full px-5 py-1"
 				>
 					<Copy size={18} />
 					<span className="text-base font-medium">Copy key</span>

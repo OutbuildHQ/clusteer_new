@@ -119,27 +119,27 @@ export default function Modal({
 		>
 			<div
 				ref={modalRef}
-				className={`bg-white rounded-lg ${sizeClasses[size]} w-full max-h-[90vh] overflow-y-auto`}
+				className={`bg-[var(--cl-surface)] rounded-lg ${sizeClasses[size]} w-full max-h-[90vh] overflow-y-auto`}
 				onClick={(e) => e.stopPropagation()}
 			>
 				{/* Header */}
-				<div className="p-6 border-b border-[#E9EAEB] flex items-start justify-between sticky top-0 bg-white z-10">
+				<div className="p-6 border-b border-[var(--cl-line)] flex items-start justify-between sticky top-0 bg-[var(--cl-surface)] z-10">
 					<div className="flex-1">
-						<h2 id="modal-title" className="text-xl font-bold text-gray-900">
+						<h2 id="modal-title" className="text-xl font-bold text-[var(--cl-text)]">
 							{title}
 						</h2>
 						{description && (
-							<p id="modal-description" className="text-sm text-gray-600 mt-1">
+							<p id="modal-description" className="text-sm text-[var(--cl-text-2)] mt-1">
 								{description}
 							</p>
 						)}
 					</div>
 					<button
 						onClick={onClose}
-						className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0 ml-4"
+						className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors flex-shrink-0 ml-4"
 						aria-label="Close modal"
 					>
-						<X className="w-5 h-5 text-gray-500" />
+						<X className="w-5 h-5 text-[var(--cl-text-3)]" />
 					</button>
 				</div>
 
@@ -148,7 +148,7 @@ export default function Modal({
 
 				{/* Footer */}
 				{footer && (
-					<div className="p-6 border-t border-[#E9EAEB] sticky bottom-0 bg-white">
+					<div className="p-6 border-t border-[var(--cl-line)] sticky bottom-0 bg-[var(--cl-surface)]">
 						{footer}
 					</div>
 				)}
@@ -182,15 +182,15 @@ export function ConfirmModal({
 	isLoading = false,
 }: ConfirmModalProps) {
 	const variantClasses = {
-		danger: "bg-red-600 hover:bg-red-700",
+		danger: "bg-[var(--cl-down)] hover:bg-[var(--cl-down)]/90",
 		warning: "bg-orange-600 hover:bg-orange-700",
 		info: "bg-[#014F01] hover:bg-[#013d01]",
 	};
 
 	const iconClasses = {
-		danger: "bg-red-50",
+		danger: "bg-[var(--cl-down-soft)]",
 		warning: "bg-orange-50",
-		info: "bg-blue-50",
+		info: "bg-[var(--cl-info-soft)]",
 	};
 
 	return (
@@ -204,7 +204,7 @@ export function ConfirmModal({
 					<button
 						onClick={onClose}
 						disabled={isLoading}
-						className="flex-1 px-4 py-2 text-gray-700 bg-white border border-[#E9EAEB] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+						className="flex-1 px-4 py-2 text-[var(--cl-text-2)] bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors disabled:opacity-50"
 					>
 						{cancelText}
 					</button>
@@ -221,16 +221,16 @@ export function ConfirmModal({
 			<div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${iconClasses[variant]}`}>
 				<AlertIcon variant={variant} />
 			</div>
-			<p className="text-sm text-gray-600">{message}</p>
+			<p className="text-sm text-[var(--cl-text-2)]">{message}</p>
 		</Modal>
 	);
 }
 
 function AlertIcon({ variant }: { variant: "danger" | "warning" | "info" }) {
 	const iconClasses = {
-		danger: "text-red-600",
+		danger: "text-[var(--cl-down)]",
 		warning: "text-orange-600",
-		info: "text-blue-600",
+		info: "text-[var(--cl-brand-600)]",
 	};
 
 	return (

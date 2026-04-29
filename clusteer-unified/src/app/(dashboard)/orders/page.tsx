@@ -2,7 +2,7 @@ import { OrdersTable } from "@/components/tables/orders-table";
 
 export default function Page() {
 	return (
-		<div className="font-avenir-next pb-6 lg:pt-[50px]">
+		<div className=" pb-6 lg:pt-[50px]">
 			<header className="mb-6">
 				<h1 className="text-2xl lg:text-[32px] font-bold text-[#0D0D0D]">
 					Orders

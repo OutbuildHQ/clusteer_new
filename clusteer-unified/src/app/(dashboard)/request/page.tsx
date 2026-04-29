@@ -11,7 +11,7 @@ export default function RequestPage() {
 	const wallets = useWallets() || [];
 
 	return (
-		<div className="font-avenir-next pb-6 lg:pt-[50px]">
+		<div className=" pb-6 lg:pt-[50px]">
 			<div className="mb-6">
 				<button
 					onClick={() => router.back()}
@@ -31,7 +31,7 @@ export default function RequestPage() {
 					<Link
 						key={wallet.currency}
 						href={`/assets/${wallet.currency}/request`}
-						className="p-6 bg-white rounded-2xl border border-[#E9EAEB] hover:border-dark-green hover:shadow-lg transition-all"
+						className="p-6 bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] hover:border-dark-green hover:shadow-lg transition-all"
 					>
 						<div className="flex items-center justify-between mb-4">
 							<div>
@@ -39,11 +39,11 @@ export default function RequestPage() {
 									{wallet.currency}
 								</h3>
 								<p className="text-sm text-[#667085]">
-									{wallet.type === "FIAT" ? "Fiat Currency" : "Cryptocurrency"}
+									{wallet.type === "FIAT" ? "Fiat Currency" : "Stablecoin"}
 								</p>
 							</div>
 						</div>
-						<div className="pt-4 border-t border-[#E9EAEB]">
+						<div className="pt-4 border-t border-[var(--cl-line)]">
 							<p className="text-xs text-[#667085] mb-1">Current Balance</p>
 							<p className="font-bold text-xl">
 								{wallet.currency === "NGN" && "₦"}

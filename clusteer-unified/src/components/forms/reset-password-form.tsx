@@ -117,7 +117,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
 					href="/login"
 					className="text-center lg:mt-2 mx-auto block"
 				>
-					<span className="text-dark-green font-semibold">Back to Log in</span>
+					<span className="text-[var(--cl-brand-500)] font-semibold">Back to Log in</span>
 					<ChevronRight className="inline-block size-5 stroke-dark-green ml-2" />
 				</Link>
 			</form>

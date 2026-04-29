@@ -186,11 +186,11 @@ export default function ContentPage() {
 	const getStatusColor = (status: ContentStatus) => {
 		switch (status) {
 			case "Published":
-				return "bg-green-50 text-green-700 border-green-200";
+				return "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]";
 			case "Draft":
-				return "bg-gray-50 text-gray-700 border-gray-200";
+				return "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
 			case "Scheduled":
-				return "bg-blue-50 text-blue-700 border-blue-200";
+				return "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]";
 			case "Archived":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 		}
@@ -212,13 +212,13 @@ export default function ContentPage() {
 	const getTypeIcon = (type: ContentType) => {
 		switch (type) {
 			case "Blog Post":
-				return <FileText className="w-4 h-4 text-blue-600" />;
+				return <FileText className="w-4 h-4 text-[var(--cl-brand-600)]" />;
 			case "Announcement":
 				return <Bell className="w-4 h-4 text-orange-600" />;
 			case "FAQ":
 				return <AlertCircle className="w-4 h-4 text-purple-600" />;
 			case "Help Article":
-				return <FileText className="w-4 h-4 text-green-600" />;
+				return <FileText className="w-4 h-4 text-[var(--cl-up)]" />;
 			case "Banner":
 				return <ImageIcon className="w-4 h-4 text-pink-600" />;
 		}
@@ -320,13 +320,13 @@ export default function ContentPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-bold text-gray-900">Content Management</h1>
-					<p className="text-sm text-gray-600 mt-1">Create and manage platform content</p>
+					<h1 className="text-2xl font-bold text-[var(--cl-text)]">Content Management</h1>
+					<p className="text-sm text-[var(--cl-text-2)] mt-1">Create and manage platform content</p>
 				</div>
 				<div className="flex items-center gap-3">
 					<button
 						onClick={handleExport}
-						className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 					>
 						<Download className="w-4 h-4" />
 						Export
@@ -349,47 +349,47 @@ export default function ContentPage() {
 							<FileText className="w-6 h-6 text-slate-600" />
 						</div>
 					</div>
-					<p className="text-sm text-gray-600 font-medium mb-1">Total Content</p>
-					<p className="text-3xl font-bold text-gray-900 mb-2">{stats.total}</p>
+					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Total Content</p>
+					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">{stats.total}</p>
 					<p className="text-xs text-slate-600 font-medium">All content items</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-green-100 rounded-lg">
-							<CheckCircle className="w-6 h-6 text-green-600" />
+						<div className="p-3 bg-[var(--cl-up-soft)] rounded-lg">
+							<CheckCircle className="w-6 h-6 text-[var(--cl-up)]" />
 						</div>
 					</div>
-					<p className="text-sm text-gray-600 font-medium mb-1">Published</p>
-					<p className="text-3xl font-bold text-gray-900 mb-2">{stats.published}</p>
-					<p className="text-xs text-green-600 font-medium">Live content</p>
+					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Published</p>
+					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">{stats.published}</p>
+					<p className="text-xs text-[var(--cl-up)] font-medium">Live content</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-amber-50 to-white rounded-xl border border-amber-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
 						<div className="p-3 bg-amber-100 rounded-lg">
-							<Edit className="w-6 h-6 text-amber-600" />
+							<Edit className="w-6 h-6 text-[var(--cl-warn)]" />
 						</div>
 					</div>
-					<p className="text-sm text-gray-600 font-medium mb-1">Drafts</p>
-					<p className="text-3xl font-bold text-gray-900 mb-2">{stats.drafts}</p>
-					<p className="text-xs text-amber-600 font-medium">In progress</p>
+					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Drafts</p>
+					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">{stats.drafts}</p>
+					<p className="text-xs text-[var(--cl-warn)] font-medium">In progress</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-blue-100 rounded-lg">
-							<Clock className="w-6 h-6 text-blue-600" />
+						<div className="p-3 bg-[var(--cl-info-soft)] rounded-lg">
+							<Clock className="w-6 h-6 text-[var(--cl-brand-600)]" />
 						</div>
 					</div>
-					<p className="text-sm text-gray-600 font-medium mb-1">Scheduled</p>
-					<p className="text-3xl font-bold text-gray-900 mb-2">{stats.scheduled}</p>
-					<p className="text-xs text-blue-600 font-medium">Future publish</p>
+					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Scheduled</p>
+					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">{stats.scheduled}</p>
+					<p className="text-xs text-[var(--cl-brand-600)] font-medium">Future publish</p>
 				</div>
 			</div>
 
 			{/* Search and Filters */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] p-4 space-y-4">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4 space-y-4">
 				<div className="flex items-center gap-4">
 					<div className="flex-1">
 						<SearchBar
@@ -400,7 +400,7 @@ export default function ContentPage() {
 					</div>
 					<button
 						onClick={() => setShowFilters(!showFilters)}
-						className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E9EAEB] text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 					>
 						<Filter className="w-4 h-4" />
 						Filters
@@ -408,13 +408,13 @@ export default function ContentPage() {
 				</div>
 
 				{showFilters && (
-					<div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#E9EAEB] animate-in fade-in slide-in-from-top-2 duration-200">
+					<div className="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--cl-line)] animate-in fade-in slide-in-from-top-2 duration-200">
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+							<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Type</label>
 							<select
 								value={typeFilter}
 								onChange={(e) => setTypeFilter(e.target.value as any)}
-								className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+								className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
 							>
 								<option value="All">All Types</option>
 								<option value="Blog Post">Blog Post</option>
@@ -425,11 +425,11 @@ export default function ContentPage() {
 							</select>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+							<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Status</label>
 							<select
 								value={statusFilter}
 								onChange={(e) => setStatusFilter(e.target.value as any)}
-								className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+								className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
 							>
 								<option value="All">All Statuses</option>
 								<option value="Published">Published</option>
@@ -442,15 +442,15 @@ export default function ContentPage() {
 				)}
 
 				<div className="flex items-center justify-between text-sm">
-					<p className="text-gray-600">
+					<p className="text-[var(--cl-text-2)]">
 						Showing <span className="font-semibold">{filteredContent.length}</span> content items
 					</p>
 					{selectedContent.size > 0 && (
 						<div className="flex items-center gap-2">
-							<span className="text-gray-600">{selectedContent.size} selected</span>
+							<span className="text-[var(--cl-text-2)]">{selectedContent.size} selected</span>
 							<button
 								onClick={() => handleBulkAction("publish")}
-								className="px-3 py-1 text-xs font-medium bg-green-50 text-green-700 rounded hover:bg-green-100"
+								className="px-3 py-1 text-xs font-medium bg-[var(--cl-up-soft)] text-[var(--cl-up)] rounded hover:bg-[var(--cl-up-soft)]"
 							>
 								Publish
 							</button>
@@ -462,7 +462,7 @@ export default function ContentPage() {
 							</button>
 							<button
 								onClick={() => handleBulkAction("delete")}
-								className="px-3 py-1 text-xs font-medium bg-red-50 text-red-700 rounded hover:bg-red-100"
+								className="px-3 py-1 text-xs font-medium bg-[var(--cl-down-soft)] text-[var(--cl-down)] rounded hover:bg-[var(--cl-down-soft)]"
 							>
 								Delete
 							</button>
@@ -472,10 +472,10 @@ export default function ContentPage() {
 			</div>
 
 			{/* Content Table */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB] overflow-hidden">
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] overflow-hidden">
 				<div className="overflow-x-auto">
 					<table className="w-full">
-						<thead className="bg-gray-50 border-b border-[#E9EAEB]">
+						<thead className="bg-[var(--cl-bg)] border-b border-[var(--cl-line)]">
 							<tr>
 								<th className="w-12 py-3 px-4">
 									<input
@@ -488,23 +488,23 @@ export default function ContentPage() {
 												setSelectedContent(new Set());
 											}
 										}}
-										className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+										className="w-4 h-4 rounded border-[var(--cl-line)] cursor-pointer"
 									/>
 								</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-gray-600 uppercase">Title</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-gray-600 uppercase">Type</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-gray-600 uppercase">Status</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-gray-600 uppercase">Author</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-gray-600 uppercase">Publish Date</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-gray-600 uppercase">Views</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-gray-600 uppercase">Actions</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)] uppercase">Title</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)] uppercase">Type</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)] uppercase">Status</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)] uppercase">Author</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)] uppercase">Publish Date</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)] uppercase">Views</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--cl-text-2)] uppercase">Actions</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-gray-100">
+						<tbody className="divide-y divide-[var(--cl-line)]">
 							{filteredContent.map((item) => (
 								<tr
 									key={item.id}
-									className="hover:bg-gray-50 transition-colors group"
+									className="hover:bg-[var(--cl-bg)] transition-colors group"
 									onMouseEnter={() => setHoveredRow(item.id)}
 									onMouseLeave={() => setHoveredRow(null)}
 								>
@@ -513,7 +513,7 @@ export default function ContentPage() {
 											type="checkbox"
 											checked={selectedContent.has(item.id)}
 											onChange={() => toggleContentSelection(item.id)}
-											className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+											className="w-4 h-4 rounded border-[var(--cl-line)] cursor-pointer"
 										/>
 									</td>
 									<td className="py-4 px-4">
@@ -522,19 +522,19 @@ export default function ContentPage() {
 												<div className="w-1 h-10 bg-[#B8E632] rounded"></div>
 											)}
 											<div className="flex-1">
-												<p className="text-sm font-medium text-gray-900">{item.title}</p>
-												<p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{item.excerpt}</p>
+												<p className="text-sm font-medium text-[var(--cl-text)]">{item.title}</p>
+												<p className="text-xs text-[var(--cl-text-3)] mt-0.5 line-clamp-1">{item.excerpt}</p>
 												<div className="flex items-center gap-1 mt-1">
 													{item.tags.slice(0, 2).map((tag, idx) => (
 														<span
 															key={idx}
-															className="inline-flex items-center px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded"
+															className="inline-flex items-center px-2 py-0.5 bg-[var(--cl-surface-2)] text-[var(--cl-text-2)] text-xs rounded"
 														>
 															{tag}
 														</span>
 													))}
 													{item.tags.length > 2 && (
-														<span className="text-xs text-gray-400">+{item.tags.length - 2}</span>
+														<span className="text-xs text-[var(--cl-text-3)]">+{item.tags.length - 2}</span>
 													)}
 												</div>
 											</div>
@@ -543,7 +543,7 @@ export default function ContentPage() {
 									<td className="py-4 px-4">
 										<div className="flex items-center gap-2">
 											{getTypeIcon(item.type)}
-											<span className="text-sm text-gray-900">{item.type}</span>
+											<span className="text-sm text-[var(--cl-text)]">{item.type}</span>
 										</div>
 									</td>
 									<td className="py-4 px-4">
@@ -554,22 +554,22 @@ export default function ContentPage() {
 									</td>
 									<td className="py-4 px-4">
 										<div className="flex items-center gap-2">
-											<div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-												<User className="w-4 h-4 text-gray-600" />
+											<div className="w-8 h-8 bg-[var(--cl-surface-2)] rounded-full flex items-center justify-center">
+												<User className="w-4 h-4 text-[var(--cl-text-2)]" />
 											</div>
-											<span className="text-sm text-gray-900">{item.author}</span>
+											<span className="text-sm text-[var(--cl-text)]">{item.author}</span>
 										</div>
 									</td>
 									<td className="py-4 px-4">
 										<div className="flex items-center gap-2">
-											<Calendar className="w-4 h-4 text-gray-400" />
-											<span className="text-sm text-gray-900">{item.publishDate}</span>
+											<Calendar className="w-4 h-4 text-[var(--cl-text-3)]" />
+											<span className="text-sm text-[var(--cl-text)]">{item.publishDate}</span>
 										</div>
 									</td>
 									<td className="py-4 px-4">
 										<div className="flex items-center gap-2">
-											<TrendingUp className="w-4 h-4 text-gray-400" />
-											<span className="text-sm font-medium text-gray-900">{item.views.toLocaleString()}</span>
+											<TrendingUp className="w-4 h-4 text-[var(--cl-text-3)]" />
+											<span className="text-sm font-medium text-[var(--cl-text)]">{item.views.toLocaleString()}</span>
 										</div>
 									</td>
 									<td className="py-4 px-4">
@@ -577,31 +577,31 @@ export default function ContentPage() {
 											<div className="flex items-center gap-1 animate-in fade-in slide-in-from-left-2 duration-200">
 												<button
 													onClick={() => router.push(`/admin/content/${item.id}`)}
-													className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+													className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 													title="View content"
 												>
-													<Eye className="w-4 h-4 text-gray-600" />
+													<Eye className="w-4 h-4 text-[var(--cl-text-2)]" />
 												</button>
 												<button
 													onClick={() => router.push(`/admin/content/${item.id}`)}
-													className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+													className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 													title="Edit content"
 												>
-													<Edit className="w-4 h-4 text-gray-600" />
+													<Edit className="w-4 h-4 text-[var(--cl-text-2)]" />
 												</button>
 												<button
 													onClick={() => setShowDuplicateModal(item.id)}
-													className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+													className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 													title="Duplicate content"
 												>
-													<Copy className="w-4 h-4 text-gray-600" />
+													<Copy className="w-4 h-4 text-[var(--cl-text-2)]" />
 												</button>
 												<button
 													onClick={() => setShowDeleteModal(item.id)}
-													className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+													className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 													title="Delete content"
 												>
-													<Trash2 className="w-4 h-4 text-red-600" />
+													<Trash2 className="w-4 h-4 text-[var(--cl-down)]" />
 												</button>
 											</div>
 										) : (
@@ -616,9 +616,9 @@ export default function ContentPage() {
 
 				{filteredContent.length === 0 && (
 					<div className="text-center py-12">
-						<FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-						<h3 className="text-sm font-medium text-gray-900 mb-1">No content found</h3>
-						<p className="text-sm text-gray-500">Try adjusting your search or filters</p>
+						<FileText className="w-12 h-12 text-[var(--cl-text-3)] mx-auto mb-3" />
+						<h3 className="text-sm font-medium text-[var(--cl-text)] mb-1">No content found</h3>
+						<p className="text-sm text-[var(--cl-text-3)]">Try adjusting your search or filters</p>
 					</div>
 				)}
 			</div>

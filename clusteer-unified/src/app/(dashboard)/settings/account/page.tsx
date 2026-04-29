@@ -144,7 +144,7 @@ export default function Page() {
 		return (
 			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 				<header className="mb-6">
-					<h1 className="text-[#181D27] font-semibold text-xl lg:text-2xl">
+					<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
 						Account Management
 					</h1>
 					<p className="text-sm lg:text-base text-[#667085] mt-2">
@@ -158,7 +158,7 @@ export default function Page() {
 	return (
 		<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 			<header className="mb-6">
-				<h1 className="text-[#181D27] font-semibold text-xl lg:text-2xl">
+				<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
 					Account Management
 				</h1>
 				<p className="text-sm lg:text-base text-[#667085] mt-2">
@@ -168,7 +168,7 @@ export default function Page() {
 
 			<div className="space-y-6">
 				{/* Account Status */}
-				<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
 					<div className="flex items-center justify-between mb-4">
 						<h2 className="font-semibold text-lg text-[#0D0D0D]">
 							Account Status
@@ -177,11 +177,11 @@ export default function Page() {
 							variant="secondary"
 							className={`rounded-full h-7 py-1 ${
 								kycStatus?.status === "approved"
-									? "text-green-700 bg-green-100"
+									? "text-[var(--cl-up)] bg-[var(--cl-up-soft)]"
 									: kycStatus?.status === "pending" || kycStatus?.status === "under_review"
-									? "text-blue-700 bg-blue-100"
+									? "text-[var(--cl-brand-700)] bg-[var(--cl-info-soft)]"
 									: kycStatus?.status === "rejected"
-									? "text-red-700 bg-red-100"
+									? "text-[var(--cl-down)] bg-[var(--cl-down-soft)]"
 									: "text-orange-700 bg-orange-100"
 							}`}
 						>
@@ -258,19 +258,19 @@ export default function Page() {
 					)}
 
 					{(kycStatus?.status === "pending" || kycStatus?.status === "under_review") && (
-						<div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+						<div className="mt-4 bg-[var(--cl-info-soft)] border border-[var(--cl-brand-200)] rounded-xl p-4">
 							<div className="flex items-start gap-3">
-								<AlertTriangle className="w-5 h-5 text-blue-600 mt-0.5" />
+								<AlertTriangle className="w-5 h-5 text-[var(--cl-brand-600)] mt-0.5" />
 								<div className="flex-1">
-									<p className="font-medium text-sm text-blue-900 mb-1">
+									<p className="font-medium text-sm text-[var(--cl-info)] mb-1">
 										Verification {kycStatus.status === "pending" ? "Pending" : "Under Review"}
 									</p>
-									<p className="text-sm text-blue-700">
+									<p className="text-sm text-[var(--cl-brand-700)]">
 										Your verification documents have been submitted and are currently being reviewed by our team.
 										This typically takes 24-48 hours. We'll notify you once the review is complete.
 									</p>
 									{kycStatus.submitted_at && (
-										<p className="text-xs text-blue-600 mt-2">
+										<p className="text-xs text-[var(--cl-brand-600)] mt-2">
 											Submitted: {new Date(kycStatus.submitted_at).toLocaleDateString("en-US", {
 												month: "long",
 												day: "numeric",
@@ -286,14 +286,14 @@ export default function Page() {
 					)}
 
 					{kycStatus?.status === "rejected" && (
-						<div className="mt-4 bg-red-50 border border-red-200 rounded-xl p-4">
+						<div className="mt-4 bg-[var(--cl-down-soft)] border border-[var(--cl-down)] rounded-xl p-4">
 							<div className="flex items-start gap-3">
-								<XCircle className="w-5 h-5 text-red-600 mt-0.5" />
+								<XCircle className="w-5 h-5 text-[var(--cl-down)] mt-0.5" />
 								<div className="flex-1">
-									<p className="font-medium text-sm text-red-900 mb-1">
+									<p className="font-medium text-sm text-[var(--cl-down)] mb-1">
 										Verification Rejected
 									</p>
-									<p className="text-sm text-red-700 mb-2">
+									<p className="text-sm text-[var(--cl-down)] mb-2">
 										{kycStatus.rejection_reason || "Your verification was rejected. Please review your documents and try again."}
 									</p>
 									<Button
@@ -309,10 +309,10 @@ export default function Page() {
 				</div>
 
 				{/* Transaction Limits */}
-				<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[#E7F6EC] rounded-lg">
-							<TrendingUp className="w-5 h-5 text-[#0D4222]" />
+						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
+							<TrendingUp className="w-5 h-5 text-[var(--cl-brand-700)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-[#0D0D0D]">
@@ -411,10 +411,10 @@ export default function Page() {
 				</div>
 
 				{/* Export Transaction History */}
-				<div className="bg-white rounded-2xl border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
 					<div className="flex items-center gap-3 mb-4">
-						<div className="p-2 bg-[#E7F6EC] rounded-lg">
-							<Download className="w-5 h-5 text-[#0D4222]" />
+						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
+							<Download className="w-5 h-5 text-[var(--cl-brand-700)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-[#0D0D0D]">
@@ -426,7 +426,7 @@ export default function Page() {
 						</div>
 					</div>
 
-					<div className="bg-[#F9FAFB] rounded-xl border border-[#E9EAEB] p-4 mb-4">
+					<div className="bg-[#F9FAFB] rounded-xl border border-[var(--cl-line)] p-4 mb-4">
 						<p className="text-sm text-[#667085]">
 							You can export your complete transaction history as a CSV file.
 							The export will include all transactions from your account
@@ -439,7 +439,7 @@ export default function Page() {
 						onClick={handleExportHistory}
 						disabled={isExporting}
 						variant="outline"
-						className="w-full lg:w-auto border-[#D5D7DA] h-10 px-6 rounded-full font-semibold"
+						className="w-full lg:w-auto border-[var(--cl-line-strong)] h-10 px-6 rounded-full font-semibold"
 					>
 						<Download className="w-4 h-4 mr-2" />
 						{isExporting ? "Processing..." : "Export as CSV"}
@@ -447,10 +447,10 @@ export default function Page() {
 				</div>
 
 				{/* Close Account */}
-				<div className="bg-white rounded-2xl border border-red-200 p-6">
+				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-down)] p-6">
 					<div className="flex items-center gap-3 mb-4">
-						<div className="p-2 bg-red-50 rounded-lg">
-							<XCircle className="w-5 h-5 text-red-600" />
+						<div className="p-2 bg-[var(--cl-down-soft)] rounded-lg">
+							<XCircle className="w-5 h-5 text-[var(--cl-down)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-[#0D0D0D]">
@@ -462,11 +462,11 @@ export default function Page() {
 						</div>
 					</div>
 
-					<div className="bg-red-50 rounded-xl border border-red-200 p-4 mb-4">
-						<p className="text-sm text-red-900 font-medium mb-2">
+					<div className="bg-[var(--cl-down-soft)] rounded-xl border border-[var(--cl-down)] p-4 mb-4">
+						<p className="text-sm text-[var(--cl-down)] font-medium mb-2">
 							Warning: This action cannot be undone
 						</p>
-						<ul className="text-sm text-red-700 space-y-1 list-disc list-inside">
+						<ul className="text-sm text-[var(--cl-down)] space-y-1 list-disc list-inside">
 							<li>All your data will be permanently deleted</li>
 							<li>You will lose access to all funds in your account</li>
 							<li>You cannot reuse this email or username</li>
@@ -498,7 +498,7 @@ export default function Page() {
 								<AlertDialogCancel>Cancel</AlertDialogCancel>
 								<AlertDialogAction
 									onClick={handleCloseAccount}
-									className="bg-red-600 hover:bg-red-700"
+									className="bg-[var(--cl-down)] hover:bg-[var(--cl-down)]/90"
 								>
 									Yes, Close My Account
 								</AlertDialogAction>

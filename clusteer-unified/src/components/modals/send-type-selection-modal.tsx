@@ -40,25 +40,25 @@ export default function SendTypeSelectionModal({
 				<div className="grid gap-4 py-6">
 					<Button
 						onClick={onSelectInternal}
-						className="h-auto flex flex-col items-start p-6 bg-white border-2 border-[#D5D7DA] hover:border-dark-green hover:bg-green-50 transition-all text-left"
+						className="h-auto flex flex-col items-start p-6 bg-[var(--cl-surface)] border-2 border-[var(--cl-line-strong)] hover:border-dark-green hover:bg-[var(--cl-up-soft)] transition-all text-left"
 						variant="outline"
 					>
 						<div className="flex items-center gap-3 mb-2">
 							<div className="p-2 bg-dark-green rounded-lg">
 								<ArrowLeftRight className="h-5 w-5 text-white" />
 							</div>
-							<span className="text-lg font-semibold text-gray-900">
+							<span className="text-lg font-semibold text-[var(--cl-text)]">
 								Internal Send
 							</span>
 						</div>
-						<p className="text-sm text-gray-600">
+						<p className="text-sm text-[var(--cl-text-2)]">
 							Send to another Clusteer user instantly with zero fees. Just enter their User ID.
 						</p>
 						<div className="mt-3 flex items-center gap-2">
-							<span className="text-xs bg-green-100 text-dark-green px-2 py-1 rounded">
+							<span className="text-xs bg-[var(--cl-up-soft)] text-[var(--cl-brand-500)] px-2 py-1 rounded">
 								Instant
 							</span>
-							<span className="text-xs bg-green-100 text-dark-green px-2 py-1 rounded">
+							<span className="text-xs bg-[var(--cl-up-soft)] text-[var(--cl-brand-500)] px-2 py-1 rounded">
 								No Fees
 							</span>
 						</div>
@@ -66,25 +66,25 @@ export default function SendTypeSelectionModal({
 
 					<Button
 						onClick={onSelectOnchain}
-						className="h-auto flex flex-col items-start p-6 bg-white border-2 border-[#D5D7DA] hover:border-dark-green hover:bg-green-50 transition-all text-left"
+						className="h-auto flex flex-col items-start p-6 bg-[var(--cl-surface)] border-2 border-[var(--cl-line-strong)] hover:border-dark-green hover:bg-[var(--cl-up-soft)] transition-all text-left"
 						variant="outline"
 					>
 						<div className="flex items-center gap-3 mb-2">
 							<div className="p-2 bg-dark-green rounded-lg">
 								<Send className="h-5 w-5 text-white" />
 							</div>
-							<span className="text-lg font-semibold text-gray-900">
+							<span className="text-lg font-semibold text-[var(--cl-text)]">
 								Onchain Send
 							</span>
 						</div>
-						<p className="text-sm text-gray-600">
+						<p className="text-sm text-[var(--cl-text-2)]">
 							Send to any wallet address on the blockchain. Requires network fees.
 						</p>
 						<div className="mt-3 flex items-center gap-2">
-							<span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
+							<span className="text-xs bg-[var(--cl-warn-soft)] text-[var(--cl-warn)] px-2 py-1 rounded">
 								Network Fees Apply
 							</span>
-							<span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+							<span className="text-xs bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] px-2 py-1 rounded">
 								15 Confirmations
 							</span>
 						</div>

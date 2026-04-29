@@ -53,6 +53,7 @@ export default function NotificationBell() {
 					variant="ghost"
 					size="icon"
 					className="relative"
+					aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
 				>
 					<Bell className="h-5 w-5" />
 					{unreadCount > 0 && (
@@ -87,7 +88,7 @@ export default function NotificationBell() {
 							>
 								<div className="flex items-start gap-2 w-full">
 									{!notification.read && (
-										<div className="h-2 w-2 rounded-full bg-blue-500 mt-2" />
+										<div className="h-2 w-2 rounded-full bg-[var(--cl-info-soft)]0 mt-2" />
 									)}
 									<div className="flex-1">
 										<p className="font-medium text-sm">{notification.title}</p>
@@ -104,7 +105,7 @@ export default function NotificationBell() {
 						<DropdownMenuSeparator />
 						{unreadCount > 0 && (
 							<DropdownMenuItem
-								className="text-center justify-center text-sm text-dark-green font-medium"
+								className="text-center justify-center text-sm text-[var(--cl-brand-500)] font-medium"
 								onClick={markAllAsRead}
 							>
 								Mark all as read

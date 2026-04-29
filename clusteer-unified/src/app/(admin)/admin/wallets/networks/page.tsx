@@ -236,13 +236,13 @@ export default function NetworkManagementPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Active":
-        return "text-green-700 bg-green-50 border-green-200";
+        return "text-[var(--cl-up)] bg-[var(--cl-up-soft)] border-[var(--cl-up)]";
       case "Maintenance":
         return "text-orange-700 bg-orange-50 border-orange-200";
       case "Inactive":
-        return "text-red-700 bg-red-50 border-red-200";
+        return "text-[var(--cl-down)] bg-[var(--cl-down-soft)] border-[var(--cl-down)]";
       default:
-        return "text-gray-700 bg-gray-50 border-gray-200";
+        return "text-[var(--cl-text-2)] bg-[var(--cl-bg)] border-[var(--cl-line)]";
     }
   };
 
@@ -266,7 +266,7 @@ export default function NetworkManagementPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014F01] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading network configurations...</p>
+          <p className="mt-4 text-[var(--cl-text-2)]">Loading network configurations...</p>
         </div>
       </div>
     );
@@ -277,8 +277,8 @@ export default function NetworkManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Network Management</h1>
-          <p className="text-gray-600 mt-1">Configure blockchain networks and transaction settings</p>
+          <h1 className="text-2xl font-bold text-[var(--cl-text)]">Network Management</h1>
+          <p className="text-[var(--cl-text-2)] mt-1">Configure blockchain networks and transaction settings</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
@@ -291,42 +291,42 @@ export default function NetworkManagementPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
           <div className="flex items-center justify-between mb-2">
             <Network className="h-5 w-5 text-[#014F01]" />
-            <span className="text-xs text-gray-600">Total</span>
+            <span className="text-xs text-[var(--cl-text-2)]">Total</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{activeNetworks}/{networks.length}</p>
-          <p className="text-sm text-gray-600 mt-1">Active Networks</p>
+          <p className="text-2xl font-bold text-[var(--cl-text)]">{activeNetworks}/{networks.length}</p>
+          <p className="text-sm text-[var(--cl-text-2)] mt-1">Active Networks</p>
         </div>
 
-        <div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <TrendingUp className="h-5 w-5 text-green-600" />
-            <span className="text-xs text-gray-600">All Networks</span>
+            <TrendingUp className="h-5 w-5 text-[var(--cl-up)]" />
+            <span className="text-xs text-[var(--cl-text-2)]">All Networks</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">${totalVolume.toLocaleString()}</p>
-          <p className="text-sm text-gray-600 mt-1">Total Volume</p>
+          <p className="text-2xl font-bold text-[var(--cl-text)]">${totalVolume.toLocaleString()}</p>
+          <p className="text-sm text-[var(--cl-text-2)] mt-1">Total Volume</p>
         </div>
 
-        <div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <CheckCircle className="h-5 w-5 text-green-600" />
-            <span className="text-xs text-gray-600">Average</span>
+            <CheckCircle className="h-5 w-5 text-[var(--cl-up)]" />
+            <span className="text-xs text-[var(--cl-text-2)]">Average</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{avgSuccessRate.toFixed(1)}%</p>
-          <p className="text-sm text-gray-600 mt-1">Success Rate</p>
+          <p className="text-2xl font-bold text-[var(--cl-text)]">{avgSuccessRate.toFixed(1)}%</p>
+          <p className="text-sm text-[var(--cl-text-2)] mt-1">Success Rate</p>
         </div>
 
-        <div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
           <div className="flex items-center justify-between mb-2">
             <Zap className="h-5 w-5 text-orange-600" />
-            <span className="text-xs text-gray-600">Fastest</span>
+            <span className="text-xs text-[var(--cl-text-2)]">Fastest</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">
+          <p className="text-2xl font-bold text-[var(--cl-text)]">
             {Math.min(...networks.map((n) => n.stats.avgConfirmationTime)).toFixed(1)}m
           </p>
-          <p className="text-sm text-gray-600 mt-1">Confirmation Time</p>
+          <p className="text-sm text-[var(--cl-text-2)] mt-1">Confirmation Time</p>
         </div>
       </div>
 
@@ -335,7 +335,7 @@ export default function NetworkManagementPage() {
         {networks.map((network) => (
           <div
             key={network.id}
-            className="bg-white rounded-lg border border-[#E9EAEB] p-6 hover:shadow-lg transition-shadow"
+            className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -343,8 +343,8 @@ export default function NetworkManagementPage() {
                   <Network className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{network.name}</h3>
-                  <p className="text-sm text-gray-600">{network.blockchain} • {network.code}</p>
+                  <h3 className="font-semibold text-[var(--cl-text)]">{network.name}</h3>
+                  <p className="text-sm text-[var(--cl-text-2)]">{network.blockchain} • {network.code}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -353,13 +353,13 @@ export default function NetworkManagementPage() {
                 </span>
                 <button
                   onClick={() => handleToggleNetwork(network.id)}
-                  className="p-1 hover:bg-gray-100 rounded transition-colors"
+                  className="p-1 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
                   title={network.isEnabled ? "Disable Network" : "Enable Network"}
                 >
                   {network.isEnabled ? (
-                    <ToggleRight className="h-6 w-6 text-green-600" />
+                    <ToggleRight className="h-6 w-6 text-[var(--cl-up)]" />
                   ) : (
-                    <ToggleLeft className="h-6 w-6 text-gray-400" />
+                    <ToggleLeft className="h-6 w-6 text-[var(--cl-text-3)]" />
                   )}
                 </button>
               </div>
@@ -367,100 +367,100 @@ export default function NetworkManagementPage() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-green-50 rounded-lg p-3">
-                <p className="text-xs text-gray-600 mb-1 flex items-center gap-1">
+              <div className="bg-[var(--cl-up-soft)] rounded-lg p-3">
+                <p className="text-xs text-[var(--cl-text-2)] mb-1 flex items-center gap-1">
                   <TrendingUp className="h-3 w-3" />
                   Deposits
                 </p>
-                <p className="text-lg font-semibold text-green-700">
+                <p className="text-lg font-semibold text-[var(--cl-up)]">
                   ${network.stats.totalDeposits.toLocaleString()}
                 </p>
-                <p className="text-xs text-gray-600">{network.stats.depositCount} transactions</p>
+                <p className="text-xs text-[var(--cl-text-2)]">{network.stats.depositCount} transactions</p>
               </div>
-              <div className="bg-red-50 rounded-lg p-3">
-                <p className="text-xs text-gray-600 mb-1 flex items-center gap-1">
+              <div className="bg-[var(--cl-down-soft)] rounded-lg p-3">
+                <p className="text-xs text-[var(--cl-text-2)] mb-1 flex items-center gap-1">
                   <TrendingUp className="h-3 w-3 rotate-180" />
                   Withdrawals
                 </p>
-                <p className="text-lg font-semibold text-red-700">
+                <p className="text-lg font-semibold text-[var(--cl-down)]">
                   ${network.stats.totalWithdrawals.toLocaleString()}
                 </p>
-                <p className="text-xs text-gray-600">{network.stats.withdrawalCount} transactions</p>
+                <p className="text-xs text-[var(--cl-text-2)]">{network.stats.withdrawalCount} transactions</p>
               </div>
             </div>
 
             {/* Performance Metrics */}
-            <div className="grid grid-cols-3 gap-3 mb-4 pt-4 border-t border-[#E9EAEB]">
+            <div className="grid grid-cols-3 gap-3 mb-4 pt-4 border-t border-[var(--cl-line)]">
               <div>
-                <p className="text-xs text-gray-600 flex items-center gap-1">
+                <p className="text-xs text-[var(--cl-text-2)] flex items-center gap-1">
                   <Clock className="h-3 w-3" />
                   Confirmation
                 </p>
-                <p className="text-sm font-semibold text-gray-900">{network.stats.avgConfirmationTime}m</p>
+                <p className="text-sm font-semibold text-[var(--cl-text)]">{network.stats.avgConfirmationTime}m</p>
               </div>
               <div>
-                <p className="text-xs text-gray-600 flex items-center gap-1">
+                <p className="text-xs text-[var(--cl-text-2)] flex items-center gap-1">
                   <CheckCircle className="h-3 w-3" />
                   Success Rate
                 </p>
-                <p className="text-sm font-semibold text-green-600">{network.stats.successRate}%</p>
+                <p className="text-sm font-semibold text-[var(--cl-up)]">{network.stats.successRate}%</p>
               </div>
               <div>
-                <p className="text-xs text-gray-600 flex items-center gap-1">
+                <p className="text-xs text-[var(--cl-text-2)] flex items-center gap-1">
                   <Shield className="h-3 w-3" />
                   Confirmations
                 </p>
-                <p className="text-sm font-semibold text-gray-900">{network.confirmations.required}</p>
+                <p className="text-sm font-semibold text-[var(--cl-text)]">{network.confirmations.required}</p>
               </div>
             </div>
 
             {/* Fees */}
-            <div className="bg-gray-50 rounded-lg p-3 mb-4">
-              <p className="text-xs font-medium text-gray-700 mb-2">Fee Structure</p>
+            <div className="bg-[var(--cl-bg)] rounded-lg p-3 mb-4">
+              <p className="text-xs font-medium text-[var(--cl-text-2)] mb-2">Fee Structure</p>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 <div>
-                  <p className="text-gray-600">Withdrawal</p>
-                  <p className="font-semibold text-gray-900">${network.fees.withdrawal}</p>
+                  <p className="text-[var(--cl-text-2)]">Withdrawal</p>
+                  <p className="font-semibold text-[var(--cl-text)]">${network.fees.withdrawal}</p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Deposit</p>
-                  <p className="font-semibold text-gray-900">${network.fees.deposit}</p>
+                  <p className="text-[var(--cl-text-2)]">Deposit</p>
+                  <p className="font-semibold text-[var(--cl-text)]">${network.fees.deposit}</p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Gas</p>
-                  <p className="font-semibold text-gray-900">${network.fees.gas}</p>
+                  <p className="text-[var(--cl-text-2)]">Gas</p>
+                  <p className="font-semibold text-[var(--cl-text)]">${network.fees.gas}</p>
                 </div>
               </div>
             </div>
 
             {/* Limits */}
-            <div className="bg-blue-50 rounded-lg p-3 mb-4">
-              <p className="text-xs font-medium text-gray-700 mb-2">Transaction Limits</p>
+            <div className="bg-[var(--cl-info-soft)] rounded-lg p-3 mb-4">
+              <p className="text-xs font-medium text-[var(--cl-text-2)] mb-2">Transaction Limits</p>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div>
-                  <p className="text-gray-600">Min Withdrawal</p>
-                  <p className="font-semibold text-gray-900">${network.limits.minWithdrawal}</p>
+                  <p className="text-[var(--cl-text-2)]">Min Withdrawal</p>
+                  <p className="font-semibold text-[var(--cl-text)]">${network.limits.minWithdrawal}</p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Max Withdrawal</p>
-                  <p className="font-semibold text-gray-900">${network.limits.maxWithdrawal.toLocaleString()}</p>
+                  <p className="text-[var(--cl-text-2)]">Max Withdrawal</p>
+                  <p className="font-semibold text-[var(--cl-text)]">${network.limits.maxWithdrawal.toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Daily Limit</p>
-                  <p className="font-semibold text-gray-900">${network.limits.dailyLimit.toLocaleString()}</p>
+                  <p className="text-[var(--cl-text-2)]">Daily Limit</p>
+                  <p className="font-semibold text-[var(--cl-text)]">${network.limits.dailyLimit.toLocaleString()}</p>
                 </div>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-4 border-t border-[#E9EAEB]">
-              <div className="flex items-center gap-2 text-xs text-gray-600">
+            <div className="flex items-center justify-between pt-4 border-t border-[var(--cl-line)]">
+              <div className="flex items-center gap-2 text-xs text-[var(--cl-text-2)]">
                 <Activity className="h-3 w-3" />
                 Last activity: {new Date(network.lastActivity).toLocaleString()}
               </div>
               <button
                 onClick={() => handleEdit(network)}
-                className="flex items-center gap-1 px-3 py-1 border border-[#E9EAEB] rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                className="flex items-center gap-1 px-3 py-1 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors text-sm"
               >
                 <Edit2 className="h-3 w-3" />
                 Edit
@@ -473,21 +473,21 @@ export default function NetworkManagementPage() {
       {/* Edit Modal */}
       {showEditModal && selectedNetwork && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-lg max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Network Configuration</h3>
+          <div className="bg-[var(--cl-surface)] rounded-lg max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+            <h3 className="text-lg font-semibold text-[var(--cl-text)] mb-4">Edit Network Configuration</h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Network Name</label>
+                  <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">Network Name</label>
                   <input
                     type="text"
                     defaultValue={selectedNetwork.name}
-                    className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                    className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                  <select className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]">
+                  <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">Status</label>
+                  <select className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]">
                     <option>Active</option>
                     <option>Maintenance</option>
                     <option>Inactive</option>
@@ -495,69 +495,69 @@ export default function NetworkManagementPage() {
                 </div>
               </div>
 
-              <div className="border-t border-[#E9EAEB] pt-4">
-                <h4 className="font-medium text-gray-900 mb-3">Fee Configuration</h4>
+              <div className="border-t border-[var(--cl-line)] pt-4">
+                <h4 className="font-medium text-[var(--cl-text)] mb-3">Fee Configuration</h4>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Withdrawal Fee</label>
+                    <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">Withdrawal Fee</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.fees.withdrawal}
-                      className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                      className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Deposit Fee</label>
+                    <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">Deposit Fee</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.fees.deposit}
-                      className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                      className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Gas Fee</label>
+                    <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">Gas Fee</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.fees.gas}
-                      className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                      className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="border-t border-[#E9EAEB] pt-4">
-                <h4 className="font-medium text-gray-900 mb-3">Transaction Limits</h4>
+              <div className="border-t border-[var(--cl-line)] pt-4">
+                <h4 className="font-medium text-[var(--cl-text)] mb-3">Transaction Limits</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Min Withdrawal</label>
+                    <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">Min Withdrawal</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.limits.minWithdrawal}
-                      className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                      className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Max Withdrawal</label>
+                    <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">Max Withdrawal</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.limits.maxWithdrawal}
-                      className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                      className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Daily Limit</label>
+                    <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">Daily Limit</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.limits.dailyLimit}
-                      className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                      className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Required Confirmations</label>
+                    <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">Required Confirmations</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.confirmations.required}
-                      className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                      className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
                     />
                   </div>
                 </div>
@@ -569,7 +569,7 @@ export default function NetworkManagementPage() {
                   setShowEditModal(false);
                   setSelectedNetwork(null);
                 }}
-                className="flex-1 px-4 py-2 border border-[#E9EAEB] rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
               >
                 Cancel
               </button>

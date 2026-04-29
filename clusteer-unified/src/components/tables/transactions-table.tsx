@@ -80,7 +80,7 @@ export const columns: ColumnDef<ITransaction>[] = [
 		header: "Order Number",
 		cell: ({ row }) => {
 			return (
-				<div className="font-medium flex flex-wrap items-center gap-x-1 font-inter">
+				<div className="font-medium flex flex-wrap items-center gap-x-1 ">
 					<p className="text-wrap">{row.original.orderNumber}</p>
 					<CopyButton
 						className="border-0 p-0"
@@ -98,7 +98,7 @@ export const columns: ColumnDef<ITransaction>[] = [
 		enableHiding: false,
 		cell: ({ row }) => {
 			return (
-				<div className="font-inter capitalize">
+				<div className=" capitalize">
 					<p className="font-medium">{row.original.status}</p>
 					<span className="text-[#008000]">Download receipt</span>
 				</div>
@@ -166,7 +166,7 @@ export function TransactionsTable() {
 	};
 
 	return (
-		<div className="w-full font-inter border-t border-t-[#21241D] border border-[#EAECF0] shadow-[0px_1px_3px_0px_#1018281A] pb-5">
+		<div className="w-full  border-t border-t-[#21241D] border border-[#EAECF0] shadow-[0px_1px_3px_0px_#1018281A] pb-5">
 			{/* <div className="py-5 px-6 border-b border-[#EAECF0]">
 				<h3 className="text-[#101828] text-2xl font-semibold">
 					Latest Transactions
@@ -251,7 +251,7 @@ export function TransactionsTable() {
 								>
 									<div className="text-center">
 										<div className="w-16 h-16 mx-auto bg-pale-green rounded-full flex items-center justify-center mb-4">
-											<Clock className="w-8 h-8 text-dark-green" />
+											<Clock className="w-8 h-8 text-[var(--cl-brand-500)]" />
 										</div>
 										<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">
 											No transactions yet

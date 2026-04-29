@@ -151,11 +151,11 @@ export default function APIKeysPage() {
 	const getStatusColor = (status: APIKey["status"]) => {
 		switch (status) {
 			case "Active":
-				return "bg-green-50 text-green-700 border-green-200";
+				return "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]";
 			case "Expired":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 			case "Revoked":
-				return "bg-red-50 text-red-700 border-red-200";
+				return "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]";
 		}
 	};
 
@@ -170,13 +170,13 @@ export default function APIKeysPage() {
 				<div className="flex items-center gap-4">
 					<button
 						onClick={() => router.push("/admin/settings")}
-						className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+						className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-gray-600" />
+						<ArrowLeft className="w-5 h-5 text-[var(--cl-text-2)]" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">API Keys Management</h1>
-						<p className="text-sm text-gray-600 mt-1">Create and manage API keys for external integrations</p>
+						<h1 className="text-2xl font-bold text-[var(--cl-text)]">API Keys Management</h1>
+						<p className="text-sm text-[var(--cl-text-2)] mt-1">Create and manage API keys for external integrations</p>
 					</div>
 				</div>
 				<button
@@ -190,67 +190,67 @@ export default function APIKeysPage() {
 
 			{/* Stats Cards */}
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-				<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-blue-50 rounded-lg">
-							<Key className="w-6 h-6 text-blue-600" />
+						<div className="p-3 bg-[var(--cl-info-soft)] rounded-lg">
+							<Key className="w-6 h-6 text-[var(--cl-brand-600)]" />
 						</div>
 					</div>
-					<h3 className="text-sm text-gray-600 font-medium mb-1">Total Keys</h3>
-					<p className="text-2xl font-bold text-gray-900">{apiKeys.length}</p>
+					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Total Keys</h3>
+					<p className="text-2xl font-bold text-[var(--cl-text)]">{apiKeys.length}</p>
 				</div>
 
-				<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-green-50 rounded-lg">
-							<CheckCircle className="w-6 h-6 text-green-600" />
+						<div className="p-3 bg-[var(--cl-up-soft)] rounded-lg">
+							<CheckCircle className="w-6 h-6 text-[var(--cl-up)]" />
 						</div>
 					</div>
-					<h3 className="text-sm text-gray-600 font-medium mb-1">Active Keys</h3>
-					<p className="text-2xl font-bold text-gray-900">
+					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Active Keys</h3>
+					<p className="text-2xl font-bold text-[var(--cl-text)]">
 						{apiKeys.filter((k) => k.status === "Active").length}
 					</p>
 				</div>
 
-				<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 					<div className="flex items-center justify-between mb-4">
 						<div className="p-3 bg-orange-50 rounded-lg">
 							<AlertCircle className="w-6 h-6 text-orange-600" />
 						</div>
 					</div>
-					<h3 className="text-sm text-gray-600 font-medium mb-1">Expired Keys</h3>
-					<p className="text-2xl font-bold text-gray-900">
+					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Expired Keys</h3>
+					<p className="text-2xl font-bold text-[var(--cl-text)]">
 						{apiKeys.filter((k) => k.status === "Expired").length}
 					</p>
 				</div>
 
-				<div className="bg-white rounded-lg border border-[#E9EAEB] p-6">
+				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
 					<div className="flex items-center justify-between mb-4">
 						<div className="p-3 bg-purple-50 rounded-lg">
 							<Activity className="w-6 h-6 text-purple-600" />
 						</div>
 					</div>
-					<h3 className="text-sm text-gray-600 font-medium mb-1">Total Requests</h3>
-					<p className="text-2xl font-bold text-gray-900">
+					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Total Requests</h3>
+					<p className="text-2xl font-bold text-[var(--cl-text)]">
 						{apiKeys.reduce((sum, key) => sum + key.usageCount, 0).toLocaleString()}
 					</p>
 				</div>
 			</div>
 
 			{/* API Keys List */}
-			<div className="bg-white rounded-lg border border-[#E9EAEB]">
-				<div className="p-6 border-b border-[#E9EAEB]">
-					<h2 className="text-lg font-semibold text-gray-900">Your API Keys</h2>
-					<p className="text-sm text-gray-600 mt-1">Manage access keys for your applications</p>
+			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)]">
+				<div className="p-6 border-b border-[var(--cl-line)]">
+					<h2 className="text-lg font-semibold text-[var(--cl-text)]">Your API Keys</h2>
+					<p className="text-sm text-[var(--cl-text-2)] mt-1">Manage access keys for your applications</p>
 				</div>
 
 				<div className="divide-y divide-[#E9EAEB]">
 					{apiKeys.map((apiKey) => (
-						<div key={apiKey.id} className="p-6 hover:bg-[#FAFAFA] transition-colors">
+						<div key={apiKey.id} className="p-6 hover:bg-[var(--cl-bg)] transition-colors">
 							<div className="flex items-start justify-between mb-4">
 								<div className="flex-1">
 									<div className="flex items-center gap-3 mb-2">
-										<h3 className="text-lg font-semibold text-gray-900">{apiKey.name}</h3>
+										<h3 className="text-lg font-semibold text-[var(--cl-text)]">{apiKey.name}</h3>
 										<span
 											className={`px-2 py-1 text-xs font-medium border rounded ${getStatusColor(
 												apiKey.status
@@ -260,29 +260,29 @@ export default function APIKeysPage() {
 										</span>
 									</div>
 									<div className="flex items-center gap-2 mb-3">
-										<code className="px-3 py-1.5 bg-gray-50 rounded font-mono text-sm text-gray-700 border border-gray-200">
+										<code className="px-3 py-1.5 bg-[var(--cl-bg)] rounded font-mono text-sm text-[var(--cl-text-2)] border border-[var(--cl-line)]">
 											{revealedKeys.has(apiKey.id) ? apiKey.key : maskKey(apiKey.key)}
 										</code>
 										<button
 											onClick={() => toggleKeyVisibility(apiKey.id)}
-											className="p-2 hover:bg-gray-100 rounded transition-colors"
+											className="p-2 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
 											title={revealedKeys.has(apiKey.id) ? "Hide key" : "Show key"}
 										>
 											{revealedKeys.has(apiKey.id) ? (
-												<EyeOff className="w-4 h-4 text-gray-600" />
+												<EyeOff className="w-4 h-4 text-[var(--cl-text-2)]" />
 											) : (
-												<Eye className="w-4 h-4 text-gray-600" />
+												<Eye className="w-4 h-4 text-[var(--cl-text-2)]" />
 											)}
 										</button>
 										<button
 											onClick={() => copyToClipboard(apiKey.key, apiKey.id)}
-											className="p-2 hover:bg-gray-100 rounded transition-colors relative"
+											className="p-2 hover:bg-[var(--cl-surface-2)] rounded transition-colors relative"
 											title="Copy to clipboard"
 										>
 											{copiedKey === apiKey.id ? (
-												<CheckCircle className="w-4 h-4 text-green-600" />
+												<CheckCircle className="w-4 h-4 text-[var(--cl-up)]" />
 											) : (
-												<Copy className="w-4 h-4 text-gray-600" />
+												<Copy className="w-4 h-4 text-[var(--cl-text-2)]" />
 											)}
 										</button>
 									</div>
@@ -297,7 +297,7 @@ export default function APIKeysPage() {
 										</button>
 										<button
 											onClick={() => setShowDeleteModal(apiKey.id)}
-											className="px-3 py-1.5 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded hover:bg-red-100 transition-colors flex items-center gap-1"
+											className="px-3 py-1.5 text-sm font-medium text-[var(--cl-down)] bg-[var(--cl-down-soft)] border border-[var(--cl-down)] rounded hover:bg-[var(--cl-down-soft)] transition-colors flex items-center gap-1"
 										>
 											<Trash2 className="w-3.5 h-3.5" />
 											Delete
@@ -308,31 +308,31 @@ export default function APIKeysPage() {
 
 							<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
 								<div className="flex items-center gap-2 text-sm">
-									<Calendar className="w-4 h-4 text-gray-400" />
+									<Calendar className="w-4 h-4 text-[var(--cl-text-3)]" />
 									<div>
-										<span className="text-gray-600">Created:</span>
-										<span className="ml-1 font-medium text-gray-900">{apiKey.createdDate}</span>
+										<span className="text-[var(--cl-text-2)]">Created:</span>
+										<span className="ml-1 font-medium text-[var(--cl-text)]">{apiKey.createdDate}</span>
 									</div>
 								</div>
 								<div className="flex items-center gap-2 text-sm">
-									<Clock className="w-4 h-4 text-gray-400" />
+									<Clock className="w-4 h-4 text-[var(--cl-text-3)]" />
 									<div>
-										<span className="text-gray-600">Last Used:</span>
-										<span className="ml-1 font-medium text-gray-900">{apiKey.lastUsed}</span>
+										<span className="text-[var(--cl-text-2)]">Last Used:</span>
+										<span className="ml-1 font-medium text-[var(--cl-text)]">{apiKey.lastUsed}</span>
 									</div>
 								</div>
 								<div className="flex items-center gap-2 text-sm">
-									<AlertCircle className="w-4 h-4 text-gray-400" />
+									<AlertCircle className="w-4 h-4 text-[var(--cl-text-3)]" />
 									<div>
-										<span className="text-gray-600">Expires:</span>
-										<span className="ml-1 font-medium text-gray-900">{apiKey.expiresDate}</span>
+										<span className="text-[var(--cl-text-2)]">Expires:</span>
+										<span className="ml-1 font-medium text-[var(--cl-text)]">{apiKey.expiresDate}</span>
 									</div>
 								</div>
 								<div className="flex items-center gap-2 text-sm">
-									<Activity className="w-4 h-4 text-gray-400" />
+									<Activity className="w-4 h-4 text-[var(--cl-text-3)]" />
 									<div>
-										<span className="text-gray-600">Requests:</span>
-										<span className="ml-1 font-medium text-gray-900">
+										<span className="text-[var(--cl-text-2)]">Requests:</span>
+										<span className="ml-1 font-medium text-[var(--cl-text)]">
 											{apiKey.usageCount.toLocaleString()}
 										</span>
 									</div>
@@ -341,14 +341,14 @@ export default function APIKeysPage() {
 
 							<div>
 								<div className="flex items-center gap-2 mb-2">
-									<Shield className="w-4 h-4 text-gray-400" />
-									<span className="text-sm font-medium text-gray-700">Permissions:</span>
+									<Shield className="w-4 h-4 text-[var(--cl-text-3)]" />
+									<span className="text-sm font-medium text-[var(--cl-text-2)]">Permissions:</span>
 								</div>
 								<div className="flex flex-wrap gap-2">
 									{apiKey.permissions.map((permission) => (
 										<span
 											key={permission}
-											className="px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded border border-blue-200"
+											className="px-2 py-1 bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] text-xs font-medium rounded border border-[var(--cl-brand-200)]"
 										>
 											{permission}
 										</span>
@@ -363,32 +363,32 @@ export default function APIKeysPage() {
 			{/* Create API Key Modal */}
 			{showCreateModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-					<div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-						<div className="p-6 border-b border-[#E9EAEB]">
-							<h2 className="text-xl font-bold text-gray-900">Create New API Key</h2>
-							<p className="text-sm text-gray-600 mt-1">
+					<div className="bg-[var(--cl-surface)] rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+						<div className="p-6 border-b border-[var(--cl-line)]">
+							<h2 className="text-xl font-bold text-[var(--cl-text)]">Create New API Key</h2>
+							<p className="text-sm text-[var(--cl-text-2)] mt-1">
 								Generate a new API key with specific permissions
 							</p>
 						</div>
 
 						<div className="p-6 space-y-6">
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">Key Name *</label>
+								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Key Name *</label>
 								<input
 									type="text"
 									value={newKeyName}
 									onChange={(e) => setNewKeyName(e.target.value)}
 									placeholder="e.g., Production API Key"
-									className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+									className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
 								/>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">Expiry Period</label>
+								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Expiry Period</label>
 								<select
 									value={newKeyExpiry}
 									onChange={(e) => setNewKeyExpiry(e.target.value)}
-									className="w-full px-3 py-2 border border-[#E9EAEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+									className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
 								>
 									<option value="30">30 days</option>
 									<option value="90">90 days</option>
@@ -399,14 +399,14 @@ export default function APIKeysPage() {
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-3">
+								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-3">
 									Permissions ({newKeyPermissions.length} selected)
 								</label>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 									{availablePermissions.map((permission) => (
 										<label
 											key={permission.id}
-											className="flex items-start gap-3 p-3 border border-[#E9EAEB] rounded-lg cursor-pointer hover:border-[#014F01]/20 transition-colors"
+											className="flex items-start gap-3 p-3 border border-[var(--cl-line)] rounded-lg cursor-pointer hover:border-[#014F01]/20 transition-colors"
 										>
 											<input
 												type="checkbox"
@@ -415,8 +415,8 @@ export default function APIKeysPage() {
 												className="mt-1"
 											/>
 											<div>
-												<div className="text-sm font-medium text-gray-900">{permission.label}</div>
-												<div className="text-xs text-gray-600">{permission.description}</div>
+												<div className="text-sm font-medium text-[var(--cl-text)]">{permission.label}</div>
+												<div className="text-xs text-[var(--cl-text-2)]">{permission.description}</div>
 											</div>
 										</label>
 									))}
@@ -424,14 +424,14 @@ export default function APIKeysPage() {
 							</div>
 						</div>
 
-						<div className="p-6 border-t border-[#E9EAEB] flex items-center justify-end gap-3">
+						<div className="p-6 border-t border-[var(--cl-line)] flex items-center justify-end gap-3">
 							<button
 								onClick={() => {
 									setShowCreateModal(false);
 									setNewKeyName("");
 									setNewKeyPermissions([]);
 								}}
-								className="px-4 py-2 text-gray-700 bg-white border border-[#E9EAEB] rounded-lg hover:bg-gray-50 transition-colors"
+								className="px-4 py-2 text-[var(--cl-text-2)] bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 							>
 								Cancel
 							</button>
@@ -450,25 +450,25 @@ export default function APIKeysPage() {
 			{/* Delete Confirmation Modal */}
 			{showDeleteModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-					<div className="bg-white rounded-lg max-w-md w-full">
+					<div className="bg-[var(--cl-surface)] rounded-lg max-w-md w-full">
 						<div className="p-6">
-							<div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-4">
-								<Trash2 className="w-6 h-6 text-red-600" />
+							<div className="w-12 h-12 bg-[var(--cl-down-soft)] rounded-full flex items-center justify-center mb-4">
+								<Trash2 className="w-6 h-6 text-[var(--cl-down)]" />
 							</div>
-							<h2 className="text-xl font-bold text-gray-900 mb-2">Delete API Key?</h2>
-							<p className="text-sm text-gray-600 mb-6">
+							<h2 className="text-xl font-bold text-[var(--cl-text)] mb-2">Delete API Key?</h2>
+							<p className="text-sm text-[var(--cl-text-2)] mb-6">
 								This action cannot be undone. Applications using this key will immediately lose access.
 							</p>
 							<div className="flex items-center gap-3">
 								<button
 									onClick={() => setShowDeleteModal(null)}
-									className="flex-1 px-4 py-2 text-gray-700 bg-white border border-[#E9EAEB] rounded-lg hover:bg-gray-50 transition-colors"
+									className="flex-1 px-4 py-2 text-[var(--cl-text-2)] bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
 								>
 									Cancel
 								</button>
 								<button
 									onClick={() => handleDeleteKey(showDeleteModal)}
-									className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+									className="flex-1 px-4 py-2 bg-[var(--cl-down)] text-white rounded-lg hover:bg-[var(--cl-down)]/90 transition-colors"
 								>
 									Delete Key
 								</button>

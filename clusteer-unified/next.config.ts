@@ -43,11 +43,11 @@ const nextConfig: NextConfig = {
 						key: "Content-Security-Policy",
 						value: [
 							"default-src 'self'",
-							"script-src 'self' 'unsafe-eval' 'unsafe-inline'", // Next.js requires unsafe-eval/inline
+							"script-src 'self' 'unsafe-inline'",
 							"style-src 'self' 'unsafe-inline'",
 							"img-src 'self' data: https:",
 							"font-src 'self' data:",
-							"connect-src 'self' https://*.supabase.co https://open.er-api.com https://api.coingecko.com",
+							"connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebaseapp.com https://open.er-api.com https://api.coingecko.com",
 							"frame-ancestors 'none'",
 						].join("; "),
 					},
@@ -58,11 +58,14 @@ const nextConfig: NextConfig = {
 
 	// Image optimization configuration
 	images: {
-		domains: ["supabase.co"], // Add your Supabase storage domain
 		remotePatterns: [
 			{
 				protocol: "https",
-				hostname: "*.supabase.co",
+				hostname: "firebasestorage.googleapis.com",
+			},
+			{
+				protocol: "https",
+				hostname: "*.googleusercontent.com",
 			},
 		],
 	},

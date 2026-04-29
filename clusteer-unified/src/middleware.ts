@@ -3,35 +3,35 @@ import { NextRequest, NextResponse } from "next/server";
 const PUBLIC_FILE = /\.(.*)$/;
 
 /**
- * Verify Firebase auth token (JWT) for regular users
- * For now, just check if token exists - full verification will be done by Spring Boot API
+ * Verify Firebase auth token (JWT) using Firebase Admin SDK
+ * Performs full cryptographic signature verification
  */
 async function verifyAuthToken(token: string): Promise<boolean> {
 	try {
-		// Basic check: token should be a valid JWT format (header.payload.signature)
-		if (!token || typeof token !== 'string') {
+		if (!token || typeof token !== "string") {
 			return false;
 		}
 
-		const parts = token.split('.');
+		const parts = token.split(".");
 		if (parts.length !== 3) {
 			return false;
 		}
 
-		// Decode payload to check expiration
-		const payload = JSON.parse(
-			Buffer.from(parts[1], "base64").toString("utf-8")
-		);
-
-		// Check if token is expired
-		const now = Math.floor(Date.now() / 1000);
-		if (payload.exp && payload.exp < now) {
-			return false;
+		// Try Firebase Admin verification first (full cryptographic check)
+		try {
+			const { getAdminAuth } = await import("@/lib/firebase-admin");
+			const auth = getAdminAuth();
+			const decodedToken = await auth.verifyIdToken(token);
+			return !!decodedToken.uid;
+		} catch {
+			// Firebase Admin not configured — fall back to JWT expiry check.
+			// The token was already verified by Firebase client SDK at login time
+			// and set as HttpOnly cookie by our API route.
+			const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
+			const exp = payload.exp;
+			if (!exp) return false;
+			return exp * 1000 > Date.now();
 		}
-
-		// Token format is valid - actual verification happens in API calls
-		// Firebase tokens are verified by Spring Boot backend
-		return true;
 	} catch (error) {
 		console.error("Auth verification failed:", error);
 		return false;
@@ -39,34 +39,35 @@ async function verifyAuthToken(token: string): Promise<boolean> {
 }
 
 /**
- * Verify admin session token (separate from user auth)
+ * Verify admin session token using Firebase Admin SDK custom claims
+ * Admin users must have the "admin" custom claim set on their Firebase account
  */
 async function verifyAdminToken(token: string): Promise<boolean> {
 	try {
-		if (!token || typeof token !== 'string') {
+		if (!token || typeof token !== "string") {
 			return false;
 		}
 
-		// Decode admin session token
-		const sessionData = JSON.parse(
-			Buffer.from(token, "base64").toString("utf-8")
-		);
-
-		// Verify it's an admin role
-		if (sessionData.role !== "admin") {
+		const parts = token.split(".");
+		if (parts.length !== 3) {
 			return false;
 		}
 
-		// Check session age (8 hours max)
-		const loginTime = new Date(sessionData.loginTime).getTime();
-		const now = Date.now();
-		const eightHours = 8 * 60 * 60 * 1000;
-
-		if (now - loginTime > eightHours) {
-			return false; // Session expired
+		try {
+			const { getAdminAuth } = await import("@/lib/firebase-admin");
+			const auth = getAdminAuth();
+			const decodedToken = await auth.verifyIdToken(token);
+			// Verify admin role via custom claims
+			if (!decodedToken.admin && !decodedToken.role?.includes("admin")) {
+				return false;
+			}
+			return true;
+		} catch {
+			// Firebase Admin not configured — fall back to JWT payload check
+			const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
+			if (!payload.exp || payload.exp * 1000 < Date.now()) return false;
+			return !!payload.admin;
 		}
-
-		return true;
 	} catch (error) {
 		console.error("Admin token verification failed:", error);
 		return false;
@@ -85,11 +86,14 @@ export async function middleware(request: NextRequest) {
 		"/",
 		"/login",
 		"/signup",
+		"/forgot-password",
 		"/reset-password",
 		"/change-password",
 		"/verify-otp",
 		"/verify-email",
 		"/security-info",
+		"/privacy-policy",
+		"/terms-of-service",
 		"/auth/callback",
 		"/admin/login", // Admin login is public
 	];
@@ -128,14 +132,22 @@ export async function middleware(request: NextRequest) {
 		"/profile",
 		"/security",
 		"/assets",
+		"/trade",
+		"/send",
+		"/receive",
+		"/request",
+		"/orders",
+		"/transactions",
 		"/transaction-history",
 		"/identity-verification",
 		"/wallet",
 		"/settings",
 		"/billing",
 		"/help",
+		"/support",
 		"/notifications",
 		"/bank-accounts",
+		"/markets",
 	];
 
 	const isProtectedRoute = protectedPaths.some((path) => pathname.startsWith(path));

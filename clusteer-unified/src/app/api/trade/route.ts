@@ -1,8 +1,27 @@
-import { supabase } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
+
+/**
+ * Helper to extract user ID from Firebase JWT (already verified by middleware)
+ */
+function getUserIdFromToken(token: string): string | null {
+	try {
+		const parts = token.split(".");
+		if (parts.length !== 3) return null;
+		const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
+		return payload.user_id || payload.sub || null;
+	} catch {
+		return null;
+	}
+}
 
 export async function POST(request: NextRequest) {
 	try {
+		const rateLimitResponse = rateLimit(request, RateLimitPresets.moderate);
+		if (rateLimitResponse) {
+			return rateLimitResponse;
+		}
+
 		const token = request.cookies.get("auth_token")?.value;
 
 		if (!token) {
@@ -12,16 +31,24 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
-
-		if (authError || !authUser) {
+		const userId = getUserIdFromToken(token);
+		if (!userId) {
 			return NextResponse.json(
 				{ status: false, message: "Invalid token" },
 				{ status: 401 }
 			);
 		}
 
-		const body = await request.json();
+		let body;
+		try {
+			body = await request.json();
+		} catch {
+			return NextResponse.json(
+				{ status: false, message: "Invalid request body" },
+				{ status: 400 }
+			);
+		}
+
 		const { side, amount, chain, signedTransaction, walletAddress } = body;
 
 		// Validate input
@@ -32,7 +59,6 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Validate amount
 		const parsedAmount = parseFloat(amount);
 		if (isNaN(parsedAmount) || parsedAmount <= 0) {
 			return NextResponse.json(
@@ -48,7 +74,6 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Validate side
 		if (!["buy", "sell"].includes(side.toLowerCase())) {
 			return NextResponse.json(
 				{ status: false, message: "Invalid side. Must be 'buy' or 'sell'" },
@@ -56,7 +81,6 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Validate chain
 		const validChains = ["solana", "tron", "bsc", "ethereum"];
 		if (!validChains.includes(chain.toLowerCase())) {
 			return NextResponse.json(
@@ -65,8 +89,6 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// SECURITY: For sell orders, require signed transaction (no private keys transmitted)
-		// For buy orders, the backend handles the transaction since we're sending crypto to user
 		if (side.toLowerCase() === "sell" && !signedTransaction) {
 			return NextResponse.json(
 				{ status: false, message: "Signed transaction required for sell orders" },
@@ -81,27 +103,24 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Call blockchain engine API
 		const blockchainEngineUrl = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";
 		const blockchainEngineApiKey = process.env.BLOCKCHAIN_ENGINE_API_KEY;
 
 		if (!blockchainEngineApiKey) {
-			console.error("BLOCKCHAIN_ENGINE_API_KEY not configured");
 			return NextResponse.json(
-				{ status: false, message: "Blockchain engine not configured" },
-				{ status: 500 }
+				{ status: false, message: "Service temporarily unavailable" },
+				{ status: 503 }
 			);
 		}
 
-		// Prepare request payload based on trade type
 		const tradePayload = {
-			user_id: authUser.id,
+			user_id: userId,
 			chain: chain.toLowerCase(),
 			side: side.toLowerCase(),
 			amount: parsedAmount,
 			...(side.toLowerCase() === "sell"
-				? { signed_transaction: signedTransaction } // Client-signed transaction for sells
-				: { destination_address: walletAddress }), // Destination for buys
+				? { signed_transaction: signedTransaction }
+				: { destination_address: walletAddress }),
 		};
 
 		const tradeResponse = await fetch(`${blockchainEngineUrl}/api/v1/trade/`, {
@@ -120,7 +139,6 @@ export async function POST(request: NextRequest) {
 				{
 					status: false,
 					message: tradeData.error || "Trade failed",
-					details: tradeData,
 				},
 				{ status: tradeResponse.status }
 			);

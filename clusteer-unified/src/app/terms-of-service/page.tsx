@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 
 export default function TermsOfServicePage() {
 	return (
-		<div className="min-h-screen bg-white">
-			<div className="max-w-4xl mx-auto px-6 py-12">
+		<div className="min-h-screen bg-background">
+			<div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
 				<header className="mb-12">
 					<Link href="/">
 						<Button
@@ -16,11 +16,11 @@ export default function TermsOfServicePage() {
 							Back to Home
 						</Button>
 					</Link>
-					<h1 className="text-4xl font-bold mb-4">Terms of Service</h1>
-					<p className="text-gray-600">Last Updated: January 1, 2025</p>
+					<h1 className="text-3xl sm:text-4xl font-bold mb-4">Terms of Service</h1>
+					<p className="text-muted-foreground">Last Updated: January 1, 2025</p>
 				</header>
 
-				<div className="space-y-8 text-gray-800">
+				<div className="space-y-8 text-foreground">
 					<section>
 						<h2 className="text-2xl font-semibold mb-4">1. Agreement to Terms</h2>
 						<p className="mb-4">
@@ -31,10 +31,10 @@ export default function TermsOfServicePage() {
 					<section>
 						<h2 className="text-2xl font-semibold mb-4">2. Description of Service</h2>
 						<p className="mb-4">
-							Clusteer is a cryptocurrency exchange platform that allows users to buy, sell, and trade digital assets including but not limited to USDT and other cryptocurrencies. We provide:
+							Clusteer is a stablecoin exchange platform that allows users to buy, sell, and trade digital assets specifically USDT and USDC stablecoins against Nigerian Naira (NGN). We provide:
 						</p>
 						<ul className="list-disc pl-6 space-y-2 mb-4">
-							<li>Cryptocurrency trading services</li>
+							<li>Stablecoin trading services (USDT, USDC)</li>
 							<li>Digital wallet services</li>
 							<li>Peer-to-peer trading facilitation</li>
 							<li>Cross-chain transfer services</li>
@@ -50,7 +50,7 @@ export default function TermsOfServicePage() {
 						<ul className="list-disc pl-6 space-y-2 mb-4">
 							<li>Be at least 18 years of age</li>
 							<li>Have the legal capacity to enter into a binding agreement</li>
-							<li>Not be located in a country where cryptocurrency trading is prohibited</li>
+							<li>Not be located in a country where stablecoin trading is prohibited</li>
 							<li>Complete our Know Your Customer (KYC) verification process</li>
 							<li>Provide accurate and truthful information</li>
 						</ul>
@@ -112,7 +112,7 @@ export default function TermsOfServicePage() {
 
 						<h3 className="text-xl font-semibold mb-3 mt-6">6.3 Price Fluctuations</h3>
 						<p className="mb-4">
-							Cryptocurrency prices are volatile. You acknowledge that prices may change between the time you initiate and complete a transaction. Clusteer is not responsible for price fluctuations.
+							Stablecoin rates relative to Naira may fluctuate. You acknowledge that prices may change between the time you initiate and complete a transaction. Clusteer is not responsible for price fluctuations.
 						</p>
 					</section>
 
@@ -161,7 +161,7 @@ export default function TermsOfServicePage() {
 							<li>Loss of profits, revenue, or data</li>
 							<li>Indirect, incidental, or consequential damages</li>
 							<li>Losses resulting from unauthorized access to your account</li>
-							<li>Price fluctuations in cryptocurrency markets</li>
+							<li>Rate fluctuations in stablecoin/Naira markets</li>
 							<li>Technical failures, system downtime, or network issues</li>
 							<li>Actions or inactions of third-party service providers</li>
 						</ul>
@@ -223,13 +223,13 @@ export default function TermsOfServicePage() {
 							For questions about these Terms of Service, please contact us at:
 						</p>
 						<ul className="list-none space-y-2 mb-4">
-							<li><strong>Email:</strong> <a href="mailto:legal@clusteer.com" className="text-dark-green underline">legal@clusteer.com</a></li>
-							<li><strong>Support:</strong> <a href="mailto:support@clusteer.com" className="text-dark-green underline">support@clusteer.com</a></li>
+							<li><strong>Email:</strong> <a href="mailto:legal@clusteer.com" className="text-primary underline">legal@clusteer.com</a></li>
+							<li><strong>Support:</strong> <a href="mailto:support@clusteer.com" className="text-primary underline">support@clusteer.com</a></li>
 						</ul>
 					</section>
 
-					<section className="border-t pt-8 mt-8">
-						<p className="text-sm text-gray-600">
+					<section className="border-t border-border pt-8 mt-8">
+						<p className="text-sm text-muted-foreground">
 							By using Clusteer, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
 						</p>
 					</section>
