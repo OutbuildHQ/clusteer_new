@@ -275,8 +275,8 @@ export default function Home() {
 
 			{/* ─── Stats bar (Roqqu-style) ─── */}
 			<Section className="border-b border-border bg-warm-beige/40">
-				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-10">
-					<div className="grid grid-cols-2 gap-6 sm:gap-8 md:grid-cols-4">
+				<div className="mx-auto max-w-6xl px-3 sm:px-6 py-6 sm:py-10">
+					<div className="grid grid-cols-2 gap-4 sm:gap-8 md:grid-cols-4">
 						{[
 							{ icon: Users, value: 12000, suffix: "+", label: "Verified Users" },
 							{ icon: TrendingUp, value: 4, prefix: "₦", suffix: "B+", label: "Volume Traded" },
@@ -289,7 +289,7 @@ export default function Home() {
 										<s.icon className="size-5 sm:size-6" />
 									</div>
 									<div>
-										<div className="font-display text-xl sm:text-2xl font-bold tracking-tight text-custom-black">
+										<div className="font-display text-lg sm:text-2xl font-bold tracking-tight text-custom-black">
 											<Counter target={s.value} prefix={s.prefix} suffix={s.suffix} />
 										</div>
 										<p className="text-xs sm:text-sm text-muted-foreground">{s.label}</p>
