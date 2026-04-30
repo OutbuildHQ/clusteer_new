@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/stores/auth";
 
-export default function VerifyOtpPage() {
+function VerifyOtpContent() {
 	const router = useRouter();
 	const params = useSearchParams();
 	const flow = params.get("flow") ?? "login";
@@ -50,5 +50,13 @@ export default function VerifyOtpPage() {
 				<Link href="/login" className="text-xs text-muted-foreground hover:text-foreground">Back to login</Link>
 			</div>
 		</div>
+	);
+}
+
+export default function VerifyOtpPage() {
+	return (
+		<Suspense fallback={<div className="text-center text-muted-foreground py-12">Loading...</div>}>
+			<VerifyOtpContent />
+		</Suspense>
 	);
 }
