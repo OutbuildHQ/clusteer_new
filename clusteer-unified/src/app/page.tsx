@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,8 @@ import { ChainBadge } from "@/components/primitives/chain-badge";
 import { Num } from "@/components/primitives/num";
 import { HeroSwap } from "@/components/hero-swap";
 import { PixelRain } from "@/components/pixel-rain";
-import { ASSETS } from "@/lib/mock-data";
+import { RateTicker } from "@/components/rate-ticker";
+// mock-data no longer imported — all rates come from live API
 import { formatMoney, formatPct } from "@/lib/utils";
 import {
 	ArrowRight,
@@ -34,6 +36,7 @@ import {
 	X,
 	Users,
 	TrendingUp,
+	Wallet,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -207,6 +210,9 @@ export default function Home() {
 				</AnimatePresence>
 			</nav>
 
+			{/* ─── Sticky rate ticker ─── */}
+			<RateTicker />
+
 			{/* ─── Hero ──�� */}
 			<section className="relative overflow-hidden border-b border-border">
 				<PixelRain className="z-0" variant="dark" columns={18} seed={42} />
@@ -240,11 +246,10 @@ export default function Home() {
 								</div>
 							</FadeUp>
 							<FadeUp delay={0.2}>
-								<div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-2 text-xs">
-									<span className="inline-flex items-center gap-1.5 rounded-full border border-custom-black/10 bg-warm-beige/50 px-3 py-1.5 font-semibold text-custom-black"><Users className="size-3.5 text-brand-600" /><Counter target={12000} suffix="+" /> <span className="font-normal text-custom-black/50">users</span></span>
-									<span className="inline-flex items-center gap-1.5 rounded-full border border-custom-black/10 bg-warm-beige/50 px-3 py-1.5 font-semibold text-custom-black"><TrendingUp className="size-3.5 text-success" /><Counter target={4} prefix="₦" suffix="B+" /> <span className="font-normal text-custom-black/50">traded</span></span>
-									<span className="inline-flex items-center gap-1.5 rounded-full border border-custom-black/10 bg-warm-beige/50 px-3 py-1.5 font-semibold text-custom-black"><Zap className="size-3.5 text-warning" /><Counter target={99} suffix=".9%" /> <span className="font-normal text-custom-black/50">uptime</span></span>
-									<span className="inline-flex items-center gap-1.5 rounded-full border border-custom-black/10 bg-warm-beige/50 px-3 py-1.5"><ShieldCheck className="size-3.5 text-success" /> <span className="text-custom-black/50">SEC Licensed</span></span>
+								<div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+									<span className="inline-flex items-center gap-1.5"><ShieldCheck className="size-3.5 text-success" /> SEC Nigeria Licensed</span>
+									<span className="inline-flex items-center gap-1.5"><Lock className="size-3.5 text-primary" /> Multi-sig custody</span>
+									<span className="inline-flex items-center gap-1.5"><Zap className="size-3.5 text-warning" /> Instant settlement</span>
 								</div>
 							</FadeUp>
 
@@ -268,50 +273,35 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* Social proof merged into hero above — no separate section */}
-
-			{/* ─── Rate strip — Option E: Warm beige comparison strip ─── */}
-			<Section id="rates" className="border-y-2 border-custom-black bg-warm-beige">
+			{/* ─── Stats bar (Roqqu-style) ─── */}
+			<Section className="border-b border-border bg-warm-beige/40">
 				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-10">
-					<FadeUp>
-						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-							<h2 className="font-display text-xl font-bold tracking-tight text-custom-black">Live Naira rates</h2>
-							<div className="flex items-center gap-2 text-xs text-custom-black/50">
-								<span className="size-2 rounded-full bg-success animate-pulse" />
-								Updated live · No hidden spread
-							</div>
-						</div>
-						<div className="space-y-3">
-							{ASSETS.map((a, i) => (
-								<FadeUp key={a.symbol} delay={i * 0.06}>
-									<div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0 rounded-full border-2 border-custom-black bg-white px-4 sm:px-6 py-3 sm:py-2.5">
-										<div className="flex items-center gap-3 sm:w-1/4">
-											<AssetLogo symbol={a.symbol} size="md" />
-											<span className="font-bold text-custom-black">{a.symbol}/NGN</span>
-											<Num className="text-xs sm:hidden" tone={a.change24h >= 0 ? "positive" : "negative"} value={formatPct(a.change24h)} />
-										</div>
-										<div className="flex items-center gap-4 sm:gap-8 flex-1 sm:justify-center">
-											<div className="flex items-center gap-2">
-												<span className="text-[10px] font-bold uppercase tracking-wider text-custom-black/40">Buy</span>
-												<span className="font-display text-lg sm:text-xl font-bold tabular-nums text-custom-black">{formatMoney(a.priceNgn, "NGN", { decimals: 0 })}</span>
-											</div>
-											<span className="text-custom-black/20">|</span>
-											<div className="flex items-center gap-2">
-												<span className="text-[10px] font-bold uppercase tracking-wider text-custom-black/40">Sell</span>
-												<span className="font-display text-lg sm:text-xl font-bold tabular-nums text-custom-black">{formatMoney(Math.round(a.priceNgn * 0.985), "NGN", { decimals: 0 })}</span>
-											</div>
-										</div>
-										<div className="hidden sm:flex items-center gap-3 sm:w-1/4 justify-end">
-											<Num className="text-xs" tone={a.change24h >= 0 ? "positive" : "negative"} value={formatPct(a.change24h)} />
-											<Button asChild size="sm"><Link href="/signup">Trade</Link></Button>
-										</div>
+					<div className="grid grid-cols-2 gap-6 sm:gap-8 md:grid-cols-4">
+						{[
+							{ icon: Users, value: 12000, suffix: "+", label: "Verified Users" },
+							{ icon: TrendingUp, value: 4, prefix: "₦", suffix: "B+", label: "Volume Traded" },
+							{ icon: Wallet, value: 5, suffix: "", label: "Supported Chains" },
+							{ icon: ShieldCheck, value: 99, suffix: ".9%", label: "Platform Uptime" },
+						].map((s) => (
+							<FadeUp key={s.label}>
+								<div className="flex items-center gap-3 sm:gap-4">
+									<div className="flex size-10 sm:size-12 items-center justify-center rounded-xl bg-brand-100/50 text-brand-700 shrink-0">
+										<s.icon className="size-5 sm:size-6" />
 									</div>
-								</FadeUp>
-							))}
-						</div>
-					</FadeUp>
+									<div>
+										<div className="font-display text-xl sm:text-2xl font-bold tracking-tight text-custom-black">
+											<Counter target={s.value} prefix={s.prefix} suffix={s.suffix} />
+										</div>
+										<p className="text-xs sm:text-sm text-muted-foreground">{s.label}</p>
+									</div>
+								</div>
+							</FadeUp>
+						))}
+					</div>
 				</div>
 			</Section>
+
+			{/* Rate strip removed — rates shown in sticky ticker above */}
 
 			{/* ─── How it works ─── */}
 			<Section id="how" className="border-b border-border">
@@ -664,7 +654,9 @@ export default function Home() {
 /* ------------------------------------------------------------------ */
 
 function MobileSwapPreview() {
-	const rate = ASSETS[0]?.priceNgn ?? 1570;
+	const { data } = useQuery({ queryKey: ["ticker-rates"], queryFn: async () => { const r = await fetch("/api/system/exchange-rate?targetCurrency=NGN&amount=1&type=buy"); return r.json(); }, staleTime: 30_000 });
+	const rate = data?.buyRate ? Math.round(data.buyRate) : 1570;
+	const receive = (100000 / rate).toFixed(2);
 	return (
 		<div className="pointer-events-auto rounded-xl border border-border bg-card p-4 shadow-sm">
 			<div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
@@ -679,7 +671,7 @@ function MobileSwapPreview() {
 				<div className="flex items-center gap-2 justify-end">
 					<div className="min-w-0 text-right">
 						<p className="text-[10px] text-muted-foreground">You receive</p>
-						<p className="font-display font-bold text-sm truncate">63.69 USDT</p>
+						<p className="font-display font-bold text-sm truncate">{receive} USDT</p>
 					</div>
 					<AssetLogo symbol="USDT" size="sm" />
 				</div>
