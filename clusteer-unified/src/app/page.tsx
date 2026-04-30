@@ -270,61 +270,44 @@ export default function Home() {
 
 			{/* Social proof merged into hero above — no separate section */}
 
-			{/* ─── Rate strip ─── */}
-			<Section id="rates" className="border-b border-border bg-card/40">
-				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
+			{/* ─── Rate strip — Option E: Warm beige comparison strip ─── */}
+			<Section id="rates" className="border-y-2 border-custom-black bg-warm-beige">
+				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-10">
 					<FadeUp>
-						<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 sm:gap-4">
-							<div>
-								<h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight">Live Naira rates</h2>
-								<p className="mt-1 text-sm text-muted-foreground">The rate you see is the rate you get. No hidden spread.</p>
-							</div>
-							<div className="flex items-center gap-2 text-xs text-muted-foreground">
+						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+							<h2 className="font-display text-xl font-bold tracking-tight text-custom-black">Live Naira rates</h2>
+							<div className="flex items-center gap-2 text-xs text-custom-black/50">
 								<span className="size-2 rounded-full bg-success animate-pulse" />
-								Updated live
+								Updated live · No hidden spread
 							</div>
 						</div>
-					</FadeUp>
-					<div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-						{ASSETS.map((a, i) => (
-							<FadeUp key={a.symbol} delay={i * 0.08}>
-								<div className="rounded-xl border border-border bg-card p-4 sm:p-5 hover:border-primary/30 transition-colors">
-									<div className="flex items-center gap-3">
-										<AssetLogo symbol={a.symbol} size="lg" />
-										<div>
+						<div className="space-y-3">
+							{ASSETS.map((a, i) => (
+								<FadeUp key={a.symbol} delay={i * 0.06}>
+									<div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0 rounded-full border-2 border-custom-black bg-white px-4 sm:px-6 py-3 sm:py-2.5">
+										<div className="flex items-center gap-3 sm:w-1/4">
+											<AssetLogo symbol={a.symbol} size="md" />
+											<span className="font-bold text-custom-black">{a.symbol}/NGN</span>
+											<Num className="text-xs sm:hidden" tone={a.change24h >= 0 ? "positive" : "negative"} value={formatPct(a.change24h)} />
+										</div>
+										<div className="flex items-center gap-4 sm:gap-8 flex-1 sm:justify-center">
 											<div className="flex items-center gap-2">
-												<span className="font-semibold">{a.name}</span>
-												<Badge variant="secondary" className="text-[10px] px-1.5 py-0">{a.symbol}</Badge>
+												<span className="text-[10px] font-bold uppercase tracking-wider text-custom-black/40">Buy</span>
+												<span className="font-display text-lg sm:text-xl font-bold tabular-nums text-custom-black">{formatMoney(a.priceNgn, "NGN", { decimals: 0 })}</span>
 											</div>
-											<div className="mt-0.5 text-xs text-muted-foreground">
-												{a.chains.join(" · ")}
+											<span className="text-custom-black/20">|</span>
+											<div className="flex items-center gap-2">
+												<span className="text-[10px] font-bold uppercase tracking-wider text-custom-black/40">Sell</span>
+												<span className="font-display text-lg sm:text-xl font-bold tabular-nums text-custom-black">{formatMoney(Math.round(a.priceNgn * 0.985), "NGN", { decimals: 0 })}</span>
 											</div>
 										</div>
-										<Num
-											className="ml-auto text-xs"
-											tone={a.change24h >= 0 ? "positive" : "negative"}
-											value={formatPct(a.change24h)}
-										/>
-									</div>
-									<div className="mt-4 grid grid-cols-2 gap-3">
-										<div className="rounded-lg bg-success-bg p-3">
-											<p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Buy rate</p>
-											<Num className="mt-1 text-lg font-bold text-success" value={formatMoney(a.priceNgn, "NGN", { decimals: 0 })} />
-										</div>
-										<div className="rounded-lg bg-danger-bg p-3">
-											<p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Sell rate</p>
-											<Num className="mt-1 text-lg font-bold text-danger" value={formatMoney(Math.round(a.priceNgn * 0.985), "NGN", { decimals: 0 })} />
+										<div className="hidden sm:flex items-center gap-3 sm:w-1/4 justify-end">
+											<Num className="text-xs" tone={a.change24h >= 0 ? "positive" : "negative"} value={formatPct(a.change24h)} />
+											<Button asChild size="sm"><Link href="/signup">Trade</Link></Button>
 										</div>
 									</div>
-								</div>
-							</FadeUp>
-						))}
-					</div>
-					<FadeUp>
-						<div className="mt-10">
-							<Button size="lg" asChild className="w-full sm:w-auto sm:mx-auto sm:flex">
-								<Link href="/signup">Start Now <ArrowRight className="size-4" /></Link>
-							</Button>
+								</FadeUp>
+							))}
 						</div>
 					</FadeUp>
 				</div>

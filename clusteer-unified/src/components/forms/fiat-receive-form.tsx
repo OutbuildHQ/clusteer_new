@@ -55,7 +55,7 @@ export default function FiatReceiveForm() {
 							</FormDescription>
 							<FormControl>
 								<Input
-									className="h-[54px] border border-[var(--cl-line)] rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
+									className="h-[54px] border border-border rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
 									placeholder="0000000000"
 									{...field}
 								/>
@@ -77,7 +77,7 @@ export default function FiatReceiveForm() {
 							</FormDescription>
 							<FormControl>
 								<Input
-									className="h-[54px] border border-[var(--cl-line)] rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
+									className="h-[54px] border border-border rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
 									placeholder="John Doe"
 									{...field}
 								/>
@@ -99,7 +99,7 @@ export default function FiatReceiveForm() {
 							</FormDescription>
 							<FormControl>
 								<Input
-									className="h-[54px] border border-[var(--cl-line)] rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
+									className="h-[54px] border border-border rounded-2xl placeholder:text-muted-foreground font-bold text-[#21241D]"
 									placeholder="Access Bank"
 									{...field}
 								/>
@@ -110,7 +110,7 @@ export default function FiatReceiveForm() {
 				/>
 				<Button
 					type="submit"
-					className="bg-[#21241D] rounded-[100px] w-full font-medium h-[38px] px-5 text-[15px]"
+					className="bg-[#21241D] rounded-full w-full font-medium h-[38px] px-5 text-[15px]"
 				>
 					Confirm
 				</Button>

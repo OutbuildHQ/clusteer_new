@@ -17,7 +17,7 @@ export default function SuccessModal() {
 			<Button
 				type="button"
 				onClick={closeModal}
-				className="bg-[#21241D] rounded-[100px] font-medium h-[38px] px-5 text-[15px] max-w-[146px] mx-auto"
+				className="bg-[#21241D] rounded-full font-medium h-[38px] px-5 text-[15px] max-w-[146px] mx-auto"
 			>
 				See your wallet
 			</Button>

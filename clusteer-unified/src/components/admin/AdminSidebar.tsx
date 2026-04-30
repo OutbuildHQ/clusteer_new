@@ -183,7 +183,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 
 			{/* Sidebar */}
 			<aside className={`
-				bg-[var(--cl-bg)] border-r border-[var(--cl-line)] flex flex-col transition-all duration-300
+				bg-background border-r border-border flex flex-col transition-all duration-300
 
 				/* Mobile: Full width sidebar (max 80% screen width) */
 				w-[280px] max-w-[80vw]
@@ -203,29 +203,29 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 				{/* Mobile Close Button */}
 				<button
 					onClick={onMobileClose}
-					className="lg:hidden absolute top-4 right-4 z-50 p-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-lg shadow-md hover:shadow-lg"
+					className="lg:hidden absolute top-4 right-4 z-50 p-2 bg-card border border-border rounded-lg shadow-md hover:shadow-lg"
 					aria-label="Close menu"
 				>
-					<X className="w-5 h-5 text-[var(--cl-text-2)]" />
+					<X className="w-5 h-5 text-muted-foreground" />
 				</button>
 
 				{/* Desktop Floating Toggle Button */}
 				<button
 					onClick={() => setIsCollapsed(!isCollapsed)}
-					className="hidden lg:flex absolute top-[76px] -right-4 z-50 w-8 h-8 bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-full shadow-md hover:shadow-lg items-center justify-center transition-all hover:scale-110"
+					className="hidden lg:flex absolute top-[76px] -right-4 z-50 w-8 h-8 bg-card border border-border rounded-full shadow-md hover:shadow-lg items-center justify-center transition-all hover:scale-110"
 					aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
 				>
 					{isCollapsed ? (
-						<ChevronRight className="w-4 h-4 text-[var(--cl-text-2)]" />
+						<ChevronRight className="w-4 h-4 text-muted-foreground" />
 					) : (
-						<ChevronLeft className="w-4 h-4 text-[var(--cl-text-2)]" />
+						<ChevronLeft className="w-4 h-4 text-muted-foreground" />
 					)}
 				</button>
 
 				{/* Wrapper with white background */}
-				<div className="flex flex-col h-full bg-[var(--cl-surface)] border-[var(--cl-line)] rounded-lg border m-1">
+				<div className="flex flex-col h-full bg-card border-border rounded-lg border m-1">
 					{/* Logo & Title */}
-					<div className={`border-b border-[var(--cl-line)] p-6 lg:p-6 ${isCollapsed ? 'lg:p-4' : ''}`}>
+					<div className={`border-b border-border p-6 lg:p-6 ${isCollapsed ? 'lg:p-4' : ''}`}>
 						{/* Mobile: Always show full logo */}
 						<div className="lg:hidden flex items-center gap-2">
 							<Image
@@ -263,7 +263,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 						</div>
 
 						{/* Show subtitle on mobile and expanded desktop */}
-						<p className={`text-xs text-[var(--cl-text-3)] mt-2 lg:mt-2 ${isCollapsed ? 'lg:hidden' : ''}`}>Admin Panel</p>
+						<p className={`text-xs text-muted-foreground mt-2 lg:mt-2 ${isCollapsed ? 'lg:hidden' : ''}`}>Admin Panel</p>
 					</div>
 
 					{/* Navigation */}
@@ -284,8 +284,8 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 												w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
 												${
 													itemIsActive
-														? "bg-[var(--cl-brand-50)] text-[#014F01]"
-														: "text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)]"
+														? "bg-primary/10 text-primary"
+														: "text-muted-foreground hover:bg-background"
 												}
 												${isCollapsed ? 'lg:justify-center' : ''}
 											`}
@@ -301,7 +301,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 											{/* Badges and chevrons - mobile always shows, desktop based on collapse */}
 											<div className={`flex items-center gap-2 lg:hidden`}>
 												{item.badge && (
-													<span className="px-2 py-0.5 text-xs font-medium bg-[var(--cl-up-soft)] text-[var(--cl-up)] rounded-full">
+													<span className="px-2 py-0.5 text-xs font-medium bg-success/10 text-success rounded-full">
 														{item.badge}
 													</span>
 												)}
@@ -314,7 +314,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 											{!isCollapsed && (
 												<div className="hidden lg:flex items-center gap-2">
 													{item.badge && (
-														<span className="px-2 py-0.5 text-xs font-medium bg-[var(--cl-up-soft)] text-[var(--cl-up)] rounded-full">
+														<span className="px-2 py-0.5 text-xs font-medium bg-success/10 text-success rounded-full">
 															{item.badge}
 														</span>
 													)}
@@ -333,8 +333,8 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 												flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
 												${
 													itemIsActive
-														? "bg-[var(--cl-brand-50)] text-[#014F01]"
-														: "text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)]"
+														? "bg-primary/10 text-primary"
+														: "text-muted-foreground hover:bg-background"
 												}
 												${isCollapsed ? 'lg:justify-center' : ''}
 											`}
@@ -350,11 +350,11 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 											{/* Badge - mobile always shows, desktop based on collapse */}
 											{item.badge && (
 												<>
-													<span className="lg:hidden px-2 py-0.5 text-xs font-medium bg-[var(--cl-up-soft)] text-[var(--cl-up)] rounded-full">
+													<span className="lg:hidden px-2 py-0.5 text-xs font-medium bg-success/10 text-success rounded-full">
 														{item.badge}
 													</span>
 													{!isCollapsed && (
-														<span className="hidden lg:inline-block px-2 py-0.5 text-xs font-medium bg-[var(--cl-up-soft)] text-[var(--cl-up)] rounded-full">
+														<span className="hidden lg:inline-block px-2 py-0.5 text-xs font-medium bg-success/10 text-success rounded-full">
 															{item.badge}
 														</span>
 													)}
@@ -365,7 +365,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 
 									{/* Sub Items - Always show on mobile when expanded, desktop only when not collapsed */}
 									{hasSubItems && isExpanded && (
-										<div className={`mt-1 ml-3 pl-5 border-l-2 border-[var(--cl-line)] space-y-0.5 ${isCollapsed ? 'hidden' : ''}`}>
+										<div className={`mt-1 ml-3 pl-5 border-l-2 border-border space-y-0.5 ${isCollapsed ? 'hidden' : ''}`}>
 											{item.subItems!.map((subItem) => (
 												<Link
 													key={subItem.href}
@@ -374,8 +374,8 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 														block px-3 py-1.5 rounded-lg text-sm transition-colors
 														${
 															isSubItemActive(subItem.href)
-																? "bg-[var(--cl-brand-50)] text-[#014F01] font-medium"
-																: "text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] hover:text-[var(--cl-text)]"
+																? "bg-primary/10 text-primary font-medium"
+																: "text-muted-foreground hover:bg-background hover:text-foreground"
 														}
 													`}
 												>
@@ -394,32 +394,32 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 						<div className="px-4 pb-4 hidden lg:block">
 							<div className="bg-gradient-to-br from-blue-50/50 to-white rounded-lg p-3 border border-blue-100/50">
 								<div className="flex items-center gap-2 mb-3">
-									<div className="w-6 h-6 bg-[var(--cl-info-soft)] rounded-md flex items-center justify-center">
-										<Activity className="w-3.5 h-3.5 text-[var(--cl-brand-600)]" />
+									<div className="w-6 h-6 bg-primary/10 rounded-md flex items-center justify-center">
+										<Activity className="w-3.5 h-3.5 text-primary" />
 									</div>
-									<span className="text-xs font-semibold text-[var(--cl-text-2)]">Quick Stats</span>
+									<span className="text-xs font-semibold text-muted-foreground">Quick Stats</span>
 								</div>
 								<div className="space-y-2.5">
 									<div className="flex items-center justify-between">
 										<div className="flex items-center gap-2">
-											<div className="w-1.5 h-1.5 bg-[var(--cl-info-soft)]0 rounded-full"></div>
-											<span className="text-xs text-[var(--cl-text-2)]">Active Users</span>
+											<div className="w-1.5 h-1.5 bg-primary/100 rounded-full"></div>
+											<span className="text-xs text-muted-foreground">Active Users</span>
 										</div>
-										<span className="text-sm font-bold text-[var(--cl-text)]">3,245</span>
+										<span className="text-sm font-bold text-foreground">3,245</span>
 									</div>
 									<div className="flex items-center justify-between">
 										<div className="flex items-center gap-2">
-											<div className="w-1.5 h-1.5 bg-[var(--cl-warn-soft)]0 rounded-full"></div>
-											<span className="text-xs text-[var(--cl-text-2)]">Pending KYC</span>
+											<div className="w-1.5 h-1.5 bg-warning/100 rounded-full"></div>
+											<span className="text-xs text-muted-foreground">Pending KYC</span>
 										</div>
-										<span className="text-sm font-bold text-[var(--cl-text)]">124</span>
+										<span className="text-sm font-bold text-foreground">124</span>
 									</div>
 									<div className="flex items-center justify-between">
 										<div className="flex items-center gap-2">
-											<div className="w-1.5 h-1.5 bg-[var(--cl-up-soft)]0 rounded-full"></div>
-											<span className="text-xs text-[var(--cl-text-2)]">Today's Volume</span>
+											<div className="w-1.5 h-1.5 bg-success/100 rounded-full"></div>
+											<span className="text-xs text-muted-foreground">Today's Volume</span>
 										</div>
-										<span className="text-sm font-bold text-[var(--cl-text)]">$2.4M</span>
+										<span className="text-sm font-bold text-foreground">$2.4M</span>
 									</div>
 								</div>
 							</div>
@@ -427,44 +427,44 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 					)}
 
 					{/* User Profile */}
-					<div className="p-4 border-t border-[var(--cl-line)]">
-						<div className={`flex items-center gap-3 p-2 rounded-lg hover:bg-[var(--cl-bg)] cursor-pointer transition-colors group ${isCollapsed ? 'lg:justify-center' : ''}`}>
-							<div className="w-10 h-10 bg-gradient-to-br from-[#014F01] to-[#013d01] rounded-full flex items-center justify-center flex-shrink-0">
+					<div className="p-4 border-t border-border">
+						<div className={`flex items-center gap-3 p-2 rounded-lg hover:bg-background cursor-pointer transition-colors group ${isCollapsed ? 'lg:justify-center' : ''}`}>
+							<div className="w-10 h-10 bg-gradient-to-br from-brand-800 to-brand-900 rounded-full flex items-center justify-center flex-shrink-0">
 								<span className="text-white font-semibold text-sm">AD</span>
 							</div>
 							{/* Mobile: Always show user info */}
 							<div className="flex-1 min-w-0 lg:hidden">
-								<p className="text-sm font-medium text-[var(--cl-text)] truncate">
+								<p className="text-sm font-medium text-foreground truncate">
 									Admin User
 								</p>
-								<p className="text-xs text-[var(--cl-text-3)] truncate">
+								<p className="text-xs text-muted-foreground truncate">
 									admin@clusteer.com
 								</p>
 							</div>
 							{/* Desktop: Show based on collapse state */}
 							{!isCollapsed && (
 								<div className="hidden lg:block flex-1 min-w-0">
-									<p className="text-sm font-medium text-[var(--cl-text)] truncate">
+									<p className="text-sm font-medium text-foreground truncate">
 										Admin User
 									</p>
-									<p className="text-xs text-[var(--cl-text-3)] truncate">
+									<p className="text-xs text-muted-foreground truncate">
 										admin@clusteer.com
 									</p>
 								</div>
 							)}
 							{/* Logout button - mobile always shows, desktop based on collapse */}
 							<button
-								className="lg:hidden p-1.5 hover:bg-[var(--cl-surface-2)] rounded"
+								className="lg:hidden p-1.5 hover:bg-muted rounded"
 								title="Logout"
 							>
-								<LogOut className="w-4 h-4 text-[var(--cl-text-3)]" />
+								<LogOut className="w-4 h-4 text-muted-foreground" />
 							</button>
 							{!isCollapsed && (
 								<button
-									className="hidden lg:block opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-[var(--cl-surface-2)] rounded"
+									className="hidden lg:block opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-muted rounded"
 									title="Logout"
 								>
-									<LogOut className="w-4 h-4 text-[var(--cl-text-3)]" />
+									<LogOut className="w-4 h-4 text-muted-foreground" />
 								</button>
 							)}
 						</div>

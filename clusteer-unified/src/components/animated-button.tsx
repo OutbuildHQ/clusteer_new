@@ -8,12 +8,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 const buttonVariants = cva(
-	"relative text-[var(--cl-text)] flex items-center justify-center gap-x-2 h-11 border-2 border-black overflow-hidden w-full",
+	"relative text-foreground flex items-center justify-center gap-x-2 h-11 border-2 border-black overflow-hidden w-full",
 	{
 		variants: {
 			variant: {
-				default: "bg-light-green rounded-[30px]",
-				secondary: "bg-[var(--cl-surface)] rounded-[50px]",
+				default: "bg-light-green rounded-full",
+				secondary: "bg-card rounded-full",
 			},
 		},
 		defaultVariants: {
@@ -53,7 +53,7 @@ export default function AnimatedButton({
 				>
 					<motion.span
 						layout
-						className="text-base text-nowrap shrink-0 font-semibold text-center w-fit text-[var(--cl-text)] font-lexend"
+						className="text-base text-nowrap shrink-0 font-semibold text-center w-fit text-foreground font-lexend"
 					>
 						{text}
 					</motion.span>
@@ -91,7 +91,7 @@ export default function AnimatedButton({
 				>
 					<motion.span
 						layout
-						className="text-base text-nowrap shrink-0 font-semibold text-center w-fit text-[var(--cl-text)] font-lexend"
+						className="text-base text-nowrap shrink-0 font-semibold text-center w-fit text-foreground font-lexend"
 					>
 						{text}
 					</motion.span>

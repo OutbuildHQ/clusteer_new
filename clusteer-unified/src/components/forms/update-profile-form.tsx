@@ -142,13 +142,13 @@ export default function UpdateProfileForm() {
 					control={form.control}
 					name="firstName"
 					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-[var(--cl-line)]">
-							<FormLabel className="font-semibold text-[var(--cl-text-2)] gap-x-0.5 shrink-0 lg:max-w-[280px] w-full">
+						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
+							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 shrink-0 lg:max-w-[280px] w-full">
 								First Name <span className="text-[#008000]">*</span>
 							</FormLabel>
 							<FormControl>
 								<Input
-									className="h-11 border border-[var(--cl-line-strong)] rounded-full text-[var(--cl-text)] py-2.5 px-3.5 shadow-[0px_1px_2px_0px_#0A0D120D] lg:max-w-[512px]"
+									className="h-11 border border-border rounded-full text-foreground py-2.5 px-3.5 shadow-[0px_1px_2px_0px_#0A0D120D] lg:max-w-[512px]"
 									{...field}
 								/>
 							</FormControl>
@@ -160,13 +160,13 @@ export default function UpdateProfileForm() {
 					control={form.control}
 					name="lastName"
 					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-[var(--cl-line)]">
-							<FormLabel className="font-semibold text-[var(--cl-text-2)] gap-x-0.5 shrink-0 lg:max-w-[280px] w-full">
+						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
+							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 shrink-0 lg:max-w-[280px] w-full">
 								Last Name <span className="text-[#008000]">*</span>
 							</FormLabel>
 							<FormControl>
 								<Input
-									className="h-11 border border-[var(--cl-line-strong)] rounded-full text-[var(--cl-text)] py-2.5 px-3.5 shadow-[0px_1px_2px_0px_#0A0D120D] lg:max-w-[512px]"
+									className="h-11 border border-border rounded-full text-foreground py-2.5 px-3.5 shadow-[0px_1px_2px_0px_#0A0D120D] lg:max-w-[512px]"
 									{...field}
 								/>
 							</FormControl>
@@ -178,14 +178,14 @@ export default function UpdateProfileForm() {
 					control={form.control}
 					name="username"
 					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-[var(--cl-line)]">
-							<FormLabel className="font-semibold text-[var(--cl-text-2)] gap-x-0.5 lg:max-w-[280px] w-full">
+						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
+							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 lg:max-w-[280px] w-full">
 								Username <span className="text-[#008000]">*</span>
 							</FormLabel>
 							<FormControl>
 								<Input
 									disabled
-									className="h-11 border border-[var(--cl-line-strong)] rounded-full text-[var(--cl-text)] py-2.5 px-3.5 shadow-[0px_1px_2px_0px_#0A0D120D] lg:max-w-[512px]"
+									className="h-11 border border-border rounded-full text-foreground py-2.5 px-3.5 shadow-[0px_1px_2px_0px_#0A0D120D] lg:max-w-[512px]"
 									{...field}
 								/>
 							</FormControl>
@@ -197,12 +197,12 @@ export default function UpdateProfileForm() {
 					control={form.control}
 					name="email"
 					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-[var(--cl-line)]">
-							<FormLabel className="font-semibold text-[var(--cl-text-2)] gap-x-0.5 lg:max-w-[280px] w-full">
+						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
+							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 lg:max-w-[280px] w-full">
 								Email <span className="text-[#008000]">*</span>
 							</FormLabel>
 							<FormControl>
-								<div className="flex w-full gap-x-2 items-center h-11 py-2.5 px-3.5 border border-[var(--cl-line-strong)] rounded-full text-[var(--cl-text)] shadow-[0px_1px_2px_0px_#0A0D120D] overflow-hidden lg:max-w-[512px]">
+								<div className="flex w-full gap-x-2 items-center h-11 py-2.5 px-3.5 border border-border rounded-full text-foreground shadow-[0px_1px_2px_0px_#0A0D120D] overflow-hidden lg:max-w-[512px]">
 									<Mail
 										size={20}
 										stroke="#717680"
@@ -222,12 +222,12 @@ export default function UpdateProfileForm() {
 					control={form.control}
 					name="phone"
 					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-[var(--cl-line)]">
-							<FormLabel className="font-semibold text-[var(--cl-text-2)] gap-x-0.5 lg:max-w-[280px] w-full">
+						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
+							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 lg:max-w-[280px] w-full">
 								Phone number <span className="text-[#008000]">*</span>
 							</FormLabel>
 							<FormControl>
-								<div className="flex w-full lg:max-w-[512px] gap-x-2 items-center h-11 py-2.5 px-3.5 border border-[var(--cl-line-strong)] rounded-full text-[var(--cl-text)] shadow-[0px_1px_2px_0px_#0A0D120D] overflow-hidden">
+								<div className="flex w-full lg:max-w-[512px] gap-x-2 items-center h-11 py-2.5 px-3.5 border border-border rounded-full text-foreground shadow-[0px_1px_2px_0px_#0A0D120D] overflow-hidden">
 									<Image
 										src="/assets/icons/phone-call.svg"
 										alt="phone icon"
@@ -254,12 +254,12 @@ export default function UpdateProfileForm() {
 					onImageSelect={handleImageSelect}
 				/>
 
-				<div className="flex flex-col items-center lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-[var(--cl-line)]">
-					<span className="font-semibold lg:max-w-[280px] w-full text-[var(--cl-text-2)] gap-x-0.5 text-sm">
+				<div className="flex flex-col items-center lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
+					<span className="font-semibold lg:max-w-[280px] w-full text-muted-foreground gap-x-0.5 text-sm">
 						User ID
 					</span>
 					<div className="flex items-center gap-x-2 py-2.5 px-11.5 ml-auto">
-						<span className="text-sm text-[var(--cl-text-2)] font-mono">{user?.id}</span>
+						<span className="text-sm text-muted-foreground font-mono">{user?.id}</span>
 						<CopyButton
 							value={user?.id}
 							icon="/assets/icons/copy.svg"
@@ -267,8 +267,8 @@ export default function UpdateProfileForm() {
 						/>
 					</div>
 				</div>
-				<div className="flex  items-center flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-[var(--cl-line)]">
-					<span className="font-semibold lg:max-w-[280px] w-full text-[var(--cl-text-2)] gap-x-0.5 text-sm">
+				<div className="flex  items-center flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
+					<span className="font-semibold lg:max-w-[280px] w-full text-muted-foreground gap-x-0.5 text-sm">
 						Registration date
 					</span>
 					<div className="py-2.5 px-11.5 ml-auto">
@@ -293,7 +293,7 @@ export default function UpdateProfileForm() {
 							variant="outline"
 							disabled={isBusy}
 							onClick={reset}
-							className="p-0 text-sm text-[var(--cl-text-2)] font-semibold h-10 px-3.5"
+							className="p-0 text-sm text-muted-foreground font-semibold h-10 px-3.5"
 						>
 							Cancel
 						</Button>
@@ -305,7 +305,7 @@ export default function UpdateProfileForm() {
 								isFormInvalid ||
 								(!form.formState.isDirty && !isUpdated)
 							}
-							className="p-0 text-sm font-semibold h-10 px-3.5 gradient-border bg-[#11C211] border-[#0a0d120d] text-white"
+							className="p-0 text-sm font-semibold h-10 px-3.5 bg-primary border-custom-black/5 text-white"
 						>
 							{isUpdating ? "Saving..." : "Save"}
 						</Button>

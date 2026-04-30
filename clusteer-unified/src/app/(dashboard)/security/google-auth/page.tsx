@@ -102,7 +102,7 @@ export default function Page() {
 					>
 						<ArrowLeft className="shrink-0 size-full" />
 					</Button>
-					<h1 className="text-[var(--cl-text)] font-semibold text-xl sm:text2xl">
+					<h1 className="text-foreground font-semibold text-xl sm:text2xl">
 						Configure Google Authenticator
 					</h1>
 				</div>
@@ -122,9 +122,9 @@ export default function Page() {
 										<div
 											className={`
 												relative flex items-center justify-center w-6 h-6 rounded-full border transition-all duration-300
-												${isCompleted ? 'bg-[#9FE870] border-[#9FE870]' : ''}
-												${isActive ? 'bg-[var(--cl-surface)] border-[#9FE870] shadow-[0_0_0_2px_rgba(159,232,112,0.15)]' : ''}
-												${!isActive && !isCompleted ? 'bg-[var(--cl-surface)] border-[var(--cl-line)]' : ''}
+												${isCompleted ? 'bg-light-green border-[#9FE870]' : ''}
+												${isActive ? 'bg-card border-[#9FE870] shadow-[0_0_0_2px_rgba(159,232,112,0.15)]' : ''}
+												${!isActive && !isCompleted ? 'bg-card border-border' : ''}
 											`}
 										>
 											{isCompleted ? (
@@ -132,7 +132,7 @@ export default function Page() {
 													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
 												</svg>
 											) : (
-												<span className={`text-[10px] font-semibold ${isActive ? 'text-[#9FE870]' : 'text-[#667085]'}`}>
+												<span className={`text-[10px] font-semibold ${isActive ? 'text-[#9FE870]' : 'text-muted-foreground'}`}>
 													{stepNumber}
 												</span>
 											)}
@@ -141,7 +141,7 @@ export default function Page() {
 										{/* Step Label */}
 										<p className={`
 											mt-2.5 text-sm font-medium max-w-[140px] transition-colors duration-300
-											${isActive ? 'text-[#0D0D0D]' : 'text-[#667085]'}
+											${isActive ? 'text-foreground' : 'text-muted-foreground'}
 										`}>
 											{s === "bind-new-authenticator"
 												? "Bind authenticator"
@@ -156,7 +156,7 @@ export default function Page() {
 										<div className="flex-1 h-[2px] mx-4 -mt-7">
 											<div className={`
 												h-full transition-all duration-300
-												${isCompleted ? 'bg-[#9FE870]' : 'bg-[#E9EAEB]'}
+												${isCompleted ? 'bg-light-green' : 'bg-border'}
 											`} />
 										</div>
 									)}
@@ -169,13 +169,13 @@ export default function Page() {
 				{/* Mobile Progress Bar */}
 				<div className="lg:hidden mt-4">
 					<div className="flex items-center gap-2 mb-2">
-						<span className="text-sm font-medium text-[#667085]">
+						<span className="text-sm font-medium text-muted-foreground">
 							Step {idx + 1} of {formStages.length}
 						</span>
 					</div>
-					<div className="w-full h-2 bg-[#E9EAEB] rounded-full overflow-hidden">
+					<div className="w-full h-2 bg-border rounded-full overflow-hidden">
 						<div
-							className="h-full bg-[#9FE870] transition-all duration-300 ease-out"
+							className="h-full bg-light-green transition-all duration-300 ease-out"
 							style={{ width: `${((idx + 1) / formStages.length) * 100}%` }}
 						/>
 					</div>

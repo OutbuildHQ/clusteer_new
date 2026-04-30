@@ -56,7 +56,7 @@ export default function CryptoReceiveForm({
 					Select Network
 				</Label>
 				<Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
-					<SelectTrigger className="h-[54px] border border-[var(--cl-line)] rounded-2xl font-bold text-[#21241D]">
+					<SelectTrigger className="h-[54px] border border-border rounded-2xl font-bold text-[#21241D]">
 						<SelectValue placeholder="Select network" />
 					</SelectTrigger>
 					<SelectContent>
@@ -76,11 +76,11 @@ export default function CryptoReceiveForm({
 
 			{/* QR Code */}
 			{address && (
-				<div className="flex flex-col items-center gap-4 p-6 bg-[#F9FAFB] rounded-2xl border border-[var(--cl-line)]">
-					<div className="bg-[var(--cl-surface)] p-4 rounded-xl">
+				<div className="flex flex-col items-center gap-4 p-6 bg-muted rounded-2xl border border-border">
+					<div className="bg-card p-4 rounded-xl">
 						<QRCodeSVG value={address} size={200} level="H" />
 					</div>
-					<p className="text-sm text-[#667085] text-center">
+					<p className="text-sm text-muted-foreground text-center">
 						Scan QR code to get address
 					</p>
 				</div>
@@ -92,7 +92,7 @@ export default function CryptoReceiveForm({
 					Wallet Address
 				</Label>
 				<div className="relative">
-					<div className="h-[54px] px-4 border border-[var(--cl-line)] rounded-2xl flex items-center justify-between bg-[#F9FAFB]">
+					<div className="h-[54px] px-4 border border-border rounded-2xl flex items-center justify-between bg-muted">
 						<span className="font-mono text-sm text-[#21241D] truncate mr-2">
 							{address || "No address available"}
 						</span>

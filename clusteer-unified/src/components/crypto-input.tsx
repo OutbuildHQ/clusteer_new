@@ -23,7 +23,7 @@ function CryptoInput({ name }: CryptoInputProps) {
 	);
 
 	return (
-		<div className="bg-[var(--cl-surface)] flex items-center h-[65px] px-3.5 rounded-xl">
+		<div className="bg-card flex items-center h-[65px] px-3.5 rounded-xl">
 			<Input
 				disabled
 				value={displayValue}

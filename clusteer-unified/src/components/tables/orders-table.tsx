@@ -196,7 +196,7 @@ export function OrdersTable() {
 						onChange={(event) =>
 							table.getColumn("number")?.setFilterValue(event.target.value)
 						}
-						className="text-[#667085] placeholder:text-[#667085] border-none shadow-none h-6"
+						className="text-muted-foreground placeholder:text-muted-foreground border-none shadow-none h-6"
 					/>
 				</div>
 			</div>
@@ -256,12 +256,12 @@ export function OrdersTable() {
 								>
 									<div className="text-center">
 										<div className="w-16 h-16 mx-auto bg-pale-green rounded-full flex items-center justify-center mb-4">
-											<ShoppingBag className="w-8 h-8 text-[var(--cl-brand-500)]" />
+											<ShoppingBag className="w-8 h-8 text-primary" />
 										</div>
-										<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">
+										<h3 className="font-semibold text-lg text-foreground mb-2">
 											No orders yet
 										</h3>
-										<p className="text-sm text-[#667085]">
+										<p className="text-sm text-muted-foreground">
 											Your orders will appear here
 										</p>
 									</div>

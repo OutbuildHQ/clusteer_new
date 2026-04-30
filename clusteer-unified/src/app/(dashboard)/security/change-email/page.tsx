@@ -9,7 +9,7 @@ export default function Page() {
 				<Link href="/security">
 					<ArrowLeft className="shrink-0 size-full" />
 				</Link>
-				<h1 className="text-[var(--cl-text)] font-semibold text-xl sm:text2xl">
+				<h1 className="text-foreground font-semibold text-xl sm:text2xl">
 					Change email address
 				</h1>
 			</header>

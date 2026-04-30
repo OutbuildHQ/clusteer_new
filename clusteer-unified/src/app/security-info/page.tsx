@@ -13,7 +13,7 @@ export default function SecurityPage() {
 	return (
 		<>
 			<NavBar />
-			<div className="pt-16 lg:pt-20 font-mona bg-[var(--cl-bg)]">
+			<div className="pt-16 lg:pt-20 font-mona bg-background">
 				<Container>
 					<section className="max-w-4xl mx-auto py-16 lg:py-20">
 						<header className="text-center mb-12 lg:mb-16">
@@ -27,7 +27,7 @@ export default function SecurityPage() {
 
 						{/* Security Features */}
 						<div className="space-y-12">
-							<div className="bg-[#F0EBE6] rounded-2xl p-8 border-2 border-black">
+							<div className="bg-warm-beige rounded-2xl p-8 border-2 border-black">
 								<div className="flex items-start gap-6">
 									<div className="w-16 h-16 bg-light-green rounded-full border-2 border-black flex items-center justify-center shrink-0">
 										<Image
@@ -46,7 +46,7 @@ export default function SecurityPage() {
 								</div>
 							</div>
 
-							<div className="bg-[#F0EBE6] rounded-2xl p-8 border-2 border-black">
+							<div className="bg-warm-beige rounded-2xl p-8 border-2 border-black">
 								<div className="flex items-start gap-6">
 									<div className="w-16 h-16 bg-light-green rounded-full border-2 border-black flex items-center justify-center shrink-0">
 										<Image
@@ -65,7 +65,7 @@ export default function SecurityPage() {
 								</div>
 							</div>
 
-							<div className="bg-[#F0EBE6] rounded-2xl p-8 border-2 border-black">
+							<div className="bg-warm-beige rounded-2xl p-8 border-2 border-black">
 								<div className="flex items-start gap-6">
 									<div className="w-16 h-16 bg-light-green rounded-full border-2 border-black flex items-center justify-center shrink-0">
 										<Image
@@ -84,7 +84,7 @@ export default function SecurityPage() {
 								</div>
 							</div>
 
-							<div className="bg-[#F0EBE6] rounded-2xl p-8 border-2 border-black">
+							<div className="bg-warm-beige rounded-2xl p-8 border-2 border-black">
 								<div className="flex items-start gap-6">
 									<div className="w-16 h-16 bg-light-green rounded-full border-2 border-black flex items-center justify-center shrink-0">
 										<Image
@@ -103,7 +103,7 @@ export default function SecurityPage() {
 								</div>
 							</div>
 
-							<div className="bg-[#F0EBE6] rounded-2xl p-8 border-2 border-black">
+							<div className="bg-warm-beige rounded-2xl p-8 border-2 border-black">
 								<div className="flex items-start gap-6">
 									<div className="w-16 h-16 bg-light-green rounded-full border-2 border-black flex items-center justify-center shrink-0">
 										<Image
@@ -122,7 +122,7 @@ export default function SecurityPage() {
 								</div>
 							</div>
 
-							<div className="bg-[#F0EBE6] rounded-2xl p-8 border-2 border-black">
+							<div className="bg-warm-beige rounded-2xl p-8 border-2 border-black">
 								<div className="flex items-start gap-6">
 									<div className="w-16 h-16 bg-light-green rounded-full border-2 border-black flex items-center justify-center shrink-0">
 										<Image
@@ -143,31 +143,31 @@ export default function SecurityPage() {
 						</div>
 
 						{/* Best Practices */}
-						<div className="mt-16 bg-[var(--cl-surface)] rounded-2xl p-8 border-2 border-black">
+						<div className="mt-16 bg-card rounded-2xl p-8 border-2 border-black">
 							<h2 className="text-2xl font-bold mb-6 ">Best Practices to Keep Your Account Secure</h2>
 							<ul className="space-y-4 text-reviews-text font-lexend">
 								<li className="flex items-start gap-3">
-									<span className="text-[var(--cl-brand-500)] font-bold">•</span>
+									<span className="text-primary font-bold">•</span>
 									<span>Enable 2FA on your account immediately after signup</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-[var(--cl-brand-500)] font-bold">•</span>
+									<span className="text-primary font-bold">•</span>
 									<span>Use a strong, unique password that you don't use elsewhere</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-[var(--cl-brand-500)] font-bold">•</span>
+									<span className="text-primary font-bold">•</span>
 									<span>Never share your password, 2FA codes, or recovery phrases with anyone</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-[var(--cl-brand-500)] font-bold">•</span>
+									<span className="text-primary font-bold">•</span>
 									<span>Verify wallet addresses carefully before sending crypto</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-[var(--cl-brand-500)] font-bold">•</span>
+									<span className="text-primary font-bold">•</span>
 									<span>Be cautious of phishing emails or fake websites impersonating Clusteer</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-[var(--cl-brand-500)] font-bold">•</span>
+									<span className="text-primary font-bold">•</span>
 									<span>Log out of your account when using public or shared devices</span>
 								</li>
 							</ul>

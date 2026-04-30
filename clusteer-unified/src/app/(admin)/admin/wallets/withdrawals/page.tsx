@@ -140,20 +140,20 @@ export default function WithdrawalsPage() {
 			case "Pending":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 			case "Approved":
-				return "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]";
+				return "bg-primary/10 text-primary border-primary/30";
 			case "Processing":
 				return "bg-purple-50 text-purple-700 border-purple-200";
 			case "Completed":
-				return "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]";
+				return "bg-success/10 text-success border-success";
 			case "Rejected":
-				return "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]";
+				return "bg-danger/10 text-danger border-danger";
 		}
 	};
 
 	const getRiskColor = (score: number) => {
-		if (score < 20) return "text-[var(--cl-up)] bg-[var(--cl-up-soft)]";
+		if (score < 20) return "text-success bg-success/10";
 		if (score < 40) return "text-orange-700 bg-orange-50";
-		return "text-[var(--cl-down)] bg-[var(--cl-down-soft)]";
+		return "text-danger bg-danger/10";
 	};
 
 	const handleApprove = (withdrawal: Withdrawal) => {
@@ -180,18 +180,18 @@ export default function WithdrawalsPage() {
 			<div className="flex items-center justify-between">
 				<div>
 					<div className="flex items-center gap-3">
-						<h1 className="text-2xl font-bold text-[var(--cl-text)]">Withdrawal Management</h1>
+						<h1 className="text-2xl font-bold text-foreground">Withdrawal Management</h1>
 						{isLiveUpdating && (
-							<div className="flex items-center gap-2 px-3 py-1 bg-[var(--cl-up-soft)] border border-[var(--cl-up)] rounded-full">
+							<div className="flex items-center gap-2 px-3 py-1 bg-success/10 border border-success rounded-full">
 								<span className="relative flex h-2 w-2">
-									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--cl-up)] opacity-75"></span>
-									<span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--cl-up-soft)]0"></span>
+									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+									<span className="relative inline-flex rounded-full h-2 w-2 bg-success/100"></span>
 								</span>
-								<span className="text-xs font-medium text-[var(--cl-up)]">Live</span>
+								<span className="text-xs font-medium text-success">Live</span>
 							</div>
 						)}
 					</div>
-					<p className="text-sm text-[var(--cl-text-2)] mt-1 flex items-center gap-2">
+					<p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
 						<Clock className="w-3 h-3" />
 						Last updated {lastUpdate.toLocaleTimeString()}
 					</p>
@@ -199,12 +199,12 @@ export default function WithdrawalsPage() {
 				<div className="flex items-center gap-3">
 					<button
 						onClick={() => setIsLiveUpdating(!isLiveUpdating)}
-						className="flex items-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-all hover:scale-105 active:scale-95"
+						className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95"
 					>
 						<RefreshCw className={`w-4 h-4 ${isLiveUpdating ? "animate-spin" : ""}`} />
 						{isLiveUpdating ? "Auto-refresh" : "Paused"}
 					</button>
-					<button className="flex items-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-all hover:scale-105 active:scale-95">
+					<button className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95">
 						<Download className="w-4 h-4" />
 						Export
 					</button>
@@ -213,62 +213,62 @@ export default function WithdrawalsPage() {
 
 			{/* Stats Cards */}
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-				<div className="bg-[var(--cl-surface)] rounded-lg border-2 border-orange-200 p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
+				<div className="bg-card rounded-lg border-2 border-orange-200 p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
 					<div className="flex items-center justify-between mb-2">
-						<span className="text-sm text-[var(--cl-text-2)] font-medium">Pending</span>
+						<span className="text-sm text-muted-foreground font-medium">Pending</span>
 						<Clock className="w-5 h-5 text-orange-600" />
 					</div>
-					<p className="text-3xl font-bold text-[var(--cl-text)]">{pendingCount}</p>
+					<p className="text-3xl font-bold text-foreground">{pendingCount}</p>
 					<p className="text-xs text-orange-600 mt-1">Requires action</p>
 				</div>
 
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
+				<div className="bg-card rounded-lg border border-border p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
 					<div className="flex items-center justify-between mb-2">
-						<span className="text-sm text-[var(--cl-text-2)] font-medium">Processing</span>
+						<span className="text-sm text-muted-foreground font-medium">Processing</span>
 						<RefreshCw className="w-5 h-5 text-purple-600" />
 					</div>
-					<p className="text-3xl font-bold text-[var(--cl-text)]">{processingCount}</p>
+					<p className="text-3xl font-bold text-foreground">{processingCount}</p>
 					<p className="text-xs text-purple-600 mt-1">In progress</p>
 				</div>
 
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
+				<div className="bg-card rounded-lg border border-border p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
 					<div className="flex items-center justify-between mb-2">
-						<span className="text-sm text-[var(--cl-text-2)] font-medium">High Risk</span>
-						<AlertTriangle className="w-5 h-5 text-[var(--cl-down)]" />
+						<span className="text-sm text-muted-foreground font-medium">High Risk</span>
+						<AlertTriangle className="w-5 h-5 text-danger" />
 					</div>
-					<p className="text-3xl font-bold text-[var(--cl-text)]">{highRiskCount}</p>
-					<p className="text-xs text-[var(--cl-down)] mt-1">Needs review</p>
+					<p className="text-3xl font-bold text-foreground">{highRiskCount}</p>
+					<p className="text-xs text-danger mt-1">Needs review</p>
 				</div>
 
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
+				<div className="bg-card rounded-lg border border-border p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
 					<div className="flex items-center justify-between mb-2">
-						<span className="text-sm text-[var(--cl-text-2)] font-medium">Total Today</span>
-						<TrendingDown className="w-5 h-5 text-[var(--cl-text-2)]" />
+						<span className="text-sm text-muted-foreground font-medium">Total Today</span>
+						<TrendingDown className="w-5 h-5 text-muted-foreground" />
 					</div>
-					<p className="text-3xl font-bold text-[var(--cl-text)]">{withdrawals.length}</p>
-					<p className="text-xs text-[var(--cl-text-2)] mt-1">All requests</p>
+					<p className="text-3xl font-bold text-foreground">{withdrawals.length}</p>
+					<p className="text-xs text-muted-foreground mt-1">All requests</p>
 				</div>
 			</div>
 
 			{/* Search and Filters */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4 space-y-4">
+			<div className="bg-card rounded-lg border border-border p-4 space-y-4">
 				<div className="flex items-center gap-3">
 					<div className="flex-1 relative">
-						<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--cl-text-3)]" />
+						<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 						<input
 							type="text"
 							placeholder="Search by ID, user name, or email..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
-							className="w-full pl-10 pr-4 py-2.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+							className="w-full pl-10 pr-4 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 						/>
 					</div>
 					<button
 						onClick={() => setShowFilters(!showFilters)}
 						className={`flex items-center gap-2 px-4 py-2.5 border rounded-lg transition-all ${
 							showFilters
-								? "bg-[#014F01] text-white border-[#014F01]"
-								: "border-[var(--cl-line)] hover:bg-[var(--cl-bg)]"
+								? "bg-primary text-white border-primary"
+								: "border-border hover:bg-background"
 						}`}
 					>
 						<Filter className="w-4 h-4" />
@@ -277,9 +277,9 @@ export default function WithdrawalsPage() {
 				</div>
 
 				{showFilters && (
-					<div className="flex items-center gap-3 p-3 bg-[var(--cl-bg)] rounded-lg border border-[var(--cl-line)]">
+					<div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border">
 						<div className="flex items-center gap-2">
-							<span className="text-sm font-medium text-[var(--cl-text-2)]">Status:</span>
+							<span className="text-sm font-medium text-muted-foreground">Status:</span>
 							<div className="flex gap-2">
 								{["All", "Pending", "Processing", "Approved", "Rejected"].map((status) => (
 									<button
@@ -287,8 +287,8 @@ export default function WithdrawalsPage() {
 										onClick={() => setStatusFilter(status)}
 										className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
 											statusFilter === status
-												? "bg-[#014F01] text-white"
-												: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)]"
+												? "bg-primary text-white"
+												: "bg-card text-muted-foreground hover:bg-muted"
 										}`}
 									>
 										{status}
@@ -297,10 +297,10 @@ export default function WithdrawalsPage() {
 							</div>
 						</div>
 
-						<div className="h-6 w-px bg-[var(--cl-surface-3)]" />
+						<div className="h-6 w-px bg-muted" />
 
 						<div className="flex items-center gap-2">
-							<span className="text-sm font-medium text-[var(--cl-text-2)]">Currency:</span>
+							<span className="text-sm font-medium text-muted-foreground">Currency:</span>
 							<div className="flex gap-2">
 								{["All", "Naira", "USDT", "USDC"].map((currency) => (
 									<button
@@ -308,8 +308,8 @@ export default function WithdrawalsPage() {
 										onClick={() => setCurrencyFilter(currency)}
 										className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
 											currencyFilter === currency
-												? "bg-[#014F01] text-white"
-												: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)]"
+												? "bg-primary text-white"
+												: "bg-card text-muted-foreground hover:bg-muted"
 										}`}
 									>
 										{currency}
@@ -321,15 +321,15 @@ export default function WithdrawalsPage() {
 				)}
 
 				<div className="flex items-center justify-between text-sm">
-					<p className="text-[var(--cl-text-2)]">
+					<p className="text-muted-foreground">
 						Showing <span className="font-semibold">{filteredWithdrawals.length}</span> withdrawals
 					</p>
 					{selectedRows.size > 0 && (
 						<div className="flex items-center gap-2">
-							<span className="text-[var(--cl-text-2)]">{selectedRows.size} selected</span>
+							<span className="text-muted-foreground">{selectedRows.size} selected</span>
 							<button
 								onClick={handleBulkApprove}
-								className="px-3 py-1 text-xs font-medium bg-[var(--cl-brand-50)] text-[#014F01] rounded-lg hover:bg-[#d4f0dd] transition-all hover:scale-105 active:scale-95"
+								className="px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-lg hover:bg-[#d4f0dd] transition-all hover:scale-105 active:scale-95"
 							>
 								Approve Selected
 							</button>
@@ -339,15 +339,15 @@ export default function WithdrawalsPage() {
 			</div>
 
 			{/* Withdrawals Table */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] overflow-hidden">
+			<div className="bg-card rounded-lg border border-border overflow-hidden">
 				<div className="overflow-x-auto">
 					<table className="w-full">
-						<thead className="bg-[var(--cl-bg)]">
+						<thead className="bg-background">
 							<tr>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase tracking-wider">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 									<input
 										type="checkbox"
-										className="rounded border-[var(--cl-line)]"
+										className="rounded border-border"
 										onChange={(e) => {
 											if (e.target.checked) {
 												setSelectedRows(new Set(filteredWithdrawals.map((w) => w.id)));
@@ -357,42 +357,42 @@ export default function WithdrawalsPage() {
 										}}
 									/>
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase tracking-wider">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 									<div className="flex items-center gap-2">
 										ID
 										<ChevronDown className="w-4 h-4" />
 									</div>
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase tracking-wider">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 									User
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase tracking-wider">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 									Amount
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase tracking-wider">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 									Destination
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase tracking-wider">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 									Risk Score
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase tracking-wider">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 									Status
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase tracking-wider">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 									Actions
 								</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-[#E9EAEB]">
+						<tbody className="divide-y divide-border">
 							{filteredWithdrawals.map((withdrawal) => (
 								<tr
 									key={withdrawal.id}
-									className="hover:bg-[var(--cl-bg)] transition-all group"
+									className="hover:bg-background transition-all group"
 								>
 									<td className="py-4 px-6">
 										<input
 											type="checkbox"
-											className="rounded border-[var(--cl-line)]"
+											className="rounded border-border"
 											checked={selectedRows.has(withdrawal.id)}
 											onChange={(e) => {
 												const newSelected = new Set(selectedRows);
@@ -405,31 +405,31 @@ export default function WithdrawalsPage() {
 											}}
 										/>
 									</td>
-									<td className="py-4 px-6 text-sm font-medium text-[var(--cl-text)]">
+									<td className="py-4 px-6 text-sm font-medium text-foreground">
 										{withdrawal.id}
 									</td>
 									<td className="py-4 px-6">
 										<div className="flex items-center gap-3">
-											<div className="w-10 h-10 bg-gradient-to-br from-[#014F01] to-[#B8E632] rounded-full flex items-center justify-center text-white font-bold">
+											<div className="w-10 h-10 bg-gradient-to-br from-brand-800 to-light-green rounded-full flex items-center justify-center text-white font-bold">
 												{withdrawal.user.name.charAt(0)}
 											</div>
 											<div>
-												<p className="text-sm font-medium text-[var(--cl-text)]">
+												<p className="text-sm font-medium text-foreground">
 													{withdrawal.user.name}
 												</p>
-												<p className="text-xs text-[var(--cl-text-2)]">{withdrawal.user.email}</p>
+												<p className="text-xs text-muted-foreground">{withdrawal.user.email}</p>
 											</div>
 										</div>
 									</td>
 									<td className="py-4 px-6">
 										<div className="flex items-center gap-2">
-											<DollarSign className="w-4 h-4 text-[var(--cl-text-3)]" />
+											<DollarSign className="w-4 h-4 text-muted-foreground" />
 											<div>
-												<p className="text-sm font-semibold text-[var(--cl-text)]">
+												<p className="text-sm font-semibold text-foreground">
 													{withdrawal.currency === "Naira" ? "₦" : "$"}
 													{withdrawal.amount.toLocaleString()}
 												</p>
-												<p className="text-xs text-[var(--cl-text-2)]">
+												<p className="text-xs text-muted-foreground">
 													{withdrawal.currency}
 													{withdrawal.network && ` (${withdrawal.network})`}
 												</p>
@@ -438,10 +438,10 @@ export default function WithdrawalsPage() {
 									</td>
 									<td className="py-4 px-6">
 										<div>
-											<p className="text-sm font-medium text-[var(--cl-text)]">
+											<p className="text-sm font-medium text-foreground">
 												{withdrawal.destination.type}
 											</p>
-											<p className="text-xs text-[var(--cl-text-2)] font-mono">
+											<p className="text-xs text-muted-foreground font-mono">
 												{withdrawal.destination.details}
 											</p>
 										</div>
@@ -479,7 +479,7 @@ export default function WithdrawalsPage() {
 												<>
 													<button
 														onClick={() => handleApprove(withdrawal)}
-														className="p-2 bg-[var(--cl-up-soft)] text-[var(--cl-up)] rounded-lg hover:bg-[var(--cl-up-soft)] transition-all hover:scale-110 active:scale-95"
+														className="p-2 bg-success/10 text-success rounded-lg hover:bg-success/10 transition-all hover:scale-110 active:scale-95"
 														title="Approve"
 													>
 														<Check className="w-4 h-4" />
@@ -489,7 +489,7 @@ export default function WithdrawalsPage() {
 															setSelectedWithdrawal(withdrawal);
 															setShowRejectModal(true);
 														}}
-														className="p-2 bg-[var(--cl-down-soft)] text-[var(--cl-down)] rounded-lg hover:bg-[var(--cl-down-soft)] transition-all hover:scale-110 active:scale-95"
+														className="p-2 bg-danger/10 text-danger rounded-lg hover:bg-danger/10 transition-all hover:scale-110 active:scale-95"
 														title="Reject"
 													>
 														<X className="w-4 h-4" />
@@ -500,7 +500,7 @@ export default function WithdrawalsPage() {
 												onClick={() =>
 													router.push(`/admin/wallets/transactions/${withdrawal.id}`)
 												}
-												className="p-2 bg-[var(--cl-bg)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-surface-2)] transition-all hover:scale-110 active:scale-95"
+												className="p-2 bg-background text-muted-foreground rounded-lg hover:bg-muted transition-all hover:scale-110 active:scale-95"
 												title="View details"
 											>
 												<Eye className="w-4 h-4" />
@@ -514,11 +514,11 @@ export default function WithdrawalsPage() {
 				</div>
 
 				{/* Pagination */}
-				<div className="flex items-center justify-between px-6 py-4 border-t border-[var(--cl-line)]">
+				<div className="flex items-center justify-between px-6 py-4 border-t border-border">
 					<button
 						onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
 						disabled={currentPage === 1}
-						className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+						className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:bg-background rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						<ChevronLeft className="w-4 h-4" />
 						Previous
@@ -532,8 +532,8 @@ export default function WithdrawalsPage() {
 								disabled={page === "..."}
 								className={`px-3 py-1 text-sm font-medium rounded-lg transition-all ${
 									currentPage === page
-										? "bg-[#014F01] text-white shadow-md"
-										: "text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)]"
+										? "bg-primary text-white shadow-md"
+										: "text-muted-foreground hover:bg-background"
 								} ${page === "..." ? "cursor-default" : ""}`}
 							>
 								{page}
@@ -543,7 +543,7 @@ export default function WithdrawalsPage() {
 
 					<button
 						onClick={() => setCurrentPage(currentPage + 1)}
-						className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] rounded-lg transition-colors"
+						className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:bg-background rounded-lg transition-colors"
 					>
 						Next
 						<ChevronRight className="w-4 h-4" />
@@ -554,28 +554,28 @@ export default function WithdrawalsPage() {
 			{/* Reject Modal */}
 			{showRejectModal && selectedWithdrawal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-					<div className="bg-[var(--cl-surface)] rounded-lg max-w-md w-full p-6 animate-in slide-in-from-bottom duration-300">
+					<div className="bg-card rounded-lg max-w-md w-full p-6 animate-in slide-in-from-bottom duration-300">
 						<div className="flex items-center gap-3 mb-6">
-							<div className="w-12 h-12 bg-[var(--cl-down-soft)] rounded-full flex items-center justify-center">
-								<XCircle className="w-6 h-6 text-[var(--cl-down)]" />
+							<div className="w-12 h-12 bg-danger/10 rounded-full flex items-center justify-center">
+								<XCircle className="w-6 h-6 text-danger" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-[var(--cl-text)]">Reject Withdrawal</h3>
-								<p className="text-sm text-[var(--cl-text-2)]">ID: {selectedWithdrawal.id}</p>
+								<h3 className="text-lg font-semibold text-foreground">Reject Withdrawal</h3>
+								<p className="text-sm text-muted-foreground">ID: {selectedWithdrawal.id}</p>
 							</div>
 						</div>
 
 						<div className="space-y-4">
-							<div className="p-4 bg-[var(--cl-bg)] rounded-lg">
+							<div className="p-4 bg-background rounded-lg">
 								<div className="flex justify-between text-sm mb-2">
-									<span className="text-[var(--cl-text-2)]">User</span>
-									<span className="font-semibold text-[var(--cl-text)]">
+									<span className="text-muted-foreground">User</span>
+									<span className="font-semibold text-foreground">
 										{selectedWithdrawal.user.name}
 									</span>
 								</div>
 								<div className="flex justify-between text-sm">
-									<span className="text-[var(--cl-text-2)]">Amount</span>
-									<span className="font-semibold text-[var(--cl-text)]">
+									<span className="text-muted-foreground">Amount</span>
+									<span className="font-semibold text-foreground">
 										{selectedWithdrawal.currency === "Naira" ? "₦" : "$"}
 										{selectedWithdrawal.amount.toLocaleString()}
 									</span>
@@ -583,34 +583,34 @@ export default function WithdrawalsPage() {
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
-									Reason for Rejection <span className="text-[var(--cl-down)]">*</span>
+								<label className="block text-sm font-medium text-muted-foreground mb-2">
+									Reason for Rejection <span className="text-danger">*</span>
 								</label>
 								<textarea
 									value={rejectReason}
 									onChange={(e) => setRejectReason(e.target.value)}
 									placeholder="Enter reason..."
-									className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+									className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 									rows={4}
 								/>
 							</div>
 						</div>
 
-						<div className="flex items-center gap-3 mt-6 pt-6 border-t border-[var(--cl-line)]">
+						<div className="flex items-center gap-3 mt-6 pt-6 border-t border-border">
 							<button
 								onClick={() => {
 									setShowRejectModal(false);
 									setRejectReason("");
 									setSelectedWithdrawal(null);
 								}}
-								className="flex-1 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+								className="flex-1 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
 							>
 								Cancel
 							</button>
 							<button
 								onClick={handleReject}
 								disabled={!rejectReason.trim()}
-								className="flex-1 px-4 py-2 bg-[var(--cl-down)] text-white rounded-lg hover:bg-[var(--cl-down)]/90 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+								className="flex-1 px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								Confirm Rejection
 							</button>

@@ -199,13 +199,13 @@ export default function NINVerificationForm() {
 									/>
 									<div className="flex items-center mt-3">
 										<div className="mr-4">
-											<p className="text-[var(--cl-text-2)]">
+											<p className="text-muted-foreground">
 												<span className="text-[#008000] font-semibold">
 													Click to upload
 												</span>{" "}
 												or drag and drop
 											</p>
-											<p className="mt-1 text-[var(--cl-text-2)]">
+											<p className="mt-1 text-muted-foreground">
 												PNG, JPG or GIF (max. 5MB)
 											</p>
 										</div>
@@ -269,7 +269,7 @@ export default function NINVerificationForm() {
 			{/* Under Review Success Modal */}
 			{showSuccessModal && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-					<div className="bg-[var(--cl-surface)] rounded-2xl p-8 max-w-md w-full mx-4 flex flex-col items-center text-center animate-in fade-in zoom-in duration-300">
+					<div className="bg-card rounded-2xl p-8 max-w-md w-full mx-4 flex flex-col items-center text-center animate-in fade-in zoom-in duration-300">
 						<Image
 							className="object-cover"
 							src="/assets/icons/hour_glass.svg"
@@ -278,13 +278,13 @@ export default function NINVerificationForm() {
 							height={150}
 						/>
 						<h2 className="text-3xl font-bold mt-8">Under Review</h2>
-						<p className="font-medium text-lg text-[var(--cl-text-2)] mt-6 leading-relaxed">
+						<p className="font-medium text-lg text-muted-foreground mt-6 leading-relaxed">
 							You will receive an email/app notification once the review is completed.
 						</p>
-						<p className="font-medium text-lg text-[var(--cl-text)] mt-4">
+						<p className="font-medium text-lg text-foreground mt-4">
 							Estimated review time:
 						</p>
-						<p className="font-bold text-2xl text-[var(--cl-brand-500)] mt-2">1 Hour(s)</p>
+						<p className="font-bold text-2xl text-primary mt-2">1 Hour(s)</p>
 					</div>
 				</div>
 			)}

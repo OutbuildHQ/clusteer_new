@@ -48,20 +48,20 @@ function getTransactionIcon(type: string) {
 	switch (type) {
 		case "in":
 			return (
-				<div className="p-2 rounded-full bg-[var(--cl-up-soft)]">
-					<ArrowDownLeft className="w-4 h-4 text-[var(--cl-up)]" />
+				<div className="p-2 rounded-full bg-success/10">
+					<ArrowDownLeft className="w-4 h-4 text-success" />
 				</div>
 			);
 		case "out":
 			return (
-				<div className="p-2 rounded-full bg-[var(--cl-surface-2)]">
-					<ArrowUpRight className="w-4 h-4 text-[var(--cl-text-2)]" />
+				<div className="p-2 rounded-full bg-muted">
+					<ArrowUpRight className="w-4 h-4 text-muted-foreground" />
 				</div>
 			);
 		case "convert":
 			return (
-				<div className="p-2 rounded-full bg-[var(--cl-info-soft)]">
-					<Repeat className="w-4 h-4 text-[var(--cl-brand-600)]" />
+				<div className="p-2 rounded-full bg-primary/10">
+					<Repeat className="w-4 h-4 text-primary" />
 				</div>
 			);
 		default:
@@ -107,18 +107,18 @@ export default function RecentActivity() {
 		return (
 			<div className="space-y-4">
 				<div className="flex items-center justify-between">
-					<h3 className="text-xl font-bold text-[#0D0D0D]">Recent Activity</h3>
+					<h3 className="text-xl font-bold text-foreground">Recent Activity</h3>
 				</div>
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-8">
+				<div className="bg-card rounded-2xl border border-border p-8">
 					<div className="animate-pulse space-y-4">
 						{[1, 2, 3].map((i) => (
 							<div key={i} className="flex items-center gap-4">
-								<div className="w-10 h-10 bg-[var(--cl-surface-2)] rounded-full"></div>
+								<div className="w-10 h-10 bg-muted rounded-full"></div>
 								<div className="flex-1 space-y-2">
-									<div className="h-4 bg-[var(--cl-surface-2)] rounded w-3/4"></div>
-									<div className="h-3 bg-[var(--cl-surface-2)] rounded w-1/2"></div>
+									<div className="h-4 bg-muted rounded w-3/4"></div>
+									<div className="h-3 bg-muted rounded w-1/2"></div>
 								</div>
-								<div className="h-4 bg-[var(--cl-surface-2)] rounded w-20"></div>
+								<div className="h-4 bg-muted rounded w-20"></div>
 							</div>
 						))}
 					</div>
@@ -131,16 +131,16 @@ export default function RecentActivity() {
 		return (
 			<div className="space-y-4">
 				<div className="flex items-center justify-between">
-					<h3 className="text-xl font-bold text-[#0D0D0D]">Recent Activity</h3>
+					<h3 className="text-xl font-bold text-foreground">Recent Activity</h3>
 				</div>
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-8 text-center">
+				<div className="bg-card rounded-2xl border border-border p-8 text-center">
 					<div className="w-16 h-16 mx-auto bg-pale-green rounded-full flex items-center justify-center mb-4">
-						<Clock className="w-8 h-8 text-[var(--cl-brand-500)]" />
+						<Clock className="w-8 h-8 text-primary" />
 					</div>
-					<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">
+					<h3 className="font-semibold text-lg text-foreground mb-2">
 						No transactions yet
 					</h3>
-					<p className="text-sm text-[#667085]">
+					<p className="text-sm text-muted-foreground">
 						Your transactions will appear here
 					</p>
 				</div>
@@ -151,7 +151,7 @@ export default function RecentActivity() {
 	return (
 		<div className="space-y-4">
 			<div className="flex items-center justify-between">
-				<h3 className="text-xl font-bold text-[#0D0D0D]">Recent Activity</h3>
+				<h3 className="text-xl font-bold text-foreground">Recent Activity</h3>
 				<div className="flex items-center gap-2">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
@@ -179,29 +179,29 @@ export default function RecentActivity() {
 					</DropdownMenu>
 					<Link
 						href="/transaction-history"
-						className="text-sm font-medium text-[var(--cl-brand-500)] hover:underline"
+						className="text-sm font-medium text-primary hover:underline"
 					>
 						View all
 					</Link>
 				</div>
 			</div>
 
-			<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] divide-y divide-[var(--cl-line)] overflow-hidden">
+			<div className="bg-card rounded-2xl border border-border divide-y divide-border overflow-hidden">
 				{transactions.map((transaction) => (
 					<div
 						key={transaction.id}
-						className="flex items-center justify-between p-4 hover:bg-[var(--cl-bg)] transition-colors"
+						className="flex items-center justify-between p-4 hover:bg-background transition-colors"
 					>
 						<div className="flex items-center gap-3 flex-1 min-w-0">
 							{getTransactionIcon(transaction.type)}
 							<div className="flex-1 min-w-0">
-								<p className="font-medium text-[#0D0D0D] truncate">
+								<p className="font-medium text-foreground truncate">
 									{transaction.description}
 								</p>
 								<div className="flex items-center gap-2 mt-0.5">
-									<p className="text-sm text-[#667085]">{transaction.date}</p>
+									<p className="text-sm text-muted-foreground">{transaction.date}</p>
 									{transaction.status === "pending" && (
-										<span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--cl-warn-soft)] text-[var(--cl-warn)]">
+										<span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning/10 text-warning">
 											Pending
 										</span>
 									)}
@@ -212,8 +212,8 @@ export default function RecentActivity() {
 							<p
 								className={`font-semibold ${
 									transaction.type === "in"
-										? "text-[var(--cl-up)]"
-										: "text-[#0D0D0D]"
+										? "text-success"
+										: "text-foreground"
 								}`}
 							>
 								{transaction.type === "in" ? "+" : transaction.type === "out" ? "-" : ""}
@@ -223,7 +223,7 @@ export default function RecentActivity() {
 									"$"}
 								{formatNumber(transaction.amount)}
 							</p>
-							<p className="text-xs text-[#667085] mt-0.5">
+							<p className="text-xs text-muted-foreground mt-0.5">
 								{transaction.currency}
 							</p>
 						</div>

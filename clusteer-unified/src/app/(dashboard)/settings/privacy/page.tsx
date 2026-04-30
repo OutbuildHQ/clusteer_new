@@ -105,10 +105,10 @@ export default function Page() {
 		return (
 			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 				<header className="mb-6">
-					<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
+					<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
 						Privacy & Data
 					</h1>
-					<p className="text-sm lg:text-base text-[#667085] mt-2">
+					<p className="text-sm lg:text-base text-muted-foreground mt-2">
 						Loading your privacy settings...
 					</p>
 				</header>
@@ -119,36 +119,36 @@ export default function Page() {
 	return (
 		<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 			<header className="mb-6">
-				<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
+				<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
 					Privacy & Data
 				</h1>
-				<p className="text-sm lg:text-base text-[#667085] mt-2">
+				<p className="text-sm lg:text-base text-muted-foreground mt-2">
 					Control your privacy settings and manage your personal data
 				</p>
 			</header>
 
 			<div className="space-y-6">
 				{/* Profile Privacy */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
-							<Eye className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<div className="p-2 bg-primary/10 rounded-lg">
+							<Eye className="w-5 h-5 text-primary" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								Profile Privacy
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Control who can see your profile information
 							</p>
 						</div>
 					</div>
 
 					<div className="space-y-4">
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">Public profile</p>
-								<p className="text-sm text-[#667085]">
+								<p className="font-medium text-foreground">Public profile</p>
+								<p className="text-sm text-muted-foreground">
 									Allow others to view your public profile
 								</p>
 							</div>
@@ -160,10 +160,10 @@ export default function Page() {
 
 						<div className="flex items-center justify-between py-3">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Transaction history visibility
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									Show transaction history on your profile
 								</p>
 							</div>
@@ -176,41 +176,41 @@ export default function Page() {
 				</div>
 
 				{/* Cookie Preferences */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
-							<Cookie className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<div className="p-2 bg-primary/10 rounded-lg">
+							<Cookie className="w-5 h-5 text-primary" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								Cookie Preferences
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Manage how we use cookies on your device
 							</p>
 						</div>
 					</div>
 
 					<div className="space-y-4">
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Essential cookies
-									<span className="ml-2 text-xs text-[#667085]">(Required)</span>
+									<span className="ml-2 text-xs text-muted-foreground">(Required)</span>
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									Necessary for the platform to function properly
 								</p>
 							</div>
 							<Switch checked={true} disabled />
 						</div>
 
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Analytical cookies
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									Help us improve by analyzing usage patterns
 								</p>
 							</div>
@@ -222,8 +222,8 @@ export default function Page() {
 
 						<div className="flex items-center justify-between py-3">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">Marketing cookies</p>
-								<p className="text-sm text-[#667085]">
+								<p className="font-medium text-foreground">Marketing cookies</p>
+								<p className="text-sm text-muted-foreground">
 									Personalize ads and content
 								</p>
 							</div>
@@ -236,16 +236,16 @@ export default function Page() {
 				</div>
 
 				{/* Data Sharing */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
-							<Link2 className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<div className="p-2 bg-primary/10 rounded-lg">
+							<Link2 className="w-5 h-5 text-primary" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								Data Sharing
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Control how your data is shared
 							</p>
 						</div>
@@ -254,10 +254,10 @@ export default function Page() {
 					<div className="space-y-4">
 						<div className="flex items-center justify-between py-3">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Third-party data sharing
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									Share anonymized data with trusted partners
 								</p>
 							</div>
@@ -270,23 +270,23 @@ export default function Page() {
 				</div>
 
 				{/* Data Download */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
-							<Download className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<div className="p-2 bg-primary/10 rounded-lg">
+							<Download className="w-5 h-5 text-primary" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								Download Your Data
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Request a copy of your personal data
 							</p>
 						</div>
 					</div>
 
-					<div className="bg-[#F9FAFB] rounded-xl border border-[var(--cl-line)] p-4 mb-4">
-						<p className="text-sm text-[#667085]">
+					<div className="bg-muted rounded-xl border border-border p-4 mb-4">
+						<p className="text-sm text-muted-foreground">
 							You can download a copy of all your personal data stored on
 							Clusteer. This includes your profile information, transaction
 							history, and account settings. The download will be sent to your
@@ -298,7 +298,7 @@ export default function Page() {
 						onClick={handleDownloadData}
 						disabled={isDownloading}
 						variant="outline"
-						className="w-full lg:w-auto border-[var(--cl-line-strong)] h-10 px-6 rounded-full font-semibold"
+						className="w-full lg:w-auto border-border h-10 px-6 rounded-full font-semibold"
 					>
 						<Download className="w-4 h-4 mr-2" />
 						{isDownloading ? "Processing..." : "Request Data Download"}
@@ -306,22 +306,22 @@ export default function Page() {
 				</div>
 
 				{/* Privacy Policy Link */}
-				<div className="bg-[#F9FAFB] rounded-2xl border border-[var(--cl-line)] p-5">
+				<div className="bg-muted rounded-2xl border border-border p-5">
 					<div className="flex items-center gap-3">
-						<Shield className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<Shield className="w-5 h-5 text-primary" />
 						<div>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Learn more about how we protect your data in our{" "}
 								<a
 									href="/privacy-policy"
-									className="text-[var(--cl-brand-500)] font-medium hover:underline"
+									className="text-primary font-medium hover:underline"
 								>
 									Privacy Policy
 								</a>{" "}
 								and{" "}
 								<a
 									href="/terms"
-									className="text-[var(--cl-brand-500)] font-medium hover:underline"
+									className="text-primary font-medium hover:underline"
 								>
 									Terms of Service
 								</a>

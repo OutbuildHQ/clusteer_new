@@ -19,7 +19,7 @@ function SectionHead({ title, subtitle, actions, className, ...props }: SectionH
 			<div>
 				<h3 className="text-lg font-semibold">{title}</h3>
 				{subtitle && (
-					<p className="mt-1 text-[13px] text-[var(--cl-text-3)]">{subtitle}</p>
+					<p className="mt-1 text-[13px] text-muted-foreground">{subtitle}</p>
 				)}
 			</div>
 			{actions && <div className="flex gap-2">{actions}</div>}

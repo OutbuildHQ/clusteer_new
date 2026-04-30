@@ -176,9 +176,9 @@ export default function TransactionDetailPage() {
 
 	const getStatusBadge = (status: string) => {
 		const styles = {
-			Success: "bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)] border-[#0D4222]",
+			Success: "bg-primary/10 text-primary border-[#0D4222]",
 			Pending: "bg-orange-50 text-orange-700 border-orange-700",
-			Failed: "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-red-700",
+			Failed: "bg-danger/10 text-danger border-red-700",
 		};
 		return styles[status as keyof typeof styles] || styles.Success;
 	};
@@ -186,56 +186,56 @@ export default function TransactionDetailPage() {
 	const getStatusIcon = (status: string) => {
 		switch (status) {
 			case "completed":
-				return <CheckCircle2 className="w-5 h-5 text-[var(--cl-up)]" />;
+				return <CheckCircle2 className="w-5 h-5 text-success" />;
 			case "pending":
 				return <Clock className="w-5 h-5 text-orange-600" />;
 			case "failed":
-				return <XCircle className="w-5 h-5 text-[var(--cl-down)]" />;
+				return <XCircle className="w-5 h-5 text-danger" />;
 			default:
 				return null;
 		}
 	};
 
 	const getRiskScoreColor = (score: number) => {
-		if (score < 30) return "text-[var(--cl-up)] bg-[var(--cl-up-soft)]";
+		if (score < 30) return "text-success bg-success/10";
 		if (score < 70) return "text-orange-600 bg-orange-50";
-		return "text-[var(--cl-down)] bg-[var(--cl-down-soft)]";
+		return "text-danger bg-danger/10";
 	};
 
 	return (
 		<div className="space-y-6">
 			{/* Breadcrumb */}
-			<nav className="flex items-center gap-2 text-sm text-[var(--cl-text-3)]">
+			<nav className="flex items-center gap-2 text-sm text-muted-foreground">
 				<button
 					onClick={() => router.push("/admin")}
-					className="hover:text-[var(--cl-text)]"
+					className="hover:text-foreground"
 				>
 					Dashboard
 				</button>
 				<ChevronRight className="w-4 h-4" />
 				<button
 					onClick={() => router.push("/admin/transactions")}
-					className="hover:text-[var(--cl-text)]"
+					className="hover:text-foreground"
 				>
 					Transactions
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<span className="font-medium text-[var(--cl-text)]">{transactionId}</span>
+				<span className="font-medium text-foreground">{transactionId}</span>
 			</nav>
 
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-bold text-[var(--cl-text)]">
+					<h1 className="text-2xl font-bold text-foreground">
 						Transaction Detail
 					</h1>
 					<div className="flex items-center gap-3 mt-2">
-						<span className="text-sm text-[var(--cl-text-3)]">ID: {transaction.id}</span>
+						<span className="text-sm text-muted-foreground">ID: {transaction.id}</span>
 						<button
 							onClick={handleCopyTxId}
-							className="p-1 hover:bg-[var(--cl-surface-2)] rounded"
+							className="p-1 hover:bg-muted rounded"
 						>
-							<Copy className="w-3.5 h-3.5 text-[var(--cl-text-3)]" />
+							<Copy className="w-3.5 h-3.5 text-muted-foreground" />
 						</button>
 					</div>
 				</div>
@@ -243,26 +243,26 @@ export default function TransactionDetailPage() {
 				<div className="flex items-center gap-2">
 					<button
 						onClick={() => setShowLockModal(true)}
-						className="flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+						className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
 					>
 						<Lock className="w-4 h-4" />
 						Lock transaction
 					</button>
 					<button
 						onClick={() => setShowRefundModal(true)}
-						className="flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+						className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
 					>
 						<RotateCcw className="w-4 h-4" />
 						Refund transaction
 					</button>
 					<button
 						onClick={() => setShowFlagModal(true)}
-						className="flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+						className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
 					>
 						<Flag className="w-4 h-4" />
 						Flag as suspicious
 					</button>
-					<button className="flex items-center gap-2 px-4 py-2 bg-[var(--cl-brand-50)] text-[#014F01] rounded-lg hover:bg-[#d4f0dd] transition-colors">
+					<button className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-[#d4f0dd] transition-colors">
 						<MessageSquare className="w-4 h-4" />
 						Message user
 					</button>
@@ -273,18 +273,18 @@ export default function TransactionDetailPage() {
 				{/* Left Column - Main Details */}
 				<div className="lg:col-span-2 space-y-6">
 					{/* Transaction Overview */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
-						<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-4">
+					<div className="bg-card rounded-lg border border-border p-6">
+						<h2 className="text-lg font-semibold text-foreground mb-4">
 							Transaction Overview
 						</h2>
 
 						<div className="grid grid-cols-2 gap-6">
 							{/* Transaction Amount */}
-							<div className="p-4 bg-[var(--cl-bg)] rounded-lg">
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+							<div className="p-4 bg-background rounded-lg">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Transaction Amount
 								</label>
-								<p className="text-3xl font-bold text-[var(--cl-text)] mt-1">
+								<p className="text-3xl font-bold text-foreground mt-1">
 									${transaction.amount}
 								</p>
 								<span
@@ -306,133 +306,133 @@ export default function TransactionDetailPage() {
 							</div>
 
 							{/* Date */}
-							<div className="p-4 bg-[var(--cl-bg)] rounded-lg">
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+							<div className="p-4 bg-background rounded-lg">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Date & Time
 								</label>
-								<p className="text-lg font-bold text-[var(--cl-text)] mt-1">
+								<p className="text-lg font-bold text-foreground mt-1">
 									{transaction.date}
 								</p>
-								<p className="text-sm text-[var(--cl-text-2)]">{transaction.time}</p>
+								<p className="text-sm text-muted-foreground">{transaction.time}</p>
 							</div>
 						</div>
 
 						{/* Transaction Details Grid */}
 						<div className="grid grid-cols-2 gap-4 mt-6">
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Type
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-text)] mt-1">
+								<p className="text-sm font-medium text-foreground mt-1">
 									{transaction.type}
 								</p>
 							</div>
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Fees
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-text)] mt-1">
+								<p className="text-sm font-medium text-foreground mt-1">
 									${transaction.fees}
 								</p>
 							</div>
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Network
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-text)] mt-1">
+								<p className="text-sm font-medium text-foreground mt-1">
 									{transaction.network}
 								</p>
 							</div>
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Confirmations
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-text)] mt-1">
+								<p className="text-sm font-medium text-foreground mt-1">
 									{transaction.confirmations}
 								</p>
 							</div>
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Block Number
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-text)] mt-1">
+								<p className="text-sm font-medium text-foreground mt-1">
 									{transaction.blockNumber}
 								</p>
 							</div>
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Gas Used
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-text)] mt-1">
+								<p className="text-sm font-medium text-foreground mt-1">
 									{transaction.gasUsed}
 								</p>
 							</div>
 						</div>
 
 						{/* Transaction Hash */}
-						<div className="mt-6 p-4 bg-[var(--cl-bg)] rounded-lg">
+						<div className="mt-6 p-4 bg-background rounded-lg">
 							<div className="flex items-center justify-between mb-2">
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Transaction Hash
 								</label>
 								<div className="flex items-center gap-2">
 									<button
 										onClick={handleCopyHash}
-										className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
+										className="p-1.5 hover:bg-muted rounded transition-colors"
 										title="Copy hash"
 									>
-										<Copy className="w-4 h-4 text-[var(--cl-text-3)]" />
+										<Copy className="w-4 h-4 text-muted-foreground" />
 									</button>
 									<button
-										className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
+										className="p-1.5 hover:bg-muted rounded transition-colors"
 										title="View on blockchain explorer"
 									>
-										<ExternalLink className="w-4 h-4 text-[var(--cl-text-3)]" />
+										<ExternalLink className="w-4 h-4 text-muted-foreground" />
 									</button>
 								</div>
 							</div>
-							<p className="text-sm font-mono text-[var(--cl-text)] break-all">
+							<p className="text-sm font-mono text-foreground break-all">
 								{transaction.transactionHash}
 							</p>
 						</div>
 					</div>
 
 					{/* Counter Party */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
-						<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-4">
+					<div className="bg-card rounded-lg border border-border p-6">
+						<h2 className="text-lg font-semibold text-foreground mb-4">
 							CounterParty
 						</h2>
 
 						<div className="grid grid-cols-2 gap-4">
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Merchant
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-text)] mt-1">
+								<p className="text-sm font-medium text-foreground mt-1">
 									{transaction.counterParty.merchant}
 								</p>
 							</div>
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Payment Method
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-text)] mt-1">
+								<p className="text-sm font-medium text-foreground mt-1">
 									{transaction.counterParty.paymentMethod}
 								</p>
 							</div>
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Upload Date
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-text)] mt-1">
+								<p className="text-sm font-medium text-foreground mt-1">
 									{transaction.counterParty.uploadDate}
 								</p>
 							</div>
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Face Match
 								</label>
-								<p className="text-sm font-medium text-[var(--cl-up)] mt-1 flex items-center gap-1">
+								<p className="text-sm font-medium text-success mt-1 flex items-center gap-1">
 									<Check className="w-4 h-4" />
 									{transaction.counterParty.faceMatch}
 								</p>
@@ -441,8 +441,8 @@ export default function TransactionDetailPage() {
 					</div>
 
 					{/* Related Transactions */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
-						<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-4">
+					<div className="bg-card rounded-lg border border-border p-6">
+						<h2 className="text-lg font-semibold text-foreground mb-4">
 							Related Transactions
 						</h2>
 
@@ -451,26 +451,26 @@ export default function TransactionDetailPage() {
 								<div
 									key={tx.id}
 									onClick={() => router.push(`/admin/transactions/${tx.id}`)}
-									className="flex items-center justify-between p-3 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] cursor-pointer transition-colors"
+									className="flex items-center justify-between p-3 border border-border rounded-lg hover:bg-background cursor-pointer transition-colors"
 								>
 									<div className="flex items-center gap-3">
-										<div className="w-10 h-10 bg-[var(--cl-surface-2)] rounded-full flex items-center justify-center">
-											<CreditCard className="w-5 h-5 text-[var(--cl-text-2)]" />
+										<div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
+											<CreditCard className="w-5 h-5 text-muted-foreground" />
 										</div>
 										<div>
-											<p className="text-sm font-medium text-[var(--cl-text)]">
+											<p className="text-sm font-medium text-foreground">
 												{tx.id}
 											</p>
-											<p className="text-xs text-[var(--cl-text-3)]">
+											<p className="text-xs text-muted-foreground">
 												{tx.type} • {tx.date}
 											</p>
 										</div>
 									</div>
 									<div className="text-right">
-										<p className="text-sm font-semibold text-[var(--cl-text)]">
+										<p className="text-sm font-semibold text-foreground">
 											${tx.amount}
 										</p>
-										<p className="text-xs text-[var(--cl-up)]">{tx.status}</p>
+										<p className="text-xs text-success">{tx.status}</p>
 									</div>
 								</div>
 							))}
@@ -478,15 +478,15 @@ export default function TransactionDetailPage() {
 					</div>
 
 					{/* Admin Notes */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
-						<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-4">
+					<div className="bg-card rounded-lg border border-border p-6">
+						<h2 className="text-lg font-semibold text-foreground mb-4">
 							Admin Notes
 						</h2>
 
 						<div className="space-y-3 mb-4">
 							{transaction.notes.map((note, idx) => (
-								<div key={idx} className="flex gap-3 text-sm text-[var(--cl-text-2)]">
-									<span className="font-medium text-[var(--cl-text)]">{note.date}</span>
+								<div key={idx} className="flex gap-3 text-sm text-muted-foreground">
+									<span className="font-medium text-foreground">{note.date}</span>
 									<span>–</span>
 									<span>{note.note}</span>
 								</div>
@@ -499,17 +499,17 @@ export default function TransactionDetailPage() {
 								placeholder="Add a note..."
 								value={newNote}
 								onChange={(e) => setNewNote(e.target.value)}
-								className="flex-1 px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="flex-1 px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 							/>
-							<button className="px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors">
+							<button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
 								Save
 							</button>
 						</div>
 					</div>
 
 					{/* Transaction Timeline */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
-						<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-4">
+					<div className="bg-card rounded-lg border border-border p-6">
+						<h2 className="text-lg font-semibold text-foreground mb-4">
 							Transaction Timeline
 						</h2>
 
@@ -519,14 +519,14 @@ export default function TransactionDetailPage() {
 									<div className="flex flex-col items-center">
 										{getStatusIcon(item.status)}
 										{idx < transaction.timeline.length - 1 && (
-											<div className="w-0.5 h-12 bg-[var(--cl-surface-2)] my-2" />
+											<div className="w-0.5 h-12 bg-muted my-2" />
 										)}
 									</div>
 									<div className="flex-1 pb-4">
-										<p className="text-sm font-medium text-[var(--cl-text)]">
+										<p className="text-sm font-medium text-foreground">
 											{item.event}
 										</p>
-										<p className="text-xs text-[var(--cl-text-3)] mt-1">
+										<p className="text-xs text-muted-foreground mt-1">
 											{item.timestamp}
 										</p>
 									</div>
@@ -536,11 +536,11 @@ export default function TransactionDetailPage() {
 					</div>
 
 					{/* Chats */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
-						<h2 className="text-lg font-semibold text-[var(--cl-text)] mb-4">Chats</h2>
+					<div className="bg-card rounded-lg border border-border p-6">
+						<h2 className="text-lg font-semibold text-foreground mb-4">Chats</h2>
 
 						<div className="mb-4">
-							<p className="text-sm text-[var(--cl-text-3)]">No messages</p>
+							<p className="text-sm text-muted-foreground">No messages</p>
 						</div>
 
 						<div className="flex gap-2">
@@ -549,9 +549,9 @@ export default function TransactionDetailPage() {
 								placeholder="Type a message..."
 								value={chatMessage}
 								onChange={(e) => setChatMessage(e.target.value)}
-								className="flex-1 px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="flex-1 px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 							/>
-							<button className="px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors">
+							<button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
 								Send
 							</button>
 						</div>
@@ -561,16 +561,16 @@ export default function TransactionDetailPage() {
 				{/* Right Column - User & Stats */}
 				<div className="space-y-6">
 					{/* User Card */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+					<div className="bg-card rounded-lg border border-border p-6">
 						<div className="flex items-center gap-3 mb-4">
-							<div className="w-12 h-12 bg-[var(--cl-surface-2)] rounded-full flex items-center justify-center">
-								<User className="w-6 h-6 text-[var(--cl-text-2)]" />
+							<div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
+								<User className="w-6 h-6 text-muted-foreground" />
 							</div>
 							<div className="flex-1">
-								<h3 className="text-lg font-semibold text-[var(--cl-text)]">
+								<h3 className="text-lg font-semibold text-foreground">
 									{transaction.user.name}
 								</h3>
-								<div className="flex items-center gap-2 text-sm text-[var(--cl-text-3)]">
+								<div className="flex items-center gap-2 text-sm text-muted-foreground">
 									<Mail className="w-4 h-4" />
 									{transaction.user.email}
 								</div>
@@ -579,14 +579,14 @@ export default function TransactionDetailPage() {
 
 						<div className="space-y-3">
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									Account status
 								</label>
 								<p
 									className={`text-sm font-medium mt-1 ${
 										transaction.user.accountStatus === "Active"
-											? "text-[var(--cl-up)]"
-											: "text-[var(--cl-down)]"
+											? "text-success"
+											: "text-danger"
 									}`}
 								>
 									{transaction.user.accountStatus}
@@ -594,16 +594,16 @@ export default function TransactionDetailPage() {
 							</div>
 
 							<div>
-								<label className="text-xs font-medium text-[var(--cl-text-3)] uppercase">
+								<label className="text-xs font-medium text-muted-foreground uppercase">
 									KYC status
 								</label>
 								<p
 									className={`text-sm font-medium mt-1 ${
 										transaction.user.kycStatus === "Approved"
-											? "text-[var(--cl-up)]"
+											? "text-success"
 											: transaction.user.kycStatus === "Pending"
 											? "text-orange-600"
-											: "text-[var(--cl-down)]"
+											: "text-danger"
 									}`}
 								>
 									{transaction.user.kycStatus}
@@ -613,17 +613,17 @@ export default function TransactionDetailPage() {
 
 						<button
 							onClick={() => router.push(`/admin/users/${transaction.user.id}`)}
-							className="w-full mt-4 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors text-sm font-medium"
+							className="w-full mt-4 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors text-sm font-medium"
 						>
 							View Profile
 						</button>
 					</div>
 
 					{/* Risk Score */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+					<div className="bg-card rounded-lg border border-border p-6">
 						<div className="flex items-center justify-between mb-4">
-							<h3 className="text-lg font-semibold text-[var(--cl-text)]">Risk Score</h3>
-							<Shield className="w-5 h-5 text-[var(--cl-text-3)]" />
+							<h3 className="text-lg font-semibold text-foreground">Risk Score</h3>
+							<Shield className="w-5 h-5 text-muted-foreground" />
 						</div>
 
 						<div className="flex items-center justify-center mb-4">
@@ -639,60 +639,60 @@ export default function TransactionDetailPage() {
 						</div>
 
 						<div className="text-center">
-							<p className="text-sm text-[var(--cl-text-2)]">
+							<p className="text-sm text-muted-foreground">
 								{transaction.riskScore < 30
 									? "Low Risk"
 									: transaction.riskScore < 70
 									? "Medium Risk"
 									: "High Risk"}
 							</p>
-							<p className="text-xs text-[var(--cl-text-3)] mt-1">
+							<p className="text-xs text-muted-foreground mt-1">
 								Based on transaction patterns and user behavior
 							</p>
 						</div>
 					</div>
 
 					{/* Quick Stats */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
-						<h3 className="text-lg font-semibold text-[var(--cl-text)] mb-4">
+					<div className="bg-card rounded-lg border border-border p-6">
+						<h3 className="text-lg font-semibold text-foreground mb-4">
 							Quick Stats
 						</h3>
 
 						<div className="space-y-4">
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-2">
-									<TrendingUp className="w-4 h-4 text-[var(--cl-text-3)]" />
-									<span className="text-sm text-[var(--cl-text-2)]">User Total Volume</span>
+									<TrendingUp className="w-4 h-4 text-muted-foreground" />
+									<span className="text-sm text-muted-foreground">User Total Volume</span>
 								</div>
-								<span className="text-sm font-semibold text-[var(--cl-text)]">
+								<span className="text-sm font-semibold text-foreground">
 									$8,450
 								</span>
 							</div>
 
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-2">
-									<CreditCard className="w-4 h-4 text-[var(--cl-text-3)]" />
-									<span className="text-sm text-[var(--cl-text-2)]">Total Transactions</span>
+									<CreditCard className="w-4 h-4 text-muted-foreground" />
+									<span className="text-sm text-muted-foreground">Total Transactions</span>
 								</div>
-								<span className="text-sm font-semibold text-[var(--cl-text)]">28</span>
+								<span className="text-sm font-semibold text-foreground">28</span>
 							</div>
 
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-2">
-									<Calendar className="w-4 h-4 text-[var(--cl-text-3)]" />
-									<span className="text-sm text-[var(--cl-text-2)]">Member Since</span>
+									<Calendar className="w-4 h-4 text-muted-foreground" />
+									<span className="text-sm text-muted-foreground">Member Since</span>
 								</div>
-								<span className="text-sm font-semibold text-[var(--cl-text)]">
+								<span className="text-sm font-semibold text-foreground">
 									Jan 2025
 								</span>
 							</div>
 
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-2">
-									<CheckCircle2 className="w-4 h-4 text-[var(--cl-text-3)]" />
-									<span className="text-sm text-[var(--cl-text-2)]">Success Rate</span>
+									<CheckCircle2 className="w-4 h-4 text-muted-foreground" />
+									<span className="text-sm text-muted-foreground">Success Rate</span>
 								</div>
-								<span className="text-sm font-semibold text-[var(--cl-up)]">
+								<span className="text-sm font-semibold text-success">
 									96.4%
 								</span>
 							</div>
@@ -700,21 +700,21 @@ export default function TransactionDetailPage() {
 					</div>
 
 					{/* Quick Actions */}
-					<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
-						<h3 className="text-lg font-semibold text-[var(--cl-text)] mb-4">
+					<div className="bg-card rounded-lg border border-border p-6">
+						<h3 className="text-lg font-semibold text-foreground mb-4">
 							Quick Actions
 						</h3>
 
 						<div className="space-y-2">
-							<button className="w-full flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors text-sm">
+							<button className="w-full flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors text-sm">
 								<Download className="w-4 h-4" />
 								Export PDF
 							</button>
-							<button className="w-full flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors text-sm">
+							<button className="w-full flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors text-sm">
 								<FileText className="w-4 h-4" />
 								View Receipt
 							</button>
-							<button className="w-full flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors text-sm">
+							<button className="w-full flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors text-sm">
 								<Eye className="w-4 h-4" />
 								View Documents
 							</button>
@@ -726,27 +726,27 @@ export default function TransactionDetailPage() {
 			{/* Lock Transaction Modal */}
 			{showLockModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-[var(--cl-surface)] rounded-lg max-w-md w-full p-6">
+					<div className="bg-card rounded-lg max-w-md w-full p-6">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
 								<Lock className="w-6 h-6 text-orange-600" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-[var(--cl-text)]">
+								<h3 className="text-lg font-semibold text-foreground">
 									Lock Transaction
 								</h3>
-								<p className="text-sm text-[var(--cl-text-3)]">
+								<p className="text-sm text-muted-foreground">
 									This will prevent any further actions
 								</p>
 							</div>
 						</div>
 
 						<div className="mb-6">
-							<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							<label className="block text-sm font-medium text-muted-foreground mb-2">
 								Reason for locking
 							</label>
 							<textarea
-								className="w-full px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 								rows={3}
 								placeholder="Enter reason..."
 							/>
@@ -755,7 +755,7 @@ export default function TransactionDetailPage() {
 						<div className="flex gap-3">
 							<button
 								onClick={() => setShowLockModal(false)}
-								className="flex-1 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+								className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
 							>
 								Cancel
 							</button>
@@ -770,16 +770,16 @@ export default function TransactionDetailPage() {
 			{/* Refund Modal */}
 			{showRefundModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-[var(--cl-surface)] rounded-lg max-w-md w-full p-6">
+					<div className="bg-card rounded-lg max-w-md w-full p-6">
 						<div className="flex items-center gap-3 mb-4">
-							<div className="w-12 h-12 bg-[var(--cl-info-soft)] rounded-full flex items-center justify-center">
-								<RotateCcw className="w-6 h-6 text-[var(--cl-brand-600)]" />
+							<div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+								<RotateCcw className="w-6 h-6 text-primary" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-[var(--cl-text)]">
+								<h3 className="text-lg font-semibold text-foreground">
 									Refund Transaction
 								</h3>
-								<p className="text-sm text-[var(--cl-text-3)]">
+								<p className="text-sm text-muted-foreground">
 									Process refund for ${transaction.amount}
 								</p>
 							</div>
@@ -787,21 +787,21 @@ export default function TransactionDetailPage() {
 
 						<div className="mb-6 space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+								<label className="block text-sm font-medium text-muted-foreground mb-2">
 									Refund Amount
 								</label>
 								<input
 									type="number"
 									defaultValue={transaction.amount}
-									className="w-full px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+									className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 								/>
 							</div>
 							<div>
-								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+								<label className="block text-sm font-medium text-muted-foreground mb-2">
 									Reason
 								</label>
 								<textarea
-									className="w-full px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+									className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 									rows={3}
 									placeholder="Enter reason for refund..."
 								/>
@@ -811,11 +811,11 @@ export default function TransactionDetailPage() {
 						<div className="flex gap-3">
 							<button
 								onClick={() => setShowRefundModal(false)}
-								className="flex-1 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+								className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
 							>
 								Cancel
 							</button>
-							<button className="flex-1 px-4 py-2 bg-[var(--cl-brand-600)] text-white rounded-lg hover:bg-blue-700 transition-colors">
+							<button className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors">
 								Process Refund
 							</button>
 						</div>
@@ -826,26 +826,26 @@ export default function TransactionDetailPage() {
 			{/* Flag Modal */}
 			{showFlagModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-[var(--cl-surface)] rounded-lg max-w-md w-full p-6">
+					<div className="bg-card rounded-lg max-w-md w-full p-6">
 						<div className="flex items-center gap-3 mb-4">
-							<div className="w-12 h-12 bg-[var(--cl-down-soft)] rounded-full flex items-center justify-center">
-								<Flag className="w-6 h-6 text-[var(--cl-down)]" />
+							<div className="w-12 h-12 bg-danger/10 rounded-full flex items-center justify-center">
+								<Flag className="w-6 h-6 text-danger" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-[var(--cl-text)]">
+								<h3 className="text-lg font-semibold text-foreground">
 									Flag as Suspicious
 								</h3>
-								<p className="text-sm text-[var(--cl-text-3)]">
+								<p className="text-sm text-muted-foreground">
 									Mark this transaction for review
 								</p>
 							</div>
 						</div>
 
 						<div className="mb-6">
-							<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">
+							<label className="block text-sm font-medium text-muted-foreground mb-2">
 								Reason for flagging
 							</label>
-							<select className="w-full px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent mb-3">
+							<select className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent mb-3">
 								<option>Suspected fraud</option>
 								<option>Unusual transaction pattern</option>
 								<option>User reported issue</option>
@@ -853,7 +853,7 @@ export default function TransactionDetailPage() {
 								<option>Other</option>
 							</select>
 							<textarea
-								className="w-full px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+								className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 								rows={3}
 								placeholder="Additional details..."
 							/>
@@ -862,11 +862,11 @@ export default function TransactionDetailPage() {
 						<div className="flex gap-3">
 							<button
 								onClick={() => setShowFlagModal(false)}
-								className="flex-1 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+								className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
 							>
 								Cancel
 							</button>
-							<button className="flex-1 px-4 py-2 bg-[var(--cl-down)] text-white rounded-lg hover:bg-[var(--cl-down)]/90 transition-colors">
+							<button className="flex-1 px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90 transition-colors">
 								Flag Transaction
 							</button>
 						</div>

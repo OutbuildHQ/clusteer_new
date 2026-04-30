@@ -144,10 +144,10 @@ export default function Page() {
 		return (
 			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 				<header className="mb-6">
-					<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
+					<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
 						Account Management
 					</h1>
-					<p className="text-sm lg:text-base text-[#667085] mt-2">
+					<p className="text-sm lg:text-base text-muted-foreground mt-2">
 						Loading your account information...
 					</p>
 				</header>
@@ -158,30 +158,30 @@ export default function Page() {
 	return (
 		<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 			<header className="mb-6">
-				<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
+				<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
 					Account Management
 				</h1>
-				<p className="text-sm lg:text-base text-[#667085] mt-2">
+				<p className="text-sm lg:text-base text-muted-foreground mt-2">
 					View transaction limits, export history, and manage your account
 				</p>
 			</header>
 
 			<div className="space-y-6">
 				{/* Account Status */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center justify-between mb-4">
-						<h2 className="font-semibold text-lg text-[#0D0D0D]">
+						<h2 className="font-semibold text-lg text-foreground">
 							Account Status
 						</h2>
 						<Badge
 							variant="secondary"
 							className={`rounded-full h-7 py-1 ${
 								kycStatus?.status === "approved"
-									? "text-[var(--cl-up)] bg-[var(--cl-up-soft)]"
+									? "text-success bg-success/10"
 									: kycStatus?.status === "pending" || kycStatus?.status === "under_review"
-									? "text-[var(--cl-brand-700)] bg-[var(--cl-info-soft)]"
+									? "text-primary bg-primary/10"
 									: kycStatus?.status === "rejected"
-									? "text-[var(--cl-down)] bg-[var(--cl-down-soft)]"
+									? "text-danger bg-danger/10"
 									: "text-orange-700 bg-orange-100"
 							}`}
 						>
@@ -215,15 +215,15 @@ export default function Page() {
 					</div>
 
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-						<div className="bg-[#F9FAFB] rounded-xl p-4">
-							<p className="text-sm text-[#667085] mb-1">Account Type</p>
-							<p className="font-semibold text-lg text-[#0D0D0D]">
+						<div className="bg-muted rounded-xl p-4">
+							<p className="text-sm text-muted-foreground mb-1">Account Type</p>
+							<p className="font-semibold text-lg text-foreground">
 								{kycStatus?.status === "approved" ? "Verified Individual" : "Basic"}
 							</p>
 						</div>
-						<div className="bg-[#F9FAFB] rounded-xl p-4">
-							<p className="text-sm text-[#667085] mb-1">Member Since</p>
-							<p className="font-semibold text-lg text-[#0D0D0D]">
+						<div className="bg-muted rounded-xl p-4">
+							<p className="text-sm text-muted-foreground mb-1">Member Since</p>
+							<p className="font-semibold text-lg text-foreground">
 								{user?.dateJoined
 									? new Date(user.dateJoined).toLocaleDateString("en-US", {
 											month: "long",
@@ -248,7 +248,7 @@ export default function Page() {
 									</p>
 									<Button
 										size="sm"
-										className="gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-8 px-4 rounded-full font-semibold"
+										className="bg-primary border-custom-black/5 text-white h-8 px-4 rounded-full font-semibold"
 									>
 										Verify Now
 									</Button>
@@ -258,19 +258,19 @@ export default function Page() {
 					)}
 
 					{(kycStatus?.status === "pending" || kycStatus?.status === "under_review") && (
-						<div className="mt-4 bg-[var(--cl-info-soft)] border border-[var(--cl-brand-200)] rounded-xl p-4">
+						<div className="mt-4 bg-primary/10 border border-primary/30 rounded-xl p-4">
 							<div className="flex items-start gap-3">
-								<AlertTriangle className="w-5 h-5 text-[var(--cl-brand-600)] mt-0.5" />
+								<AlertTriangle className="w-5 h-5 text-primary mt-0.5" />
 								<div className="flex-1">
-									<p className="font-medium text-sm text-[var(--cl-info)] mb-1">
+									<p className="font-medium text-sm text-primary mb-1">
 										Verification {kycStatus.status === "pending" ? "Pending" : "Under Review"}
 									</p>
-									<p className="text-sm text-[var(--cl-brand-700)]">
+									<p className="text-sm text-primary">
 										Your verification documents have been submitted and are currently being reviewed by our team.
 										This typically takes 24-48 hours. We'll notify you once the review is complete.
 									</p>
 									{kycStatus.submitted_at && (
-										<p className="text-xs text-[var(--cl-brand-600)] mt-2">
+										<p className="text-xs text-primary mt-2">
 											Submitted: {new Date(kycStatus.submitted_at).toLocaleDateString("en-US", {
 												month: "long",
 												day: "numeric",
@@ -286,19 +286,19 @@ export default function Page() {
 					)}
 
 					{kycStatus?.status === "rejected" && (
-						<div className="mt-4 bg-[var(--cl-down-soft)] border border-[var(--cl-down)] rounded-xl p-4">
+						<div className="mt-4 bg-danger/10 border border-danger rounded-xl p-4">
 							<div className="flex items-start gap-3">
-								<XCircle className="w-5 h-5 text-[var(--cl-down)] mt-0.5" />
+								<XCircle className="w-5 h-5 text-danger mt-0.5" />
 								<div className="flex-1">
-									<p className="font-medium text-sm text-[var(--cl-down)] mb-1">
+									<p className="font-medium text-sm text-danger mb-1">
 										Verification Rejected
 									</p>
-									<p className="text-sm text-[var(--cl-down)] mb-2">
+									<p className="text-sm text-danger mb-2">
 										{kycStatus.rejection_reason || "Your verification was rejected. Please review your documents and try again."}
 									</p>
 									<Button
 										size="sm"
-										className="gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-8 px-4 rounded-full font-semibold"
+										className="bg-primary border-custom-black/5 text-white h-8 px-4 rounded-full font-semibold"
 									>
 										Resubmit Documents
 									</Button>
@@ -309,16 +309,16 @@ export default function Page() {
 				</div>
 
 				{/* Transaction Limits */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
-							<TrendingUp className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<div className="p-2 bg-primary/10 rounded-lg">
+							<TrendingUp className="w-5 h-5 text-primary" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								Transaction Limits
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Your current transaction limits
 							</p>
 						</div>
@@ -328,10 +328,10 @@ export default function Page() {
 						{/* Daily Withdrawal */}
 						<div>
 							<div className="flex items-center justify-between mb-2">
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Daily Withdrawal Limit
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									{accountLimits.dailyWithdrawal.used.toLocaleString()}{" "}
 									{accountLimits.dailyWithdrawal.currency} /{" "}
 									{accountLimits.dailyWithdrawal.limit.toLocaleString()}{" "}
@@ -340,7 +340,7 @@ export default function Page() {
 							</div>
 							<div className="w-full bg-[#F2F2F0] rounded-full h-2">
 								<div
-									className="bg-[#9FE870] h-2 rounded-full transition-all"
+									className="bg-light-green h-2 rounded-full transition-all"
 									style={{
 										width: `${calculatePercentage(
 											accountLimits.dailyWithdrawal.used,
@@ -354,10 +354,10 @@ export default function Page() {
 						{/* Monthly Withdrawal */}
 						<div>
 							<div className="flex items-center justify-between mb-2">
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Monthly Withdrawal Limit
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									{accountLimits.monthlyWithdrawal.used.toLocaleString()}{" "}
 									{accountLimits.monthlyWithdrawal.currency} /{" "}
 									{accountLimits.monthlyWithdrawal.limit.toLocaleString()}{" "}
@@ -366,7 +366,7 @@ export default function Page() {
 							</div>
 							<div className="w-full bg-[#F2F2F0] rounded-full h-2">
 								<div
-									className="bg-[#9FE870] h-2 rounded-full transition-all"
+									className="bg-light-green h-2 rounded-full transition-all"
 									style={{
 										width: `${calculatePercentage(
 											accountLimits.monthlyWithdrawal.used,
@@ -380,8 +380,8 @@ export default function Page() {
 						{/* Daily Deposit */}
 						<div>
 							<div className="flex items-center justify-between mb-2">
-								<p className="font-medium text-[#0D0D0D]">Daily Deposit Limit</p>
-								<p className="text-sm text-[#667085]">
+								<p className="font-medium text-foreground">Daily Deposit Limit</p>
+								<p className="text-sm text-muted-foreground">
 									{accountLimits.dailyDeposit.used.toLocaleString()}{" "}
 									{accountLimits.dailyDeposit.currency} /{" "}
 									{accountLimits.dailyDeposit.limit.toLocaleString()}{" "}
@@ -390,7 +390,7 @@ export default function Page() {
 							</div>
 							<div className="w-full bg-[#F2F2F0] rounded-full h-2">
 								<div
-									className="bg-[#9FE870] h-2 rounded-full transition-all"
+									className="bg-light-green h-2 rounded-full transition-all"
 									style={{
 										width: `${calculatePercentage(
 											accountLimits.dailyDeposit.used,
@@ -402,8 +402,8 @@ export default function Page() {
 						</div>
 					</div>
 
-					<div className="mt-4 bg-[#F9FAFB] rounded-xl p-4">
-						<p className="text-sm text-[#667085]">
+					<div className="mt-4 bg-muted rounded-xl p-4">
+						<p className="text-sm text-muted-foreground">
 							Limits reset daily at 00:00 UTC. To increase your limits,
 							complete identity verification or contact support.
 						</p>
@@ -411,23 +411,23 @@ export default function Page() {
 				</div>
 
 				{/* Export Transaction History */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-4">
-						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
-							<Download className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<div className="p-2 bg-primary/10 rounded-lg">
+							<Download className="w-5 h-5 text-primary" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								Export Transaction History
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Download your complete transaction history
 							</p>
 						</div>
 					</div>
 
-					<div className="bg-[#F9FAFB] rounded-xl border border-[var(--cl-line)] p-4 mb-4">
-						<p className="text-sm text-[#667085]">
+					<div className="bg-muted rounded-xl border border-border p-4 mb-4">
+						<p className="text-sm text-muted-foreground">
 							You can export your complete transaction history as a CSV file.
 							The export will include all transactions from your account
 							creation date to today. This file will be sent to your registered
@@ -439,7 +439,7 @@ export default function Page() {
 						onClick={handleExportHistory}
 						disabled={isExporting}
 						variant="outline"
-						className="w-full lg:w-auto border-[var(--cl-line-strong)] h-10 px-6 rounded-full font-semibold"
+						className="w-full lg:w-auto border-border h-10 px-6 rounded-full font-semibold"
 					>
 						<Download className="w-4 h-4 mr-2" />
 						{isExporting ? "Processing..." : "Export as CSV"}
@@ -447,26 +447,26 @@ export default function Page() {
 				</div>
 
 				{/* Close Account */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-down)] p-6">
+				<div className="bg-card rounded-2xl border border-danger p-6">
 					<div className="flex items-center gap-3 mb-4">
-						<div className="p-2 bg-[var(--cl-down-soft)] rounded-lg">
-							<XCircle className="w-5 h-5 text-[var(--cl-down)]" />
+						<div className="p-2 bg-danger/10 rounded-lg">
+							<XCircle className="w-5 h-5 text-danger" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								Close Account
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Permanently delete your Clusteer account
 							</p>
 						</div>
 					</div>
 
-					<div className="bg-[var(--cl-down-soft)] rounded-xl border border-[var(--cl-down)] p-4 mb-4">
-						<p className="text-sm text-[var(--cl-down)] font-medium mb-2">
+					<div className="bg-danger/10 rounded-xl border border-danger p-4 mb-4">
+						<p className="text-sm text-danger font-medium mb-2">
 							Warning: This action cannot be undone
 						</p>
-						<ul className="text-sm text-[var(--cl-down)] space-y-1 list-disc list-inside">
+						<ul className="text-sm text-danger space-y-1 list-disc list-inside">
 							<li>All your data will be permanently deleted</li>
 							<li>You will lose access to all funds in your account</li>
 							<li>You cannot reuse this email or username</li>
@@ -498,7 +498,7 @@ export default function Page() {
 								<AlertDialogCancel>Cancel</AlertDialogCancel>
 								<AlertDialogAction
 									onClick={handleCloseAccount}
-									className="bg-[var(--cl-down)] hover:bg-[var(--cl-down)]/90"
+									className="bg-danger hover:bg-danger/90"
 								>
 									Yes, Close My Account
 								</AlertDialogAction>

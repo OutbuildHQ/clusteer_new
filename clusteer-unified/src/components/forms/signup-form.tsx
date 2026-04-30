@@ -77,12 +77,12 @@ export default function SignUpForm() {
 					name="username"
 					render={({ field }) => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="text-[13px] font-medium text-[var(--cl-text-2)]">
+							<FormLabel className="text-[13px] font-medium text-muted-foreground">
 								Username
 							</FormLabel>
 							<FormControl>
 								<div className="relative">
-									<User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--cl-text-3)]" />
+									<User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 									<Input
 										className="h-10 pl-10"
 										placeholder="Choose a username"
@@ -99,12 +99,12 @@ export default function SignUpForm() {
 					name="email"
 					render={({ field }) => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="text-[13px] font-medium text-[var(--cl-text-2)]">
+							<FormLabel className="text-[13px] font-medium text-muted-foreground">
 								Email
 							</FormLabel>
 							<FormControl>
 								<div className="relative">
-									<Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--cl-text-3)]" />
+									<Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 									<Input
 										type="email"
 										className="h-10 pl-10"
@@ -122,12 +122,12 @@ export default function SignUpForm() {
 					name="phone"
 					render={({ field }) => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="text-[13px] font-medium text-[var(--cl-text-2)]">
+							<FormLabel className="text-[13px] font-medium text-muted-foreground">
 								Phone number
 							</FormLabel>
 							<FormControl>
 								<div className="relative">
-									<Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--cl-text-3)]" />
+									<Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 									<Input
 										type="tel"
 										className="h-10 pl-10"
@@ -145,13 +145,13 @@ export default function SignUpForm() {
 					name="password"
 					render={() => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="text-[13px] font-medium text-[var(--cl-text-2)]">
+							<FormLabel className="text-[13px] font-medium text-muted-foreground">
 								Password
 							</FormLabel>
 							<FormControl>
 								<PasswordInput name="password" control={form.control} />
 							</FormControl>
-							<p className="text-xs text-[var(--cl-text-3)]">Must be at least 8 characters.</p>
+							<p className="text-xs text-muted-foreground">Must be at least 8 characters.</p>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -172,9 +172,9 @@ export default function SignUpForm() {
 					)}
 				</Button>
 
-				<div className="text-center text-[13px] text-[var(--cl-text-3)]">
+				<div className="text-center text-[13px] text-muted-foreground">
 					Already have an account?{" "}
-					<Link href="/login" className="text-[var(--cl-brand-500)] font-medium hover:underline">
+					<Link href="/login" className="text-primary font-medium hover:underline">
 						Sign in
 					</Link>
 				</div>

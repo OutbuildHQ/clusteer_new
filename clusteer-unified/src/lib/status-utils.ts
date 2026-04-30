@@ -13,90 +13,90 @@ export type RoleType = "Super Admin" | "Admin" | "Moderator" | "Support" | "User
 export const getStatusColor = (status: StatusType): string => {
 	const statusMap: Record<string, string> = {
 		// User/Admin statuses
-		"Active": "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]",
-		"Inactive": "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]",
-		"Suspended": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]",
+		"Active": "bg-success/10 text-success border-success",
+		"Inactive": "bg-background text-muted-foreground border-border",
+		"Suspended": "bg-danger/10 text-danger border-danger",
 
 		// KYC statuses
 		"Pending": "bg-orange-50 text-orange-700 border-orange-200",
-		"Approved": "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]",
-		"Rejected": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]",
+		"Approved": "bg-success/10 text-success border-success",
+		"Rejected": "bg-danger/10 text-danger border-danger",
 
 		// Transaction/Operation statuses
-		"Completed": "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]",
-		"Failed": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]",
-		"In Progress": "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]",
+		"Completed": "bg-success/10 text-success border-success",
+		"Failed": "bg-danger/10 text-danger border-danger",
+		"In Progress": "bg-primary/10 text-primary border-primary/30",
 
 		// API Key/Integration statuses
 		"Expired": "bg-orange-50 text-orange-700 border-orange-200",
-		"Revoked": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]",
+		"Revoked": "bg-danger/10 text-danger border-danger",
 
 		// General statuses
-		"Success": "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]",
+		"Success": "bg-success/10 text-success border-success",
 		"Warning": "bg-orange-50 text-orange-700 border-orange-200",
-		"Error": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]",
+		"Error": "bg-danger/10 text-danger border-danger",
 
 		// Integration statuses
-		"Connected": "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]",
-		"Not Connected": "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]",
+		"Connected": "bg-success/10 text-success border-success",
+		"Not Connected": "bg-background text-muted-foreground border-border",
 	};
 
-	return statusMap[status] || "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
+	return statusMap[status] || "bg-background text-muted-foreground border-border";
 };
 
 export const getRoleColor = (role: RoleType): string => {
 	const roleMap: Record<RoleType, string> = {
 		"Super Admin": "bg-purple-50 text-purple-700 border-purple-200",
-		"Admin": "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]",
-		"Moderator": "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]",
+		"Admin": "bg-primary/10 text-primary border-primary/30",
+		"Moderator": "bg-success/10 text-success border-success",
 		"Support": "bg-orange-50 text-orange-700 border-orange-200",
-		"User": "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]",
+		"User": "bg-background text-muted-foreground border-border",
 	};
 
-	return roleMap[role] || "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
+	return roleMap[role] || "bg-background text-muted-foreground border-border";
 };
 
 export const getKYCStatusColor = (status: string): string => {
 	const statusMap: Record<string, string> = {
-		"Approved": "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]",
+		"Approved": "bg-success/10 text-success border-success",
 		"Pending": "bg-orange-50 text-orange-700 border-orange-200",
-		"Rejected": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]",
-		"Under Review": "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]",
+		"Rejected": "bg-danger/10 text-danger border-danger",
+		"Under Review": "bg-primary/10 text-primary border-primary/30",
 	};
 
-	return statusMap[status] || "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
+	return statusMap[status] || "bg-background text-muted-foreground border-border";
 };
 
 export const getTransactionStatusColor = (status: string): string => {
 	const statusMap: Record<string, string> = {
-		"Completed": "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]",
+		"Completed": "bg-success/10 text-success border-success",
 		"Pending": "bg-orange-50 text-orange-700 border-orange-200",
-		"Failed": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]",
-		"Processing": "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]",
-		"Cancelled": "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]",
+		"Failed": "bg-danger/10 text-danger border-danger",
+		"Processing": "bg-primary/10 text-primary border-primary/30",
+		"Cancelled": "bg-background text-muted-foreground border-border",
 	};
 
-	return statusMap[status] || "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
+	return statusMap[status] || "bg-background text-muted-foreground border-border";
 };
 
 export const getSeverityColor = (severity: "low" | "medium" | "high" | "critical"): string => {
 	const severityMap: Record<string, string> = {
-		"low": "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]",
+		"low": "bg-primary/10 text-primary border-primary/30",
 		"medium": "bg-orange-50 text-orange-700 border-orange-200",
-		"high": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]",
-		"critical": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-red-300",
+		"high": "bg-danger/10 text-danger border-danger",
+		"critical": "bg-danger/10 text-danger border-red-300",
 	};
 
-	return severityMap[severity] || "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
+	return severityMap[severity] || "bg-background text-muted-foreground border-border";
 };
 
 export const getPriorityColor = (priority: "low" | "medium" | "high" | "urgent"): string => {
 	const priorityMap: Record<string, string> = {
-		"low": "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]",
-		"medium": "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]",
+		"low": "bg-background text-muted-foreground border-border",
+		"medium": "bg-primary/10 text-primary border-primary/30",
 		"high": "bg-orange-50 text-orange-700 border-orange-200",
-		"urgent": "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]",
+		"urgent": "bg-danger/10 text-danger border-danger",
 	};
 
-	return priorityMap[priority] || "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
+	return priorityMap[priority] || "bg-background text-muted-foreground border-border";
 };

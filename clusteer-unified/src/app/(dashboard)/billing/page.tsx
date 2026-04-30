@@ -195,8 +195,8 @@ export default function BillingPage() {
 		<div className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8 max-w-[1200px]">
 			{/* Header */}
 			<div className="mb-8">
-				<h1 className="text-[var(--cl-text)] font-semibold text-2xl mb-2">Billing</h1>
-				<p className="text-[#667085] text-sm">
+				<h1 className="text-foreground font-semibold text-2xl mb-2">Billing</h1>
+				<p className="text-muted-foreground text-sm">
 					Manage your payment methods and view transaction history
 				</p>
 			</div>
@@ -204,10 +204,10 @@ export default function BillingPage() {
 			{/* Payment Methods Section */}
 			<div className="mb-8">
 				<div className="flex items-center justify-between mb-4">
-					<h2 className="text-lg font-semibold text-[#0D0D0D]">Payment Methods</h2>
+					<h2 className="text-lg font-semibold text-foreground">Payment Methods</h2>
 					<Button
 						onClick={() => setShowAddPaymentMethod(true)}
-						className="gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-10 px-4 rounded-full font-semibold"
+						className="bg-primary border-custom-black/5 text-white h-10 px-4 rounded-full font-semibold"
 					>
 						<Plus className="w-4 h-4 mr-2" />
 						Add Payment Method
@@ -216,20 +216,20 @@ export default function BillingPage() {
 
 				{PAYMENT_METHODS.length === 0 ? (
 					/* Empty State for Payment Methods */
-					<div className="bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl p-12">
+					<div className="bg-card border border-border rounded-xl p-12">
 						<div className="max-w-md mx-auto text-center">
-							<div className="w-16 h-16 bg-[#F9FAFB] rounded-full flex items-center justify-center mx-auto mb-4">
-								<CreditCard className="w-8 h-8 text-[#667085]" />
+							<div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+								<CreditCard className="w-8 h-8 text-muted-foreground" />
 							</div>
-							<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">
+							<h3 className="font-semibold text-lg text-foreground mb-2">
 								No payment methods yet
 							</h3>
-							<p className="text-sm text-[#667085] mb-6">
+							<p className="text-sm text-muted-foreground mb-6">
 								Add a payment method to fund your wallet and make transactions faster and easier
 							</p>
 							<Button
 								onClick={() => setShowAddPaymentMethod(true)}
-								className="gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-11 px-6 rounded-full font-semibold"
+								className="bg-primary border-custom-black/5 text-white h-11 px-6 rounded-full font-semibold"
 							>
 								<Plus className="w-4 h-4 mr-2" />
 								Add Your First Payment Method
@@ -239,19 +239,19 @@ export default function BillingPage() {
 									<div className="w-10 h-6 bg-[#1434CB] rounded flex items-center justify-center text-white text-[10px] font-bold">
 										VISA
 									</div>
-									<span className="text-xs text-[#667085]">Visa</span>
+									<span className="text-xs text-muted-foreground">Visa</span>
 								</div>
 								<div className="flex items-center gap-2">
 									<div className="w-10 h-6 bg-[#EB001B] rounded flex items-center justify-center">
-										<div className="w-2 h-2 bg-[var(--cl-surface)] rounded-full"></div>
+										<div className="w-2 h-2 bg-card rounded-full"></div>
 									</div>
-									<span className="text-xs text-[#667085]">Mastercard</span>
+									<span className="text-xs text-muted-foreground">Mastercard</span>
 								</div>
 								<div className="flex items-center gap-2">
 									<div className="w-10 h-6 bg-[#0079C1] rounded flex items-center justify-center text-white text-[8px] font-bold">
 										AMEX
 									</div>
-									<span className="text-xs text-[#667085]">Amex</span>
+									<span className="text-xs text-muted-foreground">Amex</span>
 								</div>
 							</div>
 						</div>
@@ -261,24 +261,24 @@ export default function BillingPage() {
 						{PAYMENT_METHODS.map((method) => (
 							<div
 								key={method.id}
-								className="bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl p-6 relative"
+								className="bg-card border border-border rounded-xl p-6 relative"
 							>
 								{method.isDefault && (
-									<Badge className="absolute top-4 right-4 bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)] border-[#0D4222]/10">
+									<Badge className="absolute top-4 right-4 bg-primary/10 text-primary border-[#0D4222]/10">
 										Default
 									</Badge>
 								)}
 								<div className="flex items-start gap-3 mb-4">
-									<div className="w-12 h-12 bg-[#F9FAFB] rounded-lg flex items-center justify-center">
-										<CreditCard className="w-6 h-6 text-[#667085]" />
+									<div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+										<CreditCard className="w-6 h-6 text-muted-foreground" />
 									</div>
 									<div className="flex-1">
-										<p className="font-semibold text-[#0D0D0D]">{method.brand}</p>
-										<p className="text-sm text-[#667085]">•••• •••• •••• {method.last4}</p>
+										<p className="font-semibold text-foreground">{method.brand}</p>
+										<p className="text-sm text-muted-foreground">•••• •••• •••• {method.last4}</p>
 									</div>
 								</div>
 								<div className="flex items-center justify-between">
-									<p className="text-xs text-[#667085]">
+									<p className="text-xs text-muted-foreground">
 										Expires {method.expiryMonth}/{method.expiryYear}
 									</p>
 									<DropdownMenu>
@@ -301,7 +301,7 @@ export default function BillingPage() {
 												Edit
 											</DropdownMenuItem>
 											<DropdownMenuItem
-												className="text-[var(--cl-down)]"
+												className="text-danger"
 												onClick={() => handleRemoveCard(method.id)}
 											>
 												Remove
@@ -315,13 +315,13 @@ export default function BillingPage() {
 						{/* Add Payment Method Placeholder */}
 						<button
 							onClick={() => setShowAddPaymentMethod(true)}
-							className="bg-[var(--cl-surface)] border-2 border-dashed border-[var(--cl-line)] rounded-xl p-6 flex flex-col items-center justify-center min-h-[160px] hover:border-[#11C211] hover:bg-[#F9FAFB] transition-colors"
+							className="bg-card border-2 border-dashed border-border rounded-xl p-6 flex flex-col items-center justify-center min-h-[160px] hover:border-[#11C211] hover:bg-muted transition-colors"
 						>
-							<div className="w-12 h-12 bg-[#F9FAFB] rounded-lg flex items-center justify-center mb-3">
-								<Plus className="w-6 h-6 text-[#667085]" />
+							<div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center mb-3">
+								<Plus className="w-6 h-6 text-muted-foreground" />
 							</div>
-							<p className="font-semibold text-[#0D0D0D]">Add Payment Method</p>
-							<p className="text-sm text-[#667085]">Card, Bank Account</p>
+							<p className="font-semibold text-foreground">Add Payment Method</p>
+							<p className="text-sm text-muted-foreground">Card, Bank Account</p>
 						</button>
 					</div>
 				)}
@@ -330,13 +330,13 @@ export default function BillingPage() {
 			{/* Transaction History Section */}
 			<div>
 				<div className="flex items-center justify-between mb-4">
-					<h2 className="text-lg font-semibold text-[#0D0D0D]">Transaction History</h2>
+					<h2 className="text-lg font-semibold text-foreground">Transaction History</h2>
 					{TRANSACTIONS.length > 0 && (
 						<div className="flex items-center gap-2">
 							<select
 								value={filterStatus}
 								onChange={(e) => setFilterStatus(e.target.value as any)}
-								className="px-4 py-2 border border-[var(--cl-line)] rounded-lg text-sm focus:ring-2 focus:ring-[#11C211] focus:border-transparent"
+								className="px-4 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-ring focus:border-transparent"
 							>
 								<option value="all">All Transactions</option>
 								<option value="completed">Completed</option>
@@ -345,7 +345,7 @@ export default function BillingPage() {
 							<Button
 								onClick={handleExportTransactions}
 								variant="outline"
-								className="border-[var(--cl-line-strong)] h-10 px-4 rounded-lg font-semibold"
+								className="border-border h-10 px-4 rounded-lg font-semibold"
 							>
 								<Download className="w-4 h-4 mr-2" />
 								Export
@@ -356,70 +356,70 @@ export default function BillingPage() {
 
 				{TRANSACTIONS.length === 0 ? (
 					/* Empty State for Transactions */
-					<div className="bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl p-12">
+					<div className="bg-card border border-border rounded-xl p-12">
 						<div className="max-w-md mx-auto text-center">
-							<div className="w-16 h-16 bg-[#F9FAFB] rounded-full flex items-center justify-center mx-auto mb-4">
-								<DollarSign className="w-8 h-8 text-[#667085]" />
+							<div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+								<DollarSign className="w-8 h-8 text-muted-foreground" />
 							</div>
-							<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">
+							<h3 className="font-semibold text-lg text-foreground mb-2">
 								No transactions yet
 							</h3>
-							<p className="text-sm text-[#667085] mb-6">
+							<p className="text-sm text-muted-foreground mb-6">
 								Your billing transactions will appear here. Start by funding your wallet or making your first trade.
 							</p>
 							<div className="flex flex-col sm:flex-row gap-3 justify-center">
 								<Button
 									onClick={() => router.push('/assets')}
-									className="gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-11 px-6 rounded-full font-semibold"
+									className="bg-primary border-custom-black/5 text-white h-11 px-6 rounded-full font-semibold"
 								>
 									Fund Wallet
 								</Button>
 								<Button
 									onClick={() => router.push('/trade')}
 									variant="outline"
-									className="border-[var(--cl-line-strong)] h-11 px-6 rounded-full font-semibold"
+									className="border-border h-11 px-6 rounded-full font-semibold"
 								>
 									Start Trading
 								</Button>
 							</div>
-							<div className="mt-8 grid grid-cols-3 gap-4 pt-6 border-t border-[var(--cl-line)]">
+							<div className="mt-8 grid grid-cols-3 gap-4 pt-6 border-t border-border">
 								<div className="text-center">
-									<div className="w-12 h-12 bg-[var(--cl-up-soft)] rounded-lg flex items-center justify-center mx-auto mb-2">
-										<ArrowDownLeft className="w-6 h-6 text-[var(--cl-up)]" />
+									<div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-2">
+										<ArrowDownLeft className="w-6 h-6 text-success" />
 									</div>
-									<p className="text-xs text-[#667085]">Deposits</p>
+									<p className="text-xs text-muted-foreground">Deposits</p>
 								</div>
 								<div className="text-center">
 									<div className="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center mx-auto mb-2">
 										<ArrowUpRight className="w-6 h-6 text-orange-600" />
 									</div>
-									<p className="text-xs text-[#667085]">Withdrawals</p>
+									<p className="text-xs text-muted-foreground">Withdrawals</p>
 								</div>
 								<div className="text-center">
-									<div className="w-12 h-12 bg-[var(--cl-bg)] rounded-lg flex items-center justify-center mx-auto mb-2">
-										<DollarSign className="w-6 h-6 text-[var(--cl-text-2)]" />
+									<div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center mx-auto mb-2">
+										<DollarSign className="w-6 h-6 text-muted-foreground" />
 									</div>
-									<p className="text-xs text-[#667085]">Fees</p>
+									<p className="text-xs text-muted-foreground">Fees</p>
 								</div>
 							</div>
 						</div>
 					</div>
 				) : (
-					<div className="bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl overflow-hidden">
+					<div className="bg-card border border-border rounded-xl overflow-hidden">
 						{filteredTransactions.length === 0 ? (
 							/* Empty State for Filtered Transactions */
 							<div className="py-12 text-center">
-								<DollarSign className="w-12 h-12 mx-auto text-[#667085] mb-4" />
-								<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">
+								<DollarSign className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+								<h3 className="font-semibold text-lg text-foreground mb-2">
 									No {filterStatus} transactions found
 								</h3>
-								<p className="text-sm text-[#667085] mb-4">
+								<p className="text-sm text-muted-foreground mb-4">
 									Try selecting a different filter or check back later
 								</p>
 								<Button
 									onClick={() => setFilterStatus("all")}
 									variant="outline"
-									className="border-[var(--cl-line-strong)] h-10 px-6 rounded-full font-semibold"
+									className="border-border h-10 px-6 rounded-full font-semibold"
 								>
 									View All Transactions
 								</Button>
@@ -427,77 +427,77 @@ export default function BillingPage() {
 						) : (
 							<div className="overflow-x-auto">
 								<table className="w-full">
-									<thead className="bg-[#F9FAFB] border-b border-[var(--cl-line)]">
+									<thead className="bg-muted border-b border-border">
 										<tr>
-											<th className="text-left px-6 py-3 text-xs font-medium text-[#667085] uppercase tracking-wider">
+											<th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
 												Transaction
 											</th>
-											<th className="text-left px-6 py-3 text-xs font-medium text-[#667085] uppercase tracking-wider">
+											<th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
 												Amount
 											</th>
-											<th className="text-left px-6 py-3 text-xs font-medium text-[#667085] uppercase tracking-wider">
+											<th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
 												Method
 											</th>
-											<th className="text-left px-6 py-3 text-xs font-medium text-[#667085] uppercase tracking-wider">
+											<th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
 												Date
 											</th>
-											<th className="text-left px-6 py-3 text-xs font-medium text-[#667085] uppercase tracking-wider">
+											<th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
 												Status
 											</th>
 										</tr>
 									</thead>
-									<tbody className="divide-y divide-[#E9EAEB]">
+									<tbody className="divide-y divide-border">
 										{filteredTransactions.map((transaction) => (
-											<tr key={transaction.id} className="hover:bg-[#F9FAFB] transition-colors">
+											<tr key={transaction.id} className="hover:bg-muted transition-colors">
 												<td className="px-6 py-4">
 													<div className="flex items-center gap-3">
 														<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
 															transaction.type === "deposit"
-																? "bg-[var(--cl-up-soft)]"
+																? "bg-success/10"
 																: transaction.type === "withdrawal"
 																? "bg-orange-50"
-																: "bg-[var(--cl-bg)]"
+																: "bg-background"
 														}`}>
 															{transaction.type === "deposit" ? (
-																<ArrowDownLeft className="w-5 h-5 text-[var(--cl-up)]" />
+																<ArrowDownLeft className="w-5 h-5 text-success" />
 															) : transaction.type === "withdrawal" ? (
 																<ArrowUpRight className="w-5 h-5 text-orange-600" />
 															) : (
-																<DollarSign className="w-5 h-5 text-[var(--cl-text-2)]" />
+																<DollarSign className="w-5 h-5 text-muted-foreground" />
 															)}
 														</div>
 														<div>
-															<p className="font-medium text-[#0D0D0D]">{transaction.description}</p>
-															<p className="text-sm text-[#667085] capitalize">{transaction.type}</p>
+															<p className="font-medium text-foreground">{transaction.description}</p>
+															<p className="text-sm text-muted-foreground capitalize">{transaction.type}</p>
 														</div>
 													</div>
 												</td>
 												<td className="px-6 py-4">
 													<p className={`font-semibold ${
 														transaction.type === "deposit"
-															? "text-[var(--cl-up)]"
+															? "text-success"
 															: transaction.type === "withdrawal"
 															? "text-orange-600"
-															: "text-[var(--cl-text-2)]"
+															: "text-muted-foreground"
 													}`}>
 														{transaction.type === "deposit" ? "+" : "-"}
 														{formatCurrency(transaction.amount, transaction.currency)}
 													</p>
 												</td>
 												<td className="px-6 py-4">
-													<p className="text-sm text-[#667085]">{transaction.method}</p>
+													<p className="text-sm text-muted-foreground">{transaction.method}</p>
 												</td>
 												<td className="px-6 py-4">
 													<div className="flex items-center gap-2">
-														<Calendar className="w-4 h-4 text-[#667085]" />
-														<p className="text-sm text-[#667085]">{formatDate(transaction.date)}</p>
+														<Calendar className="w-4 h-4 text-muted-foreground" />
+														<p className="text-sm text-muted-foreground">{formatDate(transaction.date)}</p>
 													</div>
 												</td>
 												<td className="px-6 py-4">
 													<Badge
 														className={`${
 															transaction.status === "completed"
-																? "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]"
+																? "bg-success/10 text-success border-success"
 																: "bg-orange-100 text-orange-800 border-orange-200"
 														}`}
 													>
@@ -517,9 +517,9 @@ export default function BillingPage() {
 			{/* Add Payment Method Modal */}
 			{showAddPaymentMethod && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-[var(--cl-surface)] rounded-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+					<div className="bg-card rounded-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
 						<div className="flex items-center justify-between mb-6">
-							<h3 className="font-semibold text-xl text-[#0D0D0D]">Add Payment Method</h3>
+							<h3 className="font-semibold text-xl text-foreground">Add Payment Method</h3>
 							<button
 								onClick={() => {
 									setShowAddPaymentMethod(false);
@@ -530,7 +530,7 @@ export default function BillingPage() {
 										cvv: "",
 									});
 								}}
-								className="text-[#667085] hover:text-[#0D0D0D]"
+								className="text-muted-foreground hover:text-foreground"
 							>
 								<XCircle className="w-6 h-6" />
 							</button>
@@ -538,8 +538,8 @@ export default function BillingPage() {
 
 						{/* Card Preview */}
 						<div className="mb-6 bg-gradient-to-br from-[#0D4222] to-[#11C211] rounded-xl p-6 text-white relative overflow-hidden">
-							<div className="absolute top-0 right-0 w-32 h-32 bg-[var(--cl-surface)]/10 rounded-full -mr-16 -mt-16"></div>
-							<div className="absolute bottom-0 left-0 w-24 h-24 bg-[var(--cl-surface)]/10 rounded-full -ml-12 -mb-12"></div>
+							<div className="absolute top-0 right-0 w-32 h-32 bg-card/10 rounded-full -mr-16 -mt-16"></div>
+							<div className="absolute bottom-0 left-0 w-24 h-24 bg-card/10 rounded-full -ml-12 -mb-12"></div>
 							<div className="relative z-10">
 								<div className="flex justify-between items-start mb-8">
 									<div className="w-12 h-8 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded"></div>
@@ -570,7 +570,7 @@ export default function BillingPage() {
 						{/* Card Form */}
 						<form onSubmit={handleAddCard} className="space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+								<label className="block text-sm font-medium text-foreground mb-2">
 									Card Number *
 								</label>
 								<input
@@ -578,13 +578,13 @@ export default function BillingPage() {
 									value={cardDetails.cardNumber}
 									onChange={handleCardNumberChange}
 									placeholder="1234 5678 9012 3456"
-									className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent font-mono"
+									className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent font-mono"
 									required
 								/>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+								<label className="block text-sm font-medium text-foreground mb-2">
 									Cardholder Name *
 								</label>
 								<input
@@ -594,14 +594,14 @@ export default function BillingPage() {
 										setCardDetails({ ...cardDetails, cardName: e.target.value.toUpperCase() })
 									}
 									placeholder="JOHN DOE"
-									className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent uppercase"
+									className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent uppercase"
 									required
 								/>
 							</div>
 
 							<div className="grid grid-cols-2 gap-4">
 								<div>
-									<label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+									<label className="block text-sm font-medium text-foreground mb-2">
 										Expiry Date *
 									</label>
 									<input
@@ -609,12 +609,12 @@ export default function BillingPage() {
 										value={cardDetails.expiryDate}
 										onChange={handleExpiryDateChange}
 										placeholder="MM / YY"
-										className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent font-mono"
+										className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent font-mono"
 										required
 									/>
 								</div>
 								<div>
-									<label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+									<label className="block text-sm font-medium text-foreground mb-2">
 										CVV *
 									</label>
 									<input
@@ -622,14 +622,14 @@ export default function BillingPage() {
 										value={cardDetails.cvv}
 										onChange={handleCvvChange}
 										placeholder="123"
-										className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:ring-2 focus:ring-[#11C211] focus:border-transparent font-mono"
+										className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent font-mono"
 										required
 									/>
 								</div>
 							</div>
 
-							<div className="bg-[var(--cl-info-soft)] border border-[var(--cl-brand-200)] rounded-lg p-4">
-								<p className="text-xs text-[#667085]">
+							<div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
+								<p className="text-xs text-muted-foreground">
 									🔒 Your card information is encrypted and secure. We use industry-standard security measures to protect your data.
 								</p>
 							</div>
@@ -647,7 +647,7 @@ export default function BillingPage() {
 										});
 									}}
 									variant="outline"
-									className="flex-1 border-[var(--cl-line-strong)] h-11 rounded-full font-semibold"
+									className="flex-1 border-border h-11 rounded-full font-semibold"
 									disabled={isProcessing}
 								>
 									Cancel
@@ -655,7 +655,7 @@ export default function BillingPage() {
 								<Button
 									type="submit"
 									disabled={isProcessing}
-									className="flex-1 gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-11 rounded-full font-semibold"
+									className="flex-1 bg-primary border-custom-black/5 text-white h-11 rounded-full font-semibold"
 								>
 									{isProcessing ? "Processing..." : "Add Card"}
 								</Button>

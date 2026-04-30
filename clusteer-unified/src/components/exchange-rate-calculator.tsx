@@ -103,29 +103,29 @@ export default function ExchangeRateCalculator() {
 	const toCurrencyData = CURRENCIES.find((c) => c.code === toCurrency);
 
 	return (
-		<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+		<div className="bg-card rounded-2xl border border-border p-6">
 			<div className="flex items-center justify-between mb-6">
-				<h3 className="text-xl font-bold text-[#0D0D0D]">
+				<h3 className="text-xl font-bold text-foreground">
 					Transfer calculator
 				</h3>
-				<div className="flex items-center gap-2 text-sm text-[#667085]">
+				<div className="flex items-center gap-2 text-sm text-muted-foreground">
 					<TrendingUp className="w-4 h-4" />
 					<span>Live rate</span>
 				</div>
 			</div>
 
 			{/* Exchange Rate Display */}
-			<div className="mb-6 p-4 bg-[#F9FAFB] rounded-xl">
-				<p className="text-lg font-semibold text-[#0D0D0D]">
+			<div className="mb-6 p-4 bg-muted rounded-xl">
+				<p className="text-lg font-semibold text-foreground">
 					1 {fromCurrency} = {formatNumber(exchangeRate)} {toCurrency}
 				</p>
 				{isLoading && (
-					<p className="text-xs text-[#667085] mt-1">Updating rate...</p>
+					<p className="text-xs text-muted-foreground mt-1">Updating rate...</p>
 				)}
 			</div>
 
 			{/* Rate Chart Placeholder */}
-			<div className="mb-6 h-24 bg-[#F9FAFB] rounded-xl flex items-center justify-center relative overflow-hidden">
+			<div className="mb-6 h-24 bg-muted rounded-xl flex items-center justify-center relative overflow-hidden">
 				{/* Simple visual line chart effect */}
 				<svg
 					className="w-full h-full opacity-20"
@@ -137,11 +137,11 @@ export default function ExchangeRateCalculator() {
 						stroke="currentColor"
 						strokeWidth="2"
 						fill="none"
-						className="text-[var(--cl-brand-500)]"
+						className="text-primary"
 					/>
 				</svg>
 				<div className="absolute inset-0 flex items-center justify-center">
-					<p className="text-xs text-[#667085]">Historical rate trend</p>
+					<p className="text-xs text-muted-foreground">Historical rate trend</p>
 				</div>
 			</div>
 
@@ -153,14 +153,14 @@ export default function ExchangeRateCalculator() {
 						type="number"
 						value={amount}
 						onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-						className="flex-1 px-4 py-3 border border-[var(--cl-line)] rounded-xl font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-dark-green"
+						className="flex-1 px-4 py-3 border border-border rounded-xl font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-dark-green"
 						min="0"
 						step="0.01"
 					/>
 					<select
 						value={fromCurrency}
 						onChange={(e) => setFromCurrency(e.target.value)}
-						className="px-4 py-3 border border-[var(--cl-line)] rounded-xl font-medium bg-[var(--cl-surface)] focus:outline-none focus:ring-2 focus:ring-dark-green min-w-[120px]"
+						className="px-4 py-3 border border-border rounded-xl font-medium bg-card focus:outline-none focus:ring-2 focus:ring-dark-green min-w-[120px]"
 					>
 						{CURRENCIES.map((currency) => (
 							<option key={currency.code} value={currency.code}>
@@ -174,24 +174,24 @@ export default function ExchangeRateCalculator() {
 				<div className="flex justify-center">
 					<button
 						onClick={handleSwapCurrencies}
-						className="p-2 hover:bg-[#F9FAFB] rounded-lg transition-colors"
+						className="p-2 hover:bg-muted rounded-lg transition-colors"
 						aria-label="Swap currencies"
 					>
-						<ArrowDownUp className="w-5 h-5 text-[#667085]" />
+						<ArrowDownUp className="w-5 h-5 text-muted-foreground" />
 					</button>
 				</div>
 
 				{/* To Currency */}
 				<div className="flex items-center gap-3">
-					<div className="flex-1 px-4 py-3 border border-[var(--cl-line)] rounded-xl bg-[#F9FAFB]">
-						<p className="font-semibold text-lg text-[#0D0D0D]">
+					<div className="flex-1 px-4 py-3 border border-border rounded-xl bg-muted">
+						<p className="font-semibold text-lg text-foreground">
 							{formatNumber(convertedAmount)}
 						</p>
 					</div>
 					<select
 						value={toCurrency}
 						onChange={(e) => setToCurrency(e.target.value)}
-						className="px-4 py-3 border border-[var(--cl-line)] rounded-xl font-medium bg-[var(--cl-surface)] focus:outline-none focus:ring-2 focus:ring-dark-green min-w-[120px]"
+						className="px-4 py-3 border border-border rounded-xl font-medium bg-card focus:outline-none focus:ring-2 focus:ring-dark-green min-w-[120px]"
 					>
 						{CURRENCIES.map((currency) => (
 							<option key={currency.code} value={currency.code}>

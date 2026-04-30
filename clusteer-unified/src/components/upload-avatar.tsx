@@ -33,9 +33,9 @@ export default function UploadAvatar({
 	};
 
 	return (
-		<div className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-[var(--cl-line)]">
+		<div className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
 			<div>
-				<div className="font-semibold text-[var(--cl-text-2)] gap-x-0.5 lg:w-[280px] shrink-0">
+				<div className="font-semibold text-muted-foreground gap-x-0.5 lg:w-[280px] shrink-0">
 					Your Photo <span className="text-[#a8faa8]">*</span>{" "}
 					<CircleQuestionMarkIcon
 						stroke="#A4A7AE"
@@ -43,13 +43,13 @@ export default function UploadAvatar({
 						size={16}
 					/>
 				</div>
-				<p className="text-[var(--cl-text-2)]">
+				<p className="text-muted-foreground">
 					This will be displayed on your profile.
 				</p>
 			</div>
 
 			<div className="flex gap-x-5 w-full max-w-[512px]">
-				<Avatar className="size-16 border-[0.75px] border-[var(--cl-line)]">
+				<Avatar className="size-16 border-[0.75px] border-border">
 					<AvatarImage
 						className="object-cover object-center"
 						src={currentAvatar}
@@ -75,13 +75,13 @@ export default function UploadAvatar({
 
 					<div className="flex items-center mt-3">
 						<div className="mr-4">
-							<p className="text-[var(--cl-text-2)]">
+							<p className="text-muted-foreground">
 								<span className="text-[#008000] font-semibold">
 									Click to upload
 								</span>{" "}
 								or drag and drop
 							</p>
-							<p className="mt-1 text-[var(--cl-text-2)]">
+							<p className="mt-1 text-muted-foreground">
 								SVG, PNG, JPG or GIF (max. 800x400px)
 							</p>
 						</div>

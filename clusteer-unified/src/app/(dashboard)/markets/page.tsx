@@ -91,14 +91,14 @@ export default function Page() {
 			<header className="mb-6">
 				<div className="flex justify-between items-start">
 					<div>
-						<h1 className="text-2xl lg:text-[32px] font-bold text-[#0D0D0D]">
+						<h1 className="text-2xl lg:text-[32px] font-bold text-foreground">
 							Markets
 						</h1>
-						<p className="text-sm lg:text-base text-[#667085] mt-1">
+						<p className="text-sm lg:text-base text-muted-foreground mt-1">
 							Track stablecoin rates and market trends
 						</p>
 						{lastUpdated && (
-							<p className="text-xs text-[#98A2B3] mt-1">
+							<p className="text-xs text-muted-foreground mt-1">
 								Last updated: {lastUpdated.toLocaleTimeString()}
 							</p>
 						)}
@@ -122,49 +122,49 @@ export default function Page() {
 
 			<div className="mb-6">
 				<div className="relative max-w-md">
-					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--cl-text-3)]" />
+					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 					<Input
 						type="text"
 						placeholder="Search stablecoins..."
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
-						className="pl-10 h-11 rounded-[12px] border-[var(--cl-line)]"
+						className="pl-10 h-11 rounded-[12px] border-border"
 					/>
 				</div>
 			</div>
 
 			{error && (
-				<div className="mb-6 p-4 bg-[var(--cl-down-soft)] border border-[var(--cl-down)] rounded-lg">
-					<p className="text-sm text-[var(--cl-down)]">{error}</p>
+				<div className="mb-6 p-4 bg-danger/10 border border-danger rounded-lg">
+					<p className="text-sm text-danger">{error}</p>
 				</div>
 			)}
 
-			<Card className="rounded-[20px] border-[var(--cl-line)] overflow-hidden">
+			<Card className="rounded-[20px] border-border overflow-hidden">
 				{loading && markets.length === 0 ? (
 					<div className="flex items-center justify-center py-12">
-						<Loader2 className="h-8 w-8 animate-spin text-[#667085]" />
+						<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
 					</div>
 				) : (
 					<div className="overflow-x-auto">
 						<table className="w-full">
-							<thead className="bg-[var(--cl-bg)] border-b border-[var(--cl-line)]">
+							<thead className="bg-background border-b border-border">
 								<tr>
-									<th className="text-left py-4 px-6 text-sm font-semibold text-[#667085]">
+									<th className="text-left py-4 px-6 text-sm font-semibold text-muted-foreground">
 										#
 									</th>
-									<th className="text-left py-4 px-6 text-sm font-semibold text-[#667085]">
+									<th className="text-left py-4 px-6 text-sm font-semibold text-muted-foreground">
 										Name
 									</th>
-									<th className="text-right py-4 px-6 text-sm font-semibold text-[#667085]">
+									<th className="text-right py-4 px-6 text-sm font-semibold text-muted-foreground">
 										Price
 									</th>
-									<th className="text-right py-4 px-6 text-sm font-semibold text-[#667085]">
+									<th className="text-right py-4 px-6 text-sm font-semibold text-muted-foreground">
 										24h Change
 									</th>
-									<th className="text-right py-4 px-6 text-sm font-semibold text-[#667085]">
+									<th className="text-right py-4 px-6 text-sm font-semibold text-muted-foreground">
 										24h Volume
 									</th>
-									<th className="text-right py-4 px-6 text-sm font-semibold text-[#667085]">
+									<th className="text-right py-4 px-6 text-sm font-semibold text-muted-foreground">
 										Market Cap
 									</th>
 								</tr>
@@ -173,9 +173,9 @@ export default function Page() {
 								{filteredMarkets.map((market) => (
 									<tr
 										key={market.id}
-										className="border-b border-[var(--cl-line)] hover:bg-[var(--cl-bg)] transition-colors cursor-pointer"
+										className="border-b border-border hover:bg-background transition-colors cursor-pointer"
 									>
-										<td className="py-4 px-6 text-sm text-[var(--cl-text-2)]">{market.rank}</td>
+										<td className="py-4 px-6 text-sm text-muted-foreground">{market.rank}</td>
 										<td className="py-4 px-6">
 											<div className="flex items-center gap-3">
 												<Image
@@ -186,34 +186,34 @@ export default function Page() {
 													className="rounded-full"
 												/>
 												<div>
-													<div className="font-semibold text-[#0D0D0D]">
+													<div className="font-semibold text-foreground">
 														{market.name}
 													</div>
-													<div className="text-sm text-[#667085]">
+													<div className="text-sm text-muted-foreground">
 														{market.symbol}
 													</div>
 												</div>
 											</div>
 										</td>
-										<td className="py-4 px-6 text-right font-semibold text-[#0D0D0D]">
+										<td className="py-4 px-6 text-right font-semibold text-foreground">
 											{formatPrice(market.price)}
 										</td>
 										<td className="py-4 px-6 text-right">
 											<span
 												className={`font-semibold ${
 													market.change24h >= 0
-														? "text-[var(--cl-up)]"
-														: "text-[var(--cl-down)]"
+														? "text-success"
+														: "text-danger"
 												}`}
 											>
 												{market.change24h >= 0 ? "+" : ""}
 												{market.change24h.toFixed(2)}%
 											</span>
 										</td>
-										<td className="py-4 px-6 text-right text-[var(--cl-text-2)]">
+										<td className="py-4 px-6 text-right text-muted-foreground">
 											{formatLargeNumber(market.volume)}
 										</td>
-										<td className="py-4 px-6 text-right text-[var(--cl-text-2)]">
+										<td className="py-4 px-6 text-right text-muted-foreground">
 											{formatLargeNumber(market.marketCap)}
 										</td>
 									</tr>
@@ -222,13 +222,13 @@ export default function Page() {
 						</table>
 
 						{!loading && filteredMarkets.length === 0 && markets.length > 0 && (
-							<div className="text-center py-12 text-[#667085]">
+							<div className="text-center py-12 text-muted-foreground">
 								No stablecoins found matching your search.
 							</div>
 						)}
 
 						{!loading && markets.length === 0 && !error && (
-							<div className="text-center py-12 text-[#667085]">
+							<div className="text-center py-12 text-muted-foreground">
 								No market data available. Please try refreshing.
 							</div>
 						)}

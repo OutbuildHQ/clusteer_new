@@ -15,16 +15,16 @@ function Field({ label, hint, error, children, className, ...props }: FieldProps
 	return (
 		<div className={cn("flex flex-col gap-1.5", className)} {...props}>
 			{label && (
-				<label className="text-[13px] font-medium text-[var(--cl-text-2)]">
+				<label className="text-[13px] font-medium text-muted-foreground">
 					{label}
 				</label>
 			)}
 			{children}
 			{error && (
-				<span className="text-xs text-[var(--cl-down)]">{error}</span>
+				<span className="text-xs text-danger">{error}</span>
 			)}
 			{hint && !error && (
-				<span className="text-xs text-[var(--cl-text-3)]">{hint}</span>
+				<span className="text-xs text-muted-foreground">{hint}</span>
 			)}
 		</div>
 	);

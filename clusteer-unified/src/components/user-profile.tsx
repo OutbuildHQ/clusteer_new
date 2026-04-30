@@ -29,7 +29,7 @@ export default function UserProfile() {
 			{user?.is_verified && (
 				<Badge
 					variant="secondary"
-					className="bg-pale-green text-[var(--cl-brand-500)] h-6 rounded-[100px]"
+					className="bg-pale-green text-primary h-6 rounded-full"
 				>
 					<Image
 						src="/assets/icons/check_small.svg"

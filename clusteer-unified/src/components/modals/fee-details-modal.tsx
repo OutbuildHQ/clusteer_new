@@ -61,7 +61,7 @@ export default function FeeDetailsModal() {
 					type="button"
 					onClick={closeModal}
 					variant="outline"
-					className="rounded-[100px] font-medium h-[38px] px-5 text-[15px]"
+					className="rounded-full font-medium h-[38px] px-5 text-[15px]"
 				>
 					Cancel
 				</Button>
@@ -69,7 +69,7 @@ export default function FeeDetailsModal() {
 				<Button
 					type="button"
 					onClick={() => openModal(MODAL_IDS.TRANSACTION_SUMMARY)}
-					className="bg-[#21241D] rounded-[100px] font-medium h-[38px] px-5 text-[15px]"
+					className="bg-[#21241D] rounded-full font-medium h-[38px] px-5 text-[15px]"
 					disabled={!isChecked}
 				>
 					Confirm

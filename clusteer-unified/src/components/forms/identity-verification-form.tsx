@@ -47,7 +47,7 @@ export default function IdentityVerificationForm() {
 					name="residency"
 					render={({ field }) => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="font-medium text-[var(--cl-text)]">
+							<FormLabel className="font-medium text-foreground">
 								Residency
 							</FormLabel>
 							<FormControl>
@@ -94,7 +94,7 @@ export default function IdentityVerificationForm() {
 				</div>
 				<Button
 					type="submit"
-					className="border-black bg-light-green border text-[var(--cl-text)] font-semibold text-base hover:bg-muted w-full h-11 mt-20"
+					className="border-black bg-light-green border text-foreground font-semibold text-base hover:bg-muted w-full h-11 mt-20"
 				>
 					Continue
 				</Button>

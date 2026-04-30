@@ -129,7 +129,7 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 								type="number"
 								value={form.watch("pay") || ""}
 								onChange={(e) => form.setValue("pay", parseFloat(e.target.value) || 0)}
-								className="h-12 w-full px-4 pr-24 rounded-xl border border-[var(--cl-line)] focus:outline-none focus:ring-2 focus:ring-dark-green text-lg font-semibold"
+								className="h-12 w-full px-4 pr-24 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-dark-green text-lg font-semibold"
 								placeholder="0.00"
 								min="0"
 								step="0.01"
@@ -137,7 +137,7 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 							<select
 								value={selectedCurrency}
 								onChange={(e) => setSelectedCurrency(e.target.value as StableCoin)}
-								className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#667085] bg-transparent border-none focus:outline-none cursor-pointer font-medium"
+								className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground bg-transparent border-none focus:outline-none cursor-pointer font-medium"
 							>
 								<option value="USDT">USDT</option>
 								<option value="USDC">USDC</option>
@@ -145,7 +145,7 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 							</select>
 						</div>
 					</FormControl>
-					<FormDescription className="text-[var(--cl-text-2)]">
+					<FormDescription className="text-muted-foreground">
 						Available: <span className="font-bold">{formatNumber(selectedBalance)}</span> {selectedCurrency}
 					</FormDescription>
 					<FormMessage />
@@ -154,7 +154,7 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 				<button
 					type="button"
 					onClick={onSwap}
-					className="bg-[var(--cl-surface)] rounded-full size-11 flex items-center justify-center mx-auto hover:bg-[var(--cl-surface-2)] transition-colors cursor-pointer"
+					className="bg-card rounded-full size-11 flex items-center justify-center mx-auto hover:bg-muted transition-colors cursor-pointer"
 					aria-label="Swap to buy"
 				>
 					<Image
@@ -168,19 +168,19 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 				<FormItem className="gap-1.5">
 					<FormLabel className="font-medium">Receive</FormLabel>
 					<FormControl>
-						<div className="h-12 px-4 rounded-xl border border-[var(--cl-line)] bg-[#F9FAFB] flex items-center justify-between">
+						<div className="h-12 px-4 rounded-xl border border-border bg-muted flex items-center justify-between">
 							<span className="text-lg font-semibold">
 								₦{formatNumber(receiveAmount)}
 							</span>
-							<span className="text-sm text-[#667085]">NGN</span>
+							<span className="text-sm text-muted-foreground">NGN</span>
 						</div>
 					</FormControl>
 					<FormDescription className="space-y-1.5">
-						<span className="block text-[var(--cl-text-2)]">
+						<span className="block text-muted-foreground">
 							Limit: {MINIMUM_VALUE.toLocaleString()} -{" "}
 							{MAXIMUM_VALUE.toLocaleString()} NGN
 						</span>
-						<span className="block text-[var(--cl-text-2)]">
+						<span className="block text-muted-foreground">
 							Transaction fees: 0 {selectedCurrency}
 						</span>
 					</FormDescription>
@@ -189,7 +189,7 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 
 				<div className="mt-6.5 grid lg:grid-cols-[2fr_1fr] items-center divide-[#00000066] lg:divide-x-[0.5px] px-7.5 py-2.5 lg:py-4 border border-[#21241D4D] rounded-xl text-sm">
 					<div>
-						<span className="text-[var(--cl-text-2)]">Receive via:</span>
+						<span className="text-muted-foreground">Receive via:</span>
 						<div className="flex items-start sm:items-center gap-x-1">
 							<Image
 								src="/assets/icons/credit_card.svg"
@@ -202,7 +202,7 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 					</div>
 					<div className="border-b-[0.5px] border-[#00000066] my-6 lg:hidden" />
 					<div className="w-fit lg:pl-4 lg:ml-auto">
-						<p className="text-[var(--cl-text-2)]">Pay within:</p>
+						<p className="text-muted-foreground">Pay within:</p>
 						<p className="font-semibold">15 mins</p>
 					</div>
 				</div>
@@ -211,10 +211,10 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 					type="button"
 					onClick={form.handleSubmit(onSubmit)}
 					disabled={isLoading || !form.formState.isValid}
-					className="flex items-center gap-x-3 text-[var(--cl-text)] bg-light-green w-full justify-center h-11 rounded-4xl border border-black mx-auto mt-7.5 disabled:opacity-50 disabled:cursor-not-allowed"
+					className="flex items-center gap-x-3 text-foreground bg-light-green w-full justify-center h-11 rounded-4xl border border-black mx-auto mt-7.5 disabled:opacity-50 disabled:cursor-not-allowed"
 				>
 					{isLoading && <Loader2 className="size-4 animate-spin" />}
-					<span className="text-base font-semibold text-[var(--cl-text)]">
+					<span className="text-base font-semibold text-foreground">
 						{isLoading ? "Processing..." : "Sell"}
 					</span>
 				</button>

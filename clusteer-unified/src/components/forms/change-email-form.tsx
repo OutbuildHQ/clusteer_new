@@ -112,7 +112,7 @@ export default function ChangeEmailForm() {
 						name="email"
 						render={({ field }) => (
 							<FormItem className="gap-1.5">
-								<FormLabel className="font-bold text-[var(--cl-text)]">
+								<FormLabel className="font-bold text-foreground">
 									Enter email address
 								</FormLabel>
 								<FormControl>
@@ -131,7 +131,7 @@ export default function ChangeEmailForm() {
 						name="otp"
 						render={({ field }) => (
 							<FormItem className="gap-1.5">
-								<FormLabel className="font-bold text-[var(--cl-text)]">
+								<FormLabel className="font-bold text-foreground">
 									Email verification code
 								</FormLabel>
 								<FormControl>
@@ -147,7 +147,7 @@ export default function ChangeEmailForm() {
 											variant="outline"
 											onClick={handleSendOTP}
 											disabled={isSendingOTP || countdown > 0}
-											className="text-[var(--cl-brand-500)] border-0 bg-transparent hover:bg-transparent"
+											className="text-primary border-0 bg-transparent hover:bg-transparent"
 										>
 											{isSendingOTP ? (
 												<Loader2 className="h-4 w-4 animate-spin" />
@@ -166,7 +166,7 @@ export default function ChangeEmailForm() {
 					<Button
 						type="submit"
 						disabled={isChangingEmail}
-						className="border-black bg-light-green border text-[var(--cl-text)] font-semibold text-base hover:bg-muted w-full h-11"
+						className="border-black bg-light-green border text-foreground font-semibold text-base hover:bg-muted w-full h-11"
 					>
 						{isChangingEmail ? (
 							<>

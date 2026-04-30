@@ -54,25 +54,25 @@ export default function BatchActions({
 	const getVariantClass = (variant?: string) => {
 		switch (variant) {
 			case 'danger':
-				return 'text-[var(--cl-down)] hover:bg-[var(--cl-down-soft)]';
+				return 'text-danger hover:bg-danger/10';
 			case 'warning':
 				return 'text-orange-700 hover:bg-orange-50';
 			case 'success':
-				return 'text-[var(--cl-up)] hover:bg-[var(--cl-up-soft)]';
+				return 'text-success hover:bg-success/10';
 			default:
-				return 'text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)]';
+				return 'text-muted-foreground hover:bg-background';
 		}
 	};
 
 	return (
 		<div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 animate-in slide-in-from-bottom duration-300">
-			<div className="bg-[var(--cl-surface)] rounded-lg shadow-lg border border-[var(--cl-line)] px-6 py-4 flex items-center gap-4 min-w-[500px]">
+			<div className="bg-card rounded-lg shadow-lg border border-border px-6 py-4 flex items-center gap-4 min-w-[500px]">
 				{/* Selection count */}
 				<div className="flex items-center gap-2">
-					<div className="w-8 h-8 bg-[#014F01] text-white rounded-full flex items-center justify-center text-sm font-semibold">
+					<div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-semibold">
 						{selectedIds.length}
 					</div>
-					<span className="text-sm font-medium text-[var(--cl-text)]">
+					<span className="text-sm font-medium text-foreground">
 						{selectedIds.length} of {totalItems} selected
 					</span>
 				</div>
@@ -82,7 +82,7 @@ export default function BatchActions({
 					<button
 						onClick={() => setIsOpen(!isOpen)}
 						disabled={isExecuting}
-						className="w-full flex items-center justify-between gap-2 px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors disabled:opacity-50"
+						className="w-full flex items-center justify-between gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
 					>
 						<span className="text-sm font-medium">
 							{isExecuting ? 'Processing...' : 'Batch Actions'}
@@ -92,7 +92,7 @@ export default function BatchActions({
 
 					{/* Dropdown menu */}
 					{isOpen && (
-						<div className="absolute bottom-full left-0 right-0 mb-2 bg-[var(--cl-surface)] rounded-lg shadow-lg border border-[var(--cl-line)] py-1 max-h-60 overflow-y-auto">
+						<div className="absolute bottom-full left-0 right-0 mb-2 bg-card rounded-lg shadow-lg border border-border py-1 max-h-60 overflow-y-auto">
 							{actions.map((action) => (
 								<button
 									key={action.id}
@@ -110,10 +110,10 @@ export default function BatchActions({
 				{/* Clear selection */}
 				<button
 					onClick={onClearSelection}
-					className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
+					className="p-2 hover:bg-muted rounded-lg transition-colors"
 					aria-label="Clear selection"
 				>
-					<X className="w-5 h-5 text-[var(--cl-text-2)]" />
+					<X className="w-5 h-5 text-muted-foreground" />
 				</button>
 			</div>
 		</div>
@@ -139,13 +139,13 @@ export function SelectCheckbox({ checked, onChange, indeterminate = false }: Sel
 			<div
 				className={`w-5 h-5 border-2 rounded flex items-center justify-center transition-colors ${
 					checked || indeterminate
-						? 'bg-[#014F01] border-[#014F01]'
-						: 'bg-[var(--cl-surface)] border-[var(--cl-line)]'
+						? 'bg-primary border-primary'
+						: 'bg-card border-border'
 				}`}
 			>
 				{checked && <Check className="w-3 h-3 text-white" />}
 				{indeterminate && !checked && (
-					<div className="w-2 h-0.5 bg-[var(--cl-surface)] rounded"></div>
+					<div className="w-2 h-0.5 bg-card rounded"></div>
 				)}
 			</div>
 		</label>

@@ -12,14 +12,14 @@ export default function WalletList() {
 	if (allWallets.length === 0) {
 		return (
 			<div className="mt-5 lg:mt-6.5 pb-14.5">
-				<div className="bg-[#F7F9FA] rounded-2xl border border-[var(--cl-line)] p-8 text-center">
-					<div className="w-16 h-16 bg-[var(--cl-surface)] rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-						<svg className="w-8 h-8 text-[#667085]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<div className="bg-muted rounded-2xl border border-border p-8 text-center">
+					<div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+						<svg className="w-8 h-8 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
 						</svg>
 					</div>
-					<h3 className="text-lg font-semibold text-[#0D0D0D] mb-2">No wallets yet</h3>
-					<p className="text-sm text-[#667085]">Your wallets will appear here once you add currencies</p>
+					<h3 className="text-lg font-semibold text-foreground mb-2">No wallets yet</h3>
+					<p className="text-sm text-muted-foreground">Your wallets will appear here once you add currencies</p>
 				</div>
 			</div>
 		);
@@ -39,10 +39,10 @@ export default function WalletList() {
 					<Link
 						key={wallet.currency}
 						href={`/assets/${wallet.currency}`}
-						className="group shrink-0 w-full p-5 lg:p-6 rounded-2xl bg-[#F7F9FA] hover:bg-[var(--cl-surface)] border border-[var(--cl-line)] hover:shadow-md transition-all duration-200 flex flex-col min-h-[160px] lg:min-h-[180px]"
+						className="group shrink-0 w-full p-5 lg:p-6 rounded-2xl bg-muted hover:bg-card border border-border hover:shadow-md transition-all duration-200 flex flex-col min-h-[160px] lg:min-h-[180px]"
 					>
 						<div className="flex items-center gap-4 mb-4">
-							<div className="shrink-0 w-10 h-10 flex items-center justify-center bg-[var(--cl-surface)] rounded-full shadow-sm group-hover:shadow-md transition-all duration-200">
+							<div className="shrink-0 w-10 h-10 flex items-center justify-center bg-card rounded-full shadow-sm group-hover:shadow-md transition-all duration-200">
 								{iconSrc ? (
 									<Image
 										className="shrink-0"
@@ -52,23 +52,23 @@ export default function WalletList() {
 										height={24}
 									/>
 								) : (
-									<div className="flex items-center justify-center text-sm font-bold text-[#667085]">
+									<div className="flex items-center justify-center text-sm font-bold text-muted-foreground">
 										{(wallet.currency || '').substring(0, 2)}
 									</div>
 								)}
 							</div>
 							<div>
-								<span className="block font-semibold text-lg text-[#0D0D0D] uppercase">
+								<span className="block font-semibold text-lg text-foreground uppercase">
 									{wallet.currency}
 								</span>
-								<span className="block text-xs text-[#667085] mt-0.5">
+								<span className="block text-xs text-muted-foreground mt-0.5">
 									{wallet.type === 'FIAT' ? 'Fiat Currency' : 'Stablecoin'}
 								</span>
 							</div>
 						</div>
 						<div className="mt-auto">
-							<p className="text-xs text-[#667085] mb-1">Balance</p>
-							<p className="font-bold text-2xl lg:text-3xl text-[#0D0D0D]">
+							<p className="text-xs text-muted-foreground mb-1">Balance</p>
+							<p className="font-bold text-2xl lg:text-3xl text-foreground">
 								{wallet.currency === 'NGN' && '₦'}
 								{wallet.currency === 'USDT' && '$'}
 								{wallet.currency === 'USDC' && '$'}
@@ -82,14 +82,14 @@ export default function WalletList() {
 			{/* Add another currency card */}
 			<Link
 				href="/assets/add"
-				className="group shrink-0 w-full p-5 lg:p-6 rounded-2xl bg-[#F7F9FA] hover:bg-[var(--cl-surface)] border-2 border-dashed border-[var(--cl-line)] hover:border-dark-green transition-all duration-200 flex flex-col items-center justify-center min-h-[160px] lg:min-h-[180px]"
+				className="group shrink-0 w-full p-5 lg:p-6 rounded-2xl bg-muted hover:bg-card border-2 border-dashed border-border hover:border-dark-green transition-all duration-200 flex flex-col items-center justify-center min-h-[160px] lg:min-h-[180px]"
 			>
-				<div className="w-12 h-12 flex items-center justify-center bg-[var(--cl-surface)] rounded-full shadow-sm group-hover:shadow-md transition-all duration-200 mb-3">
-					<svg className="w-6 h-6 text-[#667085] group-hover:text-[var(--cl-brand-500)] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<div className="w-12 h-12 flex items-center justify-center bg-card rounded-full shadow-sm group-hover:shadow-md transition-all duration-200 mb-3">
+					<svg className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
 					</svg>
 				</div>
-				<span className="text-sm font-medium text-[#667085] group-hover:text-[var(--cl-brand-500)] transition-colors">
+				<span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
 					Add another currency
 				</span>
 			</Link>

@@ -35,28 +35,28 @@ export default function TestKYCResetPage() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-[var(--cl-bg)]">
-			<div className="max-w-md w-full bg-[var(--cl-surface)] rounded-lg shadow-lg p-8">
+		<div className="min-h-screen flex items-center justify-center bg-background">
+			<div className="max-w-md w-full bg-card rounded-lg shadow-lg p-8">
 				<h1 className="text-2xl font-bold mb-4">KYC Testing Tools</h1>
-				<p className="text-[var(--cl-text-2)] mb-6">
+				<p className="text-muted-foreground mb-6">
 					Reset your KYC verification status to test the verification flow again.
 				</p>
 
 				<Button
 					onClick={handleReset}
 					disabled={loading}
-					className="w-full bg-[var(--cl-down-soft)]0 hover:bg-[var(--cl-down)] text-white font-semibold py-3 rounded-lg disabled:opacity-50"
+					className="w-full bg-danger/100 hover:bg-danger text-white font-semibold py-3 rounded-lg disabled:opacity-50"
 				>
 					{loading ? "Resetting..." : "Reset KYC Verification"}
 				</Button>
 
 				{message && (
-					<div className="mt-4 p-4 bg-[var(--cl-surface-2)] rounded-lg">
+					<div className="mt-4 p-4 bg-muted rounded-lg">
 						<p className="text-sm">{message}</p>
 					</div>
 				)}
 
-				<div className="mt-6 text-sm text-[var(--cl-text-3)]">
+				<div className="mt-6 text-sm text-muted-foreground">
 					<p className="font-semibold mb-2">⚠️ Testing Only</p>
 					<p>This endpoint should be removed in production.</p>
 				</div>

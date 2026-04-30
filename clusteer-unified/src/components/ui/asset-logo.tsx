@@ -11,15 +11,15 @@ interface AssetLogoProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const ASSET_MAP: Record<string, { bg: string; label: string }> = {
 	// Tradeable stablecoins
-	USDT: { bg: "var(--cl-chain-usdt)", label: "₮" },
+	USDT: { bg: "var(--chain-usdt)", label: "₮" },
 	USDC: { bg: "#2775CA", label: "$" },
 	// Fiat
-	NGN:  { bg: "var(--cl-text)", label: "₦" },
+	NGN:  { bg: "var(--foreground)", label: "₦" },
 	// Chain icons (network display only, not tradeable)
-	ETH:  { bg: "var(--cl-chain-eth)", label: "Ξ" },
-	SOL:  { bg: "var(--cl-chain-sol)", label: "◎" },
-	TRX:  { bg: "var(--cl-chain-tron)", label: "T" },
-	BNB:  { bg: "var(--cl-chain-bsc)", label: "B" },
+	ETH:  { bg: "var(--chain-eth)", label: "Ξ" },
+	SOL:  { bg: "var(--chain-sol)", label: "◎" },
+	TRX:  { bg: "var(--chain-trx)", label: "T" },
+	BNB:  { bg: "var(--chain-bnb)", label: "B" },
 };
 
 /**
@@ -27,7 +27,7 @@ const ASSET_MAP: Record<string, { bg: string; label: string }> = {
  * Never display a raw text symbol; always wrap with this component.
  */
 function AssetLogo({ symbol, size = 28, className, style, ...props }: AssetLogoProps) {
-	const asset = ASSET_MAP[symbol] ?? { bg: "var(--cl-text-3)", label: "?" };
+	const asset = ASSET_MAP[symbol] ?? { bg: "var(--muted-foreground)", label: "?" };
 	return (
 		<div
 			className={cn("inline-flex items-center justify-center rounded-full shrink-0 font-mono font-semibold", className)}

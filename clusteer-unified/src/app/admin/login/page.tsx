@@ -2,139 +2,114 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Shield, AlertCircle } from "lucide-react";
+import { Shield, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function AdminLoginPage() {
 	const router = useRouter();
-	const [formData, setFormData] = useState({
-		email: "",
-		password: "",
-	});
+	const [formData, setFormData] = useState({ email: "", password: "" });
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError("");
 		setLoading(true);
-
 		try {
 			const response = await fetch("/api/admin/auth/login", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(formData),
 			});
-
 			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.error || "Login failed");
-			}
-
-			// Redirect to admin dashboard
+			if (!response.ok) throw new Error(data.error || "Login failed");
 			router.push("/admin");
-		} catch (err: any) {
-			setError(err.message || "Invalid credentials");
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : "Invalid credentials");
 		} finally {
 			setLoading(false);
 		}
 	};
 
 	return (
-		<div className="min-h-screen bg-[var(--cl-bg)] flex items-center justify-center p-4">
+		<div className="min-h-screen bg-custom-black flex items-center justify-center p-4">
 			<div className="w-full max-w-md">
-				{/* Logo & Title */}
 				<div className="text-center mb-8">
-					<div className="inline-flex items-center justify-center w-16 h-16 bg-[#014F01] rounded-2xl mb-4">
-						<Shield className="w-8 h-8 text-white" />
+					<div className="inline-flex items-center justify-center size-16 bg-light-green rounded-2xl border-2 border-light-green/50 mb-4">
+						<Shield className="size-8 text-custom-black" />
 					</div>
-					<h1 className="text-2xl font-bold text-[var(--cl-text)]">Admin Portal</h1>
-					<p className="text-sm text-[var(--cl-text-2)] mt-2">
+					<h1 className="text-2xl font-bold text-white">Admin Portal</h1>
+					<p className="text-sm text-white/50 mt-2">
 						Sign in to access the Clusteer admin dashboard
 					</p>
 				</div>
 
-				{/* Login Form */}
-				<div className="bg-[var(--cl-surface)] rounded-lg shadow-sm border border-[var(--cl-line)] p-8">
-					{error && (
-						<div className="mb-6 p-4 bg-[var(--cl-down-soft)] border border-[var(--cl-down)] rounded-lg flex items-start gap-3">
-							<AlertCircle className="w-5 h-5 text-[var(--cl-down)] flex-shrink-0 mt-0.5" />
-							<div>
-								<p className="text-sm font-medium text-[var(--cl-down)]">Login Failed</p>
-								<p className="text-sm text-[var(--cl-down)] mt-1">{error}</p>
+				<Card className="bg-white/5 border-white/10 backdrop-blur">
+					<CardContent className="p-6 sm:p-8">
+						{error && (
+							<div role="alert" className="mb-6 p-4 bg-danger/10 border border-danger rounded-xl flex items-start gap-3">
+								<AlertCircle className="size-5 text-danger shrink-0 mt-0.5" />
+								<div>
+									<p className="text-sm font-medium text-danger">Login Failed</p>
+									<p className="text-sm text-danger/80 mt-1">{error}</p>
+								</div>
 							</div>
+						)}
+
+						<form onSubmit={handleSubmit} className="space-y-4">
+							<div className="space-y-1.5">
+								<Label className="text-white/70">Email <span className="text-danger">*</span></Label>
+								<Input
+									type="email"
+									required
+									value={formData.email}
+									onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+									placeholder="admin@clusteer.io"
+									disabled={loading}
+									className="bg-white/10 border-white/15 text-white placeholder:text-white/30 focus-visible:ring-light-green"
+								/>
+							</div>
+
+							<div className="space-y-1.5">
+								<Label className="text-white/70">Password <span className="text-danger">*</span></Label>
+								<div className="relative">
+									<Input
+										type={showPassword ? "text" : "password"}
+										required
+										value={formData.password}
+										onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+										placeholder="Enter your password"
+										disabled={loading}
+										className="bg-white/10 border-white/15 text-white placeholder:text-white/30 focus-visible:ring-light-green"
+									/>
+									<button type="button" tabIndex={-1} onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
+										{showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+									</button>
+								</div>
+							</div>
+
+							<Button type="submit" disabled={loading} size="lg" className="w-full mt-2">
+								{loading ? "Signing in…" : "Sign In"}
+							</Button>
+						</form>
+
+						<div className="mt-6 p-3 bg-white/5 rounded-xl border border-white/10">
+							<p className="text-xs text-white/30 text-center">
+								All access attempts are logged and monitored.
+							</p>
 						</div>
-					)}
+					</CardContent>
+				</Card>
 
-					<form onSubmit={handleSubmit} className="space-y-6">
-						<div>
-							<label
-								htmlFor="email"
-								className="block text-sm font-medium text-[var(--cl-text-2)] mb-2"
-							>
-								Email Address
-							</label>
-							<input
-								type="email"
-								id="email"
-								required
-								value={formData.email}
-								onChange={(e) =>
-									setFormData({ ...formData, email: e.target.value })
-								}
-								className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
-								placeholder="admin@clusteer.io"
-								disabled={loading}
-							/>
-						</div>
-
-						<div>
-							<label
-								htmlFor="password"
-								className="block text-sm font-medium text-[var(--cl-text-2)] mb-2"
-							>
-								Password
-							</label>
-							<input
-								type="password"
-								id="password"
-								required
-								value={formData.password}
-								onChange={(e) =>
-									setFormData({ ...formData, password: e.target.value })
-								}
-								className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
-								placeholder="Enter your password"
-								disabled={loading}
-							/>
-						</div>
-
-						<button
-							type="submit"
-							disabled={loading}
-							className="w-full bg-[#014F01] text-white py-3 rounded-lg font-medium hover:bg-[#013d01] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-						>
-							{loading ? "Signing in..." : "Sign In"}
-						</button>
-					</form>
-
-					{/* Security Notice */}
-					<div className="mt-6 p-4 bg-[var(--cl-bg)] rounded-lg border border-[var(--cl-line)]">
-						<p className="text-xs text-[var(--cl-text-2)] text-center">
-							🔒 This is a secure admin-only area. All access attempts are logged
-							and monitored.
-						</p>
-					</div>
-				</div>
-
-				{/* Back to Main Site */}
 				<div className="text-center mt-6">
-					<a
-						href="/"
-						className="text-sm text-[var(--cl-text-2)] hover:text-[var(--cl-text)] transition-colors"
-					>
+					<Link href="/" className="text-sm text-white/40 hover:text-white/70 transition-colors">
 						← Back to main site
-					</a>
+					</Link>
 				</div>
 			</div>
 		</div>

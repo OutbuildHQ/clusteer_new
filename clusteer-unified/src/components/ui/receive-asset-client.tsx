@@ -33,7 +33,7 @@ export default function ReceiveAssetClient({ asset }: { asset: string }) {
 				<h1 className="font-bold text-3xl capitalize">
 					Receive {wallet.currency}
 				</h1>
-				<p className="text-[#667085] mt-2">
+				<p className="text-muted-foreground mt-2">
 					{isCrypto
 						? `Deposit ${wallet.currency} to your wallet`
 						: "Add funds to your account"}

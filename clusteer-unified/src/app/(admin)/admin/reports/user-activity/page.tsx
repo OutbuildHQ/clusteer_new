@@ -145,29 +145,29 @@ export default function UserActivityReportPage() {
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case "Active":
-				return "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]";
+				return "bg-success/10 text-success border-success";
 			case "Inactive":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 			case "New":
-				return "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]";
+				return "bg-primary/10 text-primary border-primary/30";
 			default:
-				return "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
+				return "bg-background text-muted-foreground border-border";
 		}
 	};
 
 	return (
 		<div className="space-y-6">
 			{/* Breadcrumb */}
-			<nav className="flex items-center gap-2 text-sm text-[var(--cl-text-3)]">
-				<button onClick={() => router.push("/admin")} className="hover:text-[var(--cl-text)]">
+			<nav className="flex items-center gap-2 text-sm text-muted-foreground">
+				<button onClick={() => router.push("/admin")} className="hover:text-foreground">
 					Dashboard
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<button onClick={() => router.push("/admin/reports")} className="hover:text-[var(--cl-text)]">
+				<button onClick={() => router.push("/admin/reports")} className="hover:text-foreground">
 					Reports
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<span className="font-medium text-[var(--cl-text)]">User Activity Report</span>
+				<span className="font-medium text-foreground">User Activity Report</span>
 			</nav>
 
 			{/* Header */}
@@ -175,13 +175,13 @@ export default function UserActivityReportPage() {
 				<div className="flex items-center gap-4">
 					<button
 						onClick={() => router.push("/admin/reports")}
-						className="p-2 hover:bg-[var(--cl-bg)] rounded-lg transition-colors"
+						className="p-2 hover:bg-background rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-[var(--cl-text-2)]" />
+						<ArrowLeft className="w-5 h-5 text-muted-foreground" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-[var(--cl-text)]">User Activity Report</h1>
-						<p className="text-sm text-[var(--cl-text-2)] mt-1">
+						<h1 className="text-2xl font-bold text-foreground">User Activity Report</h1>
+						<p className="text-sm text-muted-foreground mt-1">
 							Detailed user engagement and activity patterns
 						</p>
 					</div>
@@ -189,7 +189,7 @@ export default function UserActivityReportPage() {
 				<div className="flex items-center gap-3">
 					<button
 						onClick={handleExport}
-						className="flex items-center gap-2 px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors shadow-sm"
+						className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
 					>
 						<Download className="w-4 h-4" />
 						Export CSV
@@ -198,17 +198,17 @@ export default function UserActivityReportPage() {
 			</div>
 
 			{/* Period Selector */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4">
+			<div className="bg-card rounded-lg border border-border p-4">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
-						<Calendar className="w-5 h-5 text-[var(--cl-text-3)]" />
-						<span className="text-sm font-medium text-[var(--cl-text-2)]">Report Period:</span>
+						<Calendar className="w-5 h-5 text-muted-foreground" />
+						<span className="text-sm font-medium text-muted-foreground">Report Period:</span>
 					</div>
 					<div className="flex gap-2">
 						{["Today", "Week", "Month", "Year"].map((period) => (
 							<button
 								key={period}
-								className="px-4 py-2 text-sm font-medium bg-[var(--cl-surface-2)] text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
+								className="px-4 py-2 text-sm font-medium bg-muted text-muted-foreground hover:bg-muted rounded-lg transition-colors"
 							>
 								{period}
 							</button>
@@ -219,69 +219,69 @@ export default function UserActivityReportPage() {
 
 			{/* Stats Cards */}
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-lg border border-border p-6">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-[var(--cl-info-soft)] rounded-lg">
-							<Users className="w-6 h-6 text-[var(--cl-brand-600)]" />
+						<div className="p-3 bg-primary/10 rounded-lg">
+							<Users className="w-6 h-6 text-primary" />
 						</div>
 					</div>
-					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Total Users</h3>
-					<p className="text-2xl font-bold text-[var(--cl-text)]">{stats.totalUsers.toLocaleString()}</p>
+					<h3 className="text-sm text-muted-foreground font-medium mb-1">Total Users</h3>
+					<p className="text-2xl font-bold text-foreground">{stats.totalUsers.toLocaleString()}</p>
 				</div>
 
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-lg border border-border p-6">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-[var(--cl-up-soft)] rounded-lg">
-							<Activity className="w-6 h-6 text-[var(--cl-up)]" />
+						<div className="p-3 bg-success/10 rounded-lg">
+							<Activity className="w-6 h-6 text-success" />
 						</div>
 					</div>
-					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Active Users</h3>
-					<p className="text-2xl font-bold text-[var(--cl-text)]">{stats.activeUsers.toLocaleString()}</p>
-					<p className="text-xs text-[var(--cl-up)] mt-1">
+					<h3 className="text-sm text-muted-foreground font-medium mb-1">Active Users</h3>
+					<p className="text-2xl font-bold text-foreground">{stats.activeUsers.toLocaleString()}</p>
+					<p className="text-xs text-success mt-1">
 						{((stats.activeUsers / stats.totalUsers) * 100).toFixed(1)}% of total
 					</p>
 				</div>
 
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-lg border border-border p-6">
 					<div className="flex items-center justify-between mb-4">
 						<div className="p-3 bg-purple-50 rounded-lg">
 							<UserCheck className="w-6 h-6 text-purple-600" />
 						</div>
 					</div>
-					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">New Users</h3>
-					<p className="text-2xl font-bold text-[var(--cl-text)]">{stats.newUsers}</p>
-					<p className="text-xs text-[var(--cl-text-3)] mt-1">Last 30 days</p>
+					<h3 className="text-sm text-muted-foreground font-medium mb-1">New Users</h3>
+					<p className="text-2xl font-bold text-foreground">{stats.newUsers}</p>
+					<p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
 				</div>
 
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-lg border border-border p-6">
 					<div className="flex items-center justify-between mb-4">
 						<div className="p-3 bg-orange-50 rounded-lg">
 							<Clock className="w-6 h-6 text-orange-600" />
 						</div>
 					</div>
-					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Avg Session</h3>
-					<p className="text-2xl font-bold text-[var(--cl-text)]">{stats.avgSessionDuration}</p>
-					<p className="text-xs text-[var(--cl-text-3)] mt-1">Per user</p>
+					<h3 className="text-sm text-muted-foreground font-medium mb-1">Avg Session</h3>
+					<p className="text-2xl font-bold text-foreground">{stats.avgSessionDuration}</p>
+					<p className="text-xs text-muted-foreground mt-1">Per user</p>
 				</div>
 			</div>
 
 			{/* Filters and Search */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4">
+			<div className="bg-card rounded-lg border border-border p-4">
 				<div className="flex items-center gap-3">
 					<div className="flex-1 relative">
-						<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--cl-text-3)]" />
+						<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 						<input
 							type="text"
 							placeholder="Search by name, email, or user ID..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
-							className="w-full pl-10 pr-4 py-2.5 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+							className="w-full pl-10 pr-4 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 						/>
 					</div>
 					<select
 						value={statusFilter}
 						onChange={(e) => setStatusFilter(e.target.value as any)}
-						className="px-4 py-2.5 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] focus:border-transparent"
+						className="px-4 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 					>
 						<option value="All">All Status</option>
 						<option value="Active">Active</option>
@@ -292,81 +292,81 @@ export default function UserActivityReportPage() {
 			</div>
 
 			{/* User Activity Table */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)]">
+			<div className="bg-card rounded-lg border border-border">
 				<div className="overflow-x-auto">
 					<table className="w-full">
-						<thead className="bg-[var(--cl-bg)] border-b border-[var(--cl-line)]">
+						<thead className="bg-background border-b border-border">
 							<tr>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									User
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Last Active
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Logins
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Transactions
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Avg Session
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Device
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Location
 								</th>
-								<th className="text-left py-4 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Status
 								</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-[#E9EAEB]">
+						<tbody className="divide-y divide-border">
 							{filteredUsers.map((user) => (
 								<tr
 									key={user.userId}
-									className="hover:bg-[var(--cl-bg)] transition-colors cursor-pointer"
+									className="hover:bg-background transition-colors cursor-pointer"
 									onClick={() => router.push(`/admin/users/${user.userId}`)}
 								>
 									<td className="py-4 px-6">
 										<div>
-											<p className="text-sm font-medium text-[var(--cl-text)]">{user.name}</p>
-											<p className="text-xs text-[var(--cl-text-3)]">{user.email}</p>
+											<p className="text-sm font-medium text-foreground">{user.name}</p>
+											<p className="text-xs text-muted-foreground">{user.email}</p>
 										</div>
 									</td>
 									<td className="py-4 px-6">
 										<div className="flex items-center gap-2">
-											<Clock className="w-4 h-4 text-[var(--cl-text-3)]" />
-											<span className="text-sm text-[var(--cl-text-2)]">{user.lastActive}</span>
+											<Clock className="w-4 h-4 text-muted-foreground" />
+											<span className="text-sm text-muted-foreground">{user.lastActive}</span>
 										</div>
 									</td>
 									<td className="py-4 px-6">
 										<div className="flex items-center gap-2">
-											<LogIn className="w-4 h-4 text-[var(--cl-text-3)]" />
-											<span className="text-sm font-medium text-[var(--cl-text)]">{user.loginCount}</span>
+											<LogIn className="w-4 h-4 text-muted-foreground" />
+											<span className="text-sm font-medium text-foreground">{user.loginCount}</span>
 										</div>
 									</td>
 									<td className="py-4 px-6">
 										<div className="flex items-center gap-2">
-											<Activity className="w-4 h-4 text-[var(--cl-text-3)]" />
-											<span className="text-sm font-medium text-[var(--cl-text)]">{user.transactionCount}</span>
+											<Activity className="w-4 h-4 text-muted-foreground" />
+											<span className="text-sm font-medium text-foreground">{user.transactionCount}</span>
 										</div>
 									</td>
 									<td className="py-4 px-6">
-										<span className="text-sm text-[var(--cl-text-2)]">{user.avgSessionDuration}</span>
+										<span className="text-sm text-muted-foreground">{user.avgSessionDuration}</span>
 									</td>
 									<td className="py-4 px-6">
 										<div className="flex items-center gap-2">
-											<Smartphone className="w-4 h-4 text-[var(--cl-text-3)]" />
-											<span className="text-sm text-[var(--cl-text-2)]">{user.deviceType}</span>
+											<Smartphone className="w-4 h-4 text-muted-foreground" />
+											<span className="text-sm text-muted-foreground">{user.deviceType}</span>
 										</div>
 									</td>
 									<td className="py-4 px-6">
 										<div className="flex items-center gap-2">
-											<MapPin className="w-4 h-4 text-[var(--cl-text-3)]" />
-											<span className="text-sm text-[var(--cl-text-2)]">{user.location}</span>
+											<MapPin className="w-4 h-4 text-muted-foreground" />
+											<span className="text-sm text-muted-foreground">{user.location}</span>
 										</div>
 									</td>
 									<td className="py-4 px-6">

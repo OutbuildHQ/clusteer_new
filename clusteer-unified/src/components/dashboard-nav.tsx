@@ -74,7 +74,7 @@ function MobileNav() {
 
 	return (
 		<nav className="lg:hidden">
-			<Container className="flex items-center py-[18px] px-4 w-full bg-[var(--cl-surface)] border-b border-[var(--cl-line)]">
+			<Container className="flex items-center py-[18px] px-4 w-full bg-card border-b border-border">
 				<Image
 					src="/assets/icons/logo_with_name.svg"
 					alt="Clusteer logo"
@@ -97,7 +97,7 @@ function MobileNav() {
 					</SheetTrigger>
 					<SheetContent
 						side="left"
-						className="w-[292px] p-0 pt-5 h-full bg-[var(--cl-surface)]"
+						className="w-[292px] p-0 pt-5 h-full bg-card"
 					>
 						<div className="px-5">
 							<Image
@@ -116,10 +116,10 @@ function MobileNav() {
 										<li key={navItem.title}>
 											<Link
 												href={navItem.to}
-												className={`flex gap-x-2 items-center font-medium text-sm capitalize py-2 px-3 rounded-[var(--cl-r-md)] transition-colors ${
+												className={`flex gap-x-2 items-center font-medium text-sm capitalize py-2 px-3 rounded-md transition-colors ${
 													isActive
-														? "bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)]"
-														: "text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)]"
+														? "bg-primary/10 text-primary"
+														: "text-muted-foreground hover:bg-muted"
 												}`}
 											>
 												<Icon className="h-4 w-4" />
@@ -129,15 +129,15 @@ function MobileNav() {
 									);
 								})}
 							</ul>
-							<hr className="my-2.5 border-[var(--cl-line)]" />
+							<hr className="my-2.5 border-border" />
 							<ul className="flex flex-col gap-y-1">
 								<li>
 									<Link
 										href="/settings"
-										className={`flex gap-x-2 items-center font-medium text-sm py-2 px-3 rounded-[var(--cl-r-md)] transition-colors ${
+										className={`flex gap-x-2 items-center font-medium text-sm py-2 px-3 rounded-md transition-colors ${
 											pathname === "/settings" || pathname.startsWith("/settings/")
-												? "bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)]"
-												: "text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)]"
+												? "bg-primary/10 text-primary"
+												: "text-muted-foreground hover:bg-muted"
 										}`}
 									>
 										<Settings className="h-4 w-4" />
@@ -147,10 +147,10 @@ function MobileNav() {
 								<li>
 									<Link
 										href="/support"
-										className={`flex gap-x-2 items-center font-medium text-sm py-2 px-3 rounded-[var(--cl-r-md)] transition-colors ${
+										className={`flex gap-x-2 items-center font-medium text-sm py-2 px-3 rounded-md transition-colors ${
 											pathname === "/support" || pathname.startsWith("/support/")
-												? "bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)]"
-												: "text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)]"
+												? "bg-primary/10 text-primary"
+												: "text-muted-foreground hover:bg-muted"
 										}`}
 									>
 										<HeadphonesIcon className="h-4 w-4" />
@@ -181,7 +181,7 @@ function AppSidebar() {
 		<>
 			<button
 				onClick={toggleSidebar}
-				className="fixed top-[76px] lg:flex hidden z-50 w-8 h-8 bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-full shadow-[var(--cl-shadow-2)] hover:shadow-[var(--cl-shadow-3)] items-center justify-center transition-all duration-300 hover:scale-110"
+				className="fixed top-[76px] lg:flex hidden z-50 w-8 h-8 bg-card border border-border rounded-full shadow-md hover:shadow-lg items-center justify-center transition-all duration-300 hover:scale-110"
 				style={{
 					left: open
 						? 'calc(210px - 16px)'
@@ -192,15 +192,15 @@ function AppSidebar() {
 			>
 				<div className="flex items-center justify-center w-full h-full">
 					{open ? (
-						<ChevronLeft className="w-4 h-4 text-[var(--cl-text-3)]" strokeWidth={2.5} />
+						<ChevronLeft className="w-4 h-4 text-muted-foreground" strokeWidth={2.5} />
 					) : (
-						<ChevronRight className="w-4 h-4 text-[var(--cl-text-3)]" strokeWidth={2.5} />
+						<ChevronRight className="w-4 h-4 text-muted-foreground" strokeWidth={2.5} />
 					)}
 				</div>
 			</button>
 
-			<Sidebar collapsible="icon" className="shadow-[var(--cl-shadow-1)] p-1 pr-0 border-none bg-[var(--cl-bg)] w-full max-w-[210px] transition-all duration-300">
-				<div className="flex flex-col pt-4 h-full bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-[var(--cl-r-lg)] m-0">
+			<Sidebar collapsible="icon" className="shadow-sm p-1 pr-0 border-none bg-background w-full max-w-[210px] transition-all duration-300">
+				<div className="flex flex-col pt-4 h-full bg-card border border-border rounded-lg m-0">
 					<SidebarHeader className="px-4 pb-0">
 						<Image
 							src="/assets/icons/logo_with_name.svg"
@@ -231,10 +231,10 @@ function AppSidebar() {
 											<SidebarMenuButton asChild>
 												<Link
 													href={navItem.to}
-													className={`flex font-medium !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-[var(--cl-r-md)] transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
+													className={`flex font-medium !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-md transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
 														isActive
-															? "bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)] hover:bg-[var(--cl-brand-50)] hover:text-[var(--cl-brand-700)]"
-															: "text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)] hover:text-[var(--cl-text)]"
+															? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
+															: "text-muted-foreground hover:bg-muted hover:text-foreground"
 													}`}
 												>
 													<Icon className="h-4 w-4 flex-shrink-0" />
@@ -248,7 +248,7 @@ function AppSidebar() {
 						</SidebarGroupContent>
 					</SidebarGroup>
 
-					<SidebarSeparator className="my-2.5 border-[var(--cl-line)]" />
+					<SidebarSeparator className="my-2.5 border-border" />
 
 					<SidebarGroup>
 						<SidebarGroupContent>
@@ -261,10 +261,10 @@ function AppSidebar() {
 											<SidebarMenuButton asChild>
 												<Link
 													href={navItem.to}
-													className={`flex font-medium !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-[var(--cl-r-md)] transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
+													className={`flex font-medium !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-md transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
 														isActive
-															? "bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)] hover:bg-[var(--cl-brand-50)] hover:text-[var(--cl-brand-700)]"
-															: "text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)] hover:text-[var(--cl-text)]"
+															? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
+															: "text-muted-foreground hover:bg-muted hover:text-foreground"
 													}`}
 												>
 													<Icon className="h-4 w-4 flex-shrink-0" />
@@ -278,10 +278,10 @@ function AppSidebar() {
 									<SidebarMenuButton asChild>
 										<Link
 											href="/support"
-											className={`flex font-medium !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-[var(--cl-r-md)] transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
+											className={`flex font-medium !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-md transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
 												pathname === "/support" || pathname.startsWith("/support/")
-													? "bg-[var(--cl-brand-50)] text-[var(--cl-brand-700)] hover:bg-[var(--cl-brand-50)] hover:text-[var(--cl-brand-700)]"
-													: "text-[var(--cl-text-2)] hover:bg-[var(--cl-surface-2)] hover:text-[var(--cl-text)]"
+													? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
+													: "text-muted-foreground hover:bg-muted hover:text-foreground"
 											}`}
 										>
 											<HeadphonesIcon className="h-4 w-4 flex-shrink-0" />

@@ -154,11 +154,11 @@ export default function AlertSettingsPage() {
 	const getCategoryColor = (category: AlertSetting["category"]) => {
 		switch (category) {
 			case "security":
-				return "text-[var(--cl-down)] bg-[var(--cl-down-soft)]";
+				return "text-danger bg-danger/10";
 			case "transactions":
-				return "text-[var(--cl-up)] bg-[var(--cl-up-soft)]";
+				return "text-success bg-success/10";
 			case "users":
-				return "text-[var(--cl-brand-600)] bg-[var(--cl-info-soft)]";
+				return "text-primary bg-primary/10";
 			case "system":
 				return "text-orange-600 bg-orange-50";
 		}
@@ -219,14 +219,14 @@ export default function AlertSettingsPage() {
 		const categoryAlerts = groupedAlerts[category];
 
 		return (
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+			<div className="bg-card rounded-lg border border-border p-6">
 				<div className="flex items-center gap-3 mb-6">
 					<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getCategoryColor(category)}`}>
 						<Icon className="w-5 h-5" />
 					</div>
 					<div>
-						<h3 className="text-lg font-semibold text-[var(--cl-text)]">{title}</h3>
-						<p className="text-sm text-[var(--cl-text-2)]">{categoryAlerts.length} alert(s) configured</p>
+						<h3 className="text-lg font-semibold text-foreground">{title}</h3>
+						<p className="text-sm text-muted-foreground">{categoryAlerts.length} alert(s) configured</p>
 					</div>
 				</div>
 
@@ -234,19 +234,19 @@ export default function AlertSettingsPage() {
 					{categoryAlerts.map((alert) => (
 						<div
 							key={alert.id}
-							className="p-4 border border-[var(--cl-line)] rounded-lg hover:border-[#014F01]/20 transition-colors"
+							className="p-4 border border-border rounded-lg hover:border-primary/20 transition-colors"
 						>
 							<div className="flex items-start justify-between mb-3">
 								<div className="flex-1">
 									<div className="flex items-center gap-3 mb-1">
-										<h4 className="text-sm font-semibold text-[var(--cl-text)]">{alert.name}</h4>
+										<h4 className="text-sm font-semibold text-foreground">{alert.name}</h4>
 										{alert.enabled && (
-											<span className="px-2 py-0.5 bg-[var(--cl-up-soft)] text-[var(--cl-up)] text-xs font-medium rounded">
+											<span className="px-2 py-0.5 bg-success/10 text-success text-xs font-medium rounded">
 												Active
 											</span>
 										)}
 									</div>
-									<p className="text-sm text-[var(--cl-text-2)]">{alert.description}</p>
+									<p className="text-sm text-muted-foreground">{alert.description}</p>
 								</div>
 								<label className="relative inline-flex items-center cursor-pointer ml-4">
 									<input
@@ -255,25 +255,25 @@ export default function AlertSettingsPage() {
 										onChange={() => toggleAlert(alert.id)}
 										className="sr-only peer"
 									/>
-									<div className="w-11 h-6 bg-[var(--cl-surface-2)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#014F01]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[var(--cl-surface)] after:border-[var(--cl-line)] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#014F01]"></div>
+									<div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ring/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 								</label>
 							</div>
 
 							{alert.enabled && (
-								<div className="space-y-3 pt-3 border-t border-[var(--cl-line)] animate-in fade-in slide-in-from-top-2 duration-200">
+								<div className="space-y-3 pt-3 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
 									{/* Threshold Settings */}
 									{alert.threshold && (
-										<div className="flex items-center gap-3 p-3 bg-[var(--cl-bg)] rounded-lg">
+										<div className="flex items-center gap-3 p-3 bg-background rounded-lg">
 											<div className="flex-1">
-												<label className="block text-xs font-medium text-[var(--cl-text-2)] mb-1">Threshold</label>
+												<label className="block text-xs font-medium text-muted-foreground mb-1">Threshold</label>
 												<div className="flex items-center gap-2">
 													<input
 														type="number"
 														value={alert.threshold.value}
 														onChange={(e) => updateThreshold(alert.id, Number(e.target.value))}
-														className="w-24 px-2 py-1 text-sm border border-[var(--cl-line)] rounded focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+														className="w-24 px-2 py-1 text-sm border border-border rounded focus:outline-none focus:ring-2 focus:ring-ring"
 													/>
-													<span className="text-sm text-[var(--cl-text-2)]">{alert.threshold.unit}</span>
+													<span className="text-sm text-muted-foreground">{alert.threshold.unit}</span>
 												</div>
 											</div>
 										</div>
@@ -281,14 +281,14 @@ export default function AlertSettingsPage() {
 
 									{/* Notification Channels */}
 									<div>
-										<label className="block text-xs font-medium text-[var(--cl-text-2)] mb-2">Notification Channels</label>
+										<label className="block text-xs font-medium text-muted-foreground mb-2">Notification Channels</label>
 										<div className="grid grid-cols-4 gap-2">
 											<button
 												onClick={() => toggleChannel(alert.id, "email")}
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.email
-														? "bg-[#014F01] text-white border-[#014F01]"
-														: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] border-[var(--cl-line)] hover:border-[#014F01]"
+														? "bg-primary text-white border-primary"
+														: "bg-card text-muted-foreground border-border hover:border-primary"
 												}`}
 											>
 												<Mail className="w-4 h-4" />
@@ -298,8 +298,8 @@ export default function AlertSettingsPage() {
 												onClick={() => toggleChannel(alert.id, "sms")}
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.sms
-														? "bg-[#014F01] text-white border-[#014F01]"
-														: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] border-[var(--cl-line)] hover:border-[#014F01]"
+														? "bg-primary text-white border-primary"
+														: "bg-card text-muted-foreground border-border hover:border-primary"
 												}`}
 											>
 												<MessageSquare className="w-4 h-4" />
@@ -309,8 +309,8 @@ export default function AlertSettingsPage() {
 												onClick={() => toggleChannel(alert.id, "push")}
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.push
-														? "bg-[#014F01] text-white border-[#014F01]"
-														: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] border-[var(--cl-line)] hover:border-[#014F01]"
+														? "bg-primary text-white border-primary"
+														: "bg-card text-muted-foreground border-border hover:border-primary"
 												}`}
 											>
 												<Smartphone className="w-4 h-4" />
@@ -320,8 +320,8 @@ export default function AlertSettingsPage() {
 												onClick={() => toggleChannel(alert.id, "sound")}
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.sound
-														? "bg-[#014F01] text-white border-[#014F01]"
-														: "bg-[var(--cl-surface)] text-[var(--cl-text-2)] border-[var(--cl-line)] hover:border-[#014F01]"
+														? "bg-primary text-white border-primary"
+														: "bg-card text-muted-foreground border-border hover:border-primary"
 												}`}
 											>
 												<Volume2 className="w-4 h-4" />
@@ -343,19 +343,19 @@ export default function AlertSettingsPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-4">
-					<button onClick={() => router.push("/admin")} className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors">
-						<ArrowLeft className="w-5 h-5 text-[var(--cl-text-2)]" />
+					<button onClick={() => router.push("/admin")} className="p-2 hover:bg-muted rounded-lg transition-colors">
+						<ArrowLeft className="w-5 h-5 text-muted-foreground" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-[var(--cl-text)]">Alert Settings</h1>
-						<p className="text-sm text-[var(--cl-text-2)] mt-1">Configure system notifications and alerts</p>
+						<h1 className="text-2xl font-bold text-foreground">Alert Settings</h1>
+						<p className="text-sm text-muted-foreground mt-1">Configure system notifications and alerts</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
 					{hasChanges && (
 						<button
 							onClick={handleReset}
-							className="flex items-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+							className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
 						>
 							<RotateCcw className="w-4 h-4" />
 							Reset
@@ -366,8 +366,8 @@ export default function AlertSettingsPage() {
 						disabled={!hasChanges || isLoading}
 						className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
 							hasChanges && !isLoading
-								? "bg-[#014F01] text-white hover:bg-[#013d01] shadow-sm"
-								: "bg-[var(--cl-surface-2)] text-[var(--cl-text-3)] cursor-not-allowed"
+								? "bg-primary text-white hover:bg-primary/90 shadow-sm"
+								: "bg-muted text-muted-foreground cursor-not-allowed"
 						}`}
 					>
 						<Save className="w-4 h-4" />
@@ -398,25 +398,25 @@ export default function AlertSettingsPage() {
 			</div>
 
 			{/* Test Alerts Section */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
-				<h3 className="text-lg font-semibold text-[var(--cl-text)] mb-4">Test Alerts</h3>
-				<p className="text-sm text-[var(--cl-text-2)] mb-4">
+			<div className="bg-card rounded-lg border border-border p-6">
+				<h3 className="text-lg font-semibold text-foreground mb-4">Test Alerts</h3>
+				<p className="text-sm text-muted-foreground mb-4">
 					Send a test notification to verify your alert configuration is working correctly.
 				</p>
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
 						<Mail className="w-4 h-4" />
 						Test Email
 					</button>
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
 						<MessageSquare className="w-4 h-4" />
 						Test SMS
 					</button>
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
 						<Smartphone className="w-4 h-4" />
 						Test Push
 					</button>
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--cl-surface)] border border-[var(--cl-line)] text-[var(--cl-text-2)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
 						<Volume2 className="w-4 h-4" />
 						Test Sound
 					</button>

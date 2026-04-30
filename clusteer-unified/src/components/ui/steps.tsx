@@ -24,9 +24,9 @@ function Steps({ steps, current, className, ...props }: StepsProps) {
 							<div
 								className={cn(
 									"w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold",
-									done && "bg-[var(--cl-up)] text-white",
-									active && "bg-[var(--cl-brand-500)] text-white border-[3px] border-[var(--cl-brand-100)]",
-									!done && !active && "bg-[var(--cl-surface-2)] text-[var(--cl-text-3)]"
+									done && "bg-success text-white",
+									active && "bg-primary text-white border-[3px] border-primary/30",
+									!done && !active && "bg-muted text-muted-foreground"
 								)}
 							>
 								{done ? <Check size={12} strokeWidth={3} /> : i + 1}
@@ -34,7 +34,7 @@ function Steps({ steps, current, className, ...props }: StepsProps) {
 							<span
 								className={cn(
 									"text-[13px]",
-									active ? "text-[var(--cl-text)] font-medium" : "text-[var(--cl-text-3)]"
+									active ? "text-foreground font-medium" : "text-muted-foreground"
 								)}
 							>
 								{step}
@@ -44,7 +44,7 @@ function Steps({ steps, current, className, ...props }: StepsProps) {
 							<div
 								className={cn(
 									"flex-1 h-px mx-3",
-									done ? "bg-[var(--cl-up)]" : "bg-[var(--cl-line)]"
+									done ? "bg-success" : "bg-border"
 								)}
 							/>
 						)}

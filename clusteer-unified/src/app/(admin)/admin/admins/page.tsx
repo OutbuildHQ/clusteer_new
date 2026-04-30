@@ -291,12 +291,12 @@ export default function AdminsPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-bold text-[var(--cl-text)]">Admin Management</h1>
-					<p className="text-sm text-[var(--cl-text-2)] mt-1">Manage administrator accounts and permissions</p>
+					<h1 className="text-2xl font-bold text-foreground">Admin Management</h1>
+					<p className="text-sm text-muted-foreground mt-1">Manage administrator accounts and permissions</p>
 				</div>
 				<button
 					onClick={() => setShowCreateModal(true)}
-					className="flex items-center gap-2 px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors shadow-sm"
+					className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
 				>
 					<Plus className="w-4 h-4" />
 					Add Admin
@@ -311,51 +311,51 @@ export default function AdminsPage() {
 							<Shield className="w-6 h-6 text-purple-600" />
 						</div>
 					</div>
-					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Total Admins</p>
-					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">{admins.length}</p>
+					<p className="text-sm text-muted-foreground font-medium mb-1">Total Admins</p>
+					<p className="text-3xl font-bold text-foreground mb-2">{admins.length}</p>
 					<p className="text-xs text-purple-600 font-medium">All administrators</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-[var(--cl-up-soft)] rounded-lg">
-							<CheckCircle className="w-6 h-6 text-[var(--cl-up)]" />
+						<div className="p-3 bg-success/10 rounded-lg">
+							<CheckCircle className="w-6 h-6 text-success" />
 						</div>
 					</div>
-					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Active</p>
-					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">
+					<p className="text-sm text-muted-foreground font-medium mb-1">Active</p>
+					<p className="text-3xl font-bold text-foreground mb-2">
 						{admins.filter((a) => a.status === "Active").length}
 					</p>
-					<p className="text-xs text-[var(--cl-up)] font-medium">Currently active</p>
+					<p className="text-xs text-success font-medium">Currently active</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-red-50 to-white rounded-xl border border-red-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-[var(--cl-down-soft)] rounded-lg">
-							<AlertCircle className="w-6 h-6 text-[var(--cl-down)]" />
+						<div className="p-3 bg-danger/10 rounded-lg">
+							<AlertCircle className="w-6 h-6 text-danger" />
 						</div>
 					</div>
-					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Suspended</p>
-					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">
+					<p className="text-sm text-muted-foreground font-medium mb-1">Suspended</p>
+					<p className="text-3xl font-bold text-foreground mb-2">
 						{admins.filter((a) => a.status === "Suspended").length}
 					</p>
-					<p className="text-xs text-[var(--cl-down)] font-medium">Temporarily blocked</p>
+					<p className="text-xs text-danger font-medium">Temporarily blocked</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-[var(--cl-info-soft)] rounded-lg">
-							<Activity className="w-6 h-6 text-[var(--cl-brand-600)]" />
+						<div className="p-3 bg-primary/10 rounded-lg">
+							<Activity className="w-6 h-6 text-primary" />
 						</div>
 					</div>
-					<p className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Online Now</p>
-					<p className="text-3xl font-bold text-[var(--cl-text)] mb-2">3</p>
-					<p className="text-xs text-[var(--cl-brand-600)] font-medium">Currently online</p>
+					<p className="text-sm text-muted-foreground font-medium mb-1">Online Now</p>
+					<p className="text-3xl font-bold text-foreground mb-2">3</p>
+					<p className="text-xs text-primary font-medium">Currently online</p>
 				</div>
 			</div>
 
 			{/* Filters */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4">
+			<div className="bg-card rounded-lg border border-border p-4">
 				<div className="flex flex-col md:flex-row items-start md:items-center gap-4">
 					<div className="flex-1">
 						<SearchBar
@@ -368,7 +368,7 @@ export default function AdminsPage() {
 					<select
 						value={selectedRole}
 						onChange={(e) => setSelectedRole(e.target.value)}
-						className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+						className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
 					>
 						{roles.map((role) => (
 							<option key={role} value={role}>
@@ -380,7 +380,7 @@ export default function AdminsPage() {
 					<select
 						value={selectedStatus}
 						onChange={(e) => setSelectedStatus(e.target.value)}
-						className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+						className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
 					>
 						{statuses.map((status) => (
 							<option key={status} value={status}>
@@ -392,10 +392,10 @@ export default function AdminsPage() {
 			</div>
 
 			{/* Admins Table */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)]">
-				<div className="p-6 border-b border-[var(--cl-line)]">
-					<h2 className="text-lg font-semibold text-[var(--cl-text)]">Administrator Accounts</h2>
-					<p className="text-sm text-[var(--cl-text-2)] mt-1">
+			<div className="bg-card rounded-lg border border-border">
+				<div className="p-6 border-b border-border">
+					<h2 className="text-lg font-semibold text-foreground">Administrator Accounts</h2>
+					<p className="text-sm text-muted-foreground mt-1">
 						Showing {filteredAdmins.length} of {admins.length} admins
 					</p>
 				</div>
@@ -403,50 +403,50 @@ export default function AdminsPage() {
 				<div className="overflow-x-auto">
 					<table className="w-full">
 						<thead>
-							<tr className="border-b border-[var(--cl-line)] bg-[var(--cl-bg)]">
-								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+							<tr className="border-b border-border bg-background">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Admin
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Contact
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">Role</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">Role</th>
+								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Status
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Last Login
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Permissions
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-[var(--cl-text-2)] uppercase">
+								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
 									Actions
 								</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-[#E9EAEB]">
+						<tbody className="divide-y divide-border">
 							{filteredAdmins.map((admin) => (
-								<tr key={admin.id} className="hover:bg-[var(--cl-bg)] transition-colors">
+								<tr key={admin.id} className="hover:bg-background transition-colors">
 									<td className="py-4 px-6">
 										<div className="flex items-center gap-3">
-											<div className="w-10 h-10 bg-gradient-to-br from-[#014F01] to-[#013d01] rounded-full flex items-center justify-center">
+											<div className="w-10 h-10 bg-gradient-to-br from-brand-800 to-brand-900 rounded-full flex items-center justify-center">
 												<span className="text-white font-semibold text-sm">{admin.avatar}</span>
 											</div>
 											<div>
-												<div className="text-sm font-medium text-[var(--cl-text)]">{admin.name}</div>
-												<div className="text-xs text-[var(--cl-text-3)]">Joined {formatDate(admin.createdDate)}</div>
+												<div className="text-sm font-medium text-foreground">{admin.name}</div>
+												<div className="text-xs text-muted-foreground">Joined {formatDate(admin.createdDate)}</div>
 											</div>
 										</div>
 									</td>
 									<td className="py-4 px-6">
 										<div className="space-y-1">
-											<div className="flex items-center gap-2 text-sm text-[var(--cl-text)]">
-												<Mail className="w-3 h-3 text-[var(--cl-text-3)]" />
+											<div className="flex items-center gap-2 text-sm text-foreground">
+												<Mail className="w-3 h-3 text-muted-foreground" />
 												{admin.email}
 											</div>
-											<div className="flex items-center gap-2 text-sm text-[var(--cl-text-2)]">
-												<Phone className="w-3 h-3 text-[var(--cl-text-3)]" />
+											<div className="flex items-center gap-2 text-sm text-muted-foreground">
+												<Phone className="w-3 h-3 text-muted-foreground" />
 												{admin.phone}
 											</div>
 										</div>
@@ -471,8 +471,8 @@ export default function AdminsPage() {
 										</span>
 									</td>
 									<td className="py-4 px-6">
-										<div className="flex items-center gap-2 text-sm text-[var(--cl-text)]">
-											<Clock className="w-3 h-3 text-[var(--cl-text-3)]" />
+										<div className="flex items-center gap-2 text-sm text-foreground">
+											<Clock className="w-3 h-3 text-muted-foreground" />
 											{admin.lastLogin}
 										</div>
 									</td>
@@ -481,13 +481,13 @@ export default function AdminsPage() {
 											{admin.permissions.slice(0, 2).map((permission) => (
 												<span
 													key={permission}
-													className="px-2 py-0.5 bg-[var(--cl-surface-2)] text-[var(--cl-text-2)] text-xs rounded border border-[var(--cl-line)]"
+													className="px-2 py-0.5 bg-muted text-muted-foreground text-xs rounded border border-border"
 												>
 													{permission}
 												</span>
 											))}
 											{admin.permissions.length > 2 && (
-												<span className="px-2 py-0.5 bg-[var(--cl-surface-2)] text-[var(--cl-text-2)] text-xs rounded border border-[var(--cl-line)]">
+												<span className="px-2 py-0.5 bg-muted text-muted-foreground text-xs rounded border border-border">
 													+{admin.permissions.length - 2}
 												</span>
 											)}
@@ -497,28 +497,28 @@ export default function AdminsPage() {
 										<div className="flex items-center gap-2">
 											<button
 												onClick={() => openEditModal(admin)}
-												className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
+												className="p-1.5 hover:bg-muted rounded transition-colors"
 												title="Edit"
 											>
-												<Edit className="w-4 h-4 text-[var(--cl-text-2)]" />
+												<Edit className="w-4 h-4 text-muted-foreground" />
 											</button>
 											<button
 												onClick={() => handleSuspendAdmin(admin.id)}
-												className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
+												className="p-1.5 hover:bg-muted rounded transition-colors"
 												title={admin.status === "Suspended" ? "Activate" : "Suspend"}
 											>
 												{admin.status === "Suspended" ? (
-													<Unlock className="w-4 h-4 text-[var(--cl-up)]" />
+													<Unlock className="w-4 h-4 text-success" />
 												) : (
 													<Lock className="w-4 h-4 text-orange-600" />
 												)}
 											</button>
 											<button
 												onClick={() => setShowDeleteModal(admin.id)}
-												className="p-1.5 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
+												className="p-1.5 hover:bg-muted rounded transition-colors"
 												title="Delete"
 											>
-												<Trash2 className="w-4 h-4 text-[var(--cl-down)]" />
+												<Trash2 className="w-4 h-4 text-danger" />
 											</button>
 										</div>
 									</td>
@@ -544,22 +544,22 @@ export default function AdminsPage() {
 					<div className="space-y-6">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div>
-									<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Full Name *</label>
+									<label className="block text-sm font-medium text-muted-foreground mb-2">Full Name *</label>
 									<input
 										type="text"
 										value={formData.name}
 										onChange={(e) => setFormData({ ...formData, name: e.target.value })}
 										placeholder="e.g., John Doe"
-										className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+										className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 									/>
 								</div>
 
 								<div>
-									<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Role *</label>
+									<label className="block text-sm font-medium text-muted-foreground mb-2">Role *</label>
 									<select
 										value={formData.role}
 										onChange={(e) => setFormData({ ...formData, role: e.target.value as Admin["role"] })}
-										className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+										className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 									>
 										<option value="Admin">Admin</option>
 										<option value="Super Admin">Super Admin</option>
@@ -570,36 +570,36 @@ export default function AdminsPage() {
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Email Address *</label>
+								<label className="block text-sm font-medium text-muted-foreground mb-2">Email Address *</label>
 								<input
 									type="email"
 									value={formData.email}
 									onChange={(e) => setFormData({ ...formData, email: e.target.value })}
 									placeholder="admin@clusteer.com"
-									className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+									className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 								/>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Phone Number *</label>
+								<label className="block text-sm font-medium text-muted-foreground mb-2">Phone Number *</label>
 								<input
 									type="tel"
 									value={formData.phone}
 									onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
 									placeholder="+234 801 234 5678"
-									className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+									className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 								/>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-3">
+								<label className="block text-sm font-medium text-muted-foreground mb-3">
 									Permissions ({formData.permissions.length} selected)
 								</label>
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-3 bg-[var(--cl-bg)] rounded-lg">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-3 bg-background rounded-lg">
 									{availablePermissions.map((permission) => (
 										<label
 											key={permission.id}
-											className="flex items-start gap-3 p-3 border border-[var(--cl-line)] bg-[var(--cl-surface)] rounded-lg cursor-pointer hover:border-[#014F01]/20 transition-colors"
+											className="flex items-start gap-3 p-3 border border-border bg-card rounded-lg cursor-pointer hover:border-primary/20 transition-colors"
 										>
 											<input
 												type="checkbox"
@@ -608,8 +608,8 @@ export default function AdminsPage() {
 												className="mt-1"
 											/>
 											<div>
-												<div className="text-sm font-medium text-[var(--cl-text)]">{permission.label}</div>
-												<div className="text-xs text-[var(--cl-text-2)]">{permission.description}</div>
+												<div className="text-sm font-medium text-foreground">{permission.label}</div>
+												<div className="text-xs text-muted-foreground">{permission.description}</div>
 											</div>
 										</label>
 									))}
@@ -623,7 +623,7 @@ export default function AdminsPage() {
 										setShowEditModal(null);
 										setFormData({ name: "", email: "", phone: "", role: "Admin", permissions: [] });
 									}}
-									className="px-4 py-2 text-[var(--cl-text-2)] bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+									className="px-4 py-2 text-muted-foreground bg-card border border-border rounded-lg hover:bg-background transition-colors"
 								>
 									Cancel
 								</button>
@@ -635,7 +635,7 @@ export default function AdminsPage() {
 										!formData.phone.trim() ||
 										formData.permissions.length === 0
 									}
-									className="px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors"
+									className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
 								>
 									{showEditModal ? "Update Admin" : "Create Admin"}
 								</button>

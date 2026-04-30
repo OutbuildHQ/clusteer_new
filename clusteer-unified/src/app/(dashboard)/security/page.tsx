@@ -14,7 +14,7 @@ export default function Page() {
 	return (
 		<section className="mt-5 lg:mt-10 pb-[113px] xl:pb-[140px]">
 			<header>
-				<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
+				<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
 					Security
 				</h1>
 				<p className="text-sm lg:mt-2">
@@ -40,7 +40,7 @@ export default function Page() {
 									variant="secondary"
 									className={`rounded-full ml-auto h-6 py-1 ${
 										is2FAEnabled
-											? "text-[var(--cl-up)] bg-[var(--cl-up-soft)]"
+											? "text-success bg-success/10"
 											: "text-[#344054] bg-[#E9E9E9]"
 									}`}
 								>
@@ -59,7 +59,7 @@ export default function Page() {
 								transaction security. Changing your bound Google Authenticator
 								will disable payment and withdrawal for 24 hours.
 							</p>
-							<span className="text-[var(--cl-brand-500)] text-[15px] font-medium mt-1.5 inline-block">
+							<span className="text-primary text-[15px] font-medium mt-1.5 inline-block">
 								{is2FAEnabled ? "Manage" : "Bind"}
 							</span>
 						</li>
@@ -72,7 +72,7 @@ export default function Page() {
 									variant="secondary"
 									className={`rounded-full ml-auto h-6 py-1 ${
 										isEmailVerified
-											? "text-[var(--cl-up)] bg-[var(--cl-up-soft)]"
+											? "text-success bg-success/10"
 											: "text-[#344054] bg-[#E9E9E9]"
 									}`}
 								>
@@ -89,7 +89,7 @@ export default function Page() {
 								security. Changing your bound email will disable payment and
 								withdrawal for 24 hours.
 							</p>
-							<span className="text-[var(--cl-brand-500)] text-[15px] font-medium mt-1.5 inline-block">
+							<span className="text-primary text-[15px] font-medium mt-1.5 inline-block">
 								{isEmailVerified ? "Change" : "Bind"}
 							</span>
 						</li>
@@ -121,7 +121,7 @@ export default function Page() {
 							security. Changing your bound phone number will disable payment
 							and withdrawal for 24 hours.
 						</p>
-						<span className="text-[#667085] text-[15px] font-medium mt-1.5 inline-block">
+						<span className="text-muted-foreground text-[15px] font-medium mt-1.5 inline-block">
 							Coming soon
 						</span>
 					</li>
@@ -141,7 +141,7 @@ export default function Page() {
 								/>
 								<Badge
 									variant="secondary"
-									className="rounded-full ml-auto h-6 text-[var(--cl-up)] bg-[var(--cl-up-soft)] py-1"
+									className="rounded-full ml-auto h-6 text-success bg-success/10 py-1"
 								>
 									<DotIcon
 										stroke="#15803d"
@@ -156,7 +156,7 @@ export default function Page() {
 								security. Changing the login password will disable payment and
 								withdrawal for 24 hours.
 							</p>
-							<span className="text-[var(--cl-brand-500)] text-[15px] font-medium mt-1.5 inline-block">
+							<span className="text-primary text-[15px] font-medium mt-1.5 inline-block">
 								Change
 							</span>
 						</li>

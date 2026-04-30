@@ -82,7 +82,7 @@ export default function BreadcrumbNav() {
 			<BreadcrumbList className="!gap-3">
 				<BreadcrumbItem>
 					<BreadcrumbLink
-						className="text-[#98A2B3] hover:text-[#0D0D0D] transition-colors"
+						className="text-muted-foreground hover:text-foreground transition-colors"
 						href="/dashboard"
 					>
 						Dashboard
@@ -104,12 +104,12 @@ export default function BreadcrumbNav() {
 							</BreadcrumbSeparator>
 							<BreadcrumbItem>
 								{isLast ? (
-									<BreadcrumbPage className="text-[#0D0D0D] font-semibold">
+									<BreadcrumbPage className="text-foreground font-semibold">
 										{breadcrumb.label}
 									</BreadcrumbPage>
 								) : (
 									<BreadcrumbLink
-										className="text-[#98A2B3] hover:text-[#0D0D0D] transition-colors"
+										className="text-muted-foreground hover:text-foreground transition-colors"
 										href={breadcrumb.href}
 									>
 										{breadcrumb.label}

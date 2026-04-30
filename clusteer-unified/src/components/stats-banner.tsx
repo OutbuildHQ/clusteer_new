@@ -33,12 +33,12 @@ function AnimatedStat({ end, label, prefix = "", suffix = "" }: StatProps) {
 
 	return (
 		<div className="flex flex-col items-center text-center">
-			<div className="text-3xl lg:text-4xl font-bold text-[var(--cl-brand-500)] mb-2">
+			<div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
 				{prefix}
 				{count.toLocaleString()}
 				{suffix}
 			</div>
-			<div className="text-sm lg:text-base text-[var(--cl-text-2)] font-medium">
+			<div className="text-sm lg:text-base text-muted-foreground font-medium">
 				{label}
 			</div>
 		</div>
@@ -47,7 +47,7 @@ function AnimatedStat({ end, label, prefix = "", suffix = "" }: StatProps) {
 
 export default function StatsBanner() {
 	return (
-		<section className="bg-[#F0EBE6] border-y-2 border-black py-12 lg:py-16">
+		<section className="bg-warm-beige border-y-2 border-black py-12 lg:py-16">
 			<div className="container mx-auto px-4">
 				<div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
 					<AnimatedStat end={50} label="Traded Volume" prefix="₦" suffix="B+" />

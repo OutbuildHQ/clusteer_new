@@ -42,7 +42,7 @@ export default function IdentityVerfication() {
 
 					<div className="mt-4.5">
 						<FormItem className="gap-1.5">
-							<Label className="font-medium text-[var(--cl-text)]">Residency</Label>
+							<Label className="font-medium text-foreground">Residency</Label>
 							<Select defaultValue="nigeria">
 								<SelectTrigger className="w-full border-black shadow-[0px_1px_2px_0px_#1018280D">
 									<SelectValue />
@@ -80,7 +80,7 @@ export default function IdentityVerfication() {
 							type="button"
 							variant="ghost"
 							onClick={goNext}
-							className="border-black bg-light-green font-semibold w-full h-11 text-base mt-[82px] border text-[var(--cl-text)]"
+							className="border-black bg-light-green font-semibold w-full h-11 text-base mt-[82px] border text-foreground"
 						>
 							Continue
 						</Button>
@@ -122,7 +122,7 @@ export default function IdentityVerfication() {
 										</Label>
 										<Badge
 											variant="secondary"
-											className="h-5 bg-pale-green px-3 text-[var(--cl-brand-500)] rounded-none font-medium text-sm mt-1"
+											className="h-5 bg-pale-green px-3 text-primary rounded-none font-medium text-sm mt-1"
 										>
 											Recommended
 										</Badge>
@@ -157,7 +157,7 @@ export default function IdentityVerfication() {
 						<Link
 							href={`/identity-verification/verify/${selectedOption?.toLocaleLowerCase()}`}
 						>
-							<Button className="border-black bg-light-green border text-[var(--cl-text)] font-semibold text-base hover:bg-muted w-full h-11 mt-14.5">
+							<Button className="border-black bg-light-green border text-foreground font-semibold text-base hover:bg-muted w-full h-11 mt-14.5">
 								Continue
 							</Button>
 						</Link>

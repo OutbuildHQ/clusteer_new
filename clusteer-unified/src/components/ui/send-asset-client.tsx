@@ -80,7 +80,7 @@ export default function SendAssetClient({ asset }: { asset: string }) {
 						<div className="ml-5 ">
 							<Select>
 								<SelectTrigger
-									className="shadow-none placeholder:text-[var(--cl-text-3)] gap-x-2 text-base rounded-full capitalize justify-between w-full py-5 px-8 !h-auto border-[var(--cl-line-strong)] bg-[var(--cl-bg)]"
+									className="shadow-none placeholder:text-muted-foreground gap-x-2 text-base rounded-full capitalize justify-between w-full py-5 px-8 !h-auto border-border bg-background"
 									aria-label="Choose a Network"
 								>
 									<SelectValue placeholder="Choose a Network" />
@@ -109,7 +109,7 @@ export default function SendAssetClient({ asset }: { asset: string }) {
 						</div>
 						<div className="relative px-2.5 mt-3">
 							<div className="bg-[#F2F2F0] border border-[#0000004D] rounded-2xl p-5 flex flex-col lg:flex-row gap-x-10">
-								<div className="relative p-2.5 rounded-lg bg-[var(--cl-surface)] w-fit border border-[#D9EAFD] shadow-[0px_1px_12px_0px_#00000026]">
+								<div className="relative p-2.5 rounded-lg bg-card w-fit border border-[#D9EAFD] shadow-[0px_1px_12px_0px_#00000026]">
 									<Image
 										className="h-full"
 										src="/assets/icons/qr_code.svg"
@@ -123,7 +123,7 @@ export default function SendAssetClient({ asset }: { asset: string }) {
 										USDT Address
 									</span>
 									<Input
-										className="text-base font-medium py-4 px-3.5 bg-[var(--cl-surface)] border-real-black disabled:opacity-100 !h-auto"
+										className="text-base font-medium py-4 px-3.5 bg-card border-real-black disabled:opacity-100 !h-auto"
 										value={wallet.address}
 										disabled
 									/>

@@ -178,16 +178,16 @@ export default function BankAccountManagementPage() {
     switch (status) {
       case "Active":
       case "Verified":
-        return "text-[var(--cl-up)] bg-[var(--cl-up-soft)] border-[var(--cl-up)]";
+        return "text-success bg-success/10 border-success";
       case "Pending":
       case "Pending Verification":
         return "text-orange-700 bg-orange-50 border-orange-200";
       case "Inactive":
       case "Suspended":
       case "Failed":
-        return "text-[var(--cl-down)] bg-[var(--cl-down-soft)] border-[var(--cl-down)]";
+        return "text-danger bg-danger/10 border-danger";
       default:
-        return "text-[var(--cl-text-2)] bg-[var(--cl-bg)] border-[var(--cl-line)]";
+        return "text-muted-foreground bg-background border-border";
     }
   };
 
@@ -244,8 +244,8 @@ export default function BankAccountManagementPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014F01] mx-auto"></div>
-          <p className="mt-4 text-[var(--cl-text-2)]">Loading bank accounts...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading bank accounts...</p>
         </div>
       </div>
     );
@@ -256,20 +256,20 @@ export default function BankAccountManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--cl-text)]">Bank Account Management</h1>
-          <p className="text-[var(--cl-text-2)] mt-1">Manage connected bank accounts for settlements</p>
+          <h1 className="text-2xl font-bold text-foreground">Bank Account Management</h1>
+          <p className="text-muted-foreground mt-1">Manage connected bank accounts for settlements</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setShowBalances(!showBalances)}
-            className="flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
           >
             {showBalances ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             {showBalances ? "Hide" : "Show"} Balances
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013800] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#013800] transition-colors"
           >
             <Plus className="h-4 w-4" />
             Add Bank Account
@@ -279,59 +279,59 @@ export default function BankAccountManagementPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+        <div className="bg-card rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-2">
-            <Building2 className="h-5 w-5 text-[#014F01]" />
-            <span className="text-xs text-[var(--cl-text-2)]">{accounts.length} Total</span>
+            <Building2 className="h-5 w-5 text-primary" />
+            <span className="text-xs text-muted-foreground">{accounts.length} Total</span>
           </div>
-          <p className="text-2xl font-bold text-[var(--cl-text)]">{activeAccounts}</p>
-          <p className="text-sm text-[var(--cl-text-2)] mt-1">Active Accounts</p>
+          <p className="text-2xl font-bold text-foreground">{activeAccounts}</p>
+          <p className="text-sm text-muted-foreground mt-1">Active Accounts</p>
         </div>
 
-        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+        <div className="bg-card rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-2">
-            <Shield className="h-5 w-5 text-[var(--cl-up)]" />
-            <span className="text-xs text-[var(--cl-text-2)]">{uniqueBanks.length} Banks</span>
+            <Shield className="h-5 w-5 text-success" />
+            <span className="text-xs text-muted-foreground">{uniqueBanks.length} Banks</span>
           </div>
-          <p className="text-2xl font-bold text-[var(--cl-text)]">
+          <p className="text-2xl font-bold text-foreground">
             {showBalances ? formatCurrency(totalBalance) : "••••••"}
           </p>
-          <p className="text-sm text-[var(--cl-text-2)] mt-1">Total Balance</p>
+          <p className="text-sm text-muted-foreground mt-1">Total Balance</p>
         </div>
 
-        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+        <div className="bg-card rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-2">
             <Clock className="h-5 w-5 text-orange-600" />
-            <span className="text-xs text-[var(--cl-text-2)]">Verification</span>
+            <span className="text-xs text-muted-foreground">Verification</span>
           </div>
-          <p className="text-2xl font-bold text-[var(--cl-text)]">{pendingVerification}</p>
-          <p className="text-sm text-[var(--cl-text-2)] mt-1">Pending Verification</p>
+          <p className="text-2xl font-bold text-foreground">{pendingVerification}</p>
+          <p className="text-sm text-muted-foreground mt-1">Pending Verification</p>
         </div>
 
-        <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+        <div className="bg-card rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-2">
-            <AlertTriangle className="h-5 w-5 text-[var(--cl-down)]" />
-            <span className="text-xs text-[var(--cl-text-2)]">Reconciliation</span>
+            <AlertTriangle className="h-5 w-5 text-danger" />
+            <span className="text-xs text-muted-foreground">Reconciliation</span>
           </div>
-          <p className="text-2xl font-bold text-[var(--cl-text)]">
+          <p className="text-2xl font-bold text-foreground">
             {showBalances ? formatCurrency(totalDiscrepancy) : "••••••"}
           </p>
-          <p className="text-sm text-[var(--cl-text-2)] mt-1">Total Discrepancy</p>
+          <p className="text-sm text-muted-foreground mt-1">Total Discrepancy</p>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4 mb-6">
+      <div className="bg-card rounded-lg border border-border p-4 mb-6">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex-1 min-w-[300px]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--cl-text-3)]" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search by bank, account number, or name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>
@@ -339,7 +339,7 @@ export default function BankAccountManagementPage() {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="all">All Status</option>
             <option value="Active">Active</option>
@@ -351,7 +351,7 @@ export default function BankAccountManagementPage() {
           <select
             value={filterBank}
             onChange={(e) => setFilterBank(e.target.value)}
-            className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="all">All Banks</option>
             {uniqueBanks.map((bank) => (
@@ -361,12 +361,12 @@ export default function BankAccountManagementPage() {
             ))}
           </select>
 
-          <button className="flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors">
             <Download className="h-4 w-4" />
             Export
           </button>
 
-          <button className="flex items-center gap-2 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors">
             <RefreshCw className="h-4 w-4" />
             Refresh
           </button>
@@ -374,71 +374,71 @@ export default function BankAccountManagementPage() {
       </div>
 
       {/* Bank Accounts Table */}
-      <div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] overflow-hidden">
+      <div className="bg-card rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[var(--cl-bg)] border-b border-[var(--cl-line)]">
+            <thead className="bg-background border-b border-border">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--cl-text-3)] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Bank Account
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--cl-text-3)] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Account Details
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--cl-text-3)] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Balance
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--cl-text-3)] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--cl-text-3)] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Activity
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--cl-text-3)] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E9EAEB]">
+            <tbody className="divide-y divide-border">
               {filteredAccounts.map((account) => (
-                <tr key={account.id} className="hover:bg-[var(--cl-bg)] transition-colors">
+                <tr key={account.id} className="hover:bg-background transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#014F01] to-[#B8E632] flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-800 to-light-green flex items-center justify-center">
                         <Building2 className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <p className="font-medium text-[var(--cl-text)] flex items-center gap-2">
+                        <p className="font-medium text-foreground flex items-center gap-2">
                           {account.bankName}
                           {account.isPrimary && (
-                            <span className="px-2 py-0.5 bg-[#B8E632] text-[#014F01] text-xs font-medium rounded">
+                            <span className="px-2 py-0.5 bg-[#B8E632] text-primary text-xs font-medium rounded">
                               PRIMARY
                             </span>
                           )}
                         </p>
-                        <p className="text-sm text-[var(--cl-text-2)]">{account.accountType}</p>
+                        <p className="text-sm text-muted-foreground">{account.accountType}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div>
-                      <p className="font-medium text-[var(--cl-text)]">{account.accountNumber}</p>
-                      <p className="text-sm text-[var(--cl-text-2)]">{account.accountName}</p>
+                      <p className="font-medium text-foreground">{account.accountNumber}</p>
+                      <p className="text-sm text-muted-foreground">{account.accountName}</p>
                       {account.notes && (
-                        <p className="text-xs text-[var(--cl-text-3)] mt-1">{account.notes}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{account.notes}</p>
                       )}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
-                      <p className="font-medium text-[var(--cl-text)]">
+                      <p className="font-medium text-foreground">
                         {showBalances ? formatCurrency(account.balance) : "••••••••"}
                       </p>
-                      <p className="text-xs text-[var(--cl-text-2)]">
+                      <p className="text-xs text-muted-foreground">
                         Txns: {account.transactionCount.toLocaleString()}
                       </p>
                       {account.discrepancy !== 0 && (
-                        <p className="text-xs text-[var(--cl-down)] mt-1 flex items-center gap-1">
+                        <p className="text-xs text-danger mt-1 flex items-center gap-1">
                           <AlertTriangle className="h-3 w-3" />
                           {formatCurrency(Math.abs(account.discrepancy))} off
                         </p>
@@ -455,10 +455,10 @@ export default function BankAccountManagementPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--cl-text-2)]">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                     <div>
                       <p>Last: {formatDateTime(account.lastActivity)}</p>
-                      <p className="text-xs text-[var(--cl-text-3)] mt-1">
+                      <p className="text-xs text-muted-foreground mt-1">
                         Reconciled: {formatDateTime(account.lastReconciled)}
                       </p>
                     </div>
@@ -468,26 +468,26 @@ export default function BankAccountManagementPage() {
                       {!account.isPrimary && account.status === "Active" && (
                         <button
                           onClick={() => handleSetPrimary(account.id)}
-                          className="p-2 hover:bg-[var(--cl-up-soft)] rounded-lg transition-colors"
+                          className="p-2 hover:bg-success/10 rounded-lg transition-colors"
                           title="Set as Primary"
                         >
-                          <CheckCircle className="h-4 w-4 text-[var(--cl-up)]" />
+                          <CheckCircle className="h-4 w-4 text-success" />
                         </button>
                       )}
                       <button
                         onClick={() => handleEdit(account)}
-                        className="p-2 hover:bg-[var(--cl-info-soft)] rounded-lg transition-colors"
+                        className="p-2 hover:bg-primary/10 rounded-lg transition-colors"
                         title="Edit"
                       >
-                        <Edit2 className="h-4 w-4 text-[var(--cl-brand-600)]" />
+                        <Edit2 className="h-4 w-4 text-primary" />
                       </button>
                       {!account.isPrimary && (
                         <button
                           onClick={() => handleDelete(account)}
-                          className="p-2 hover:bg-[var(--cl-down-soft)] rounded-lg transition-colors"
+                          className="p-2 hover:bg-danger/10 rounded-lg transition-colors"
                           title="Delete"
                         >
-                          <Trash2 className="h-4 w-4 text-[var(--cl-down)]" />
+                          <Trash2 className="h-4 w-4 text-danger" />
                         </button>
                       )}
                     </div>
@@ -500,11 +500,11 @@ export default function BankAccountManagementPage() {
 
         {filteredAccounts.length === 0 && (
           <div className="text-center py-12">
-            <Building2 className="h-12 w-12 text-[var(--cl-text-3)] mx-auto mb-4" />
-            <p className="text-[var(--cl-text-2)]">No bank accounts found</p>
+            <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No bank accounts found</p>
             <button
               onClick={() => setShowAddModal(true)}
-              className="mt-4 text-[#014F01] hover:underline"
+              className="mt-4 text-primary hover:underline"
             >
               Add your first bank account
             </button>
@@ -515,15 +515,15 @@ export default function BankAccountManagementPage() {
       {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-[var(--cl-surface)] rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
-            <h3 className="text-lg font-semibold text-[var(--cl-text)] mb-4">Add Bank Account</h3>
+          <div className="bg-card rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Add Bank Account</h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     Bank Name
                   </label>
-                  <select className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]">
+                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring">
                     <option value="">Select Bank</option>
                     <option value="058">GTBank</option>
                     <option value="044">Access Bank</option>
@@ -532,10 +532,10 @@ export default function BankAccountManagementPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     Account Type
                   </label>
-                  <select className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]">
+                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring">
                     <option value="Savings">Savings</option>
                     <option value="Current">Current</option>
                     <option value="Corporate">Corporate</option>
@@ -543,55 +543,55 @@ export default function BankAccountManagementPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Account Number
                 </label>
                 <input
                   type="text"
                   placeholder="0123456789"
-                  className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Account Name
                 </label>
                 <input
                   type="text"
                   placeholder="Will be auto-filled after verification"
                   disabled
-                  className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg bg-[var(--cl-bg)]"
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Daily Limit
                 </label>
                 <input
                   type="number"
                   placeholder="10000000"
-                  className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--cl-text-2)] mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Notes (Optional)
                 </label>
                 <textarea
                   rows={3}
                   placeholder="Add any notes about this account..."
-                  className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 ></textarea>
               </div>
             </div>
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
               >
                 Cancel
               </button>
-              <button className="flex-1 px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013800] transition-colors">
+              <button className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#013800] transition-colors">
                 Add Account
               </button>
             </div>
@@ -602,22 +602,22 @@ export default function BankAccountManagementPage() {
       {/* Delete Modal */}
       {showDeleteModal && selectedAccount && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-[var(--cl-surface)] rounded-lg max-w-md w-full p-6 animate-in slide-in-from-bottom duration-300">
+          <div className="bg-card rounded-lg max-w-md w-full p-6 animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-[var(--cl-down-soft)] flex items-center justify-center">
-                <AlertTriangle className="h-6 w-6 text-[var(--cl-down)]" />
+              <div className="w-12 h-12 rounded-full bg-danger/10 flex items-center justify-center">
+                <AlertTriangle className="h-6 w-6 text-danger" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-[var(--cl-text)]">Delete Bank Account</h3>
-                <p className="text-sm text-[var(--cl-text-2)]">This action cannot be undone</p>
+                <h3 className="text-lg font-semibold text-foreground">Delete Bank Account</h3>
+                <p className="text-sm text-muted-foreground">This action cannot be undone</p>
               </div>
             </div>
-            <div className="bg-[var(--cl-bg)] rounded-lg p-4 mb-4">
-              <p className="font-medium text-[var(--cl-text)]">{selectedAccount.bankName}</p>
-              <p className="text-sm text-[var(--cl-text-2)]">{selectedAccount.accountNumber}</p>
-              <p className="text-sm text-[var(--cl-text-2)]">{selectedAccount.accountName}</p>
+            <div className="bg-background rounded-lg p-4 mb-4">
+              <p className="font-medium text-foreground">{selectedAccount.bankName}</p>
+              <p className="text-sm text-muted-foreground">{selectedAccount.accountNumber}</p>
+              <p className="text-sm text-muted-foreground">{selectedAccount.accountName}</p>
             </div>
-            <p className="text-sm text-[var(--cl-text-2)] mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
               Are you sure you want to delete this bank account? All associated data will be preserved
               for audit purposes, but the account will no longer be available for settlements.
             </p>
@@ -627,13 +627,13 @@ export default function BankAccountManagementPage() {
                   setShowDeleteModal(false);
                   setSelectedAccount(null);
                 }}
-                className="flex-1 px-4 py-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors"
+                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
-                className="flex-1 px-4 py-2 bg-[var(--cl-down)] text-white rounded-lg hover:bg-[var(--cl-down)]/90 transition-colors"
+                className="flex-1 px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90 transition-colors"
               >
                 Delete Account
               </button>

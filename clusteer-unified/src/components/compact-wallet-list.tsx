@@ -13,10 +13,10 @@ export default function CompactWalletList() {
 
 	if (allWallets.length === 0) {
 		return (
-			<div className="bg-[#F7F9FA] rounded-xl border border-[var(--cl-line)] p-8 text-center">
-				<div className="w-16 h-16 mx-auto bg-[var(--cl-surface)] rounded-full flex items-center justify-center mb-4">
+			<div className="bg-muted rounded-xl border border-border p-8 text-center">
+				<div className="w-16 h-16 mx-auto bg-card rounded-full flex items-center justify-center mb-4">
 					<svg
-						className="w-8 h-8 text-[#667085]"
+						className="w-8 h-8 text-muted-foreground"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -29,15 +29,15 @@ export default function CompactWalletList() {
 						/>
 					</svg>
 				</div>
-				<h3 className="font-semibold text-lg text-[#0D0D0D] mb-2">
+				<h3 className="font-semibold text-lg text-foreground mb-2">
 					No currencies yet
 				</h3>
-				<p className="text-sm text-[#667085] mb-4">
+				<p className="text-sm text-muted-foreground mb-4">
 					Add a currency to your account to start managing your money
 				</p>
 				<Link
 					href="/receive"
-					className="inline-flex items-center justify-center px-4 py-2 bg-[#9FE870] text-custom-black rounded-lg hover:bg-[#8DD659] transition-colors text-sm font-medium"
+					className="inline-flex items-center justify-center px-4 py-2 bg-light-green text-custom-black rounded-lg hover:bg-[#8DD659] transition-colors text-sm font-medium"
 				>
 					Add currency
 				</Link>
@@ -63,10 +63,10 @@ export default function CompactWalletList() {
 					>
 						<Link
 							href={`/assets/${wallet.currency}`}
-							className="group bg-[#F7F9FA] hover:bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-xl p-5 transition-all hover:shadow-md hover:scale-[1.02] block"
+							className="group bg-muted hover:bg-card border border-border rounded-xl p-5 transition-all hover:shadow-md hover:scale-[1.02] block"
 						>
 						<div className="flex items-center gap-3 mb-4">
-							<div className="w-10 h-10 flex items-center justify-center bg-[var(--cl-surface)] rounded-full shadow-sm">
+							<div className="w-10 h-10 flex items-center justify-center bg-card rounded-full shadow-sm">
 								{iconSrc ? (
 									<Image
 										src={iconSrc}
@@ -75,29 +75,29 @@ export default function CompactWalletList() {
 										height={24}
 									/>
 								) : (
-									<div className="text-sm font-bold text-[#667085]">
+									<div className="text-sm font-bold text-muted-foreground">
 										{(wallet.currency || "").substring(0, 2)}
 									</div>
 								)}
 							</div>
 							<div>
-								<p className="font-bold text-[#0D0D0D] uppercase text-sm">
+								<p className="font-bold text-foreground uppercase text-sm">
 									{wallet.currency}
 								</p>
 							</div>
 						</div>
 
 						<div>
-							<p className="text-3xl font-bold text-[#0D0D0D] mb-1">
+							<p className="text-3xl font-bold text-foreground mb-1">
 								{wallet.currency === "NGN" && "₦"}
 								{(wallet.currency === "USDT" || wallet.currency === "USDC") &&
 									"$"}
 								{formatNumber(wallet.balance || 0)}
 							</p>
 							{wallet.balance === 0 ? (
-								<p className="text-xs text-[#667085]">No balance</p>
+								<p className="text-xs text-muted-foreground">No balance</p>
 							) : (
-								<p className="text-xs text-[var(--cl-up)] flex items-center gap-1">
+								<p className="text-xs text-success flex items-center gap-1">
 									<TrendingUp className="w-3 h-3" />
 									Available
 								</p>
@@ -111,15 +111,15 @@ export default function CompactWalletList() {
 			{/* Add Another Currency Card */}
 			<Link
 				href="/receive"
-				className="group bg-[var(--cl-surface)] hover:bg-[#F7F9FA] border-2 border-dashed border-[var(--cl-line)] rounded-xl p-5 transition-all flex flex-col items-center justify-center text-center min-h-[140px]"
+				className="group bg-card hover:bg-muted border-2 border-dashed border-border rounded-xl p-5 transition-all flex flex-col items-center justify-center text-center min-h-[140px]"
 			>
-				<div className="w-12 h-12 flex items-center justify-center bg-[#F7F9FA] group-hover:bg-pale-green rounded-full mb-3 transition-colors">
-					<Plus className="w-6 h-6 text-[#667085] group-hover:text-[var(--cl-brand-500)] transition-colors" />
+				<div className="w-12 h-12 flex items-center justify-center bg-muted group-hover:bg-pale-green rounded-full mb-3 transition-colors">
+					<Plus className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
 				</div>
-				<p className="font-semibold text-[#0D0D0D] text-sm mb-1">
+				<p className="font-semibold text-foreground text-sm mb-1">
 					Add another currency
 				</p>
-				<p className="text-xs text-[#667085]">to your account</p>
+				<p className="text-xs text-muted-foreground">to your account</p>
 			</Link>
 		</div>
 	);

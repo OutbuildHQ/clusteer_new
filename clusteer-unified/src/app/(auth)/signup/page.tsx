@@ -80,8 +80,8 @@ export default function SignupPage() {
 				<label className="flex items-start gap-2 text-sm">
 					<Checkbox className="mt-0.5" {...register("terms")} />
 					<span className="text-muted-foreground">
-						I agree to the <Link href="#" className="text-primary hover:underline">Terms</Link> and acknowledge the{" "}
-						<Link href="#" className="text-primary hover:underline">Privacy Policy</Link>.
+						I agree to the <Link href="/terms-of-service" className="text-primary hover:underline">Terms</Link> and acknowledge the{" "}
+						<Link href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>.
 					</span>
 				</label>
 				{errors.terms && <p className="text-xs text-danger">{errors.terms.message}</p>}

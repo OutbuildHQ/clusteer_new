@@ -41,7 +41,7 @@ export default function MobileMenu() {
 							animate={{ x: 0 }}
 							exit={{ x: "100%" }}
 							transition={{ type: "tween", duration: 0.3 }}
-							className="fixed right-0 top-0 h-full w-[280px] bg-[var(--cl-surface)] shadow-2xl z-50 md:hidden"
+							className="fixed right-0 top-0 h-full w-[280px] bg-card shadow-2xl z-50 md:hidden"
 						>
 							<div className="flex flex-col h-full">
 								{/* Header */}
@@ -69,7 +69,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="/login"
-												className="block text-lg font-semibold hover:text-[var(--cl-brand-500)] transition-colors"
+												className="block text-lg font-semibold hover:text-primary transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												Log In
@@ -78,7 +78,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="/signup"
-												className="block text-lg font-semibold hover:text-[var(--cl-brand-500)] transition-colors"
+												className="block text-lg font-semibold hover:text-primary transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												Sign Up
@@ -87,7 +87,7 @@ export default function MobileMenu() {
 										<li className="pt-4 border-t">
 											<Link
 												href="#how-it-works"
-												className="block text-base hover:text-[var(--cl-brand-500)] transition-colors"
+												className="block text-base hover:text-primary transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												How It Works
@@ -96,7 +96,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="#features"
-												className="block text-base hover:text-[var(--cl-brand-500)] transition-colors"
+												className="block text-base hover:text-primary transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												Features
@@ -105,7 +105,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="#reviews"
-												className="block text-base hover:text-[var(--cl-brand-500)] transition-colors"
+												className="block text-base hover:text-primary transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												Reviews
@@ -114,7 +114,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="#faq"
-												className="block text-base hover:text-[var(--cl-brand-500)] transition-colors"
+												className="block text-base hover:text-primary transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												FAQ

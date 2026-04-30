@@ -4,7 +4,7 @@ import Container from "./container";
 export default function NavBar() {
 	return (
 		<nav>
-			<Container className="flex items-center py-[18px] px-4 w-full bg-[var(--cl-surface)] lg:hidden">
+			<Container className="flex items-center py-[18px] px-4 w-full bg-card lg:hidden">
 				<Image
 					src="/assets/icons/logo_with_name.svg"
 					alt="Clusteer logo"

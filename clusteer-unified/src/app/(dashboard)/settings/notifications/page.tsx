@@ -131,10 +131,10 @@ export default function Page() {
 		return (
 			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 				<header className="mb-6">
-					<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
+					<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
 						Notification Preferences
 					</h1>
-					<p className="text-sm lg:text-base text-[#667085] mt-2">
+					<p className="text-sm lg:text-base text-muted-foreground mt-2">
 						Loading your preferences...
 					</p>
 				</header>
@@ -145,10 +145,10 @@ export default function Page() {
 	return (
 		<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 			<header className="mb-6">
-				<h1 className="text-[var(--cl-text)] font-semibold text-xl lg:text-2xl">
+				<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
 					Notification Preferences
 				</h1>
-				<p className="text-sm lg:text-base text-[#667085] mt-2">
+				<p className="text-sm lg:text-base text-muted-foreground mt-2">
 					Choose how you want to receive notifications about your account
 					activity
 				</p>
@@ -156,28 +156,28 @@ export default function Page() {
 
 			<div className="space-y-8">
 				{/* Email Notifications */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
-							<Mail className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<div className="p-2 bg-primary/10 rounded-lg">
+							<Mail className="w-5 h-5 text-primary" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								Email Notifications
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Receive updates via email
 							</p>
 						</div>
 					</div>
 
 					<div className="space-y-4">
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Transaction confirmations
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									Get notified when transactions are completed
 								</p>
 							</div>
@@ -187,10 +187,10 @@ export default function Page() {
 							/>
 						</div>
 
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">Security alerts</p>
-								<p className="text-sm text-[#667085]">
+								<p className="font-medium text-foreground">Security alerts</p>
+								<p className="text-sm text-muted-foreground">
 									Important security updates and login alerts
 								</p>
 							</div>
@@ -200,10 +200,10 @@ export default function Page() {
 							/>
 						</div>
 
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">Order updates</p>
-								<p className="text-sm text-[#667085]">
+								<p className="font-medium text-foreground">Order updates</p>
+								<p className="text-sm text-muted-foreground">
 									Status changes for your buy and sell orders
 								</p>
 							</div>
@@ -215,10 +215,10 @@ export default function Page() {
 
 						<div className="flex items-center justify-between py-3">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Marketing and promotions
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									News, offers, and product updates
 								</p>
 							</div>
@@ -231,28 +231,28 @@ export default function Page() {
 				</div>
 
 				{/* SMS Notifications */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
-							<MessageSquare className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<div className="p-2 bg-primary/10 rounded-lg">
+							<MessageSquare className="w-5 h-5 text-primary" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								SMS Notifications
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Get text messages for critical updates
 							</p>
 						</div>
 					</div>
 
 					<div className="space-y-4">
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Transaction confirmations
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									SMS alerts for completed transactions
 								</p>
 							</div>
@@ -262,10 +262,10 @@ export default function Page() {
 							/>
 						</div>
 
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">Security alerts</p>
-								<p className="text-sm text-[#667085]">
+								<p className="font-medium text-foreground">Security alerts</p>
+								<p className="text-sm text-muted-foreground">
 									Critical security notifications via SMS
 								</p>
 							</div>
@@ -277,8 +277,8 @@ export default function Page() {
 
 						<div className="flex items-center justify-between py-3">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">Order updates</p>
-								<p className="text-sm text-[#667085]">
+								<p className="font-medium text-foreground">Order updates</p>
+								<p className="text-sm text-muted-foreground">
 									SMS for important order status changes
 								</p>
 							</div>
@@ -291,38 +291,38 @@ export default function Page() {
 				</div>
 
 				{/* Push Notifications */}
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6 opacity-60">
+				<div className="bg-card rounded-2xl border border-border p-6 opacity-60">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-[var(--cl-brand-50)] rounded-lg">
-							<Smartphone className="w-5 h-5 text-[var(--cl-brand-700)]" />
+						<div className="p-2 bg-primary/10 rounded-lg">
+							<Smartphone className="w-5 h-5 text-primary" />
 						</div>
 						<div>
-							<h2 className="font-semibold text-lg text-[#0D0D0D]">
+							<h2 className="font-semibold text-lg text-foreground">
 								Push Notifications
 							</h2>
-							<p className="text-sm text-[#667085]">
+							<p className="text-sm text-muted-foreground">
 								Mobile app notifications (coming soon)
 							</p>
 						</div>
 					</div>
 
 					<div className="space-y-4">
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">
+								<p className="font-medium text-foreground">
 									Transaction confirmations
 								</p>
-								<p className="text-sm text-[#667085]">
+								<p className="text-sm text-muted-foreground">
 									Push alerts for transactions
 								</p>
 							</div>
 							<Switch disabled checked={preferences.push.transactions} />
 						</div>
 
-						<div className="flex items-center justify-between py-3 border-b border-[var(--cl-line)]">
+						<div className="flex items-center justify-between py-3 border-b border-border">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">Security alerts</p>
-								<p className="text-sm text-[#667085]">
+								<p className="font-medium text-foreground">Security alerts</p>
+								<p className="text-sm text-muted-foreground">
 									Important security push notifications
 								</p>
 							</div>
@@ -331,8 +331,8 @@ export default function Page() {
 
 						<div className="flex items-center justify-between py-3">
 							<div>
-								<p className="font-medium text-[#0D0D0D]">Price alerts</p>
-								<p className="text-sm text-[#667085]">
+								<p className="font-medium text-foreground">Price alerts</p>
+								<p className="text-sm text-muted-foreground">
 									Notifications when prices hit your targets
 								</p>
 							</div>
@@ -346,7 +346,7 @@ export default function Page() {
 				<Button
 					onClick={handleSave}
 					disabled={isSaving}
-					className="gradient-border bg-[#11C211] border-[#0a0d120d] text-white h-10 px-6 rounded-full font-semibold"
+					className="bg-primary border-custom-black/5 text-white h-10 px-6 rounded-full font-semibold"
 				>
 					{isSaving ? "Saving..." : "Save Preferences"}
 				</Button>

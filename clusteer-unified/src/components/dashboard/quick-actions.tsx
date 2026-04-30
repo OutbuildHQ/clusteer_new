@@ -10,7 +10,7 @@ const quickActions = [
 		description: "Transfer to anyone",
 		icon: Send,
 		href: "/send",
-		color: "bg-[#9FE870] hover:bg-[#8DD659]",
+		color: "bg-light-green hover:bg-[#8DD659]",
 		iconColor: "text-custom-black",
 	},
 	{
@@ -19,7 +19,7 @@ const quickActions = [
 		icon: Download,
 		href: "/receive",
 		color: "bg-[#E8F5E9] hover:bg-[#D0EBD6]",
-		iconColor: "text-[var(--cl-brand-500)]",
+		iconColor: "text-primary",
 	},
 	{
 		title: "Convert",
@@ -27,15 +27,15 @@ const quickActions = [
 		icon: Repeat,
 		href: "/trade",
 		color: "bg-[#E8F5E9] hover:bg-[#D0EBD6]",
-		iconColor: "text-[var(--cl-brand-500)]",
+		iconColor: "text-primary",
 	},
 	{
 		title: "QR Code",
 		description: "Scan to receive",
 		icon: QrCode,
 		href: "/receive?tab=qr",
-		color: "bg-[var(--cl-surface)] hover:bg-[var(--cl-bg)]",
-		iconColor: "text-[#667085]",
+		color: "bg-card hover:bg-background",
+		iconColor: "text-muted-foreground",
 		border: true,
 	},
 	{
@@ -43,8 +43,8 @@ const quickActions = [
 		description: "Ask for payment",
 		icon: ArrowUpDown,
 		href: "/request",
-		color: "bg-[var(--cl-surface)] hover:bg-[var(--cl-bg)]",
-		iconColor: "text-[#667085]",
+		color: "bg-card hover:bg-background",
+		iconColor: "text-muted-foreground",
 		border: true,
 	},
 	{
@@ -52,8 +52,8 @@ const quickActions = [
 		description: "Manage accounts",
 		icon: CreditCard,
 		href: "/settings/payment-methods",
-		color: "bg-[var(--cl-surface)] hover:bg-[var(--cl-bg)]",
-		iconColor: "text-[#667085]",
+		color: "bg-card hover:bg-background",
+		iconColor: "text-muted-foreground",
 		border: true,
 	},
 ];
@@ -61,7 +61,7 @@ const quickActions = [
 export default function QuickActions() {
 	return (
 		<div className="space-y-4">
-			<h3 className="text-lg font-semibold text-[#0D0D0D]">Quick Actions</h3>
+			<h3 className="text-lg font-semibold text-foreground">Quick Actions</h3>
 			<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
 				{quickActions.map((action) => {
 					const Icon = action.icon;
@@ -70,17 +70,17 @@ export default function QuickActions() {
 							<Button
 								variant="outline"
 								className={`h-auto w-full flex flex-col items-center justify-center p-4 gap-2 ${action.color} ${
-									action.border ? "border-2 border-[var(--cl-line)]" : "border-0"
+									action.border ? "border-2 border-border" : "border-0"
 								} transition-all hover:shadow-md`}
 							>
-								<div className={`w-10 h-10 rounded-full bg-[var(--cl-surface)] flex items-center justify-center ${action.border ? 'shadow-sm' : ''}`}>
+								<div className={`w-10 h-10 rounded-full bg-card flex items-center justify-center ${action.border ? 'shadow-sm' : ''}`}>
 									<Icon className={`w-5 h-5 ${action.iconColor}`} />
 								</div>
 								<div className="text-center">
-									<p className="font-semibold text-sm text-[#0D0D0D]">
+									<p className="font-semibold text-sm text-foreground">
 										{action.title}
 									</p>
-									<p className="text-xs text-[#667085] mt-0.5">
+									<p className="text-xs text-muted-foreground mt-0.5">
 										{action.description}
 									</p>
 								</div>

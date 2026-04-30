@@ -73,12 +73,12 @@ export default function LoginForm() {
 					name="email"
 					render={({ field }) => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="text-[13px] font-medium text-[var(--cl-text-2)]">
+							<FormLabel className="text-[13px] font-medium text-muted-foreground">
 								Email or username
 							</FormLabel>
 							<FormControl>
 								<div className="relative">
-									<Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--cl-text-3)]" />
+									<Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 									<Input
 										type="email"
 										className="h-10 pl-10"
@@ -96,7 +96,7 @@ export default function LoginForm() {
 					name="password"
 					render={() => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="text-[13px] font-medium text-[var(--cl-text-2)]">
+							<FormLabel className="text-[13px] font-medium text-muted-foreground">
 								Password
 							</FormLabel>
 							<FormControl>
@@ -108,13 +108,13 @@ export default function LoginForm() {
 				/>
 
 				<div className="flex justify-between items-center text-[13px]">
-					<label className="flex items-center gap-2 text-[var(--cl-text-2)] cursor-pointer">
+					<label className="flex items-center gap-2 text-muted-foreground cursor-pointer">
 						<input type="checkbox" defaultChecked className="rounded" />
 						Keep me signed in
 					</label>
 					<Link
 						href="/forgot-password"
-						className="text-[var(--cl-brand-500)] font-medium hover:underline"
+						className="text-primary font-medium hover:underline"
 					>
 						Forgot password?
 					</Link>
@@ -136,9 +136,9 @@ export default function LoginForm() {
 					)}
 				</Button>
 
-				<div className="text-center text-[13px] text-[var(--cl-text-3)]">
+				<div className="text-center text-[13px] text-muted-foreground">
 					New to Clusteer?{" "}
-					<Link href="/signup" className="text-[var(--cl-brand-500)] font-medium hover:underline">
+					<Link href="/signup" className="text-primary font-medium hover:underline">
 						Create account
 					</Link>
 				</div>

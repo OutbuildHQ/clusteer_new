@@ -51,7 +51,7 @@ export function NavUser() {
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton
 							size="lg"
-							className="border border-[var(--cl-line)] rounded-[var(--cl-r-lg)] px-3 h-16 data-[state=open]:bg-[var(--cl-surface-2)]"
+							className="border border-border rounded-lg px-3 h-16 data-[state=open]:bg-muted"
 						>
 							<div className="relative">
 								<Avatar className="size-10 rounded-full">
@@ -60,25 +60,25 @@ export function NavUser() {
 										src={user?.avatar}
 										alt="user avatar"
 									/>
-									<AvatarFallback className="rounded-full bg-[var(--cl-brand-500)] text-white">
+									<AvatarFallback className="rounded-full bg-primary text-white">
 										{user?.firstName?.[0] ?? "U"}
 									</AvatarFallback>
 								</Avatar>
-								<div className="size-2.5 bg-[var(--cl-up)] absolute right-0 bottom-0 z-10 rounded-full border-2 border-[var(--cl-surface)]"></div>
+								<div className="size-2.5 bg-success absolute right-0 bottom-0 z-10 rounded-full border-2 border-card"></div>
 							</div>
 							<div className="grid flex-1 text-left text-sm leading-tight">
-								<span className="truncate font-semibold text-[var(--cl-text)]">
+								<span className="truncate font-semibold text-foreground">
 									{user?.firstName && user?.lastName
 										? `${user.firstName} ${user.lastName}`
 										: user?.username || "Guest User"}
 								</span>
-								<span className="text-[var(--cl-text-3)] truncate text-xs">{user?.email || "Not logged in"}</span>
+								<span className="text-muted-foreground truncate text-xs">{user?.email || "Not logged in"}</span>
 							</div>
-							<ChevronsUpDown className="ml-auto size-4 text-[var(--cl-text-3)]" />
+							<ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
-						className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-[var(--cl-r-lg)]"
+						className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
 						side="bottom"
 						align="end"
 						sideOffset={4}
@@ -90,17 +90,17 @@ export function NavUser() {
 										src={user?.avatar}
 										alt={user?.firstName}
 									/>
-									<AvatarFallback className="rounded-full bg-[var(--cl-brand-500)] text-white">
+									<AvatarFallback className="rounded-full bg-primary text-white">
 										{user?.firstName?.[0] ?? "U"}
 									</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-medium text-[var(--cl-text)]">
+									<span className="truncate font-medium text-foreground">
 										{user?.firstName && user?.lastName
 											? `${user.firstName} ${user.lastName}`
 											: user?.username || "Guest User"}
 									</span>
-									<span className="text-[var(--cl-text-3)] truncate text-xs">
+									<span className="text-muted-foreground truncate text-xs">
 										{user?.email || "Not logged in"}
 									</span>
 								</div>
@@ -125,7 +125,7 @@ export function NavUser() {
 						<DropdownMenuItem
 							onClick={handleLogout}
 							disabled={isLoggingOut}
-							className="text-[var(--cl-down)] focus:text-[var(--cl-down)]"
+							className="text-danger focus:text-danger"
 						>
 							<LogOut className="h-4 w-4 mr-2" />
 							{isLoggingOut ? "Logging out..." : "Log out"}

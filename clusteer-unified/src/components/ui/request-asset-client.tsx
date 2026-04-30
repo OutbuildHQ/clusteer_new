@@ -115,20 +115,20 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 				<h1 className="font-bold text-3xl capitalize">
 					Request {wallet.currency}
 				</h1>
-				<p className="text-[#667085] mt-2">
+				<p className="text-muted-foreground mt-2">
 					Create a payment request and share it with anyone
 				</p>
 			</header>
 
 			<div className="mt-6 lg:max-w-xl">
-				<div className="bg-[var(--cl-surface)] rounded-2xl border border-[var(--cl-line)] p-6 space-y-6">
+				<div className="bg-card rounded-2xl border border-border p-6 space-y-6">
 					{/* Amount Input */}
 					<div>
-						<label className="text-sm font-medium text-[#0D0D0D] mb-2 block">
+						<label className="text-sm font-medium text-foreground mb-2 block">
 							Amount
 						</label>
 						<div className="relative">
-							<span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-semibold text-[#667085]">
+							<span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-semibold text-muted-foreground">
 								{currencySymbol}
 							</span>
 							<input
@@ -136,12 +136,12 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 								value={amount}
 								onChange={(e) => setAmount(e.target.value)}
 								placeholder="0.00"
-								className="w-full pl-10 pr-4 py-3 text-lg font-semibold border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
+								className="w-full pl-10 pr-4 py-3 text-lg font-semibold border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
 								min="0"
 								step="0.01"
 							/>
 						</div>
-						<p className="text-xs text-[#667085] mt-1">
+						<p className="text-xs text-muted-foreground mt-1">
 							Current balance: {currencySymbol}
 							{formatNumber(wallet.balance || 0)}
 						</p>
@@ -149,27 +149,27 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 
 					{/* Note Input */}
 					<div>
-						<label className="text-sm font-medium text-[#0D0D0D] mb-2 block">
+						<label className="text-sm font-medium text-foreground mb-2 block">
 							Note (Optional)
 						</label>
 						<textarea
 							value={note}
 							onChange={(e) => setNote(e.target.value)}
 							placeholder="Add a note for the payer..."
-							className="w-full px-4 py-3 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870] resize-none"
+							className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870] resize-none"
 							rows={3}
 							maxLength={200}
 						/>
-						<p className="text-xs text-[#667085] mt-1">
+						<p className="text-xs text-muted-foreground mt-1">
 							{note.length}/200 characters
 						</p>
 					</div>
 
 					{/* QR Code Display */}
 					{showQR && qrCodeUrl && (
-						<div className="flex flex-col items-center py-4 bg-[#F9FAFB] rounded-xl">
+						<div className="flex flex-col items-center py-4 bg-muted rounded-xl">
 							<img src={qrCodeUrl} alt="QR Code" className="w-48 h-48" />
-							<p className="text-sm text-[#667085] mt-3">
+							<p className="text-sm text-muted-foreground mt-3">
 								Scan to pay {currencySymbol}
 								{formatNumber(parseFloat(amount || "0"))}
 							</p>
@@ -180,7 +180,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 					<div className="space-y-3">
 						<Button
 							onClick={handleGenerateQR}
-							className="w-full bg-[#9FE870] hover:bg-[#8DD659] text-custom-black font-semibold h-12 rounded-lg"
+							className="w-full bg-light-green hover:bg-[#8DD659] text-custom-black font-semibold h-12 rounded-lg"
 						>
 							<QrCode className="w-5 h-5 mr-2" />
 							{showQR ? "Regenerate QR Code" : "Generate QR Code"}
@@ -217,11 +217,11 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 				</div>
 
 				{/* Info Section */}
-				<div className="mt-6 bg-[#F9FAFB] rounded-2xl border border-[var(--cl-line)] p-5">
-					<h3 className="font-semibold text-base text-[#0D0D0D] mb-3">
+				<div className="mt-6 bg-muted rounded-2xl border border-border p-5">
+					<h3 className="font-semibold text-base text-foreground mb-3">
 						How it works
 					</h3>
-					<ul className="space-y-2 text-sm text-[#667085]">
+					<ul className="space-y-2 text-sm text-muted-foreground">
 						<li className="flex items-start gap-2">
 							<span className="text-[#9FE870] mt-1">•</span>
 							<span>Enter the amount you want to request</span>
@@ -250,7 +250,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 
 			<div className="mt-8.5 xl:mt-[73px] pt-11 xl:pt-0 border-t lg:border-t-0 border-[#00000066]">
 				<h2 className="text-2xl font-semibold">Recent Requests</h2>
-				<p className="text-[#667085] mt-2">
+				<p className="text-muted-foreground mt-2">
 					Your payment requests will appear here
 				</p>
 			</div>

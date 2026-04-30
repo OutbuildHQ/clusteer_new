@@ -65,10 +65,10 @@ export default function Pagination({
 	const pages = getPageNumbers();
 
 	return (
-		<div className="flex items-center justify-between px-6 py-4 border-t border-[var(--cl-line)] bg-[var(--cl-surface)]">
+		<div className="flex items-center justify-between px-6 py-4 border-t border-border bg-card">
 			{/* Items info */}
 			<div className="flex items-center gap-4">
-				<p className="text-sm text-[var(--cl-text-2)]">
+				<p className="text-sm text-muted-foreground">
 					Showing <span className="font-medium">{startItem}</span> to{" "}
 					<span className="font-medium">{endItem}</span> of{" "}
 					<span className="font-medium">{totalItems}</span> results
@@ -77,14 +77,14 @@ export default function Pagination({
 				{/* Page size selector */}
 				{showPageSize && onPageSizeChange && (
 					<div className="flex items-center gap-2">
-						<label htmlFor="pageSize" className="text-sm text-[var(--cl-text-2)]">
+						<label htmlFor="pageSize" className="text-sm text-muted-foreground">
 							Show:
 						</label>
 						<select
 							id="pageSize"
 							value={pageSize}
 							onChange={(e) => onPageSizeChange(Number(e.target.value))}
-							className="px-3 py-1.5 border border-[var(--cl-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#014F01]"
+							className="px-3 py-1.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
 						>
 							{pageSizeOptions.map((size) => (
 								<option key={size} value={size}>
@@ -102,7 +102,7 @@ export default function Pagination({
 				<button
 					onClick={() => onPageChange(currentPage - 1)}
 					disabled={currentPage === 1}
-					className="px-3 py-2 border border-[var(--cl-line)] rounded-lg text-sm font-medium text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+					className="px-3 py-2 border border-border rounded-lg text-sm font-medium text-muted-foreground hover:bg-background transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
 					aria-label="Previous page"
 				>
 					<ChevronLeft className="w-4 h-4" />
@@ -114,7 +114,7 @@ export default function Pagination({
 					{pages.map((page, index) => {
 						if (page === "...") {
 							return (
-								<span key={`ellipsis-${index}`} className="px-3 py-2 text-[var(--cl-text-3)]">
+								<span key={`ellipsis-${index}`} className="px-3 py-2 text-muted-foreground">
 									...
 								</span>
 							);
@@ -126,8 +126,8 @@ export default function Pagination({
 								onClick={() => onPageChange(page as number)}
 								className={`min-w-[40px] px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
 									currentPage === page
-										? "bg-[#014F01] text-white"
-										: "text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] border border-[var(--cl-line)]"
+										? "bg-primary text-white"
+										: "text-muted-foreground hover:bg-background border border-border"
 								}`}
 								aria-label={`Page ${page}`}
 								aria-current={currentPage === page ? "page" : undefined}
@@ -142,7 +142,7 @@ export default function Pagination({
 				<button
 					onClick={() => onPageChange(currentPage + 1)}
 					disabled={currentPage === totalPages}
-					className="px-3 py-2 border border-[var(--cl-line)] rounded-lg text-sm font-medium text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+					className="px-3 py-2 border border-border rounded-lg text-sm font-medium text-muted-foreground hover:bg-background transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
 					aria-label="Next page"
 				>
 					Next
@@ -168,23 +168,23 @@ export function SimplePagination({
 			<button
 				onClick={() => onPageChange(currentPage - 1)}
 				disabled={currentPage === 1}
-				className="p-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+				className="p-2 border border-border rounded-lg hover:bg-background transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 				aria-label="Previous page"
 			>
-				<ChevronLeft className="w-5 h-5 text-[var(--cl-text-2)]" />
+				<ChevronLeft className="w-5 h-5 text-muted-foreground" />
 			</button>
 
-			<span className="text-sm text-[var(--cl-text-2)]">
+			<span className="text-sm text-muted-foreground">
 				Page {currentPage} of {totalPages}
 			</span>
 
 			<button
 				onClick={() => onPageChange(currentPage + 1)}
 				disabled={currentPage === totalPages}
-				className="p-2 border border-[var(--cl-line)] rounded-lg hover:bg-[var(--cl-bg)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+				className="p-2 border border-border rounded-lg hover:bg-background transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 				aria-label="Next page"
 			>
-				<ChevronRight className="w-5 h-5 text-[var(--cl-text-2)]" />
+				<ChevronRight className="w-5 h-5 text-muted-foreground" />
 			</button>
 		</div>
 	);

@@ -28,7 +28,7 @@ export default function BuySellCrypto() {
 					variant="outline"
 					onClick={() => handleSelectForm("buy")}
 					className={cn(
-						"h-9 font-semibold max-w-[86px] w-full text-sm rounded-[100px] hover:bg-light-green border-light-green",
+						"h-9 font-semibold max-w-[86px] w-full text-sm rounded-full hover:bg-light-green border-light-green",
 						{
 							"bg-light-green": currentForm === "buy",
 						}
@@ -40,7 +40,7 @@ export default function BuySellCrypto() {
 					variant="outline"
 					onClick={() => handleSelectForm("sell")}
 					className={cn(
-						"h-9 font-semibold max-w-[86px] w-full text-sm rounded-[100px] hover:bg-light-green border-light-green",
+						"h-9 font-semibold max-w-[86px] w-full text-sm rounded-full hover:bg-light-green border-light-green",
 						{
 							"bg-light-green": currentForm === "sell",
 						}

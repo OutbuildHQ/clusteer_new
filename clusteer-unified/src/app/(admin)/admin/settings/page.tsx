@@ -83,7 +83,7 @@ export default function SettingsPage() {
 			icon: SettingsIcon,
 			title: "General Settings",
 			description: "Basic platform configuration",
-			color: "text-[var(--cl-brand-600)] bg-[var(--cl-info-soft)]",
+			color: "text-primary bg-primary/10",
 			settings: [
 				{
 					label: "Platform Name",
@@ -110,7 +110,7 @@ export default function SettingsPage() {
 			icon: Shield,
 			title: "Security Settings",
 			description: "Authentication and security policies",
-			color: "text-[var(--cl-down)] bg-[var(--cl-down-soft)]",
+			color: "text-danger bg-danger/10",
 			settings: [
 				{
 					label: "Require 2FA for All Users",
@@ -140,7 +140,7 @@ export default function SettingsPage() {
 			icon: DollarSign,
 			title: "Transaction Settings",
 			description: "Limits and fees configuration",
-			color: "text-[var(--cl-up)] bg-[var(--cl-up-soft)]",
+			color: "text-success bg-success/10",
 			settings: [
 				{
 					label: "Minimum Transaction Amount (USD)",
@@ -233,7 +233,7 @@ export default function SettingsPage() {
 			label: "Alert Settings",
 			description: "Configure system alerts",
 			onClick: () => router.push("/admin/settings/alerts"),
-			color: "text-[var(--cl-brand-600)]",
+			color: "text-primary",
 		},
 		{
 			icon: Key,
@@ -247,7 +247,7 @@ export default function SettingsPage() {
 			label: "Backup & Data",
 			description: "Manage backups",
 			onClick: () => router.push("/admin/settings/backup"),
-			color: "text-[var(--cl-up)]",
+			color: "text-success",
 		},
 		{
 			icon: Zap,
@@ -261,14 +261,14 @@ export default function SettingsPage() {
 			label: "Audit Logs",
 			description: "View activity logs",
 			onClick: () => router.push("/admin/settings/audit-logs"),
-			color: "text-[var(--cl-down)]",
+			color: "text-danger",
 		},
 		{
 			icon: RefreshCw,
 			label: "Clear Cache",
 			description: "Reset system cache",
 			onClick: () => console.log("Clearing cache..."),
-			color: "text-[var(--cl-text-2)]",
+			color: "text-muted-foreground",
 		},
 	];
 
@@ -277,16 +277,16 @@ export default function SettingsPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-bold text-[var(--cl-text)]">System Settings</h1>
-					<p className="text-sm text-[var(--cl-text-2)] mt-1">Manage platform configuration and preferences</p>
+					<h1 className="text-2xl font-bold text-foreground">System Settings</h1>
+					<p className="text-sm text-muted-foreground mt-1">Manage platform configuration and preferences</p>
 				</div>
 				<button
 					onClick={handleSave}
 					disabled={!hasChanges || isLoading}
 					className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
 						hasChanges && !isLoading
-							? "bg-[#014F01] text-white hover:bg-[#013d01] shadow-sm"
-							: "bg-[var(--cl-surface-2)] text-[var(--cl-text-3)] cursor-not-allowed"
+							? "bg-primary text-white hover:bg-primary/90 shadow-sm"
+							: "bg-muted text-muted-foreground cursor-not-allowed"
 					}`}
 				>
 					<Save className="w-4 h-4" />
@@ -313,16 +313,16 @@ export default function SettingsPage() {
 						<button
 							key={idx}
 							onClick={action.onClick}
-							className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4 text-left hover:border-[#014F01]/20 hover:shadow-md transition-all group"
+							className="bg-card rounded-lg border border-border p-4 text-left hover:border-primary/20 hover:shadow-md transition-all group"
 						>
 							<div className="flex items-center gap-3 mb-2">
-								<div className={`w-10 h-10 rounded-lg bg-[var(--cl-bg)] flex items-center justify-center group-hover:bg-[var(--cl-brand-50)] transition-colors`}>
+								<div className={`w-10 h-10 rounded-lg bg-background flex items-center justify-center group-hover:bg-primary/10 transition-colors`}>
 									<Icon className={`w-5 h-5 ${action.color}`} />
 								</div>
-								<ChevronRight className="w-4 h-4 text-[var(--cl-text-3)] ml-auto group-hover:translate-x-1 transition-transform" />
+								<ChevronRight className="w-4 h-4 text-muted-foreground ml-auto group-hover:translate-x-1 transition-transform" />
 							</div>
-							<h3 className="text-sm font-semibold text-[var(--cl-text)]">{action.label}</h3>
-							<p className="text-xs text-[var(--cl-text-2)] mt-1">{action.description}</p>
+							<h3 className="text-sm font-semibold text-foreground">{action.label}</h3>
+							<p className="text-xs text-muted-foreground mt-1">{action.description}</p>
 						</button>
 					);
 				})}
@@ -333,14 +333,14 @@ export default function SettingsPage() {
 				{settingsSections.map((section, sectionIdx) => {
 					const Icon = section.icon;
 					return (
-						<div key={sectionIdx} className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+						<div key={sectionIdx} className="bg-card rounded-lg border border-border p-6">
 							<div className="flex items-center gap-3 mb-6">
 								<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${section.color}`}>
 									<Icon className="w-5 h-5" />
 								</div>
 								<div>
-									<h3 className="text-lg font-semibold text-[var(--cl-text)]">{section.title}</h3>
-									<p className="text-sm text-[var(--cl-text-2)]">{section.description}</p>
+									<h3 className="text-lg font-semibold text-foreground">{section.title}</h3>
+									<p className="text-sm text-muted-foreground">{section.description}</p>
 								</div>
 							</div>
 
@@ -348,12 +348,12 @@ export default function SettingsPage() {
 								{section.settings.map((setting, settingIdx) => (
 									<div
 										key={settingIdx}
-										className="flex items-center justify-between p-4 border border-[var(--cl-line)] rounded-lg hover:border-[#014F01]/20 transition-colors"
+										className="flex items-center justify-between p-4 border border-border rounded-lg hover:border-primary/20 transition-colors"
 									>
 										<div className="flex-1">
-											<label className="block text-sm font-medium text-[var(--cl-text)] mb-1">{setting.label}</label>
+											<label className="block text-sm font-medium text-foreground mb-1">{setting.label}</label>
 											{'description' in setting && setting.description && (
-												<p className="text-xs text-[var(--cl-text-3)]">{setting.description}</p>
+												<p className="text-xs text-muted-foreground">{setting.description}</p>
 											)}
 										</div>
 										<div className="ml-4">
@@ -365,7 +365,7 @@ export default function SettingsPage() {
 														onChange={(e) => setting.onChange(e.target.checked)}
 														className="sr-only peer"
 													/>
-													<div className="w-11 h-6 bg-[var(--cl-surface-2)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#014F01]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[var(--cl-surface)] after:border-[var(--cl-line)] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#014F01]"></div>
+													<div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ring/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 												</label>
 											) : (
 												<input
@@ -379,7 +379,7 @@ export default function SettingsPage() {
 													min={'min' in setting ? setting.min : undefined}
 													max={'max' in setting ? setting.max : undefined}
 													step={'step' in setting ? setting.step : undefined}
-													className="w-32 px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+													className="w-32 px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
 												/>
 											)}
 										</div>
@@ -392,56 +392,56 @@ export default function SettingsPage() {
 			</div>
 
 			{/* System Information */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+			<div className="bg-card rounded-lg border border-border p-6">
 				<div className="flex items-center gap-3 mb-6">
-					<div className="w-10 h-10 rounded-lg bg-[var(--cl-bg)] flex items-center justify-center">
-						<Server className="w-5 h-5 text-[var(--cl-text-2)]" />
+					<div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center">
+						<Server className="w-5 h-5 text-muted-foreground" />
 					</div>
 					<div>
-						<h3 className="text-lg font-semibold text-[var(--cl-text)]">System Information</h3>
-						<p className="text-sm text-[var(--cl-text-2)]">Platform status and metrics</p>
+						<h3 className="text-lg font-semibold text-foreground">System Information</h3>
+						<p className="text-sm text-muted-foreground">Platform status and metrics</p>
 					</div>
 				</div>
 
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-					<div className="p-4 bg-[var(--cl-bg)] rounded-lg">
+					<div className="p-4 bg-background rounded-lg">
 						<div className="flex items-center gap-2 mb-2">
-							<CheckCircle className="w-4 h-4 text-[var(--cl-up)]" />
-							<span className="text-xs font-medium text-[var(--cl-text-2)]">Status</span>
+							<CheckCircle className="w-4 h-4 text-success" />
+							<span className="text-xs font-medium text-muted-foreground">Status</span>
 						</div>
-						<p className="text-sm font-semibold text-[var(--cl-text)]">Online</p>
+						<p className="text-sm font-semibold text-foreground">Online</p>
 					</div>
-					<div className="p-4 bg-[var(--cl-bg)] rounded-lg">
+					<div className="p-4 bg-background rounded-lg">
 						<div className="flex items-center gap-2 mb-2">
-							<Clock className="w-4 h-4 text-[var(--cl-brand-600)]" />
-							<span className="text-xs font-medium text-[var(--cl-text-2)]">Uptime</span>
+							<Clock className="w-4 h-4 text-primary" />
+							<span className="text-xs font-medium text-muted-foreground">Uptime</span>
 						</div>
-						<p className="text-sm font-semibold text-[var(--cl-text)]">99.8%</p>
+						<p className="text-sm font-semibold text-foreground">99.8%</p>
 					</div>
-					<div className="p-4 bg-[var(--cl-bg)] rounded-lg">
+					<div className="p-4 bg-background rounded-lg">
 						<div className="flex items-center gap-2 mb-2">
 							<Database className="w-4 h-4 text-purple-600" />
-							<span className="text-xs font-medium text-[var(--cl-text-2)]">DB Size</span>
+							<span className="text-xs font-medium text-muted-foreground">DB Size</span>
 						</div>
-						<p className="text-sm font-semibold text-[var(--cl-text)]">2.4 GB</p>
+						<p className="text-sm font-semibold text-foreground">2.4 GB</p>
 					</div>
-					<div className="p-4 bg-[var(--cl-bg)] rounded-lg">
+					<div className="p-4 bg-background rounded-lg">
 						<div className="flex items-center gap-2 mb-2">
 							<Zap className="w-4 h-4 text-orange-600" />
-							<span className="text-xs font-medium text-[var(--cl-text-2)]">Version</span>
+							<span className="text-xs font-medium text-muted-foreground">Version</span>
 						</div>
-						<p className="text-sm font-semibold text-[var(--cl-text)]">v2.1.0</p>
+						<p className="text-sm font-semibold text-foreground">v2.1.0</p>
 					</div>
 				</div>
 
-				<div className="mt-4 pt-4 border-t border-[var(--cl-line)]">
+				<div className="mt-4 pt-4 border-t border-border">
 					<div className="flex items-center justify-between text-sm">
-						<span className="text-[var(--cl-text-2)]">Last backup:</span>
-						<span className="font-medium text-[var(--cl-text)]">Jan 16, 2025 02:00 AM</span>
+						<span className="text-muted-foreground">Last backup:</span>
+						<span className="font-medium text-foreground">Jan 16, 2025 02:00 AM</span>
 					</div>
 					<div className="flex items-center justify-between text-sm mt-2">
-						<span className="text-[var(--cl-text-2)]">Last deployment:</span>
-						<span className="font-medium text-[var(--cl-text)]">Jan 15, 2025 10:30 PM</span>
+						<span className="text-muted-foreground">Last deployment:</span>
+						<span className="font-medium text-foreground">Jan 15, 2025 10:30 PM</span>
 					</div>
 				</div>
 			</div>

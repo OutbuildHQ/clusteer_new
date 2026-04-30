@@ -200,8 +200,8 @@ export default function LiveTradingChart({ symbol = "USDT/NGN", transactionType 
     <div className="w-full">
       <div className="mb-2 flex items-center justify-between">
         <div>
-          <p className="text-xs text-[#667085]">{symbol}</p>
-          <p className="text-lg font-bold text-[#0D0D0D]">
+          <p className="text-xs text-muted-foreground">{symbol}</p>
+          <p className="text-lg font-bold text-foreground">
             ₦{currentPrice.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
           <p className={`text-xs font-medium ${priceChange >= 0 ? 'text-[#11C211]' : 'text-[#FF4D4D]'}`}>
@@ -209,7 +209,7 @@ export default function LiveTradingChart({ symbol = "USDT/NGN", transactionType 
           </p>
         </div>
         <div className="flex gap-1">
-          <span className="text-xs px-2 py-1 rounded-full bg-[#11C211]/10 text-[#11C211] font-medium">
+          <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-[#11C211] font-medium">
             Live
           </span>
         </div>

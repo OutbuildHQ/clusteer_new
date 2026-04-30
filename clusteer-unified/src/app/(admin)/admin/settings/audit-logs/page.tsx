@@ -183,15 +183,15 @@ export default function AuditLogsPage() {
 	const getCategoryColor = (category: AuditLog["category"]) => {
 		switch (category) {
 			case "Authentication":
-				return "bg-[var(--cl-info-soft)] text-[var(--cl-brand-700)] border-[var(--cl-brand-200)]";
+				return "bg-primary/10 text-primary border-primary/30";
 			case "User Management":
 				return "bg-purple-50 text-purple-700 border-purple-200";
 			case "Settings":
-				return "bg-[var(--cl-bg)] text-[var(--cl-text-2)] border-[var(--cl-line)]";
+				return "bg-background text-muted-foreground border-border";
 			case "Transactions":
-				return "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]";
+				return "bg-success/10 text-success border-success";
 			case "Security":
-				return "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]";
+				return "bg-danger/10 text-danger border-danger";
 			case "System":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 		}
@@ -200,9 +200,9 @@ export default function AuditLogsPage() {
 	const getStatusColor = (status: AuditLog["status"]) => {
 		switch (status) {
 			case "Success":
-				return "bg-[var(--cl-up-soft)] text-[var(--cl-up)] border-[var(--cl-up)]";
+				return "bg-success/10 text-success border-success";
 			case "Failed":
-				return "bg-[var(--cl-down-soft)] text-[var(--cl-down)] border-[var(--cl-down)]";
+				return "bg-danger/10 text-danger border-danger";
 			case "Warning":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 		}
@@ -251,18 +251,18 @@ export default function AuditLogsPage() {
 				<div className="flex items-center gap-4">
 					<button
 						onClick={() => router.push("/admin/settings")}
-						className="p-2 hover:bg-[var(--cl-surface-2)] rounded-lg transition-colors"
+						className="p-2 hover:bg-muted rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-[var(--cl-text-2)]" />
+						<ArrowLeft className="w-5 h-5 text-muted-foreground" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-[var(--cl-text)]">Audit Logs</h1>
-						<p className="text-sm text-[var(--cl-text-2)] mt-1">Track all system activities and changes</p>
+						<h1 className="text-2xl font-bold text-foreground">Audit Logs</h1>
+						<p className="text-sm text-muted-foreground mt-1">Track all system activities and changes</p>
 					</div>
 				</div>
 				<button
 					onClick={handleExport}
-					className="flex items-center gap-2 px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors shadow-sm"
+					className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
 				>
 					<Download className="w-4 h-4" />
 					Export Logs
@@ -271,65 +271,65 @@ export default function AuditLogsPage() {
 
 			{/* Stats Cards */}
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-lg border border-border p-6">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-[var(--cl-info-soft)] rounded-lg">
-							<FileText className="w-6 h-6 text-[var(--cl-brand-600)]" />
+						<div className="p-3 bg-primary/10 rounded-lg">
+							<FileText className="w-6 h-6 text-primary" />
 						</div>
 					</div>
-					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Total Logs</h3>
-					<p className="text-2xl font-bold text-[var(--cl-text)]">{auditLogs.length}</p>
+					<h3 className="text-sm text-muted-foreground font-medium mb-1">Total Logs</h3>
+					<p className="text-2xl font-bold text-foreground">{auditLogs.length}</p>
 				</div>
 
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-lg border border-border p-6">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-[var(--cl-up-soft)] rounded-lg">
-							<CheckCircle className="w-6 h-6 text-[var(--cl-up)]" />
+						<div className="p-3 bg-success/10 rounded-lg">
+							<CheckCircle className="w-6 h-6 text-success" />
 						</div>
 					</div>
-					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Success</h3>
-					<p className="text-2xl font-bold text-[var(--cl-text)]">
+					<h3 className="text-sm text-muted-foreground font-medium mb-1">Success</h3>
+					<p className="text-2xl font-bold text-foreground">
 						{auditLogs.filter((l) => l.status === "Success").length}
 					</p>
 				</div>
 
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-lg border border-border p-6">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-[var(--cl-down-soft)] rounded-lg">
-							<XCircle className="w-6 h-6 text-[var(--cl-down)]" />
+						<div className="p-3 bg-danger/10 rounded-lg">
+							<XCircle className="w-6 h-6 text-danger" />
 						</div>
 					</div>
-					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Failed</h3>
-					<p className="text-2xl font-bold text-[var(--cl-text)]">
+					<h3 className="text-sm text-muted-foreground font-medium mb-1">Failed</h3>
+					<p className="text-2xl font-bold text-foreground">
 						{auditLogs.filter((l) => l.status === "Failed").length}
 					</p>
 				</div>
 
-				<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-6">
+				<div className="bg-card rounded-lg border border-border p-6">
 					<div className="flex items-center justify-between mb-4">
 						<div className="p-3 bg-orange-50 rounded-lg">
 							<AlertCircle className="w-6 h-6 text-orange-600" />
 						</div>
 					</div>
-					<h3 className="text-sm text-[var(--cl-text-2)] font-medium mb-1">Warnings</h3>
-					<p className="text-2xl font-bold text-[var(--cl-text)]">
+					<h3 className="text-sm text-muted-foreground font-medium mb-1">Warnings</h3>
+					<p className="text-2xl font-bold text-foreground">
 						{auditLogs.filter((l) => l.status === "Warning").length}
 					</p>
 				</div>
 			</div>
 
 			{/* Filters */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)] p-4">
+			<div className="bg-card rounded-lg border border-border p-4">
 				<div className="flex flex-col md:flex-row items-start md:items-center gap-4">
 					{/* Search */}
 					<div className="flex-1 relative">
-						<Search className="w-4 h-4 text-[var(--cl-text-3)] absolute left-3 top-1/2 -translate-y-1/2" />
+						<Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
 						<input
 							type="text"
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 							placeholder="Search logs by action, user, or details..."
-							className="w-full pl-10 pr-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+							className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
 						/>
 					</div>
 
@@ -337,7 +337,7 @@ export default function AuditLogsPage() {
 					<select
 						value={selectedCategory}
 						onChange={(e) => setSelectedCategory(e.target.value)}
-						className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+						className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
 					>
 						{categories.map((category) => (
 							<option key={category} value={category}>
@@ -350,7 +350,7 @@ export default function AuditLogsPage() {
 					<select
 						value={selectedStatus}
 						onChange={(e) => setSelectedStatus(e.target.value)}
-						className="px-4 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+						className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
 					>
 						{statuses.map((status) => (
 							<option key={status} value={status}>
@@ -363,8 +363,8 @@ export default function AuditLogsPage() {
 						onClick={() => setShowFilters(!showFilters)}
 						className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors ${
 							showFilters
-								? "bg-[var(--cl-brand-50)] border-[#014F01] text-[#014F01]"
-								: "bg-[var(--cl-surface)] border-[var(--cl-line)] text-[var(--cl-text-2)] hover:bg-[var(--cl-bg)]"
+								? "bg-primary/10 border-primary text-primary"
+								: "bg-card border-border text-muted-foreground hover:bg-background"
 						}`}
 					>
 						<Filter className="w-4 h-4" />
@@ -374,24 +374,24 @@ export default function AuditLogsPage() {
 
 				{/* Advanced Filters */}
 				{showFilters && (
-					<div className="mt-4 pt-4 border-t border-[var(--cl-line)]">
+					<div className="mt-4 pt-4 border-t border-border">
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<div>
-								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">Start Date</label>
+								<label className="block text-sm font-medium text-muted-foreground mb-2">Start Date</label>
 								<input
 									type="date"
 									value={dateRange.start}
 									onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
-									className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+									className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
 								/>
 							</div>
 							<div>
-								<label className="block text-sm font-medium text-[var(--cl-text-2)] mb-2">End Date</label>
+								<label className="block text-sm font-medium text-muted-foreground mb-2">End Date</label>
 								<input
 									type="date"
 									value={dateRange.end}
 									onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
-									className="w-full px-3 py-2 border border-[var(--cl-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014F01] text-sm"
+									className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
 								/>
 							</div>
 						</div>
@@ -400,17 +400,17 @@ export default function AuditLogsPage() {
 			</div>
 
 			{/* Audit Logs Table */}
-			<div className="bg-[var(--cl-surface)] rounded-lg border border-[var(--cl-line)]">
-				<div className="p-6 border-b border-[var(--cl-line)]">
-					<h2 className="text-lg font-semibold text-[var(--cl-text)]">Activity Log</h2>
-					<p className="text-sm text-[var(--cl-text-2)] mt-1">
+			<div className="bg-card rounded-lg border border-border">
+				<div className="p-6 border-b border-border">
+					<h2 className="text-lg font-semibold text-foreground">Activity Log</h2>
+					<p className="text-sm text-muted-foreground mt-1">
 						Showing {filteredLogs.length} of {auditLogs.length} logs
 					</p>
 				</div>
 
-				<div className="divide-y divide-[#E9EAEB]">
+				<div className="divide-y divide-border">
 					{filteredLogs.map((log) => (
-						<div key={log.id} className="p-6 hover:bg-[var(--cl-bg)] transition-colors">
+						<div key={log.id} className="p-6 hover:bg-background transition-colors">
 							<div className="flex items-start justify-between mb-3">
 								<div className="flex items-start gap-4 flex-1">
 									<div className={`p-3 rounded-lg ${getCategoryColor(log.category)}`}>
@@ -418,7 +418,7 @@ export default function AuditLogsPage() {
 									</div>
 									<div className="flex-1">
 										<div className="flex items-center gap-3 mb-2">
-											<h3 className="text-sm font-semibold text-[var(--cl-text)]">{log.action}</h3>
+											<h3 className="text-sm font-semibold text-foreground">{log.action}</h3>
 											<span
 												className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium border rounded ${getCategoryColor(
 													log.category
@@ -435,8 +435,8 @@ export default function AuditLogsPage() {
 												{log.status}
 											</span>
 										</div>
-										<p className="text-sm text-[var(--cl-text-2)] mb-2">{log.details}</p>
-										<div className="flex flex-wrap items-center gap-4 text-xs text-[var(--cl-text-3)]">
+										<p className="text-sm text-muted-foreground mb-2">{log.details}</p>
+										<div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
 											<div className="flex items-center gap-1">
 												<User className="w-3 h-3" />
 												<span>
@@ -456,10 +456,10 @@ export default function AuditLogsPage() {
 								</div>
 								<button
 									onClick={() => setSelectedLog(log)}
-									className="p-2 hover:bg-[var(--cl-surface-2)] rounded transition-colors"
+									className="p-2 hover:bg-muted rounded transition-colors"
 									title="View Details"
 								>
-									<Eye className="w-4 h-4 text-[var(--cl-text-2)]" />
+									<Eye className="w-4 h-4 text-muted-foreground" />
 								</button>
 							</div>
 						</div>
@@ -470,10 +470,10 @@ export default function AuditLogsPage() {
 			{/* Log Detail Modal */}
 			{selectedLog && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-					<div className="bg-[var(--cl-surface)] rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-						<div className="p-6 border-b border-[var(--cl-line)]">
+					<div className="bg-card rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+						<div className="p-6 border-b border-border">
 							<div className="flex items-center justify-between">
-								<h2 className="text-xl font-bold text-[var(--cl-text)]">Log Details</h2>
+								<h2 className="text-xl font-bold text-foreground">Log Details</h2>
 								<span
 									className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium border rounded ${getStatusColor(
 										selectedLog.status
@@ -487,57 +487,57 @@ export default function AuditLogsPage() {
 
 						<div className="p-6 space-y-6">
 							<div>
-								<h3 className="text-sm font-semibold text-[var(--cl-text)] mb-3">Action</h3>
+								<h3 className="text-sm font-semibold text-foreground mb-3">Action</h3>
 								<div className="flex items-center gap-3">
 									<div className={`p-3 rounded-lg ${getCategoryColor(selectedLog.category)}`}>
 										{getCategoryIcon(selectedLog.category)}
 									</div>
 									<div>
-										<p className="text-sm font-medium text-[var(--cl-text)]">{selectedLog.action}</p>
-										<p className="text-xs text-[var(--cl-text-2)]">{selectedLog.category}</p>
+										<p className="text-sm font-medium text-foreground">{selectedLog.action}</p>
+										<p className="text-xs text-muted-foreground">{selectedLog.category}</p>
 									</div>
 								</div>
 							</div>
 
 							<div>
-								<h3 className="text-sm font-semibold text-[var(--cl-text)] mb-3">Details</h3>
-								<p className="text-sm text-[var(--cl-text-2)] bg-[var(--cl-bg)] p-4 rounded-lg border border-[var(--cl-line)]">
+								<h3 className="text-sm font-semibold text-foreground mb-3">Details</h3>
+								<p className="text-sm text-muted-foreground bg-background p-4 rounded-lg border border-border">
 									{selectedLog.details}
 								</p>
 							</div>
 
 							<div>
-								<h3 className="text-sm font-semibold text-[var(--cl-text)] mb-3">User Information</h3>
+								<h3 className="text-sm font-semibold text-foreground mb-3">User Information</h3>
 								<div className="space-y-2 text-sm">
-									<div className="flex items-center justify-between p-3 bg-[var(--cl-bg)] rounded-lg">
-										<span className="text-[var(--cl-text-2)]">Name:</span>
-										<span className="font-medium text-[var(--cl-text)]">{selectedLog.user.name}</span>
+									<div className="flex items-center justify-between p-3 bg-background rounded-lg">
+										<span className="text-muted-foreground">Name:</span>
+										<span className="font-medium text-foreground">{selectedLog.user.name}</span>
 									</div>
-									<div className="flex items-center justify-between p-3 bg-[var(--cl-bg)] rounded-lg">
-										<span className="text-[var(--cl-text-2)]">Email:</span>
-										<span className="font-medium text-[var(--cl-text)]">{selectedLog.user.email}</span>
+									<div className="flex items-center justify-between p-3 bg-background rounded-lg">
+										<span className="text-muted-foreground">Email:</span>
+										<span className="font-medium text-foreground">{selectedLog.user.email}</span>
 									</div>
-									<div className="flex items-center justify-between p-3 bg-[var(--cl-bg)] rounded-lg">
-										<span className="text-[var(--cl-text-2)]">Role:</span>
-										<span className="font-medium text-[var(--cl-text)]">{selectedLog.user.role}</span>
+									<div className="flex items-center justify-between p-3 bg-background rounded-lg">
+										<span className="text-muted-foreground">Role:</span>
+										<span className="font-medium text-foreground">{selectedLog.user.role}</span>
 									</div>
 								</div>
 							</div>
 
 							<div>
-								<h3 className="text-sm font-semibold text-[var(--cl-text)] mb-3">Technical Details</h3>
+								<h3 className="text-sm font-semibold text-foreground mb-3">Technical Details</h3>
 								<div className="space-y-2 text-sm">
-									<div className="flex items-center justify-between p-3 bg-[var(--cl-bg)] rounded-lg">
-										<span className="text-[var(--cl-text-2)]">Timestamp:</span>
-										<span className="font-medium text-[var(--cl-text)]">{selectedLog.timestamp}</span>
+									<div className="flex items-center justify-between p-3 bg-background rounded-lg">
+										<span className="text-muted-foreground">Timestamp:</span>
+										<span className="font-medium text-foreground">{selectedLog.timestamp}</span>
 									</div>
-									<div className="flex items-center justify-between p-3 bg-[var(--cl-bg)] rounded-lg">
-										<span className="text-[var(--cl-text-2)]">IP Address:</span>
-										<span className="font-medium text-[var(--cl-text)]">{selectedLog.ipAddress}</span>
+									<div className="flex items-center justify-between p-3 bg-background rounded-lg">
+										<span className="text-muted-foreground">IP Address:</span>
+										<span className="font-medium text-foreground">{selectedLog.ipAddress}</span>
 									</div>
-									<div className="flex flex-col gap-2 p-3 bg-[var(--cl-bg)] rounded-lg">
-										<span className="text-[var(--cl-text-2)]">User Agent:</span>
-										<span className="font-medium text-[var(--cl-text)] text-xs break-all">
+									<div className="flex flex-col gap-2 p-3 bg-background rounded-lg">
+										<span className="text-muted-foreground">User Agent:</span>
+										<span className="font-medium text-foreground text-xs break-all">
 											{selectedLog.userAgent}
 										</span>
 									</div>
@@ -546,18 +546,18 @@ export default function AuditLogsPage() {
 
 							{selectedLog.metadata && (
 								<div>
-									<h3 className="text-sm font-semibold text-[var(--cl-text)] mb-3">Additional Metadata</h3>
-									<pre className="text-xs bg-[var(--cl-bg)] p-4 rounded-lg border border-[var(--cl-line)] overflow-auto">
+									<h3 className="text-sm font-semibold text-foreground mb-3">Additional Metadata</h3>
+									<pre className="text-xs bg-background p-4 rounded-lg border border-border overflow-auto">
 										{JSON.stringify(selectedLog.metadata, null, 2)}
 									</pre>
 								</div>
 							)}
 						</div>
 
-						<div className="p-6 border-t border-[var(--cl-line)] flex justify-end">
+						<div className="p-6 border-t border-border flex justify-end">
 							<button
 								onClick={() => setSelectedLog(null)}
-								className="px-4 py-2 bg-[#014F01] text-white rounded-lg hover:bg-[#013d01] transition-colors"
+								className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
 							>
 								Close
 							</button>

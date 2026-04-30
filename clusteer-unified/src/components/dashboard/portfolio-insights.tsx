@@ -79,25 +79,25 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 	}
 
 	return (
-		<div className="bg-gradient-to-br from-[var(--cl-brand-50)] to-[var(--cl-surface-2)] rounded-2xl border border-[var(--cl-line)] p-6 relative">
+		<div className="bg-gradient-to-br from-primary/10 to-muted rounded-2xl border border-border p-6 relative">
 			{onClose && (
 				<Button
 					onClick={onClose}
 					variant="ghost"
 					size="icon"
-					className="absolute top-4 right-4 h-8 w-8 rounded-full hover:bg-[var(--cl-surface)]"
+					className="absolute top-4 right-4 h-8 w-8 rounded-full hover:bg-card"
 				>
-					<X className="h-4 w-4 text-[#667085]" />
+					<X className="h-4 w-4 text-muted-foreground" />
 				</Button>
 			)}
 
 			<div className="flex items-start gap-4 mb-6">
-				<div className="w-12 h-12 rounded-full bg-[var(--cl-surface)] flex items-center justify-center shadow-sm">
-					<TrendingUp className="w-6 h-6 text-[var(--cl-brand-500)]" />
+				<div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
+					<TrendingUp className="w-6 h-6 text-primary" />
 				</div>
 				<div className="flex-1">
-					<h3 className="text-xl font-bold text-[#0D0D0D] mb-1">Portfolio Insights</h3>
-					<p className="text-sm text-[#667085]">
+					<h3 className="text-xl font-bold text-foreground mb-1">Portfolio Insights</h3>
+					<p className="text-sm text-muted-foreground">
 						Smart recommendations based on your holdings
 					</p>
 				</div>
@@ -105,25 +105,25 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 
 			{/* Portfolio Breakdown */}
 			<div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-				<div className="bg-[var(--cl-surface)] rounded-xl p-4 border border-[var(--cl-line)]">
-					<p className="text-xs text-[#667085] mb-1">Total Assets</p>
-					<p className="text-2xl font-bold text-[#0D0D0D]">{insights.totalAssets}</p>
+				<div className="bg-card rounded-xl p-4 border border-border">
+					<p className="text-xs text-muted-foreground mb-1">Total Assets</p>
+					<p className="text-2xl font-bold text-foreground">{insights.totalAssets}</p>
 				</div>
-				<div className="bg-[var(--cl-surface)] rounded-xl p-4 border border-[var(--cl-line)]">
-					<p className="text-xs text-[#667085] mb-1">Crypto</p>
-					<p className="text-2xl font-bold text-[#0D0D0D]">
+				<div className="bg-card rounded-xl p-4 border border-border">
+					<p className="text-xs text-muted-foreground mb-1">Crypto</p>
+					<p className="text-2xl font-bold text-foreground">
 						{insights.cryptoPercentage.toFixed(0)}%
 					</p>
-					<p className="text-xs text-[#667085] mt-1">
+					<p className="text-xs text-muted-foreground mt-1">
 						₦{formatNumber(insights.cryptoBalance)}
 					</p>
 				</div>
-				<div className="bg-[var(--cl-surface)] rounded-xl p-4 border border-[var(--cl-line)]">
-					<p className="text-xs text-[#667085] mb-1">Fiat</p>
-					<p className="text-2xl font-bold text-[#0D0D0D]">
+				<div className="bg-card rounded-xl p-4 border border-border">
+					<p className="text-xs text-muted-foreground mb-1">Fiat</p>
+					<p className="text-2xl font-bold text-foreground">
 						{insights.fiatPercentage.toFixed(0)}%
 					</p>
-					<p className="text-xs text-[#667085] mt-1">
+					<p className="text-xs text-muted-foreground mt-1">
 						₦{formatNumber(insights.fiatBalance)}
 					</p>
 				</div>
@@ -136,26 +136,26 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 						key={index}
 						className={`flex items-start gap-3 p-4 rounded-xl ${
 							rec.type === "warning"
-								? "bg-[var(--cl-warn-soft)] border border-[var(--cl-warn)]"
-								: "bg-[var(--cl-info-soft)] border border-[var(--cl-brand-200)]"
+								? "bg-warning/10 border border-warning"
+								: "bg-primary/10 border border-primary/30"
 						}`}
 					>
 						<div
 							className={`w-8 h-8 rounded-full flex items-center justify-center ${
-								rec.type === "warning" ? "bg-[var(--cl-warn-soft)]" : "bg-[var(--cl-info-soft)]"
+								rec.type === "warning" ? "bg-warning/10" : "bg-primary/10"
 							}`}
 						>
 							{rec.type === "warning" ? (
-								<AlertCircle className="w-4 h-4 text-[var(--cl-warn)]" />
+								<AlertCircle className="w-4 h-4 text-warning" />
 							) : (
-								<TrendingUp className="w-4 h-4 text-[var(--cl-brand-600)]" />
+								<TrendingUp className="w-4 h-4 text-primary" />
 							)}
 						</div>
 						<div className="flex-1">
-							<p className="font-semibold text-sm text-[#0D0D0D] mb-0.5">
+							<p className="font-semibold text-sm text-foreground mb-0.5">
 								{rec.title}
 							</p>
-							<p className="text-xs text-[#667085]">{rec.message}</p>
+							<p className="text-xs text-muted-foreground">{rec.message}</p>
 						</div>
 					</div>
 				))}

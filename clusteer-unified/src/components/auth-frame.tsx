@@ -9,7 +9,7 @@ interface AuthFrameProps {
 
 export default function AuthFrame({ title, subtitle, children }: AuthFrameProps) {
 	return (
-		<div className="min-h-screen bg-[var(--cl-bg)] flex items-center justify-center px-4 py-12">
+		<div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
 			<div className="w-full max-w-[420px]">
 				<div className="text-center mb-8">
 					<Link href="/" className="inline-block mb-8">
@@ -21,16 +21,16 @@ export default function AuthFrame({ title, subtitle, children }: AuthFrameProps)
 							className="mx-auto"
 						/>
 					</Link>
-					<h1 className="text-[28px] font-semibold tracking-[-0.02em] text-[var(--cl-text)]">
+					<h1 className="text-[28px] font-semibold tracking-[-0.02em] text-foreground">
 						{title}
 					</h1>
 					{subtitle && (
-						<p className="mt-2 text-[15px] text-[var(--cl-text-2)] leading-relaxed">
+						<p className="mt-2 text-[15px] text-muted-foreground leading-relaxed">
 							{subtitle}
 						</p>
 					)}
 				</div>
-				<div className="bg-[var(--cl-surface)] border border-[var(--cl-line)] rounded-[var(--cl-r-lg)] p-6 shadow-[var(--cl-shadow-2)]">
+				<div className="bg-card border border-border rounded-lg p-6 shadow-md">
 					<div className="flex flex-col gap-5">
 						{children}
 					</div>
