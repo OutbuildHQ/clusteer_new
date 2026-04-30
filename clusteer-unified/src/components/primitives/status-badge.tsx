@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 type Status = "completed" | "success" | "approved" | "active" | "processing" | "pending" | "failed" | "cancelled" | "rejected" | "suspended" | "closed" | "unverified";
 
-const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; className?: string }> = {
+const STATUS_MAP: Record<string, { label: string; variant: string; className?: string }> = {
   // Success states
   completed: { label: "Completed", variant: "default", className: "bg-success/10 text-success border-success/20 hover:bg-success/15" },
   success: { label: "Success", variant: "default", className: "bg-success/10 text-success border-success/20 hover:bg-success/15" },
@@ -25,7 +25,7 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
 export function StatusBadge({ status, label, className }: { status: string; label?: string; className?: string }) {
   const config = STATUS_MAP[status.toLowerCase()] ?? { label: status, variant: "outline" as const, className: "" };
   return (
-    <Badge variant={config.variant} className={cn("text-[11px] font-medium capitalize", config.className, className)}>
+    <Badge variant={config.variant as any} className={cn("text-[11px] font-medium capitalize", config.className, className)}>
       {label ?? config.label}
     </Badge>
   );

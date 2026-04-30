@@ -221,8 +221,8 @@ export function TransactionsTable() {
 					<TableBody>
 						{isFetching ? (
 							<TableRowsSkeleton
-								length={4}
-								columnCount={columns.length}
+								rows={4}
+								cols={columns.length}
 							/>
 						) : table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map((row) => (
@@ -266,7 +266,7 @@ export function TransactionsTable() {
 					</TableBody>
 				</Table>
 			</div>
-			<PaginationControls table={table} />
+			{/* TODO: wire pagination */}
 		</div>
 	);
 }

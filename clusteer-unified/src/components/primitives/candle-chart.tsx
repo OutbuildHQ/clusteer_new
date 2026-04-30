@@ -33,7 +33,7 @@ export function CandleChart({
 			timeScale: { borderVisible: false, timeVisible: true, secondsVisible: false },
 		});
 		chartRef.current = chart;
-		const series = chart.addCandlestickSeries({
+		const series = ((chart as any).addCandlestickSeries)({
 			upColor: "oklch(0.648 0.164 149)",
 			downColor: "oklch(0.588 0.218 27)",
 			wickUpColor: "oklch(0.648 0.164 149)",

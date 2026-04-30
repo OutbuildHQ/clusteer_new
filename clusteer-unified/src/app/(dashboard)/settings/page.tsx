@@ -38,7 +38,7 @@ export default function SettingsPage() {
 							</div>
 							<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 								<div><Label>First name</Label><Input className="mt-1.5" defaultValue={CURRENT_USER.firstName} /></div>
-								<div><Label>Last name</Label><Input className="mt-1.5" defaultValue={CURRENT_USER.lastName} /></div>
+								<div><Label>Last name</Label><Input className="mt-1.5" defaultValue={CURRENT_USER.name.split(" ").pop()} /></div>
 								<div><Label>Email</Label><Input className="mt-1.5" defaultValue={CURRENT_USER.email} /></div>
 								<div><Label>Phone</Label><Input className="mt-1.5" defaultValue="+234 801 234 5678" /></div>
 							</div>

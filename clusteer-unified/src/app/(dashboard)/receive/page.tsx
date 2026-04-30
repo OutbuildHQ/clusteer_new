@@ -43,7 +43,7 @@ export default function ReceiveIndex() {
 						</div>
 						<div>
 							<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Network</label>
-							<Select value={chain} onValueChange={setChain}>
+							<Select value={chain} onValueChange={(v) => setChain(v as any)}>
 								<SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
 								<SelectContent>
 									{selected.chains.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}

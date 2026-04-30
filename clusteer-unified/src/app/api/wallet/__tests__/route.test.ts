@@ -48,7 +48,7 @@ describe("GET /api/wallet", () => {
 	});
 
 	it("returns 500 when BLOCKCHAIN_ENGINE_API_KEY not set", async () => {
-		delete process.env.BLOCKCHAIN_ENGINE_API_KEY;
+		process.env.BLOCKCHAIN_ENGINE_API_KEY = undefined as any;
 		const token = createMockFirebaseToken();
 		const response = await GET(makeGetRequest({ auth_token: token }));
 		expect(response.status).toBe(500);

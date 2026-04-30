@@ -156,8 +156,7 @@ function MobileNav() {
 										<HeadphonesIcon className="h-4 w-4" />
 										Support
 										<Badge
-											variant="up"
-											dot
+											variant="success"
 											className="ml-auto"
 										>
 											Online
@@ -287,8 +286,7 @@ function AppSidebar() {
 											<HeadphonesIcon className="h-4 w-4 flex-shrink-0" />
 											<span className="group-data-[collapsible=icon]:hidden">Support</span>
 											<Badge
-												variant="up"
-												dot
+												variant="success"
 												className="ml-auto text-[11px] px-1.5 py-0.5 group-data-[collapsible=icon]:hidden"
 											>
 												Online

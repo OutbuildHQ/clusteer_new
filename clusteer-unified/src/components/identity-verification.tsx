@@ -129,7 +129,6 @@ export default function IdentityVerfication() {
 									</div>
 									<RadioGroupItem
 										className="ml-auto"
-										indicatorClassName="fill-dark-green stroke-dark-green"
 										value="BVN"
 										id="bvn"
 									/>
@@ -146,7 +145,6 @@ export default function IdentityVerfication() {
 									</Label>
 									<RadioGroupItem
 										className="ml-auto"
-										indicatorClassName="fill-dark-green stroke-dark-green"
 										value="NIN"
 										id="nin"
 									/>

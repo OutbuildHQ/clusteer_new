@@ -3,6 +3,7 @@
 import { use, useState } from "react";
 import { notFound } from "next/navigation";
 import { ASSETS } from "@/lib/mock-data";
+import type { Chain } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -40,7 +41,7 @@ export default function ReceivePage({ params }: { params: Promise<{ asset: strin
 				<CardContent className="space-y-4">
 					<div>
 						<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Network</label>
-						<Select value={network} onValueChange={setNetwork}>
+						<Select value={network} onValueChange={(v) => setNetwork(v as Chain)}>
 							<SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
 							<SelectContent>
 								{networks.map((n) => <SelectItem key={n} value={n}>{n}</SelectItem>)}

@@ -154,7 +154,7 @@ describe("POST /api/trade", () => {
 	});
 
 	it("returns 503 when BLOCKCHAIN_ENGINE_API_KEY not set", async () => {
-		delete process.env.BLOCKCHAIN_ENGINE_API_KEY;
+		process.env.BLOCKCHAIN_ENGINE_API_KEY = undefined as any;
 		const response = await POST(
 			makePostRequest(
 				{ side: "buy", amount: 100, chain: "solana", walletAddress: "0x1" },

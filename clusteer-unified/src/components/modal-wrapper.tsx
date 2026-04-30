@@ -19,7 +19,6 @@ export default function ModalWrapper({
 	return (
 		<Dialog open={open}>
 			<DialogContent
-				showCloseButton={false}
 				className={cn(
 					" border-none rounded-xl gap-y-5 !max-w-[482px] px-7.5 py-10",
 					className

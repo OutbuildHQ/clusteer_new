@@ -35,7 +35,7 @@ const MOCK_TICKETS = [
 	{ id: "T-0438", subject: "KYC Tier 2 document rejected", status: "resolved", priority: "medium", createdAt: "2026-04-25T08:00:00Z", lastReply: "2026-04-26T09:30:00Z" },
 ];
 
-const CHAT_MESSAGES = [
+const CHAT_MESSAGES: { role: "bot" | "user"; text: string; time: string }[] = [
 	{ role: "bot" as const, text: "👋 Hi! I'm Clusteer's support assistant. How can I help you today?", time: "Just now" },
 ];
 
@@ -151,7 +151,7 @@ export default function SupportPage() {
 											<Badge className={`text-[10px] ${statusColor[t.status] ?? statusColor.closed}`}>
 												{t.status.replace("-", " ")}
 											</Badge>
-											{t.priority === "high" && <Badge variant="destructive" className="text-[10px]">High</Badge>}
+											{t.priority === "high" && <Badge variant="danger" className="text-[10px]">High</Badge>}
 										</div>
 										<p className="font-medium text-sm truncate">{t.subject}</p>
 									</div>
@@ -290,7 +290,7 @@ export default function SupportPage() {
 					{/* Chat messages */}
 					<div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
 						{chatMessages.map((m, i) => (
-							<div key={i} className={`flex gap-2.5 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+							<div key={i} className={`flex gap-2.5 ${m.role === ("user" as string) ? "flex-row-reverse" : ""}`}>
 								<div className={`flex size-7 shrink-0 items-center justify-center rounded-full text-xs ${m.role === "bot" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
 									{m.role === "bot" ? <Headphones className="size-3.5" /> : "You"}
 								</div>

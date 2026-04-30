@@ -44,7 +44,7 @@ const fadeUp = {
 	initial: { opacity: 0, y: 24 },
 	animate: { opacity: 1, y: 0 },
 };
-const transition = { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] };
+const transition = { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as const };
 const stagger = { staggerChildren: 0.08 };
 
 function Section({ children, className, id }: { children: React.ReactNode; className?: string; id?: string }) {
@@ -260,7 +260,7 @@ export default function Home() {
 						<motion.div
 							initial={{ opacity: 0, scale: 0.96, y: 16 }}
 							animate={{ opacity: 1, scale: 1, y: 0 }}
-							transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+							transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const }}
 						>
 							<HeroSwap />
 						</motion.div>

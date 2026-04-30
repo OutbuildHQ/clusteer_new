@@ -32,7 +32,7 @@ export default function AdminOverview() {
 				<StatCard icon={<UsersIcon className="size-4" />} label="Total users" value={totalUsers.toLocaleString()} change="+412 today" tone="positive" />
 				<StatCard icon={<TrendingUp className="size-4" />} label="24h volume" value={formatMoney(volume24h, "NGN", { decimals: 0, compact: true })} change="+18.4%" tone="positive" />
 				<StatCard icon={<Wallet className="size-4" />} label="Assets under custody" value={formatMoney(totalAum, "NGN", { decimals: 0, compact: true })} change="+2.1%" tone="positive" />
-				<StatCard icon={<ShieldCheck className="size-4" />} label="Pending KYC" value={pendingKyc.toString()} change={`${flaggedTxns} flagged txns`} tone="warning" />
+				<StatCard icon={<ShieldCheck className="size-4" />} label="Pending KYC" value={pendingKyc.toString()} change={`${flaggedTxns} flagged txns`} tone="muted" />
 			</div>
 
 			{/* Volume chart */}
@@ -149,13 +149,13 @@ export default function AdminOverview() {
 	);
 }
 
-function StatCard({ icon, label, value, change, tone }: { icon: React.ReactNode; label: string; value: string; change: string; tone: "positive" | "negative" | "warning" }) {
+function StatCard({ icon, label, value, change, tone }: { icon: React.ReactNode; label: string; value: string; change: string; tone: string }) {
 	return (
 		<Card>
 			<CardContent className="p-5">
 				<div className="flex items-center gap-2 text-xs text-muted-foreground">{icon}{label}</div>
 				<Num as="div" className="mt-2 font-display text-2xl font-bold tracking-tight" value={value} />
-				<Num as="div" className="mt-1 text-xs" tone={tone === "warning" ? "warning" : tone} value={change} />
+				<Num as="div" className="mt-1 text-xs" tone={tone as any} value={change} />
 			</CardContent>
 		</Card>
 	);
