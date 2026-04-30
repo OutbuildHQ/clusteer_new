@@ -1,22 +1,41 @@
+"use client";
+
 import Link from "next/link";
-import { ASSETS } from "@/lib/mock-data";
-import { formatMoney, formatPct } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { getUserWallet } from "@/lib/api/wallet/queries";
+import { formatMoney } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Num } from "@/components/primitives/num";
-import { Sparkline } from "@/components/primitives/sparkline";
-import { Wallet } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { TableSkeleton } from "@/components/primitives/table-skeleton";
+import { Wallet, AlertCircle } from "lucide-react";
 
 export default function AssetsPage() {
+	const { data: walletData, isLoading, error } = useQuery({
+		queryKey: ["wallet"],
+		queryFn: getUserWallet,
+	});
+
+	const assets = walletData?.walletAssets ?? [];
+
 	return (
 		<div className="space-y-6">
 			<h1 className="font-display text-2xl font-bold tracking-tight">Assets</h1>
 			<Card>
 				<CardHeader><CardTitle>All supported assets</CardTitle></CardHeader>
 				<CardContent className="p-0">
-					{ASSETS.length === 0 ? (
+					{isLoading ? (
+						<TableSkeleton columns={4} rows={5} />
+					) : error ? (
+						<div className="py-12 text-center">
+							<AlertCircle className="size-10 text-destructive/40 mx-auto mb-3" />
+							<p className="font-medium">Failed to load assets</p>
+							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
+						</div>
+					) : assets.length === 0 ? (
 						<div className="py-12 text-center">
 							<Wallet className="size-10 text-muted-foreground/40 mx-auto mb-3" />
 							<p className="font-medium">No assets available</p>
@@ -28,32 +47,31 @@ export default function AssetsPage() {
 						<TableHeader>
 							<TableRow>
 								<TableHead>Asset</TableHead>
-								<TableHead>Price (NGN)</TableHead>
-								<TableHead className="hidden md:table-cell">Price (USD)</TableHead>
-								<TableHead className="hidden sm:table-cell">24h</TableHead>
-								<TableHead className="hidden lg:table-cell">7d</TableHead>
+								<TableHead>Type</TableHead>
+								<TableHead>Address</TableHead>
 								<TableHead className="text-right">Balance</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{ASSETS.map((a) => (
-								<TableRow key={a.symbol}>
+							{assets.map((a) => (
+								<TableRow key={a.currency}>
 									<TableCell>
-										<Link href={`/assets/${a.symbol}`} className="flex items-center gap-2 sm:gap-3">
-											<AssetLogo symbol={a.symbol} />
+										<Link href={`/assets/${a.currency}`} className="flex items-center gap-2 sm:gap-3">
+											<AssetLogo symbol={a.currency} />
 											<div className="min-w-0">
 												<div className="font-medium truncate">{a.name}</div>
-												<div className="text-xs text-muted-foreground">{a.symbol}</div>
+												<div className="text-xs text-muted-foreground">{a.currency}</div>
 											</div>
 										</Link>
 									</TableCell>
-									<TableCell><Num value={formatMoney(a.priceNgn, "NGN", { decimals: 0 })} /></TableCell>
-									<TableCell className="hidden md:table-cell"><Num value={formatMoney(a.priceUsd, "USD")} /></TableCell>
-									<TableCell className="hidden sm:table-cell"><Num tone={a.change24h >= 0 ? "positive" : "negative"} value={formatPct(a.change24h)} /></TableCell>
-									<TableCell className="hidden lg:table-cell"><Sparkline data={a.sparkline} width={90} height={28} /></TableCell>
+									<TableCell><Badge variant="outline" className="capitalize">{a.type}</Badge></TableCell>
+									<TableCell>
+										<code className="mono text-xs text-muted-foreground truncate max-w-[160px] block">
+											{a.address || "—"}
+										</code>
+									</TableCell>
 									<TableCell className="text-right">
-										<Num as="div" value={a.balance.toFixed(2) + " " + a.symbol} />
-										<Num as="div" className="text-xs" tone="muted" value={formatMoney(a.balanceNgn, "NGN", { decimals: 0 })} />
+										<Num as="div" value={(a.balance ?? 0).toFixed(2) + " " + a.currency} />
 									</TableCell>
 								</TableRow>
 							))}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,10 +10,80 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { CURRENT_USER } from "@/lib/mock-data";
-import { Smartphone, Key, ShieldCheck, Trash2 } from "lucide-react";
+import { Smartphone, Key, ShieldCheck, Trash2, Loader2 } from "lucide-react";
+import { useUser } from "@/store/user";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+	getNotificationPreferences,
+	updateNotificationPreferences,
+	getBankAccounts,
+	createBankAccount,
+	deleteBankAccount,
+	type NotificationPreferences,
+	type BankAccount,
+} from "@/lib/api/settings";
+
+/* ------------------------------------------------------------------ */
+/*  Notification rows – maps UI labels to API field keys               */
+/* ------------------------------------------------------------------ */
+const NOTIF_ROWS: { label: string; hint: string; key: keyof NotificationPreferences }[] = [
+	{ label: "Trade confirmations", hint: "Order filled, failed, or pending", key: "push_transactions" },
+	{ label: "Deposits & withdrawals", hint: "Stablecoins in/out of your wallet", key: "email_transactions" },
+	{ label: "Rate alerts", hint: "USDT/NGN rate moves ±2%", key: "push_price_alerts" },
+	{ label: "Security alerts", hint: "New sign-in or 2FA reset", key: "email_security" },
+	{ label: "Product updates", hint: "New features and announcements", key: "email_marketing" },
+];
 
 export default function SettingsPage() {
+	const user = useUser();
+	const queryClient = useQueryClient();
+
+	/* ---- Add-bank form state ---- */
+	const [showAddBank, setShowAddBank] = useState(false);
+	const [newBank, setNewBank] = useState({ bank_name: "", account_number: "", account_name: "" });
+
+	/* ---- Notifications query ---- */
+	const notifQuery = useQuery({
+		queryKey: ["notif-prefs", user?.id],
+		queryFn: () => getNotificationPreferences(user!.id),
+		enabled: !!user?.id,
+	});
+
+	const notifMutation = useMutation({
+		mutationFn: (prefs: Partial<NotificationPreferences>) =>
+			updateNotificationPreferences(user!.id, prefs),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notif-prefs", user?.id] }),
+	});
+
+	/* ---- Bank accounts query ---- */
+	const banksQuery = useQuery({
+		queryKey: ["bank-accounts", user?.id],
+		queryFn: () => getBankAccounts(user!.id),
+		enabled: !!user?.id,
+	});
+
+	const addBankMutation = useMutation({
+		mutationFn: (data: { bank_name: string; account_number: string; account_name: string }) =>
+			createBankAccount(user!.id, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["bank-accounts", user?.id] });
+			setShowAddBank(false);
+			setNewBank({ bank_name: "", account_number: "", account_name: "" });
+		},
+	});
+
+	const deleteBankMutation = useMutation({
+		mutationFn: (accountId: number) => deleteBankAccount(user!.id, accountId),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["bank-accounts", user?.id] }),
+	});
+
+	/* ---- Derived values ---- */
+	const firstName = user?.firstName ?? user?.username ?? "";
+	const lastName = user?.lastName ?? "";
+	const fullName = [firstName, lastName].filter(Boolean).join(" ") || "User";
+	const email = user?.email ?? "";
+	const phone = user?.phone ?? "";
+
 	return (
 		<div className="space-y-6">
 			<h1 className="font-display text-2xl font-bold tracking-tight">Settings</h1>
@@ -25,28 +96,30 @@ export default function SettingsPage() {
 					<TabsTrigger value="preferences">Preferences</TabsTrigger>
 				</TabsList>
 
+				{/* ===================== PROFILE TAB ===================== */}
 				<TabsContent value="profile" className="space-y-4">
 					<Card>
 						<CardHeader><CardTitle>Your profile</CardTitle><CardDescription>Basic information on your account.</CardDescription></CardHeader>
 						<CardContent className="space-y-4">
 							<div className="flex items-center gap-4">
-								<Avatar className="size-16"><AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">{CURRENT_USER.firstName[0]}</AvatarFallback></Avatar>
+								<Avatar className="size-16"><AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">{firstName?.[0] ?? "?"}</AvatarFallback></Avatar>
 								<div>
 									<Button variant="outline" size="sm">Upload photo</Button>
 									<p className="mt-1 text-xs text-muted-foreground">PNG or JPG, max 5MB</p>
 								</div>
 							</div>
 							<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-								<div><Label>First name</Label><Input className="mt-1.5" defaultValue={CURRENT_USER.firstName} /></div>
-								<div><Label>Last name</Label><Input className="mt-1.5" defaultValue={CURRENT_USER.name.split(" ").pop()} /></div>
-								<div><Label>Email</Label><Input className="mt-1.5" defaultValue={CURRENT_USER.email} /></div>
-								<div><Label>Phone</Label><Input className="mt-1.5" defaultValue="+234 801 234 5678" /></div>
+								<div><Label>First name</Label><Input className="mt-1.5" defaultValue={firstName} /></div>
+								<div><Label>Last name</Label><Input className="mt-1.5" defaultValue={lastName} /></div>
+								<div><Label>Email</Label><Input className="mt-1.5" defaultValue={email} /></div>
+								<div><Label>Phone</Label><Input className="mt-1.5" defaultValue={phone} /></div>
 							</div>
 							<div className="flex justify-end"><Button>Save changes</Button></div>
 						</CardContent>
 					</Card>
 				</TabsContent>
 
+				{/* ===================== SECURITY TAB ===================== */}
 				<TabsContent value="security" className="space-y-4">
 					<Card>
 						<CardHeader><CardTitle>Sign-in</CardTitle></CardHeader>
@@ -64,36 +137,101 @@ export default function SettingsPage() {
 					</Card>
 				</TabsContent>
 
+				{/* ===================== NOTIFICATIONS TAB ===================== */}
 				<TabsContent value="notifications" className="space-y-4">
 					<Card>
 						<CardHeader><CardTitle>Notifications</CardTitle></CardHeader>
 						<CardContent className="divide-y divide-border">
-							{[
-								["Trade confirmations", "Order filled, failed, or pending"],
-								["Deposits & withdrawals", "Stablecoins in/out of your wallet"],
-								["Rate alerts", "USDT/NGN rate moves ±2%"],
-								["Security alerts", "New sign-in or 2FA reset"],
-								["Product updates", "New features and announcements"],
-							].map(([t, h]) => (
-								<Row key={t} title={t} hint={h} cta={<Switch defaultChecked />} />
-							))}
+							{notifQuery.isLoading && (
+								<div className="flex items-center justify-center py-8">
+									<Loader2 className="size-5 animate-spin text-muted-foreground" />
+									<span className="ml-2 text-sm text-muted-foreground">Loading preferences...</span>
+								</div>
+							)}
+							{notifQuery.isError && (
+								<div className="py-4 text-sm text-danger">
+									Failed to load notification preferences.{" "}
+									<button className="underline" onClick={() => notifQuery.refetch()}>Retry</button>
+								</div>
+							)}
+							{notifQuery.isSuccess &&
+								NOTIF_ROWS.map(({ label, hint, key }) => (
+									<Row
+										key={key}
+										title={label}
+										hint={hint}
+										cta={
+											<Switch
+												checked={notifQuery.data?.[key] ?? false}
+												disabled={notifMutation.isPending}
+												onCheckedChange={(checked) =>
+													notifMutation.mutate({ [key]: checked })
+												}
+											/>
+										}
+									/>
+								))}
 						</CardContent>
 					</Card>
 				</TabsContent>
 
+				{/* ===================== PAYMENT METHODS TAB ===================== */}
 				<TabsContent value="payment" className="space-y-4">
 					<Card>
 						<CardHeader className="flex-row items-center justify-between">
 							<div><CardTitle>Payment methods</CardTitle><CardDescription>Bank accounts used for NGN deposit and withdrawal.</CardDescription></div>
-							<Button size="sm">Add bank</Button>
+							<Button size="sm" onClick={() => setShowAddBank(true)}>Add bank</Button>
 						</CardHeader>
 						<CardContent className="space-y-3">
-							<BankCard name="GTBank" number="•••• 4321" holder={CURRENT_USER.name} primary />
-							<BankCard name="Access Bank" number="•••• 9812" holder={CURRENT_USER.name} />
+							{banksQuery.isLoading && (
+								<div className="flex items-center justify-center py-8">
+									<Loader2 className="size-5 animate-spin text-muted-foreground" />
+									<span className="ml-2 text-sm text-muted-foreground">Loading bank accounts...</span>
+								</div>
+							)}
+							{banksQuery.isError && (
+								<div className="py-4 text-sm text-danger">
+									Failed to load bank accounts.{" "}
+									<button className="underline" onClick={() => banksQuery.refetch()}>Retry</button>
+								</div>
+							)}
+							{banksQuery.isSuccess && banksQuery.data.length === 0 && (
+								<p className="py-4 text-sm text-muted-foreground">No bank accounts added yet.</p>
+							)}
+							{banksQuery.isSuccess &&
+								banksQuery.data.map((acct) => (
+									<BankCard
+										key={acct.id}
+										name={acct.bank_name}
+										number={`•••• ${acct.account_number.slice(-4)}`}
+										holder={acct.account_name}
+										primary={acct.is_default}
+										onDelete={() => deleteBankMutation.mutate(acct.id)}
+										deleting={deleteBankMutation.isPending}
+									/>
+								))}
+
+							{/* ---- Inline add-bank form ---- */}
+							{showAddBank && (
+								<div className="rounded-lg border border-border bg-card p-4 space-y-3">
+									<div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+										<div><Label>Bank name</Label><Input className="mt-1.5" placeholder="GTBank" value={newBank.bank_name} onChange={(e) => setNewBank({ ...newBank, bank_name: e.target.value })} /></div>
+										<div><Label>Account number</Label><Input className="mt-1.5" placeholder="0123456789" value={newBank.account_number} onChange={(e) => setNewBank({ ...newBank, account_number: e.target.value.replace(/\D/g, "") })} /></div>
+										<div><Label>Account name</Label><Input className="mt-1.5" placeholder="John Doe" value={newBank.account_name} onChange={(e) => setNewBank({ ...newBank, account_name: e.target.value })} /></div>
+									</div>
+									<div className="flex justify-end gap-2">
+										<Button variant="outline" size="sm" onClick={() => { setShowAddBank(false); setNewBank({ bank_name: "", account_number: "", account_name: "" }); }}>Cancel</Button>
+										<Button size="sm" disabled={addBankMutation.isPending || !newBank.bank_name || !newBank.account_number || !newBank.account_name} onClick={() => addBankMutation.mutate(newBank)}>
+											{addBankMutation.isPending ? <><Loader2 className="size-4 animate-spin mr-1" />Saving...</> : "Save"}
+										</Button>
+									</div>
+								</div>
+							)}
 						</CardContent>
 					</Card>
 				</TabsContent>
 
+				{/* ===================== PREFERENCES TAB ===================== */}
 				<TabsContent value="preferences" className="space-y-4">
 					<Card>
 						<CardHeader><CardTitle>Preferences</CardTitle></CardHeader>
@@ -122,7 +260,7 @@ function Row({ icon, title, hint, cta }: { icon?: React.ReactNode; title: string
 	);
 }
 
-function BankCard({ name, number, holder, primary }: { name: string; number: string; holder: string; primary?: boolean }) {
+function BankCard({ name, number, holder, primary, onDelete, deleting }: { name: string; number: string; holder: string; primary?: boolean; onDelete: () => void; deleting: boolean }) {
 	return (
 		<div className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
 			<div className="flex items-center gap-4">
@@ -134,7 +272,9 @@ function BankCard({ name, number, holder, primary }: { name: string; number: str
 			</div>
 			<div className="flex items-center gap-2">
 				{primary && <span className="rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">Primary</span>}
-				<Button variant="ghost" size="sm">Edit</Button>
+				<Button variant="ghost" size="sm" onClick={onDelete} disabled={deleting}>
+					{deleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+				</Button>
 			</div>
 		</div>
 	);

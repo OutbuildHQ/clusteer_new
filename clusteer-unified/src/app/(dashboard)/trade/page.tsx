@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { ASSETS } from "@/lib/mock-data";
 import { formatMoney } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,10 +9,33 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Num } from "@/components/primitives/num";
-import { ArrowDown, Clock, AlertTriangle } from "lucide-react";
+import { ArrowDown, Clock, AlertTriangle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { getUserWallet } from "@/lib/api/wallet/queries";
+import { getExchangeRate } from "@/lib/api/blockchain/queries";
+import type { Wallet } from "@/store/wallet";
+
+/** Known chains per stablecoin on the Clusteer platform */
+const CHAIN_MAP: Record<string, string[]> = {
+	USDT: ["Tron", "BSC", "Ethereum"],
+	USDC: ["Ethereum", "Solana", "Polygon"],
+};
 
 const FIAT = { symbol: "NGN", name: "Nigerian Naira" };
+
+/** Map Wallet[] from API into a shape the UI can use */
+function walletToAssets(wallets: Wallet[]) {
+	return wallets
+		.filter((w) => w.type === "CRYPTO")
+		.map((w) => ({
+			symbol: w.currency,
+			name: w.name,
+			chains: CHAIN_MAP[w.currency] ?? ["Tron"],
+			balance: w.balance,
+			address: w.address,
+		}));
+}
 
 export default function TradePage() {
 	const [mode, setMode] = useState<"buy" | "sell">("buy");
@@ -21,21 +43,54 @@ export default function TradePage() {
 	const [amount, setAmount] = useState("");
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [countdown, setCountdown] = useState(10);
+	const [submitting, setSubmitting] = useState(false);
 
-	const selected = ASSETS.find((a) => a.symbol === asset)!;
+	// Fetch wallet data
+	const { data: walletData, isLoading: walletLoading } = useQuery({
+		queryKey: ["wallet"],
+		queryFn: getUserWallet,
+		retry: false,
+	});
+
+	const assets = useMemo(() => walletToAssets(walletData?.walletAssets ?? []), [walletData]);
+
+	// Find NGN wallet for fiat balance
+	const ngnWallet = walletData?.walletAssets?.find((w) => w.currency === "NGN");
+	const ngnBalance = ngnWallet?.balance ?? 0;
+
+	// Fetch exchange rate for selected asset
+	const chainCode = asset === "USDT" ? "TRON" : "ETH";
+	const { data: exchangeRateData } = useQuery({
+		queryKey: ["exchangeRate", chainCode],
+		queryFn: () => getExchangeRate({ baseCurrency: chainCode as any, targetCurrency: "NGN", amount: 1 }),
+		retry: false,
+		refetchInterval: 10_000, // refresh every 10s
+	});
+
+	const rate = useMemo(() => {
+		if (!exchangeRateData) return 1_570; // fallback
+		return mode === "buy" ? exchangeRateData.purchase : exchangeRateData.sale;
+	}, [exchangeRateData, mode]);
+
+	const selected = assets.find((a) => a.symbol === asset) ?? {
+		symbol: asset,
+		name: asset,
+		chains: CHAIN_MAP[asset] ?? ["Tron"],
+		balance: 0,
+		address: "",
+	};
 
 	const amtNum = parseFloat(amount) || 0;
-	const youPay = mode === "buy" ? amtNum : amtNum * selected.priceNgn;
-	const youGet = mode === "buy" ? amtNum / selected.priceNgn : amtNum;
-	const rate = selected.priceNgn;
+	const youPay = mode === "buy" ? amtNum : amtNum * rate;
+	const youGet = mode === "buy" ? amtNum / rate : amtNum;
 
 	const feePct = 0.0075; // 0.75%
 	const feeAmt = useMemo(() => {
 		if (mode === "buy") return amtNum * feePct;
-		if (mode === "sell") return amtNum * selected.priceNgn * feePct;
-		return amtNum * selected.priceNgn * feePct;
-	}, [mode, amtNum, selected.priceNgn]);
+		return amtNum * rate * feePct;
+	}, [mode, amtNum, rate]);
 
+	// Reset countdown when rate refreshes
 	useEffect(() => {
 		const timer = setInterval(() => setCountdown((c) => (c <= 1 ? 10 : c - 1)), 1000);
 		return () => clearInterval(timer);
@@ -46,15 +101,48 @@ export default function TradePage() {
 		setShowConfirm(true);
 	};
 
-	const confirmOrder = () => {
-		toast.success(`Order placed: ${mode === "buy" ? "Buy" : "Sell"} ${asset}`);
-		setAmount("");
-		setShowConfirm(false);
+	const confirmOrder = async () => {
+		setSubmitting(true);
+		try {
+			const chain = selected.chains[0]?.toLowerCase() ?? "tron";
+			const res = await fetch("/api/trade", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					side: mode,
+					amount: amtNum,
+					chain,
+					...(mode === "buy"
+						? { walletAddress: selected.address }
+						: { signedTransaction: "pending" }),
+				}),
+			});
+			const data = await res.json();
+			if (data.status) {
+				toast.success(data.message ?? `Order placed: ${mode === "buy" ? "Buy" : "Sell"} ${asset}`);
+			} else {
+				toast.error(data.message ?? "Trade failed");
+			}
+		} catch (err) {
+			toast.error("Network error. Please try again.");
+		} finally {
+			setSubmitting(false);
+			setAmount("");
+			setShowConfirm(false);
+		}
 	};
 
 	const cancelConfirm = () => {
 		setShowConfirm(false);
 	};
+
+	if (walletLoading) {
+		return (
+			<div className="max-w-2xl mx-auto flex items-center justify-center py-24">
+				<Loader2 className="size-6 animate-spin text-muted-foreground" />
+			</div>
+		);
+	}
 
 	return (
 		<div className="max-w-2xl mx-auto">
@@ -79,15 +167,15 @@ export default function TradePage() {
 										amount={amount}
 										onAmount={setAmount}
 										asset={<FiatPill />}
-										helper="From NGN wallet · ₦248,400 available"
+										helper={`From NGN wallet · ${formatMoney(ngnBalance, "NGN", { decimals: 0 })} available`}
 										unit="NGN"
 									/>
 									<ArrowDivider />
 									<InputPanel
 										label="You receive"
-										amount={amtNum ? (amtNum / selected.priceNgn).toFixed(8) : ""}
+										amount={amtNum ? (amtNum / rate).toFixed(8) : ""}
 										readOnly
-										asset={<AssetSelect value={asset} onChange={setAsset} />}
+										asset={<AssetSelect value={asset} onChange={setAsset} assets={assets} />}
 										helper={`1 ${asset} ≈ ${formatMoney(rate, "NGN", { decimals: 0 })}`}
 										unit={asset}
 									/>
@@ -99,14 +187,14 @@ export default function TradePage() {
 										label="You sell"
 										amount={amount}
 										onAmount={setAmount}
-										asset={<AssetSelect value={asset} onChange={setAsset} />}
+										asset={<AssetSelect value={asset} onChange={setAsset} assets={assets} />}
 										helper={`Available: ${selected.balance} ${asset}`}
 										unit={asset}
 									/>
 									<ArrowDivider />
 									<InputPanel
 										label="You receive"
-										amount={amtNum ? (amtNum * selected.priceNgn).toFixed(0) : ""}
+										amount={amtNum ? (amtNum * rate).toFixed(0) : ""}
 										readOnly
 										asset={<FiatPill />}
 										helper={`1 ${asset} ≈ ${formatMoney(rate, "NGN", { decimals: 0 })}`}
@@ -177,11 +265,11 @@ export default function TradePage() {
 							</p>
 
 							<div className="flex gap-3">
-								<Button variant="outline" size="lg" className="flex-1" onClick={cancelConfirm}>
+								<Button variant="outline" size="lg" className="flex-1" onClick={cancelConfirm} disabled={submitting}>
 									Cancel
 								</Button>
-								<Button size="lg" className="flex-1" onClick={confirmOrder}>
-									Confirm order
+								<Button size="lg" className="flex-1" onClick={confirmOrder} disabled={submitting}>
+									{submitting ? <Loader2 className="size-4 animate-spin" /> : "Confirm order"}
 								</Button>
 							</div>
 						</div>
@@ -234,14 +322,19 @@ function FiatPill() {
 	);
 }
 
-function AssetSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function AssetSelect({ value, onChange, assets }: { value: string; onChange: (v: string) => void; assets: { symbol: string; name: string }[] }) {
+	// If no assets from API yet, show a default list
+	const items = assets.length > 0 ? assets : [
+		{ symbol: "USDT", name: "Tether" },
+		{ symbol: "USDC", name: "USD Coin" },
+	];
 	return (
 		<Select value={value} onValueChange={onChange}>
 			<SelectTrigger className="h-9 w-auto gap-2 rounded-full border-border bg-muted px-3 text-sm font-medium">
 				<span className="inline-flex items-center gap-2"><AssetLogo symbol={value} size="sm" />{value}</span>
 			</SelectTrigger>
 			<SelectContent>
-				{ASSETS.map((a) => (
+				{items.map((a) => (
 					<SelectItem key={a.symbol} value={a.symbol}>
 						<span className="inline-flex items-center gap-2"><AssetLogo symbol={a.symbol} size="sm" />{a.name} <span className="text-muted-foreground">{a.symbol}</span></span>
 					</SelectItem>

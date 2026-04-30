@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ASSETS, ORDERS, CURRENT_USER, generateAreaSeries } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { getUserWallet } from "@/lib/api/wallet/queries";
+import { getUserInfo, getAllTransactions } from "@/lib/api/user/queries";
+import { generateAreaSeries } from "@/lib/mock-data";
 import { formatMoney, formatPct, relativeTime } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,22 +16,45 @@ import { ChainBadge } from "@/components/primitives/chain-badge";
 import { Num } from "@/components/primitives/num";
 import { Sparkline } from "@/components/primitives/sparkline";
 import { PriceAreaChart } from "@/components/primitives/price-area-chart";
-import { ArrowDownToLine, ArrowUpRight, ArrowLeftRight, Eye, EyeOff, ArrowUpDown } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TableSkeleton } from "@/components/primitives/table-skeleton";
+import { ArrowDownToLine, ArrowUpRight, ArrowLeftRight, Eye, EyeOff, ArrowUpDown, AlertCircle } from "lucide-react";
 
 export default function DashboardPage() {
 	const [hideBalance, setHideBalance] = useState(false);
 
-	const totalNgn = ASSETS.reduce((s, a) => s + a.balanceNgn, 0);
-	const series = generateAreaSeries(30, totalNgn);
-	const topOrders = ORDERS.slice(0, 5);
+	const { data: walletData, isLoading: walletsLoading, error: walletsError } = useQuery({
+		queryKey: ["wallet"],
+		queryFn: getUserWallet,
+	});
 
+	const { data: userData, isLoading: userLoading } = useQuery({
+		queryKey: ["user-profile"],
+		queryFn: getUserInfo,
+	});
+
+	const { data: transactionsData, isLoading: txLoading, error: txError } = useQuery({
+		queryKey: ["transactions", 1],
+		queryFn: () => getAllTransactions({ page: 1, size: 5 }),
+	});
+
+	const assets = walletData?.walletAssets ?? [];
+	const transactions = transactionsData?.data ?? [];
+
+	const totalNgn = assets.reduce((s, a) => s + (a.balance ?? 0), 0);
+	const series = generateAreaSeries(30, totalNgn || 1_000);
+	const topTransactions = transactions.slice(0, 5);
+
+	const firstName = userData?.firstName ?? userData?.username ?? "there";
 	const masked = "••••••";
 
 	return (
 		<div className="space-y-6">
 			<header className="flex flex-wrap items-end justify-between gap-4">
 				<div>
-					<p className="text-sm text-muted-foreground">Welcome back, {CURRENT_USER.firstName}</p>
+					<p className="text-sm text-muted-foreground">
+						Welcome back, {userLoading ? <Skeleton className="inline-block h-4 w-20" /> : firstName}
+					</p>
 					<h1 className="font-display text-2xl font-bold tracking-tight">Portfolio</h1>
 				</div>
 				<div className="flex gap-2">
@@ -46,16 +72,23 @@ export default function DashboardPage() {
 								<CardDescription className="inline-flex items-center gap-2">
 									Total balance <button onClick={() => setHideBalance(!hideBalance)} className="text-muted-foreground/70 hover:text-foreground">{hideBalance ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}<span className="sr-only">{hideBalance ? "Show" : "Hide"}</span></button>
 								</CardDescription>
-								<Num as="div" className="mt-1 font-display text-2xl sm:text-3xl font-bold tracking-tight" value={hideBalance ? masked : formatMoney(totalNgn, "NGN")} />
+								{walletsLoading ? (
+									<Skeleton className="mt-1 h-8 w-48" />
+								) : (
+									<Num as="div" className="mt-1 font-display text-2xl sm:text-3xl font-bold tracking-tight" value={hideBalance ? masked : formatMoney(totalNgn, "NGN")} />
+								)}
 								<div className="mt-1 flex items-center gap-2 text-sm">
-									<Num tone="positive" value={hideBalance ? masked : "+₦428,211"} />
-									<span className="text-muted-foreground">· 30 days</span>
+									<span className="text-muted-foreground">Portfolio value</span>
 								</div>
 							</div>
 						</div>
 					</CardHeader>
 					<CardContent className="pt-0">
-						<PriceAreaChart data={series} currency="NGN" height={220} />
+						{walletsLoading ? (
+							<Skeleton className="h-[220px] w-full" />
+						) : (
+							<PriceAreaChart data={series} currency="NGN" height={220} />
+						)}
 					</CardContent>
 				</Card>
 
@@ -83,50 +116,72 @@ export default function DashboardPage() {
 					<Button asChild variant="ghost" size="sm"><Link href="/assets">See all</Link></Button>
 				</CardHeader>
 				<CardContent className="p-0">
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Asset</TableHead>
-								<TableHead>Price</TableHead>
-								<TableHead className="hidden sm:table-cell">24h</TableHead>
-								<TableHead className="hidden md:table-cell">7d</TableHead>
-								<TableHead className="text-right">Balance</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{ASSETS.map((a) => (
-								<TableRow key={a.symbol}>
-									<TableCell>
-										<Link href={`/assets/${a.symbol}`} className="flex items-center gap-3">
-											<AssetLogo symbol={a.symbol} />
-											<div>
-												<div className="font-medium">{a.name}</div>
-												<div className="text-xs text-muted-foreground">{a.symbol}</div>
-											</div>
-										</Link>
-									</TableCell>
-									<TableCell><Num value={formatMoney(a.priceNgn, "NGN", { decimals: 0 })} /></TableCell>
-									<TableCell className="hidden sm:table-cell"><Num tone={a.change24h >= 0 ? "positive" : "negative"} value={formatPct(a.change24h)} /></TableCell>
-									<TableCell className="hidden md:table-cell"><Sparkline data={a.sparkline} width={90} height={28} /></TableCell>
-									<TableCell className="text-right">
-										<Num as="div" value={hideBalance ? masked : a.balance.toFixed(2) + " " + a.symbol} />
-										<Num as="div" className="text-xs" tone="muted" value={hideBalance ? masked : formatMoney(a.balanceNgn, "NGN", { decimals: 0 })} />
-									</TableCell>
+					{walletsLoading ? (
+						<TableSkeleton columns={5} rows={3} />
+					) : walletsError ? (
+						<div className="py-12 text-center">
+							<AlertCircle className="size-10 text-destructive/40 mx-auto mb-3" />
+							<p className="font-medium">Failed to load assets</p>
+							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
+						</div>
+					) : assets.length === 0 ? (
+						<div className="py-12 text-center">
+							<ArrowUpDown className="size-10 text-muted-foreground/40 mx-auto mb-3" />
+							<p className="font-medium">No assets yet</p>
+							<p className="text-sm text-muted-foreground mt-1">Your assets will appear here once you start trading.</p>
+							<Button asChild size="sm" className="mt-4 w-full sm:w-auto"><Link href="/trade">Make your first trade</Link></Button>
+						</div>
+					) : (
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>Asset</TableHead>
+									<TableHead>Currency</TableHead>
+									<TableHead>Type</TableHead>
+									<TableHead className="text-right">Balance</TableHead>
 								</TableRow>
-							))}
-						</TableBody>
-					</Table>
+							</TableHeader>
+							<TableBody>
+								{assets.map((a) => (
+									<TableRow key={a.currency}>
+										<TableCell>
+											<Link href={`/assets/${a.currency}`} className="flex items-center gap-3">
+												<AssetLogo symbol={a.currency} />
+												<div>
+													<div className="font-medium">{a.name}</div>
+													<div className="text-xs text-muted-foreground">{a.currency}</div>
+												</div>
+											</Link>
+										</TableCell>
+										<TableCell><span className="text-sm">{a.currency}</span></TableCell>
+										<TableCell><Badge variant="outline" className="capitalize">{a.type}</Badge></TableCell>
+										<TableCell className="text-right">
+											<Num as="div" value={hideBalance ? masked : (a.balance ?? 0).toFixed(2) + " " + a.currency} />
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					)}
 				</CardContent>
 			</Card>
 
-			{/* Recent orders */}
+			{/* Recent activity */}
 			<Card>
 				<CardHeader className="flex-row items-center justify-between">
 					<CardTitle>Recent activity</CardTitle>
 					<Button asChild variant="ghost" size="sm"><Link href="/transaction-history">View all</Link></Button>
 				</CardHeader>
 				<CardContent className="p-0">
-					{ORDERS.length === 0 ? (
+					{txLoading ? (
+						<TableSkeleton columns={5} rows={3} />
+					) : txError ? (
+						<div className="py-12 text-center">
+							<AlertCircle className="size-10 text-destructive/40 mx-auto mb-3" />
+							<p className="font-medium">Failed to load transactions</p>
+							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
+						</div>
+					) : topTransactions.length === 0 ? (
 						<div className="py-12 text-center">
 							<ArrowUpDown className="size-10 text-muted-foreground/40 mx-auto mb-3" />
 							<p className="font-medium">No transactions yet</p>
@@ -137,36 +192,28 @@ export default function DashboardPage() {
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead>Order</TableHead>
-									<TableHead>Asset</TableHead>
+									<TableHead>Transaction</TableHead>
 									<TableHead>Amount</TableHead>
 									<TableHead>Status</TableHead>
 									<TableHead className="text-right">When</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{topOrders.map((o) => (
-									<TableRow key={o.id}>
+								{topTransactions.map((t) => (
+									<TableRow key={t.id}>
 										<TableCell>
-											<div className="font-medium capitalize">{o.kind} <span className="text-muted-foreground">· {o.id}</span></div>
+											<div className="font-medium capitalize">{t.type} <span className="text-muted-foreground">· {t.orderNumber ?? t.id}</span></div>
+											{t.description && <div className="text-xs text-muted-foreground">{t.description}</div>}
 										</TableCell>
 										<TableCell>
-											<div className="flex items-center gap-2">
-												<AssetLogo symbol={o.asset} size="sm" />
-												<span className="text-sm">{o.asset}</span>
-												<ChainBadge chain={o.chain} />
-											</div>
+											<Num as="div" value={hideBalance ? masked : (t.amount ?? 0) + " " + (t.currency ?? "")} />
 										</TableCell>
 										<TableCell>
-											<Num as="div" value={hideBalance ? masked : o.amount + " " + o.asset} />
-											<Num as="div" tone="muted" className="text-xs" value={hideBalance ? masked : formatMoney(o.amountNgn, "NGN", { decimals: 0 })} />
-										</TableCell>
-										<TableCell>
-											<Badge variant={o.status === "completed" ? "success" : o.status === "failed" ? "danger" : "warning"} className="capitalize">
-												{o.status}
+											<Badge variant={t.status === "completed" ? "success" : t.status === "failed" ? "danger" : "warning"} className="capitalize">
+												{t.status}
 											</Badge>
 										</TableCell>
-										<TableCell className="text-right text-sm text-muted-foreground">{relativeTime(o.createdAt)}</TableCell>
+										<TableCell className="text-right text-sm text-muted-foreground">{relativeTime(t.dateCreated ?? t.date)}</TableCell>
 									</TableRow>
 								))}
 							</TableBody>

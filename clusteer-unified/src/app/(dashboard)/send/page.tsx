@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { ASSETS } from "@/lib/mock-data";
+import { useState, useMemo } from "react";
 import { formatMoney } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,8 +12,31 @@ import { AssetLogo } from "@/components/primitives/asset-logo";
 import { ChainBadge } from "@/components/primitives/chain-badge";
 import { Num } from "@/components/primitives/num";
 import { StepsHorizontal } from "@/components/primitives/steps";
-import { AlertTriangle, ArrowRight, Shield } from "lucide-react";
+import { AlertTriangle, ArrowRight, Shield, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { getUserWallet } from "@/lib/api/wallet/queries";
+import { getExchangeRate } from "@/lib/api/blockchain/queries";
+import type { Wallet } from "@/store/wallet";
+
+/** Known chains per stablecoin on the Clusteer platform */
+const CHAIN_MAP: Record<string, string[]> = {
+	USDT: ["Tron", "BSC", "Ethereum"],
+	USDC: ["Ethereum", "Solana", "Polygon"],
+};
+
+/** Map Wallet[] from API into a shape the UI can use */
+function walletToAssets(wallets: Wallet[]) {
+	return wallets
+		.filter((w) => w.type === "CRYPTO")
+		.map((w) => ({
+			symbol: w.currency,
+			name: w.name,
+			chains: CHAIN_MAP[w.currency] ?? ["Tron"],
+			balance: w.balance,
+			address: w.address,
+		}));
+}
 
 const SAVED = [
 	{ label: "Chidi's wallet", address: "0x8aC7230489E80000d4f3bB9C3C4f48e12f3" },
@@ -30,12 +52,38 @@ export default function SendPage() {
 	const [address, setAddress] = useState("");
 	const [note, setNote] = useState("");
 	const [otp, setOtp] = useState("");
+	const [submitting, setSubmitting] = useState(false);
 
-	const selected = ASSETS.find((a) => a.symbol === asset)!;
+	// Fetch wallet data
+	const { data: walletData, isLoading: walletLoading } = useQuery({
+		queryKey: ["wallet"],
+		queryFn: getUserWallet,
+		retry: false,
+	});
+
+	const assets = useMemo(() => walletToAssets(walletData?.walletAssets ?? []), [walletData]);
+
+	// Fetch exchange rate for NGN conversion display
+	const chainCode = asset === "USDT" ? "TRON" : "ETH";
+	const { data: exchangeRateData } = useQuery({
+		queryKey: ["exchangeRate", chainCode],
+		queryFn: () => getExchangeRate({ baseCurrency: chainCode as any, targetCurrency: "NGN", amount: 1 }),
+		retry: false,
+	});
+	const priceNgn = exchangeRateData?.sale ?? 1_570;
+
+	const selected = assets.find((a) => a.symbol === asset) ?? {
+		symbol: asset,
+		name: asset,
+		chains: CHAIN_MAP[asset] ?? ["Tron"],
+		balance: 0,
+		address: "",
+	};
+
 	const amtNum = parseFloat(amount) || 0;
 	const fee = chain === "Tron" ? 1 : chain === "BSC" ? 0.5 : 2.5;
 	const total = amtNum + fee;
-	const amountNgn = amtNum * selected.priceNgn;
+	const amountNgn = amtNum * priceNgn;
 
 	const submit = () => {
 		if (!amount || !address) {
@@ -70,14 +118,44 @@ export default function SendPage() {
 		setStep("otp");
 	};
 
-	const authorize = () => {
+	const authorize = async () => {
 		if (otp.length < 6) {
 			toast.error("Enter the 6-digit code");
 			return;
 		}
-		setStep("done");
-		toast.success("Transaction submitted");
+		setSubmitting(true);
+		try {
+			const res = await fetch("/api/transfer/internal", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					recipientUserId: address,
+					asset: asset,
+					amount: amtNum,
+					note: note || undefined,
+				}),
+			});
+			const data = await res.json();
+			if (data.status) {
+				setStep("done");
+				toast.success(data.message ?? "Transaction submitted");
+			} else {
+				toast.error(data.message ?? "Transfer failed");
+			}
+		} catch (err) {
+			toast.error("Network error. Please try again.");
+		} finally {
+			setSubmitting(false);
+		}
 	};
+
+	if (walletLoading) {
+		return (
+			<div className="max-w-2xl mx-auto flex items-center justify-center py-24">
+				<Loader2 className="size-6 animate-spin text-muted-foreground" />
+			</div>
+		);
+	}
 
 	return (
 		<div className="max-w-2xl mx-auto">
@@ -94,12 +172,12 @@ export default function SendPage() {
 						<>
 							<div>
 								<Label>Asset</Label>
-								<Select value={asset} onValueChange={(v) => { setAsset(v); setChain(ASSETS.find((a) => a.symbol === v)!.chains[0]); }}>
+								<Select value={asset} onValueChange={(v) => { setAsset(v); const found = assets.find((a) => a.symbol === v); setChain(found?.chains[0] ?? "Tron"); }}>
 									<SelectTrigger className="mt-1.5">
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										{ASSETS.map((a) => (
+										{(assets.length > 0 ? assets : [{ symbol: "USDT", name: "Tether" }, { symbol: "USDC", name: "USD Coin" }]).map((a) => (
 											<SelectItem key={a.symbol} value={a.symbol}>
 												<span className="inline-flex items-center gap-2">
 													<AssetLogo symbol={a.symbol} size="sm" />
@@ -110,7 +188,7 @@ export default function SendPage() {
 									</SelectContent>
 								</Select>
 								<div className="mt-1.5 text-xs text-muted-foreground">
-									Available: <Num value={selected.balance + " " + selected.symbol} /> · <Num value={formatMoney(selected.balanceNgn, "NGN", { decimals: 0 })} />
+									Available: <Num value={selected.balance + " " + selected.symbol} /> · <Num value={formatMoney(selected.balance * priceNgn, "NGN", { decimals: 0 })} />
 								</div>
 							</div>
 
@@ -212,8 +290,10 @@ export default function SendPage() {
 							</div>
 							<Input className="mono text-center text-xl sm:text-2xl tracking-widest" maxLength={6} placeholder="000000" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))} />
 							<div className="flex gap-2">
-								<Button variant="outline" className="flex-1" onClick={() => setStep("review")}>Back</Button>
-								<Button className="flex-1" onClick={authorize}>Authorize</Button>
+								<Button variant="outline" className="flex-1" onClick={() => setStep("review")} disabled={submitting}>Back</Button>
+								<Button className="flex-1" onClick={authorize} disabled={submitting}>
+									{submitting ? <Loader2 className="size-4 animate-spin" /> : "Authorize"}
+								</Button>
 							</div>
 						</div>
 					)}

@@ -1,26 +1,71 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ASSETS } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { QR } from "@/components/primitives/qr";
 import { CopyButton } from "@/components/primitives/copy-button";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getUserWallet } from "@/lib/api/wallet/queries";
+import type { Wallet } from "@/store/wallet";
 
-const MOCK_ADDR = (_sym: string, chain: string) => {
-	if (chain === "Tron") return "TXfM9pA2kL8c6D4wQ3rX5zYH8m2bN9J1fA";
-	if (chain === "Solana") return "8vEWcqJQhM5xT9vYqZ6Nk4H3dKgP1mNrT7Bv";
-	// Ethereum, BSC, Polygon all use EVM addresses
-	return "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
+/** Known chains per stablecoin on the Clusteer platform */
+const CHAIN_MAP: Record<string, string[]> = {
+	USDT: ["Tron", "BSC", "Ethereum"],
+	USDC: ["Ethereum", "Solana", "Polygon"],
 };
+
+/** Map Wallet[] from API into a shape the UI can use */
+function walletToAssets(wallets: Wallet[]) {
+	return wallets
+		.filter((w) => w.type === "CRYPTO")
+		.map((w) => ({
+			symbol: w.currency,
+			name: w.name,
+			chains: CHAIN_MAP[w.currency] ?? ["Tron"],
+			balance: w.balance,
+			address: w.address,
+		}));
+}
 
 export default function ReceiveIndex() {
 	const [asset, setAsset] = useState("USDT");
-	const selected = ASSETS.find((a) => a.symbol === asset)!;
+
+	// Fetch wallet data
+	const { data: walletData, isLoading: walletLoading } = useQuery({
+		queryKey: ["wallet"],
+		queryFn: getUserWallet,
+		retry: false,
+	});
+
+	const assets = useMemo(() => walletToAssets(walletData?.walletAssets ?? []), [walletData]);
+
+	const selected = assets.find((a) => a.symbol === asset) ?? {
+		symbol: asset,
+		name: asset,
+		chains: CHAIN_MAP[asset] ?? ["Tron"],
+		balance: 0,
+		address: "",
+	};
+
 	const [chain, setChain] = useState(selected.chains[0]);
-	const address = useMemo(() => MOCK_ADDR(asset, chain), [asset, chain]);
+
+	// Use the real deposit address from wallet data, or show placeholder
+	const address = useMemo(() => {
+		if (selected.address) return selected.address;
+		return "No address available — wallet not initialized";
+	}, [selected.address]);
+
+	if (walletLoading) {
+		return (
+			<div className="max-w-xl mx-auto flex items-center justify-center py-24">
+				<Loader2 className="size-6 animate-spin text-muted-foreground" />
+			</div>
+		);
+	}
+
 	return (
 		<div className="max-w-xl mx-auto space-y-4">
 			<h1 className="font-display text-2xl font-bold tracking-tight">Receive</h1>
@@ -30,10 +75,10 @@ export default function ReceiveIndex() {
 					<div className="grid grid-cols-2 gap-3">
 						<div>
 							<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Asset</label>
-							<Select value={asset} onValueChange={(v) => { setAsset(v); setChain(ASSETS.find((a) => a.symbol === v)!.chains[0]); }}>
+							<Select value={asset} onValueChange={(v) => { setAsset(v); const found = assets.find((a) => a.symbol === v); setChain(found?.chains[0] ?? "Tron"); }}>
 								<SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
 								<SelectContent>
-									{ASSETS.map((a) => (
+									{(assets.length > 0 ? assets : [{ symbol: "USDT", name: "Tether" }, { symbol: "USDC", name: "USD Coin" }]).map((a) => (
 										<SelectItem key={a.symbol} value={a.symbol}>
 											<span className="inline-flex items-center gap-2"><AssetLogo symbol={a.symbol} size="sm" />{a.symbol}</span>
 										</SelectItem>
@@ -53,12 +98,18 @@ export default function ReceiveIndex() {
 					</div>
 
 					<div className="flex flex-col items-center gap-4 py-2">
-						<QR value={address} size={192} />
+						{selected.address ? (
+							<QR value={address} size={192} />
+						) : (
+							<div className="flex items-center justify-center w-48 h-48 rounded-lg border border-dashed border-border bg-muted/30 text-xs text-muted-foreground text-center p-4">
+								No deposit address available yet. Your wallet may still be initializing.
+							</div>
+						)}
 						<div className="w-full">
 							<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Deposit address</label>
 							<div className="mt-1 flex items-center gap-2 rounded-lg border border-border bg-muted/40 p-3">
 								<code className="mono flex-1 break-all text-xs">{address}</code>
-								<CopyButton value={address} label="Address" />
+								{selected.address && <CopyButton value={address} label="Address" />}
 							</div>
 						</div>
 					</div>
