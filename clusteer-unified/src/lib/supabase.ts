@@ -1,8 +1,13 @@
 /**
- * DEPRECATED: Supabase has been fully replaced with Firebase + Django backend
- * This file only contains type definitions for backward compatibility
- * All Supabase client exports have been removed
+ * DEPRECATED: Supabase has been fully replaced with Firebase + Django backend.
+ * Stub exports below prevent build errors in old API routes that haven't been migrated yet.
+ * These routes will return 503 "Service unavailable" at runtime.
+ * TODO: Remove this file and migrate remaining routes to Firebase/Django.
  */
+
+// Stub clients to prevent build crashes in unmigrated routes
+export const supabase = null as any;
+export const supabaseAdmin = null as any;
 
 // Database types (kept for reference during migration)
 export type User = {

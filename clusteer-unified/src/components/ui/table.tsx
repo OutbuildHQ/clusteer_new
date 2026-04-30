@@ -57,4 +57,31 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
 );
 TableCell.displayName = "TableCell";
 
-export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell };
+function PaginationControls({ currentPage, totalPages, onPageChange }: { currentPage: number; totalPages: number; onPageChange: (page: number) => void }) {
+	if (totalPages <= 1) return null;
+	return (
+		<div className="flex items-center justify-between px-4 py-3 border-t border-border">
+			<p className="text-xs text-muted-foreground">Page {currentPage} of {totalPages}</p>
+			<div className="flex gap-1">
+				<button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1} className="px-3 py-1 text-xs rounded-md border border-border hover:bg-muted disabled:opacity-50">Prev</button>
+				<button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage >= totalPages} className="px-3 py-1 text-xs rounded-md border border-border hover:bg-muted disabled:opacity-50">Next</button>
+			</div>
+		</div>
+	);
+}
+
+function TableRowsSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
+	return (
+		<>
+			{Array.from({ length: rows }).map((_, r) => (
+				<TableRow key={r}>
+					{Array.from({ length: cols }).map((_, c) => (
+						<TableCell key={c}><div className="h-4 w-full rounded bg-muted animate-pulse" /></TableCell>
+					))}
+				</TableRow>
+			))}
+		</>
+	);
+}
+
+export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, PaginationControls, TableRowsSkeleton };
