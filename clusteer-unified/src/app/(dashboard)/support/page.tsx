@@ -23,9 +23,9 @@ const TOPICS = [
 ];
 
 const FAQ = [
-	{ q: "How long do deposits take?", a: "After the network confirms, funds arrive in your Clusteer wallet typically within 3–15 minutes depending on the chain." },
-	{ q: "What are your trading fees?", a: "A flat 0.75% on buy, sell, and swap orders. No hidden spreads — the rate you see is the rate you get." },
-	{ q: "I sent stablecoins on the wrong network. What now?", a: "Unfortunately, cross-network recovery is not always possible. Contact support immediately with the TX hash — we'll do our best to help." },
+	{ q: "How long do deposits take?", a: "After the network confirms, funds arrive in your Clusteer wallet typically within 3\u201315 minutes depending on the chain." },
+	{ q: "What are your trading fees?", a: "A flat 0.75% on buy, sell, and swap orders. No hidden spreads \u2014 the rate you see is the rate you get." },
+	{ q: "I sent stablecoins on the wrong network. What now?", a: "Unfortunately, cross-network recovery is not always possible. Contact support immediately with the TX hash \u2014 we'll do our best to help." },
 	{ q: "How do I upgrade to Tier 2?", a: "Go to Identity Verification, provide your BVN, a government ID, and a selfie. Most approvals complete in under 5 minutes." },
 	{ q: "Can I withdraw to my Nigerian bank?", a: "Yes, sell your stablecoins for NGN and withdraw to any linked Nigerian bank account. Withdrawals clear within 15 minutes on business days." },
 ];
@@ -36,7 +36,7 @@ const MOCK_TICKETS = [
 ];
 
 const CHAT_MESSAGES: { role: "bot" | "user"; text: string; time: string }[] = [
-	{ role: "bot" as const, text: "👋 Hi! I'm Clusteer's support assistant. How can I help you today?", time: "Just now" },
+	{ role: "bot" as const, text: "\uD83D\uDC4B Hi! I'm Clusteer's support assistant. How can I help you today?", time: "Just now" },
 ];
 
 function relativeTime(iso: string) {
@@ -70,7 +70,7 @@ export default function SupportPage() {
 			toast.error("Please fill in subject and description");
 			return;
 		}
-		toast.success("Ticket submitted — we'll reply within a few hours.");
+		toast.success("Ticket submitted \u2014 we'll reply within a few hours.");
 		setShowNewTicket(false);
 		setTicketForm({ subject: "", category: "general", priority: "medium", description: "" });
 	}
@@ -88,15 +88,15 @@ export default function SupportPage() {
 	}
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-4 sm:space-y-6">
 			{/* Header */}
-			<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+			<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4">
 				<div>
 					<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Support</p>
-					<h1 className="font-display text-2xl font-bold tracking-[-0.02em]">How can we help?</h1>
-					<p className="mt-1 text-sm text-muted-foreground">Search our guides, or get in touch 24/7.</p>
+					<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">How can we help?</h1>
+					<p className="mt-1 text-xs sm:text-sm text-muted-foreground">Search our guides, or get in touch 24/7.</p>
 				</div>
-				<Button size="sm" className="rounded-full shadow-brutal-sm" onClick={() => setShowNewTicket(true)}>
+				<Button size="sm" className="w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setShowNewTicket(true)}>
 					<Plus className="size-4" /> New ticket
 				</Button>
 			</div>
@@ -104,19 +104,19 @@ export default function SupportPage() {
 			{/* Search */}
 			<div className="relative max-w-2xl">
 				<Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
-				<Input className="h-14 pl-12 text-base rounded-[14px] border-2 border-custom-black" placeholder="Search articles…" value={q} onChange={(e) => setQ(e.target.value)} />
+				<Input className="h-12 sm:h-14 pl-12 text-sm sm:text-base rounded-[14px] border-2 border-custom-black" placeholder="Search articles\u2026" value={q} onChange={(e) => setQ(e.target.value)} />
 			</div>
 
 			{/* Topic cards */}
-			<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+			<div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
 				{TOPICS.map((t) => (
 					<Link key={t.slug} href={`/support/help/${t.slug}`}>
-						<Card className="group cursor-pointer transition hover:shadow-brutal-sm border-2 border-custom-black rounded-[20px] h-full">
-							<CardContent className="p-5 sm:p-6">
-								<div className="mb-3 size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center"><t.icon className="size-5 text-custom-black" /></div>
-								<div className="font-display font-bold">{t.title}</div>
-								<div className="mt-1 text-xs text-muted-foreground">{t.desc}</div>
-								<div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary group-hover:gap-2 transition-all">Browse<ChevronRight className="size-3" /></div>
+						<Card className="group cursor-pointer transition hover:shadow-brutal-sm border-2 border-custom-black rounded-[16px] sm:rounded-[20px] h-full">
+							<CardContent className="p-3 sm:p-5 lg:p-6">
+								<div className="mb-2 sm:mb-3 size-9 sm:size-10 lg:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center"><t.icon className="size-4 sm:size-5 text-custom-black" /></div>
+								<div className="font-display font-bold text-sm sm:text-base">{t.title}</div>
+								<div className="mt-1 text-[10px] sm:text-xs text-muted-foreground hidden sm:block">{t.desc}</div>
+								<div className="mt-2 sm:mt-3 inline-flex items-center gap-1 text-[10px] sm:text-xs font-medium text-primary group-hover:gap-2 transition-all">Browse<ChevronRight className="size-3" /></div>
 							</CardContent>
 						</Card>
 					</Link>
@@ -124,39 +124,39 @@ export default function SupportPage() {
 			</div>
 
 			{/* My tickets */}
-			<Card className="border-2 border-custom-black rounded-[20px]">
-				<CardHeader className="flex-row items-center justify-between p-6 sm:p-8">
+			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+				<CardHeader className="flex-col sm:flex-row sm:items-center gap-3 sm:justify-between p-4 sm:p-6 lg:p-8">
 					<div>
 						<CardTitle className="font-display font-bold tracking-[-0.02em]">My tickets</CardTitle>
 						<CardDescription>Track your open and resolved support requests.</CardDescription>
 					</div>
-					<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black" onClick={() => setShowNewTicket(true)}>
+					<Button variant="outline" size="sm" className="w-full sm:w-auto rounded-full border-2 border-custom-black" onClick={() => setShowNewTicket(true)}>
 						<Plus className="size-3.5" /> Submit ticket
 					</Button>
 				</CardHeader>
 				<CardContent className="p-0">
 					{MOCK_TICKETS.length === 0 ? (
-						<div className="py-12 text-center">
+						<div className="py-12 text-center px-4">
 							<MessageCircle className="size-10 text-muted-foreground/40 mx-auto mb-3" />
 							<p className="font-display font-bold">No tickets yet</p>
 							<p className="text-sm text-muted-foreground mt-1">Submit a ticket when you need help.</p>
-							<Button size="sm" className="mt-4 rounded-full shadow-brutal-sm" onClick={() => setShowNewTicket(true)}>Create your first ticket</Button>
+							<Button size="sm" className="mt-4 w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setShowNewTicket(true)}>Create your first ticket</Button>
 						</div>
 					) : (
 						<div className="divide-y divide-border">
 							{MOCK_TICKETS.map((t) => (
-								<Link key={t.id} href={`/support/${t.id}`} className="flex items-center justify-between gap-4 px-6 sm:px-8 py-4 hover:bg-warm-beige/50 transition-colors">
+								<Link key={t.id} href={`/support/${t.id}`} className="flex items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 hover:bg-warm-beige/50 transition-colors">
 									<div className="min-w-0 flex-1">
-										<div className="flex items-center gap-2 mb-1">
-											<span className="text-xs font-mono text-muted-foreground tabular-nums">{t.id}</span>
+										<div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
+											<span className="text-[10px] sm:text-xs font-mono text-muted-foreground tabular-nums">{t.id}</span>
 											<Badge className={`text-[10px] ${statusColor[t.status] ?? statusColor.closed}`}>
 												{t.status.replace("-", " ")}
 											</Badge>
 											{t.priority === "high" && <Badge variant="danger" className="text-[10px]">High</Badge>}
 										</div>
-										<p className="font-medium text-sm truncate">{t.subject}</p>
+										<p className="font-medium text-xs sm:text-sm truncate">{t.subject}</p>
 									</div>
-									<div className="text-right shrink-0">
+									<div className="text-right shrink-0 hidden sm:block">
 										<p className="text-xs text-muted-foreground">Last reply</p>
 										<p className="text-xs font-mono font-medium tabular-nums">{relativeTime(t.lastReply)}</p>
 									</div>
@@ -169,19 +169,19 @@ export default function SupportPage() {
 			</Card>
 
 			{/* FAQ */}
-			<Card className="border-2 border-custom-black rounded-[20px]">
-				<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Frequently asked</CardTitle></CardHeader>
+			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+				<CardHeader className="p-4 sm:p-6 lg:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Frequently asked</CardTitle></CardHeader>
 				<CardContent className="divide-y-2 divide-custom-black/10 p-0">
 					{filtered.length === 0 ? (
-						<div className="px-6 sm:px-8 py-8 text-center text-sm text-muted-foreground">No questions match your search.</div>
+						<div className="px-4 sm:px-6 lg:px-8 py-8 text-center text-sm text-muted-foreground">No questions match your search.</div>
 					) : (
 						filtered.map((f) => (
-							<details key={f.q} className="group px-6 sm:px-8 py-4">
-								<summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display font-bold">
+							<details key={f.q} className="group px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+								<summary className="flex cursor-pointer list-none items-center justify-between gap-3 sm:gap-4 font-display font-bold text-sm sm:text-base">
 									{f.q}
 									<ChevronRight className="size-4 text-muted-foreground transition group-open:rotate-90 shrink-0" />
 								</summary>
-								<p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+								<p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">{f.a}</p>
 							</details>
 						))
 					)}
@@ -189,34 +189,34 @@ export default function SupportPage() {
 			</Card>
 
 			{/* Contact options */}
-			<Card className="border-2 border-custom-black rounded-[20px]">
-				<CardHeader className="p-6 sm:p-8">
+			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+				<CardHeader className="p-4 sm:p-6 lg:p-8">
 					<CardTitle className="font-display font-bold tracking-[-0.02em]">Still need help?</CardTitle>
 					<CardDescription>Our team typically replies within a few minutes.</CardDescription>
 				</CardHeader>
-				<CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2 px-6 sm:px-8 pb-6 sm:pb-8">
-					<button onClick={() => setShowChat(true)} className="flex items-center gap-4 rounded-[16px] border-2 border-custom-black p-4 hover:bg-warm-beige text-left transition-colors">
-						<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center"><MessageCircle className="size-5 text-custom-black" /></div>
+				<CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
+					<button onClick={() => setShowChat(true)} className="flex items-center gap-3 sm:gap-4 rounded-[16px] border-2 border-custom-black p-3 sm:p-4 hover:bg-warm-beige text-left transition-colors">
+						<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center shrink-0"><MessageCircle className="size-5 text-custom-black" /></div>
 						<div className="flex-1 min-w-0">
-							<div className="font-display font-bold">Live chat</div>
-							<div className="text-xs text-muted-foreground">24/7 in-app support</div>
+							<div className="font-display font-bold text-sm sm:text-base">Live chat</div>
+							<div className="text-[10px] sm:text-xs text-muted-foreground">24/7 in-app support</div>
 						</div>
-						<Button size="sm" className="rounded-full shadow-brutal-sm" onClick={(e) => { e.stopPropagation(); setShowChat(true); }}>Start chat</Button>
+						<Button size="sm" className="rounded-full shadow-brutal-sm shrink-0 hidden sm:inline-flex" onClick={(e) => { e.stopPropagation(); setShowChat(true); }}>Start</Button>
 					</button>
-					<a href="mailto:support@clusteer.co" className="flex items-center gap-4 rounded-[16px] border-2 border-custom-black p-4 hover:bg-warm-beige transition-colors">
-						<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center"><Mail className="size-5 text-custom-black" /></div>
+					<a href="mailto:support@clusteer.co" className="flex items-center gap-3 sm:gap-4 rounded-[16px] border-2 border-custom-black p-3 sm:p-4 hover:bg-warm-beige transition-colors">
+						<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center shrink-0"><Mail className="size-5 text-custom-black" /></div>
 						<div className="flex-1 min-w-0">
-							<div className="font-display font-bold">Email us</div>
-							<div className="text-xs text-muted-foreground">support@clusteer.co</div>
+							<div className="font-display font-bold text-sm sm:text-base">Email us</div>
+							<div className="text-[10px] sm:text-xs text-muted-foreground truncate">support@clusteer.co</div>
 						</div>
-						<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black">Compose</Button>
+						<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black shrink-0 hidden sm:inline-flex">Compose</Button>
 					</a>
 				</CardContent>
 			</Card>
 
-			{/* ─── New Ticket Dialog ─── */}
+			{/* --- New Ticket Dialog --- */}
 			<Dialog open={showNewTicket} onOpenChange={setShowNewTicket}>
-				<DialogContent className="sm:max-w-lg">
+				<DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
 						<DialogTitle className="font-display font-bold tracking-[-0.02em]">Submit a support ticket</DialogTitle>
 						<DialogDescription>Describe your issue and we&apos;ll get back to you within a few hours.</DialogDescription>
@@ -226,7 +226,7 @@ export default function SupportPage() {
 							<Label>Subject <span className="text-danger">*</span></Label>
 							<Input placeholder="Brief description of your issue" value={ticketForm.subject} onChange={(e) => setTicketForm({ ...ticketForm, subject: e.target.value })} />
 						</div>
-						<div className="grid grid-cols-2 gap-3">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 							<div className="space-y-1.5">
 								<Label>Category</Label>
 								<Select value={ticketForm.category} onValueChange={(v) => setTicketForm({ ...ticketForm, category: v })}>
@@ -257,14 +257,14 @@ export default function SupportPage() {
 						<div className="space-y-1.5">
 							<Label>Description <span className="text-danger">*</span></Label>
 							<textarea
-								rows={5}
-								placeholder="Please provide as much detail as possible — include transaction IDs, amounts, and timestamps if relevant."
+								rows={4}
+								placeholder="Please provide as much detail as possible \u2014 include transaction IDs, amounts, and timestamps if relevant."
 								value={ticketForm.description}
 								onChange={(e) => setTicketForm({ ...ticketForm, description: e.target.value })}
-								className="w-full rounded-[14px] border-2 border-custom-black bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
+								className="w-full rounded-[14px] border-2 border-custom-black bg-background px-3 sm:px-4 py-2.5 sm:py-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
 							/>
 						</div>
-						<div className="flex gap-3 pt-2">
+						<div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
 							<Button className="flex-1 rounded-full shadow-brutal-sm" onClick={submitTicket}>Submit ticket</Button>
 							<Button variant="outline" className="flex-1 rounded-full border-2 border-custom-black" onClick={() => setShowNewTicket(false)}>Cancel</Button>
 						</div>
@@ -272,30 +272,30 @@ export default function SupportPage() {
 				</DialogContent>
 			</Dialog>
 
-			{/* ─── Live Chat Dialog ─── */}
+			{/* --- Live Chat Dialog --- */}
 			<Dialog open={showChat} onOpenChange={setShowChat}>
-				<DialogContent className="sm:max-w-lg p-0 gap-0 h-[80vh] max-h-[600px] flex flex-col">
+				<DialogContent className="sm:max-w-lg p-0 gap-0 h-[85vh] sm:h-[80vh] max-h-[600px] flex flex-col">
 					{/* Chat header */}
-					<div className="flex items-center gap-3 border-b-2 border-custom-black px-5 py-4 shrink-0">
-						<div className="size-10 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center">
+					<div className="flex items-center gap-3 border-b-2 border-custom-black px-4 sm:px-5 py-3 sm:py-4 shrink-0">
+						<div className="size-10 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center shrink-0">
 							<Headphones className="size-4 text-custom-black" />
 						</div>
 						<div className="flex-1 min-w-0">
 							<p className="font-display font-bold text-sm">Clusteer Support</p>
-							<p className="text-xs text-muted-foreground flex items-center gap-1">
-								<span className="size-1.5 rounded-full bg-success" /> Online — typically replies instantly
+							<p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
+								<span className="size-1.5 rounded-full bg-success" /> Online
 							</p>
 						</div>
 					</div>
 
 					{/* Chat messages */}
-					<div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+					<div className="flex-1 overflow-y-auto px-3 sm:px-5 py-3 sm:py-4 space-y-3 sm:space-y-4">
 						{chatMessages.map((m, i) => (
-							<div key={i} className={`flex gap-2.5 ${m.role === ("user" as string) ? "flex-row-reverse" : ""}`}>
-								<div className={`flex size-7 shrink-0 items-center justify-center rounded-full text-xs ${m.role === "bot" ? "bg-light-green border-[1.5px] border-custom-black text-custom-black" : "bg-custom-black text-white"}`}>
-									{m.role === "bot" ? <Headphones className="size-3.5" /> : "You"}
+							<div key={i} className={`flex gap-2 sm:gap-2.5 ${m.role === ("user" as string) ? "flex-row-reverse" : ""}`}>
+								<div className={`flex size-6 sm:size-7 shrink-0 items-center justify-center rounded-full text-[10px] sm:text-xs ${m.role === "bot" ? "bg-light-green border-[1.5px] border-custom-black text-custom-black" : "bg-custom-black text-white"}`}>
+									{m.role === "bot" ? <Headphones className="size-3 sm:size-3.5" /> : "You"}
 								</div>
-								<div className={`max-w-[80%] rounded-[14px] px-3.5 py-2.5 text-sm ${m.role === "bot" ? "bg-warm-beige border border-custom-black/10" : "bg-[#EFFCD0] border border-custom-black/10"}`}>
+								<div className={`max-w-[85%] sm:max-w-[80%] rounded-[14px] px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs sm:text-sm ${m.role === "bot" ? "bg-warm-beige border border-custom-black/10" : "bg-[#EFFCD0] border border-custom-black/10"}`}>
 									<p>{m.text}</p>
 									<p className="text-[10px] text-muted-foreground mt-1 font-mono">{m.time}</p>
 								</div>
@@ -304,18 +304,18 @@ export default function SupportPage() {
 					</div>
 
 					{/* Chat input */}
-					<div className="border-t-2 border-custom-black px-4 py-3 shrink-0">
+					<div className="border-t-2 border-custom-black px-3 sm:px-4 py-2.5 sm:py-3 shrink-0">
 						<form
 							onSubmit={(e) => { e.preventDefault(); sendChat(); }}
 							className="flex items-center gap-2"
 						>
 							<Input
-								placeholder="Type your message…"
+								placeholder="Type your message\u2026"
 								value={chatInput}
 								onChange={(e) => setChatInput(e.target.value)}
-								className="flex-1"
+								className="flex-1 text-sm"
 							/>
-							<Button type="submit" size="icon" className="rounded-full shadow-brutal-sm" disabled={!chatInput.trim()}>
+							<Button type="submit" size="icon" className="rounded-full shadow-brutal-sm min-h-[44px] min-w-[44px]" disabled={!chatInput.trim()}>
 								<Send className="size-4" />
 							</Button>
 						</form>

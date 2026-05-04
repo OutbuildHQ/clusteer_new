@@ -36,7 +36,7 @@ const SECONDARY = [
 	{ href: "/support", label: "Support", icon: HelpCircle },
 ];
 
-export function Sidebar() {
+export function Sidebar({ className }: { className?: string }) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const signOut = useAuth((s) => s.signOut);
@@ -47,12 +47,12 @@ export function Sidebar() {
 		router.push("/login");
 	}
 	return (
-		<aside className="hidden lg:flex lg:w-[260px] xl:w-[280px] shrink-0 flex-col border-r-2 border-custom-black bg-background">
+		<aside className={cn("hidden lg:flex lg:w-[260px] xl:w-[280px] shrink-0 flex-col border-r-2 border-custom-black bg-background", className)}>
 			<div className="px-5 pt-6 pb-5">
 				<Link href="/dashboard"><Logo /></Link>
 			</div>
 			<div className="mx-5 h-[2px] bg-custom-black/10" />
-			<nav className="flex-1 px-3 pt-4 pb-4">
+			<nav className="flex-1 px-3 pt-4 pb-4 overflow-y-auto">
 				<p className="px-3 pb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">Menu</p>
 				<ul className="space-y-0.5">
 					{LINKS.map((l) => {
@@ -101,7 +101,7 @@ export function Sidebar() {
 			</nav>
 			<div className="border-t-2 border-custom-black/10 p-3">
 				<div className="flex items-center gap-3 rounded-2xl bg-warm-beige/60 px-3 py-2.5">
-					<Avatar className="size-9 border-2 border-custom-black">
+					<Avatar className="size-9 border-2 border-custom-black shrink-0">
 						<AvatarFallback className="bg-custom-black text-light-green text-sm font-semibold">
 							{CURRENT_USER.firstName[0]}
 						</AvatarFallback>
@@ -113,7 +113,7 @@ export function Sidebar() {
 							<span className="truncate text-xs text-muted-foreground">{CURRENT_USER.email}</span>
 						</div>
 					</div>
-					<button onClick={handleSignOut} className="rounded-full border-2 border-custom-black p-1.5 text-muted-foreground hover:bg-custom-black hover:text-light-green transition-colors" title="Sign out">
+					<button onClick={handleSignOut} className="rounded-full border-2 border-custom-black p-1.5 text-muted-foreground hover:bg-custom-black hover:text-light-green transition-colors shrink-0" title="Sign out">
 						<LogOut className="size-4" />
 					</button>
 				</div>

@@ -45,7 +45,6 @@ export default function LoginPage() {
 				return;
 			}
 
-			// Update client-side auth state
 			signIn(values.email);
 			toast.success("Welcome back!");
 			router.push("/dashboard");
@@ -56,24 +55,27 @@ export default function LoginPage() {
 
 	return (
 		<div>
-			<h1 className="font-display text-3xl font-bold tracking-tight">Welcome back</h1>
-			<p className="mt-1 text-sm text-muted-foreground">Log in to continue to your account.</p>
-			<form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-3">
+			<p className="mb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Welcome back</p>
+			<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-[-0.03em]">Log in to Clusteer</h1>
+			<p className="mt-1.5 text-sm text-muted-foreground">Enter your credentials to access your account.</p>
+
+			<form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 space-y-4">
 				<div className="space-y-1.5">
-					<Label htmlFor="email">Email <span className="text-danger">*</span></Label>
-					<Input id="email" type="email" autoComplete="email" {...register("email")} />
+					<Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wide">Email <span className="text-danger">*</span></Label>
+					<Input id="email" type="email" placeholder="you@example.com" autoComplete="email" className="min-h-[48px]" {...register("email")} />
 					<div className="min-h-[16px]">
 						{errors.email && <p className="text-xs text-danger">{errors.email.message}</p>}
 					</div>
 				</div>
+
 				<div className="space-y-1.5">
 					<div className="flex items-center justify-between">
-						<Label htmlFor="password">Password <span className="text-danger">*</span></Label>
-						<Link href="/forgot-password" className="text-xs text-primary hover:underline">Forgot?</Link>
+						<Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wide">Password <span className="text-danger">*</span></Label>
+						<Link href="/forgot-password" className="text-xs font-medium text-brand-800 hover:underline">Forgot?</Link>
 					</div>
 					<div className="relative">
-						<Input id="password" type={showPassword ? "text" : "password"} autoComplete="current-password" {...register("password")} />
-						<button type="button" tabIndex={-1} onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground hover:text-foreground">
+						<Input id="password" type={showPassword ? "text" : "password"} placeholder="Min. 8 characters" autoComplete="current-password" className="min-h-[48px]" {...register("password")} />
+						<button type="button" tabIndex={-1} onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:text-foreground">
 							{showPassword ? "Hide" : "Show"}
 						</button>
 					</div>
@@ -81,15 +83,19 @@ export default function LoginPage() {
 						{errors.password && <p className="text-xs text-danger">{errors.password.message}</p>}
 					</div>
 				</div>
-				<label className="flex items-center gap-2 text-sm">
+
+				<label className="flex items-center gap-2.5 text-sm min-h-[44px]">
 					<Checkbox {...register("remember")} defaultChecked /> Keep me logged in
 				</label>
-				<Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-					{isSubmitting ? "Signing in…" : "Continue"}
+
+				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold shadow-brutal-sm" disabled={isSubmitting}>
+					{isSubmitting ? "Signing in\u2026" : "Continue"}
 				</Button>
 			</form>
+
 			<p className="mt-6 text-center text-sm text-muted-foreground">
-				New to Clusteer? <Link href="/signup" className="font-medium text-primary hover:underline">Create an account</Link>
+				New to Clusteer?{" "}
+				<Link href="/signup" className="font-bold text-custom-black hover:underline">Create an account</Link>
 			</p>
 		</div>
 	);

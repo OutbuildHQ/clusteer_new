@@ -40,16 +40,16 @@ export default function TransactionsPage() {
 	);
 
 	return (
-		<div className="space-y-6">
-			<div className="flex flex-wrap items-center justify-between gap-4">
+		<div className="space-y-4 sm:space-y-6">
+			<div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center justify-between gap-3 sm:gap-4">
 				<div>
 					<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; History</p>
-					<h1 className="font-display text-2xl font-bold tracking-[-0.02em]">Transactions</h1>
+					<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">Transactions</h1>
 				</div>
-				<Button variant="outline" size="sm" className="border-2 border-custom-black rounded-full"><Download className="size-4" />Export CSV</Button>
+				<Button variant="outline" size="sm" className="w-full sm:w-auto border-2 border-custom-black rounded-full"><Download className="size-4" />Export CSV</Button>
 			</div>
-			<Card className="border-2 border-custom-black rounded-[20px]">
-				<CardHeader className="space-y-3 p-6 sm:p-8">
+			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+				<CardHeader className="space-y-3 p-4 sm:p-6 lg:p-8">
 					<div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto_auto]">
 						<div className="relative">
 							<Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -81,7 +81,7 @@ export default function TransactionsPage() {
 					{isLoading ? (
 						<TableSkeleton columns={6} rows={5} />
 					) : error ? (
-						<div className="py-12 text-center">
+						<div className="py-12 text-center px-4">
 							<AlertCircle className="size-10 text-destructive/40 mx-auto mb-3" />
 							<p className="font-display font-bold">Failed to load transactions</p>
 							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
@@ -91,38 +91,38 @@ export default function TransactionsPage() {
 							<Table>
 								<TableHeader>
 									<TableRow className="bg-warm-beige/40">
-										<TableHead>ID</TableHead>
-										<TableHead>Type</TableHead>
-										<TableHead>Asset</TableHead>
-										<TableHead>Amount</TableHead>
-										<TableHead>Status</TableHead>
-										<TableHead className="text-right">When</TableHead>
+										<TableHead className="hidden md:table-cell">ID</TableHead>
+										<TableHead className="px-3 sm:px-4">Type</TableHead>
+										<TableHead className="hidden sm:table-cell">Asset</TableHead>
+										<TableHead className="px-3 sm:px-4">Amount</TableHead>
+										<TableHead className="px-3 sm:px-4">Status</TableHead>
+										<TableHead className="hidden md:table-cell text-right">When</TableHead>
 									</TableRow>
 								</TableHeader>
 								<TableBody>
 									{rows.map((o) => (
 										<TableRow key={o.id}>
-											<TableCell><code className="font-mono text-xs text-muted-foreground tabular-nums">{o.orderNumber ?? o.id}</code></TableCell>
-											<TableCell><span className="capitalize font-medium">{o.type}</span></TableCell>
-											<TableCell>
+											<TableCell className="hidden md:table-cell"><code className="font-mono text-xs text-muted-foreground tabular-nums">{o.orderNumber ?? o.id}</code></TableCell>
+											<TableCell className="px-3 sm:px-4"><span className="capitalize font-medium text-sm">{o.type}</span></TableCell>
+											<TableCell className="hidden sm:table-cell">
 												<div className="flex items-center gap-2">
 													{o.currency && <AssetLogo symbol={o.currency} size="sm" />}
-													<span className="text-sm">{o.currency ?? "—"}</span>
+													<span className="text-sm">{o.currency ?? "\u2014"}</span>
 												</div>
 											</TableCell>
-											<TableCell>
-												<Num as="div" className="font-mono tabular-nums" value={(o.amount ?? 0) + " " + (o.currency ?? "")} />
+											<TableCell className="px-3 sm:px-4">
+												<Num as="div" className="font-mono tabular-nums text-sm" value={(o.amount ?? 0) + " " + (o.currency ?? "")} />
 											</TableCell>
-											<TableCell>
+											<TableCell className="px-3 sm:px-4">
 												<Badge variant={o.status === "completed" ? "success" : o.status === "failed" ? "danger" : "warning"} className="capitalize">{o.status}</Badge>
 											</TableCell>
-											<TableCell className="text-right text-sm text-muted-foreground">{relativeTime(o.dateCreated ?? o.date)}</TableCell>
+											<TableCell className="hidden md:table-cell text-right text-sm text-muted-foreground">{relativeTime(o.dateCreated ?? o.date)}</TableCell>
 										</TableRow>
 									))}
 								</TableBody>
 							</Table>
 							{rows.length === 0 && (
-								<div className="py-12 text-center">
+								<div className="py-12 text-center px-4">
 									<ArrowUpDown className="size-10 text-muted-foreground/40 mx-auto mb-3" />
 									<p className="font-display font-bold">No transactions found</p>
 									<p className="text-sm text-muted-foreground mt-1">
@@ -137,30 +137,30 @@ export default function TransactionsPage() {
 							)}
 							{/* Pagination */}
 							{totalPages > 1 && (
-								<div className="flex items-center justify-between border-t border-custom-black/10 px-6 py-4">
-									<p className="text-sm text-muted-foreground font-mono tabular-nums">
+								<div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-custom-black/10 px-4 sm:px-6 py-3 sm:py-4">
+									<p className="text-xs sm:text-sm text-muted-foreground font-mono tabular-nums">
 										Page {page} of {totalPages}
 										{metadata?.totalItems != null && <> &middot; {metadata.totalItems} total</>}
 									</p>
-									<div className="flex gap-2">
+									<div className="flex gap-2 w-full sm:w-auto">
 										<Button
 											variant="outline"
 											size="sm"
-											className="rounded-full border-2 border-custom-black"
+											className="flex-1 sm:flex-initial rounded-full border-2 border-custom-black"
 											disabled={page <= 1}
 											onClick={() => setPage((p) => Math.max(1, p - 1))}
 										>
 											<ChevronLeft className="size-4" />
-											Previous
+											<span className="hidden sm:inline">Previous</span>
 										</Button>
 										<Button
 											variant="outline"
 											size="sm"
-											className="rounded-full border-2 border-custom-black"
+											className="flex-1 sm:flex-initial rounded-full border-2 border-custom-black"
 											disabled={page >= totalPages}
 											onClick={() => setPage((p) => p + 1)}
 										>
-											Next
+											<span className="hidden sm:inline">Next</span>
 											<ChevronRight className="size-4" />
 										</Button>
 									</div>

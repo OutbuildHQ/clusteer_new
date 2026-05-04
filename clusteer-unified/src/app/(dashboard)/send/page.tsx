@@ -160,15 +160,15 @@ export default function SendPage() {
 	return (
 		<div className="max-w-2xl mx-auto">
 			<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-1">&#9670; Transfer</p>
-			<h1 className="font-display text-2xl font-bold tracking-[-0.02em] mb-6">Send stablecoins</h1>
-			<Card className="border-2 border-custom-black rounded-[20px]">
-				<CardHeader className="p-6 sm:p-8">
+			<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-4 sm:mb-6">Send stablecoins</h1>
+			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+				<CardHeader className="p-4 sm:p-6 lg:p-8">
 					<StepsHorizontal
 						current={step === "form" ? 0 : step === "review" ? 1 : step === "otp" ? 2 : 3}
 						steps={["Details", "Review", "Authorize", "Submitted"]}
 					/>
 				</CardHeader>
-				<CardContent className="space-y-5 px-6 sm:px-8 pb-6 sm:pb-8">
+				<CardContent className="space-y-4 sm:space-y-5 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
 					{step === "form" && (
 						<>
 							<div>
@@ -258,9 +258,9 @@ export default function SendPage() {
 
 					{step === "review" && (
 						<div className="space-y-4">
-							<div className="rounded-[14px] border-2 border-custom-black bg-warm-beige p-6">
+							<div className="rounded-[14px] border-2 border-custom-black bg-warm-beige p-4 sm:p-6">
 								<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; You're sending</div>
-								<Num as="div" className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums" value={amount + " " + asset} />
+								<Num as="div" className="mt-1 font-mono text-xl sm:text-2xl lg:text-3xl font-bold tabular-nums" value={amount + " " + asset} />
 								<Num as="div" tone="muted" className="font-mono tabular-nums" value={formatMoney(amountNgn, "NGN", { decimals: 0 })} />
 							</div>
 							<dl className="divide-y divide-border rounded-[14px] border-2 border-custom-black">
@@ -291,7 +291,7 @@ export default function SendPage() {
 								</div>
 								<div className="text-sm">Enter the 6-digit code from your authenticator app.</div>
 							</div>
-							<Input className="font-mono text-center text-xl sm:text-2xl tracking-widest rounded-[14px] border-2 border-custom-black" maxLength={6} placeholder="000000" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))} />
+							<Input className="font-mono text-center text-lg sm:text-xl lg:text-2xl tracking-widest rounded-[14px] border-2 border-custom-black" maxLength={6} placeholder="000000" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))} />
 							<div className="flex gap-2">
 								<Button variant="outline" className="flex-1 rounded-full border-2 border-custom-black" onClick={() => setStep("review")} disabled={submitting}>Back</Button>
 								<Button className="flex-1 rounded-full shadow-brutal-sm" onClick={authorize} disabled={submitting}>

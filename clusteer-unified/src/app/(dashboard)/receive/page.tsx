@@ -70,12 +70,12 @@ export default function ReceiveIndex() {
 		<div className="max-w-xl mx-auto space-y-4">
 			<div>
 				<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Deposit</p>
-				<h1 className="font-display text-2xl font-bold tracking-[-0.02em]">Receive</h1>
+				<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">Receive</h1>
 			</div>
-			<Card className="border-2 border-custom-black rounded-[20px]">
-				<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Scan or share your deposit address</CardTitle></CardHeader>
-				<CardContent className="space-y-4 px-6 sm:px-8 pb-6 sm:pb-8">
-					<div className="grid grid-cols-2 gap-3">
+			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+				<CardHeader className="p-4 sm:p-6 lg:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em] text-base sm:text-lg">Scan or share your deposit address</CardTitle></CardHeader>
+				<CardContent className="space-y-4 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 						<div>
 							<label className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">Asset</label>
 							<Select value={asset} onValueChange={(v) => { setAsset(v); const found = assets.find((a) => a.symbol === v); setChain(found?.chains[0] ?? "Tron"); }}>

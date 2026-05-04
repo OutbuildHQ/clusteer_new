@@ -29,7 +29,7 @@ import {
 const NOTIF_ROWS: { label: string; hint: string; key: keyof NotificationPreferences }[] = [
 	{ label: "Trade confirmations", hint: "Order filled, failed, or pending", key: "push_transactions" },
 	{ label: "Deposits & withdrawals", hint: "Stablecoins in/out of your wallet", key: "email_transactions" },
-	{ label: "Rate alerts", hint: "USDT/NGN rate moves ±2%", key: "push_price_alerts" },
+	{ label: "Rate alerts", hint: "USDT/NGN rate moves \u00B12%", key: "push_price_alerts" },
 	{ label: "Security alerts", hint: "New sign-in or 2FA reset", key: "email_security" },
 	{ label: "Product updates", hint: "New features and announcements", key: "email_marketing" },
 ];
@@ -85,27 +85,27 @@ export default function SettingsPage() {
 	const phone = user?.phone ?? "";
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-4 sm:space-y-6">
 			<div>
 				<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Account</p>
-				<h1 className="font-display text-2xl font-bold tracking-[-0.02em]">Settings</h1>
+				<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">Settings</h1>
 			</div>
 			<Tabs defaultValue="profile">
 				<TabsList className="w-full overflow-x-auto flex-nowrap justify-start no-scrollbar border-2 border-custom-black rounded-[14px] p-1 bg-warm-beige/40">
-					<TabsTrigger value="profile" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Profile</TabsTrigger>
-					<TabsTrigger value="security" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Security</TabsTrigger>
-					<TabsTrigger value="notifications" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Notifications</TabsTrigger>
-					<TabsTrigger value="payment" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Payment methods</TabsTrigger>
-					<TabsTrigger value="preferences" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Preferences</TabsTrigger>
+					<TabsTrigger value="profile" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Profile</TabsTrigger>
+					<TabsTrigger value="security" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Security</TabsTrigger>
+					<TabsTrigger value="notifications" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Notifications</TabsTrigger>
+					<TabsTrigger value="payment" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Payment</TabsTrigger>
+					<TabsTrigger value="preferences" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Preferences</TabsTrigger>
 				</TabsList>
 
 				{/* ===================== PROFILE TAB ===================== */}
 				<TabsContent value="profile" className="space-y-4">
-					<Card className="border-2 border-custom-black rounded-[20px]">
-						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Your profile</CardTitle><CardDescription>Basic information on your account.</CardDescription></CardHeader>
-						<CardContent className="space-y-4 px-6 sm:px-8 pb-6 sm:pb-8">
-							<div className="flex items-center gap-4">
-								<Avatar className="size-16 border-2 border-custom-black"><AvatarFallback className="bg-light-green text-custom-black text-xl font-semibold">{firstName?.[0] ?? "?"}</AvatarFallback></Avatar>
+					<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+						<CardHeader className="p-4 sm:p-6 lg:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Your profile</CardTitle><CardDescription>Basic information on your account.</CardDescription></CardHeader>
+						<CardContent className="space-y-4 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
+							<div className="flex items-center gap-3 sm:gap-4">
+								<Avatar className="size-14 sm:size-16 border-2 border-custom-black"><AvatarFallback className="bg-light-green text-custom-black text-lg sm:text-xl font-semibold">{firstName?.[0] ?? "?"}</AvatarFallback></Avatar>
 								<div>
 									<Button variant="outline" size="sm" className="border-2 border-custom-black rounded-full">Upload photo</Button>
 									<p className="mt-1 text-xs text-muted-foreground">PNG or JPG, max 5MB</p>
@@ -117,34 +117,34 @@ export default function SettingsPage() {
 								<div><Label>Email</Label><Input className="mt-1.5" defaultValue={email} /></div>
 								<div><Label>Phone</Label><Input className="mt-1.5" defaultValue={phone} /></div>
 							</div>
-							<div className="flex justify-end"><Button className="rounded-full shadow-brutal-sm">Save changes</Button></div>
+							<div className="flex justify-end"><Button className="w-full sm:w-auto rounded-full shadow-brutal-sm">Save changes</Button></div>
 						</CardContent>
 					</Card>
 				</TabsContent>
 
 				{/* ===================== SECURITY TAB ===================== */}
 				<TabsContent value="security" className="space-y-4">
-					<Card className="border-2 border-custom-black rounded-[20px]">
-						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Sign-in</CardTitle></CardHeader>
-						<CardContent className="divide-y divide-border px-6 sm:px-8 pb-6 sm:pb-8">
+					<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+						<CardHeader className="p-4 sm:p-6 lg:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Sign-in</CardTitle></CardHeader>
+						<CardContent className="divide-y divide-border px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
 							<Row icon={<Key className="size-5" />} title="Password" hint="Last changed 2 months ago" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black" asChild><Link href="/forgot-password">Change</Link></Button>} />
-							<Row icon={<ShieldCheck className="size-5" />} title="Two-factor authentication" hint="Authenticator app · enabled" cta={<Switch defaultChecked />} />
+							<Row icon={<ShieldCheck className="size-5" />} title="Two-factor authentication" hint="Authenticator app" cta={<Switch defaultChecked />} />
 							<Row icon={<Smartphone className="size-5" />} title="Trusted devices" hint="2 devices signed in" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black">Manage</Button>} />
 						</CardContent>
 					</Card>
-					<Card className="border-2 border-danger rounded-[20px]">
-						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em] text-danger">Danger zone</CardTitle></CardHeader>
-						<CardContent className="px-6 sm:px-8 pb-6 sm:pb-8">
-							<Row icon={<Trash2 className="size-5 text-danger" />} title="Delete account" hint="This action is permanent." cta={<Button variant="destructive" size="sm" className="rounded-full">Delete account</Button>} />
+					<Card className="border-2 border-danger rounded-[16px] sm:rounded-[20px]">
+						<CardHeader className="p-4 sm:p-6 lg:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em] text-danger">Danger zone</CardTitle></CardHeader>
+						<CardContent className="px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
+							<Row icon={<Trash2 className="size-5 text-danger" />} title="Delete account" hint="This action is permanent." cta={<Button variant="destructive" size="sm" className="rounded-full">Delete</Button>} />
 						</CardContent>
 					</Card>
 				</TabsContent>
 
 				{/* ===================== NOTIFICATIONS TAB ===================== */}
 				<TabsContent value="notifications" className="space-y-4">
-					<Card className="border-2 border-custom-black rounded-[20px]">
-						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Notifications</CardTitle></CardHeader>
-						<CardContent className="divide-y divide-border px-6 sm:px-8 pb-6 sm:pb-8">
+					<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+						<CardHeader className="p-4 sm:p-6 lg:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Notifications</CardTitle></CardHeader>
+						<CardContent className="divide-y divide-border px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
 							{notifQuery.isLoading && (
 								<div className="flex items-center justify-center py-8">
 									<Loader2 className="size-5 animate-spin text-muted-foreground" />
@@ -180,12 +180,12 @@ export default function SettingsPage() {
 
 				{/* ===================== PAYMENT METHODS TAB ===================== */}
 				<TabsContent value="payment" className="space-y-4">
-					<Card className="border-2 border-custom-black rounded-[20px]">
-						<CardHeader className="flex-row items-center justify-between p-6 sm:p-8">
+					<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+						<CardHeader className="flex-col sm:flex-row sm:items-center gap-3 sm:justify-between p-4 sm:p-6 lg:p-8">
 							<div><CardTitle className="font-display font-bold tracking-[-0.02em]">Payment methods</CardTitle><CardDescription>Bank accounts used for NGN deposit and withdrawal.</CardDescription></div>
-							<Button size="sm" className="rounded-full shadow-brutal-sm" onClick={() => setShowAddBank(true)}>Add bank</Button>
+							<Button size="sm" className="w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setShowAddBank(true)}>Add bank</Button>
 						</CardHeader>
-						<CardContent className="space-y-3 px-6 sm:px-8 pb-6 sm:pb-8">
+						<CardContent className="space-y-3 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
 							{banksQuery.isLoading && (
 								<div className="flex items-center justify-center py-8">
 									<Loader2 className="size-5 animate-spin text-muted-foreground" />
@@ -206,7 +206,7 @@ export default function SettingsPage() {
 									<BankCard
 										key={acct.id}
 										name={acct.bank_name}
-										number={`•••• ${acct.account_number.slice(-4)}`}
+										number={`\u2022\u2022\u2022\u2022 ${acct.account_number.slice(-4)}`}
 										holder={acct.account_name}
 										primary={acct.is_default}
 										onDelete={() => deleteBankMutation.mutate(acct.id)}
@@ -216,15 +216,15 @@ export default function SettingsPage() {
 
 							{/* ---- Inline add-bank form ---- */}
 							{showAddBank && (
-								<div className="rounded-[16px] border-2 border-custom-black bg-warm-beige p-4 space-y-3">
+								<div className="rounded-[16px] border-2 border-custom-black bg-warm-beige p-3 sm:p-4 space-y-3">
 									<div className="grid grid-cols-1 gap-3 md:grid-cols-3">
 										<div><Label>Bank name</Label><Input className="mt-1.5" placeholder="GTBank" value={newBank.bank_name} onChange={(e) => setNewBank({ ...newBank, bank_name: e.target.value })} /></div>
 										<div><Label>Account number</Label><Input className="mt-1.5 font-mono" placeholder="0123456789" value={newBank.account_number} onChange={(e) => setNewBank({ ...newBank, account_number: e.target.value.replace(/\D/g, "") })} /></div>
 										<div><Label>Account name</Label><Input className="mt-1.5" placeholder="John Doe" value={newBank.account_name} onChange={(e) => setNewBank({ ...newBank, account_name: e.target.value })} /></div>
 									</div>
-									<div className="flex justify-end gap-2">
-										<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black" onClick={() => { setShowAddBank(false); setNewBank({ bank_name: "", account_number: "", account_name: "" }); }}>Cancel</Button>
-										<Button size="sm" className="rounded-full shadow-brutal-sm" disabled={addBankMutation.isPending || !newBank.bank_name || !newBank.account_number || !newBank.account_name} onClick={() => addBankMutation.mutate(newBank)}>
+									<div className="flex flex-col sm:flex-row justify-end gap-2">
+										<Button variant="outline" size="sm" className="w-full sm:w-auto rounded-full border-2 border-custom-black" onClick={() => { setShowAddBank(false); setNewBank({ bank_name: "", account_number: "", account_name: "" }); }}>Cancel</Button>
+										<Button size="sm" className="w-full sm:w-auto rounded-full shadow-brutal-sm" disabled={addBankMutation.isPending || !newBank.bank_name || !newBank.account_number || !newBank.account_name} onClick={() => addBankMutation.mutate(newBank)}>
 											{addBankMutation.isPending ? <><Loader2 className="size-4 animate-spin mr-1" />Saving...</> : "Save"}
 										</Button>
 									</div>
@@ -236,9 +236,9 @@ export default function SettingsPage() {
 
 				{/* ===================== PREFERENCES TAB ===================== */}
 				<TabsContent value="preferences" className="space-y-4">
-					<Card className="border-2 border-custom-black rounded-[20px]">
-						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Preferences</CardTitle></CardHeader>
-						<CardContent className="divide-y divide-border px-6 sm:px-8 pb-6 sm:pb-8">
+					<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+						<CardHeader className="p-4 sm:p-6 lg:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Preferences</CardTitle></CardHeader>
+						<CardContent className="divide-y divide-border px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
 							<Row title="Display currency" hint="NGN is default for fiat pairs" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black">NGN</Button>} />
 							<Row title="Language" hint="Interface language" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black">English</Button>} />
 							<Row title="Theme" hint="Follows your system" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black">System</Button>} />
@@ -252,29 +252,29 @@ export default function SettingsPage() {
 
 function Row({ icon, title, hint, cta }: { icon?: React.ReactNode; title: string; hint?: string; cta: React.ReactNode }) {
 	return (
-		<div className="flex items-center gap-4 py-4 first:pt-0 last:pb-0">
-			{icon && <div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center text-custom-black">{icon}</div>}
+		<div className="flex items-center gap-3 sm:gap-4 py-3 sm:py-4 first:pt-0 last:pb-0">
+			{icon && <div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center text-custom-black shrink-0">{icon}</div>}
 			<div className="flex-1 min-w-0">
-				<div className="font-medium">{title}</div>
-				{hint && <div className="text-xs text-muted-foreground">{hint}</div>}
+				<div className="font-medium text-sm sm:text-base">{title}</div>
+				{hint && <div className="text-[11px] sm:text-xs text-muted-foreground">{hint}</div>}
 			</div>
-			{cta}
+			<div className="shrink-0">{cta}</div>
 		</div>
 	);
 }
 
 function BankCard({ name, number, holder, primary, onDelete, deleting }: { name: string; number: string; holder: string; primary?: boolean; onDelete: () => void; deleting: boolean }) {
 	return (
-		<div className="flex items-center justify-between rounded-[16px] border-2 border-custom-black bg-card p-4">
-			<div className="flex items-center gap-4">
-				<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-custom-black"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3" /></svg></div>
-				<div>
-					<div className="font-medium">{name} <span className="text-muted-foreground font-normal font-mono tabular-nums">{number}</span></div>
-					<div className="text-xs text-muted-foreground">{holder}</div>
+		<div className="flex items-center justify-between rounded-[16px] border-2 border-custom-black bg-card p-3 sm:p-4">
+			<div className="flex items-center gap-3 sm:gap-4 min-w-0">
+				<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-custom-black"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3" /></svg></div>
+				<div className="min-w-0">
+					<div className="font-medium text-sm sm:text-base truncate">{name} <span className="text-muted-foreground font-normal font-mono tabular-nums">{number}</span></div>
+					<div className="text-xs text-muted-foreground truncate">{holder}</div>
 				</div>
 			</div>
-			<div className="flex items-center gap-2">
-				{primary && <span className="rounded-full bg-[#EFFCD0] border-[1.5px] border-custom-black px-2.5 py-1 text-xs font-medium text-custom-black">Primary</span>}
+			<div className="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
+				{primary && <span className="hidden sm:inline rounded-full bg-[#EFFCD0] border-[1.5px] border-custom-black px-2.5 py-1 text-xs font-medium text-custom-black">Primary</span>}
 				<Button variant="ghost" size="sm" onClick={onDelete} disabled={deleting}>
 					{deleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
 				</Button>

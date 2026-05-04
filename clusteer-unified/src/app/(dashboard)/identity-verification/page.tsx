@@ -65,11 +65,11 @@ export default function KYCPage() {
 	}
 
 	return (
-		<div className="space-y-6 max-w-4xl">
+		<div className="space-y-4 sm:space-y-6 max-w-4xl">
 			<div>
 				<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Verification</p>
-				<h1 className="font-display text-2xl font-bold tracking-[-0.02em]">Identity verification</h1>
-				<p className="mt-1 text-sm text-muted-foreground">Verify your identity to unlock higher limits and faster withdrawals.</p>
+				<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">Identity verification</h1>
+				<p className="mt-1 text-xs sm:text-sm text-muted-foreground">Verify your identity to unlock higher limits and faster withdrawals.</p>
 			</div>
 
 			{/* ---- Loading state ---- */}
@@ -82,7 +82,7 @@ export default function KYCPage() {
 
 			{/* ---- Error state ---- */}
 			{kycQuery.isError && (
-				<div className="rounded-[14px] border-2 border-danger/30 bg-danger/5 p-4 text-sm text-danger flex items-center gap-3">
+				<div className="rounded-[14px] border-2 border-danger/30 bg-danger/5 p-3 sm:p-4 text-sm text-danger flex items-center gap-3">
 					<AlertCircle className="size-5 shrink-0" />
 					<div>
 						Failed to load verification status.{" "}
@@ -93,23 +93,23 @@ export default function KYCPage() {
 
 			{/* ---- Rejection banner ---- */}
 			{isRejected && kycQuery.data && (
-				<div className="rounded-[14px] border-2 border-danger/30 bg-danger/5 p-4 text-danger flex gap-3">
+				<div className="rounded-[14px] border-2 border-danger/30 bg-danger/5 p-3 sm:p-4 text-danger flex gap-3">
 					<AlertCircle className="size-5 shrink-0 mt-0.5" />
 					<div>
-						<div className="font-display font-bold">Verification rejected</div>
-						<div className="text-sm opacity-90">{kycQuery.data.rejection_reason ?? "Please resubmit your documents."}</div>
+						<div className="font-display font-bold text-sm sm:text-base">Verification rejected</div>
+						<div className="text-xs sm:text-sm opacity-90">{kycQuery.data.rejection_reason ?? "Please resubmit your documents."}</div>
 					</div>
 				</div>
 			)}
 
 			{/* ---- Tier cards ---- */}
 			{!kycQuery.isLoading && (
-				<div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
 					{TIERS.map((t) => {
 						const state = currentTier > t.tier ? "done" : currentTier === t.tier ? "current" : "locked";
 						return (
-							<Card key={t.tier} className={`border-2 rounded-[20px] ${state === "current" ? "border-custom-black bg-[#EFFCD0] shadow-brutal-sm" : "border-custom-black"}`}>
-								<CardHeader className="pb-3 p-6">
+							<Card key={t.tier} className={`border-2 rounded-[16px] sm:rounded-[20px] ${state === "current" ? "border-custom-black bg-[#EFFCD0] shadow-brutal-sm" : "border-custom-black"}`}>
+								<CardHeader className="pb-3 p-4 sm:p-6">
 									<div className="flex items-center justify-between">
 										<CardDescription className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">Tier {t.tier}</CardDescription>
 										{state === "done" && <CheckCircle2 className="size-4 text-success" />}
@@ -118,13 +118,13 @@ export default function KYCPage() {
 									</div>
 									<CardTitle className="font-display font-bold tracking-[-0.02em]">{t.title}</CardTitle>
 								</CardHeader>
-								<CardContent className="space-y-2 text-sm px-6 pb-6">
+								<CardContent className="space-y-2 text-sm px-4 sm:px-6 pb-4 sm:pb-6">
 									<div className="flex justify-between"><span className="text-muted-foreground">Daily</span><span className="font-mono font-medium tabular-nums">{t.daily}</span></div>
 									<div className="flex justify-between"><span className="text-muted-foreground">Monthly</span><span className="font-mono font-medium tabular-nums">{t.monthly}</span></div>
 									<ul className="mt-3 space-y-1 border-t border-custom-black/10 pt-3 text-xs">
 										{t.reqs.map((r) => (
 											<li key={r} className="flex items-center gap-2">
-												{currentTier >= t.tier ? <CheckCircle2 className="size-3 text-success" /> : <CircleDashed className="size-3 text-muted-foreground" />}
+												{currentTier >= t.tier ? <CheckCircle2 className="size-3 text-success shrink-0" /> : <CircleDashed className="size-3 text-muted-foreground shrink-0" />}
 												{r}
 											</li>
 										))}
@@ -138,18 +138,18 @@ export default function KYCPage() {
 
 			{/* ---- Already submitted / approved banner ---- */}
 			{isSubmitted && !kycQuery.isLoading && (
-				<Card className="border-2 border-custom-black rounded-[20px]">
-					<CardContent className="py-6 px-6 sm:px-8">
-						<div className="rounded-[14px] border-2 border-success/30 bg-[#EFFCD0] p-4 text-success flex gap-3">
+				<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+					<CardContent className="py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
+						<div className="rounded-[14px] border-2 border-success/30 bg-[#EFFCD0] p-3 sm:p-4 text-success flex gap-3">
 							<ShieldCheck className="size-5 shrink-0 mt-0.5" />
 							<div>
-								<div className="font-display font-bold">
+								<div className="font-display font-bold text-sm sm:text-base">
 									{kycStatus === "approved" ? "Verification approved" : "Verification in progress"}
 								</div>
-								<div className="text-sm opacity-90">
+								<div className="text-xs sm:text-sm opacity-90">
 									{kycStatus === "approved"
 										? "Your identity has been verified. You have access to Tier 2 limits."
-										: "Your documents are being reviewed. We'll email you when verification is complete — usually within 5 minutes."}
+										: "Your documents are being reviewed. We'll email you when verification is complete \u2014 usually within 5 minutes."}
 								</div>
 							</div>
 						</div>
@@ -159,13 +159,13 @@ export default function KYCPage() {
 
 			{/* ---- Upgrade form (only when not already submitted or when rejected) ---- */}
 			{(!isSubmitted || isRejected) && !kycQuery.isLoading && (
-				<Card className="border-2 border-custom-black rounded-[20px]">
-					<CardHeader className="p-6 sm:p-8">
+				<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+					<CardHeader className="p-4 sm:p-6 lg:p-8">
 						<CardTitle className="font-display font-bold tracking-[-0.02em]">Upgrade to Tier {currentTier + 1}</CardTitle>
 						<CardDescription>Complete the following steps. Most verifications are instant.</CardDescription>
 					</CardHeader>
-					<CardContent className="space-y-6 px-6 sm:px-8 pb-6 sm:pb-8">
-						<StepsHorizontal current={step - 1} steps={["BVN & ID", "Document upload", "Selfie", "Review"]} />
+					<CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
+						<StepsHorizontal current={step - 1} steps={["BVN & ID", "Document", "Selfie", "Review"]} />
 
 						{step === 1 && (
 							<div className="space-y-4">
@@ -192,17 +192,17 @@ export default function KYCPage() {
 										<Input className="font-mono mt-1.5" value={idNumber} onChange={(e) => setIdNumber(e.target.value)} />
 									</div>
 								</div>
-								<div className="flex justify-end"><Button className="rounded-full shadow-brutal-sm" onClick={() => setStep(2)}>Continue</Button></div>
+								<div className="flex justify-end"><Button className="w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setStep(2)}>Continue</Button></div>
 							</div>
 						)}
 
 						{step === 2 && (
 							<div className="space-y-4">
-								<UploadCard icon={<FileText className="size-5" />} title="Front of ID" hint="JPG or PDF · max 10MB" />
-								<UploadCard icon={<FileText className="size-5" />} title="Back of ID" hint="JPG or PDF · max 10MB" />
-								<div className="flex justify-between">
-									<Button variant="outline" className="rounded-full border-2 border-custom-black" onClick={() => setStep(1)}>Back</Button>
-									<Button className="rounded-full shadow-brutal-sm" onClick={() => setStep(3)}>Continue</Button>
+								<UploadCard icon={<FileText className="size-5" />} title="Front of ID" hint="JPG or PDF \u00B7 max 10MB" />
+								<UploadCard icon={<FileText className="size-5" />} title="Back of ID" hint="JPG or PDF \u00B7 max 10MB" />
+								<div className="flex flex-col sm:flex-row justify-between gap-2">
+									<Button variant="outline" className="w-full sm:w-auto rounded-full border-2 border-custom-black" onClick={() => setStep(1)}>Back</Button>
+									<Button className="w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setStep(3)}>Continue</Button>
 								</div>
 							</div>
 						)}
@@ -210,10 +210,10 @@ export default function KYCPage() {
 						{step === 3 && (
 							<div className="space-y-4">
 								<UploadCard icon={<Camera className="size-5" />} title="Selfie with ID" hint="Hold your ID next to your face in good lighting." />
-								<div className="flex justify-between">
-									<Button variant="outline" className="rounded-full border-2 border-custom-black" onClick={() => setStep(2)}>Back</Button>
+								<div className="flex flex-col sm:flex-row justify-between gap-2">
+									<Button variant="outline" className="w-full sm:w-auto rounded-full border-2 border-custom-black" onClick={() => setStep(2)}>Back</Button>
 									<Button
-										className="rounded-full shadow-brutal-sm"
+										className="w-full sm:w-auto rounded-full shadow-brutal-sm"
 										onClick={handleSubmitStep1}
 										disabled={submitMutation.isPending || !bvn || !idNumber}
 									>
@@ -228,14 +228,14 @@ export default function KYCPage() {
 
 						{step === 4 && (
 							<div className="space-y-4">
-								<div className="rounded-[14px] border-2 border-success/30 bg-[#EFFCD0] p-4 text-success flex gap-3">
+								<div className="rounded-[14px] border-2 border-success/30 bg-[#EFFCD0] p-3 sm:p-4 text-success flex gap-3">
 									<ShieldCheck className="size-5 shrink-0 mt-0.5" />
 									<div>
 										<div className="font-display font-bold">Submitted for review</div>
-										<div className="text-sm opacity-90">We'll email you when verification is complete — usually within 5 minutes.</div>
+										<div className="text-xs sm:text-sm opacity-90">We'll email you when verification is complete \u2014 usually within 5 minutes.</div>
 									</div>
 								</div>
-								<div className="flex justify-end"><Button className="rounded-full shadow-brutal-sm" onClick={() => setStep(1)}>Done</Button></div>
+								<div className="flex justify-end"><Button className="w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setStep(1)}>Done</Button></div>
 							</div>
 						)}
 					</CardContent>
@@ -247,13 +247,14 @@ export default function KYCPage() {
 
 function UploadCard({ icon, title, hint }: { icon: React.ReactNode; title: string; hint: string }) {
 	return (
-		<label className="flex cursor-pointer items-center gap-4 rounded-[16px] border-2 border-dashed border-custom-black/30 bg-warm-beige/30 p-4 transition hover:border-custom-black hover:bg-[#EFFCD0]/20">
-			<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center text-custom-black">{icon}</div>
-			<div className="flex-1">
-				<div className="font-medium">{title}</div>
+		<label className="flex cursor-pointer items-center gap-3 sm:gap-4 rounded-[16px] border-2 border-dashed border-custom-black/30 bg-warm-beige/30 p-3 sm:p-4 transition hover:border-custom-black hover:bg-[#EFFCD0]/20">
+			<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center text-custom-black shrink-0">{icon}</div>
+			<div className="flex-1 min-w-0">
+				<div className="font-medium text-sm sm:text-base">{title}</div>
 				<div className="text-xs text-muted-foreground">{hint}</div>
 			</div>
-			<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black" asChild><span><Upload className="size-4" />Upload</span></Button>
+			<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black shrink-0 hidden sm:inline-flex" asChild><span><Upload className="size-4" />Upload</span></Button>
+			<Upload className="size-4 text-muted-foreground sm:hidden shrink-0" />
 			<input type="file" className="hidden" />
 		</label>
 	);

@@ -147,18 +147,18 @@ export default function TradePage() {
 	return (
 		<div className="max-w-2xl mx-auto">
 			<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-1">&#9670; Exchange</p>
-			<h1 className="font-display text-2xl font-bold tracking-[-0.02em] mb-6">Buy & Sell Stablecoins</h1>
-			<Card className="border-2 border-custom-black rounded-[20px]">
-				<CardHeader className="p-6 sm:p-8">
+			<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-4 sm:mb-6">Buy & Sell Stablecoins</h1>
+			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+				<CardHeader className="p-4 sm:p-6 lg:p-8">
 					<Tabs value={mode} onValueChange={(v) => { setMode(v as "buy" | "sell"); setShowConfirm(false); }}>
 						<TabsList className="grid w-full grid-cols-2 border-2 border-custom-black rounded-[14px] p-1 bg-warm-beige/40">
-							<TabsTrigger value="buy" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Buy with Naira</TabsTrigger>
-							<TabsTrigger value="sell" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Sell to Naira</TabsTrigger>
+							<TabsTrigger value="buy" className="rounded-[10px] font-display font-bold text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Buy with Naira</TabsTrigger>
+							<TabsTrigger value="sell" className="rounded-[10px] font-display font-bold text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Sell to Naira</TabsTrigger>
 						</TabsList>
 					</Tabs>
 				</CardHeader>
 
-				<CardContent className="space-y-3 px-6 sm:px-8 pb-6 sm:pb-8">
+				<CardContent className="space-y-3 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
 					{!showConfirm ? (
 						<>
 							{mode === "buy" && (
@@ -283,21 +283,21 @@ export default function TradePage() {
 
 function InputPanel({ label, amount, onAmount, readOnly, asset, helper, unit }: { label: string; amount: string; onAmount?: (v: string) => void; readOnly?: boolean; asset: React.ReactNode; helper?: string; unit: string }) {
 	return (
-		<div className="rounded-[14px] border-2 border-custom-black/20 bg-[#EFFCD0]/30 p-4">
-			<div className="flex items-center justify-between">
+		<div className="rounded-[14px] border-2 border-custom-black/20 bg-[#EFFCD0]/30 p-3 sm:p-4">
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
 				<span className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">{label}</span>
-				{helper && <span className="text-xs text-muted-foreground">{helper}</span>}
+				{helper && <span className="text-[10px] sm:text-xs text-muted-foreground truncate">{helper}</span>}
 			</div>
-			<div className="mt-2 flex items-center gap-3">
+			<div className="mt-2 flex items-center gap-2 sm:gap-3">
 				<input
 					inputMode="decimal"
 					readOnly={readOnly}
-					className="font-mono flex-1 bg-transparent outline-none text-2xl sm:text-3xl font-semibold tabular-nums placeholder:text-muted-foreground/40"
+					className="font-mono flex-1 min-w-0 bg-transparent outline-none text-xl sm:text-2xl lg:text-3xl font-semibold tabular-nums placeholder:text-muted-foreground/40"
 					placeholder="0"
 					value={amount}
 					onChange={(e) => onAmount?.(e.target.value)}
 				/>
-				<div>{asset}</div>
+				<div className="shrink-0">{asset}</div>
 			</div>
 			<div className="mt-1 text-xs text-muted-foreground font-mono">{unit}</div>
 		</div>

@@ -49,13 +49,13 @@ export default function DashboardPage() {
 	const masked = "••••••";
 
 	return (
-		<div className="space-y-6">
-			<header className="flex flex-wrap items-end justify-between gap-4">
+		<div className="space-y-4 sm:space-y-6">
+			<header className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end justify-between gap-3 sm:gap-4">
 				<div>
 					<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">
 						&#9670; Welcome back, {userLoading ? <Skeleton className="inline-block h-4 w-20" /> : firstName}
 					</p>
-					<h1 className="font-display text-2xl font-bold tracking-[-0.02em]">Portfolio</h1>
+					<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">Portfolio</h1>
 				</div>
 				<div className="flex gap-2">
 					<Button asChild variant="outline" size="sm" className="rounded-full"><Link href="/receive"><ArrowDownToLine className="size-4" /><span className="hidden sm:inline">Receive</span></Link></Button>
@@ -64,9 +64,9 @@ export default function DashboardPage() {
 				</div>
 			</header>
 
-			<div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-				<Card className="lg:col-span-2 border-2 border-custom-black rounded-[20px]">
-					<CardHeader className="p-6 sm:p-8">
+			<div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-3">
+				<Card className="lg:col-span-2 border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+					<CardHeader className="p-4 sm:p-6 lg:p-8">
 						<div className="flex items-start justify-between">
 							<div>
 								<CardDescription className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">
@@ -75,7 +75,7 @@ export default function DashboardPage() {
 								{walletsLoading ? (
 									<Skeleton className="mt-1 h-8 w-48" />
 								) : (
-									<Num as="div" className="mt-1 font-mono text-3xl sm:text-4xl font-bold tabular-nums tracking-tight" value={hideBalance ? masked : formatMoney(totalNgn, "NGN")} />
+									<Num as="div" className="mt-1 font-mono text-2xl sm:text-3xl lg:text-4xl font-bold tabular-nums tracking-tight" value={hideBalance ? masked : formatMoney(totalNgn, "NGN")} />
 								)}
 								<div className="mt-1 flex items-center gap-2 text-sm">
 									<span className="text-muted-foreground">Portfolio value</span>
@@ -83,7 +83,7 @@ export default function DashboardPage() {
 							</div>
 						</div>
 					</CardHeader>
-					<CardContent className="pt-0 px-6 sm:px-8 pb-6 sm:pb-8">
+					<CardContent className="pt-0 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
 						{walletsLoading ? (
 							<Skeleton className="h-[220px] w-full" />
 						) : (
@@ -92,12 +92,12 @@ export default function DashboardPage() {
 					</CardContent>
 				</Card>
 
-				<Card className="border-2 border-custom-black rounded-[20px]">
-					<CardHeader className="p-6 sm:p-8">
+				<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+					<CardHeader className="p-4 sm:p-6 lg:p-8">
 						<CardTitle className="font-display font-bold tracking-[-0.02em]">Quick send</CardTitle>
 						<CardDescription>Send USDT to a saved beneficiary.</CardDescription>
 					</CardHeader>
-					<CardContent className="space-y-3 px-6 sm:px-8 pb-6 sm:pb-8">
+					<CardContent className="space-y-3 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
 						{["Chidi (0x8aC…12f3)", "Mum (TXfM…9pA2)", "Freelance client (0x32b…aC11)"].map((b) => (
 							<Link key={b} href="/send" className="flex items-center justify-between rounded-[16px] border-2 border-custom-black bg-card px-3 py-2.5 text-sm hover:bg-warm-beige transition-colors">
 								<span className="truncate">{b}</span>
@@ -110,8 +110,8 @@ export default function DashboardPage() {
 			</div>
 
 			{/* Assets */}
-			<Card className="border-2 border-custom-black rounded-[20px]">
-				<CardHeader className="flex-row items-center justify-between p-6 sm:p-8">
+			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+				<CardHeader className="flex-row items-center justify-between p-4 sm:p-6 lg:p-8">
 					<CardTitle className="font-display font-bold tracking-[-0.02em]">Your assets</CardTitle>
 					<Button asChild variant="ghost" size="sm"><Link href="/assets">See all</Link></Button>
 				</CardHeader>
@@ -119,13 +119,13 @@ export default function DashboardPage() {
 					{walletsLoading ? (
 						<TableSkeleton columns={5} rows={3} />
 					) : walletsError ? (
-						<div className="py-12 text-center">
+						<div className="py-12 text-center px-4">
 							<AlertCircle className="size-10 text-destructive/40 mx-auto mb-3" />
 							<p className="font-display font-bold">Failed to load assets</p>
 							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
 						</div>
 					) : assets.length === 0 ? (
-						<div className="py-12 text-center">
+						<div className="py-12 text-center px-4">
 							<ArrowUpDown className="size-10 text-muted-foreground/40 mx-auto mb-3" />
 							<p className="font-display font-bold">No assets yet</p>
 							<p className="text-sm text-muted-foreground mt-1">Your assets will appear here once you start trading.</p>
@@ -135,28 +135,28 @@ export default function DashboardPage() {
 						<Table>
 							<TableHeader>
 								<TableRow className="bg-warm-beige/40">
-									<TableHead>Asset</TableHead>
-									<TableHead>Currency</TableHead>
-									<TableHead>Type</TableHead>
-									<TableHead className="text-right">Balance</TableHead>
+									<TableHead className="px-3 sm:px-4">Asset</TableHead>
+									<TableHead className="hidden sm:table-cell">Currency</TableHead>
+									<TableHead className="hidden md:table-cell">Type</TableHead>
+									<TableHead className="text-right px-3 sm:px-4">Balance</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
 								{assets.map((a) => (
 									<TableRow key={a.currency}>
-										<TableCell>
-											<Link href={`/assets/${a.currency}`} className="flex items-center gap-3">
+										<TableCell className="px-3 sm:px-4">
+											<Link href={`/assets/${a.currency}`} className="flex items-center gap-2 sm:gap-3">
 												<AssetLogo symbol={a.currency} />
-												<div>
-													<div className="font-medium">{a.name}</div>
+												<div className="min-w-0">
+													<div className="font-medium truncate">{a.name}</div>
 													<div className="text-xs text-muted-foreground">{a.currency}</div>
 												</div>
 											</Link>
 										</TableCell>
-										<TableCell><span className="text-sm font-mono">{a.currency}</span></TableCell>
-										<TableCell><Badge variant="outline" className="capitalize">{a.type}</Badge></TableCell>
-										<TableCell className="text-right">
-											<Num as="div" className="font-mono tabular-nums" value={hideBalance ? masked : (a.balance ?? 0).toFixed(2) + " " + a.currency} />
+										<TableCell className="hidden sm:table-cell"><span className="text-sm font-mono">{a.currency}</span></TableCell>
+										<TableCell className="hidden md:table-cell"><Badge variant="outline" className="capitalize">{a.type}</Badge></TableCell>
+										<TableCell className="text-right px-3 sm:px-4">
+											<Num as="div" className="font-mono tabular-nums text-sm" value={hideBalance ? masked : (a.balance ?? 0).toFixed(2) + " " + a.currency} />
 										</TableCell>
 									</TableRow>
 								))}
@@ -167,8 +167,8 @@ export default function DashboardPage() {
 			</Card>
 
 			{/* Recent activity */}
-			<Card className="border-2 border-custom-black rounded-[20px]">
-				<CardHeader className="flex-row items-center justify-between p-6 sm:p-8">
+			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+				<CardHeader className="flex-row items-center justify-between p-4 sm:p-6 lg:p-8">
 					<CardTitle className="font-display font-bold tracking-[-0.02em]">Recent activity</CardTitle>
 					<Button asChild variant="ghost" size="sm"><Link href="/transaction-history">View all</Link></Button>
 				</CardHeader>
@@ -176,13 +176,13 @@ export default function DashboardPage() {
 					{txLoading ? (
 						<TableSkeleton columns={5} rows={3} />
 					) : txError ? (
-						<div className="py-12 text-center">
+						<div className="py-12 text-center px-4">
 							<AlertCircle className="size-10 text-destructive/40 mx-auto mb-3" />
 							<p className="font-display font-bold">Failed to load transactions</p>
 							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
 						</div>
 					) : topTransactions.length === 0 ? (
-						<div className="py-12 text-center">
+						<div className="py-12 text-center px-4">
 							<ArrowUpDown className="size-10 text-muted-foreground/40 mx-auto mb-3" />
 							<p className="font-display font-bold">No transactions yet</p>
 							<p className="text-sm text-muted-foreground mt-1">Your transaction history will appear here once you start trading.</p>
@@ -192,28 +192,28 @@ export default function DashboardPage() {
 						<Table>
 							<TableHeader>
 								<TableRow className="bg-warm-beige/40">
-									<TableHead>Transaction</TableHead>
-									<TableHead>Amount</TableHead>
-									<TableHead>Status</TableHead>
-									<TableHead className="text-right">When</TableHead>
+									<TableHead className="px-3 sm:px-4">Transaction</TableHead>
+									<TableHead className="px-3 sm:px-4">Amount</TableHead>
+									<TableHead className="hidden sm:table-cell">Status</TableHead>
+									<TableHead className="hidden md:table-cell text-right">When</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
 								{topTransactions.map((t) => (
 									<TableRow key={t.id}>
-										<TableCell>
-											<div className="font-medium capitalize">{t.type} <span className="text-muted-foreground">· {t.orderNumber ?? t.id}</span></div>
-											{t.description && <div className="text-xs text-muted-foreground">{t.description}</div>}
+										<TableCell className="px-3 sm:px-4">
+											<div className="font-medium capitalize text-sm">{t.type} <span className="text-muted-foreground hidden sm:inline">· {t.orderNumber ?? t.id}</span></div>
+											{t.description && <div className="text-xs text-muted-foreground truncate max-w-[140px] sm:max-w-none">{t.description}</div>}
 										</TableCell>
-										<TableCell>
-											<Num as="div" className="font-mono tabular-nums" value={hideBalance ? masked : (t.amount ?? 0) + " " + (t.currency ?? "")} />
+										<TableCell className="px-3 sm:px-4">
+											<Num as="div" className="font-mono tabular-nums text-sm" value={hideBalance ? masked : (t.amount ?? 0) + " " + (t.currency ?? "")} />
 										</TableCell>
-										<TableCell>
+										<TableCell className="hidden sm:table-cell">
 											<Badge variant={t.status === "completed" ? "success" : t.status === "failed" ? "danger" : "warning"} className="capitalize">
 												{t.status}
 											</Badge>
 										</TableCell>
-										<TableCell className="text-right text-sm text-muted-foreground">{relativeTime(t.dateCreated ?? t.date)}</TableCell>
+										<TableCell className="hidden md:table-cell text-right text-sm text-muted-foreground">{relativeTime(t.dateCreated ?? t.date)}</TableCell>
 									</TableRow>
 								))}
 							</TableBody>

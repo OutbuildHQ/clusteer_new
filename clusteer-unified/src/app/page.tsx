@@ -105,7 +105,7 @@ function FAQ({ q, a }: { q: string; a: string }) {
 	const [open, setOpen] = useState(false);
 	return (
 		<div className="border-b-2 border-custom-black/10">
-			<button onClick={() => setOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between gap-4 py-5 text-left font-display font-bold text-base sm:text-lg hover:text-brand-700 transition-colors">
+			<button onClick={() => setOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between gap-3 py-4 sm:py-5 text-left font-display font-bold text-[15px] sm:text-base md:text-lg hover:text-brand-700 transition-colors min-h-[44px]">
 				{q}
 				<ChevronDown className={`size-5 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
 			</button>
@@ -155,7 +155,7 @@ export default function Home() {
 						<Button asChild size="sm" className="btn-shine shadow-brutal-sm">
 							<Link href="/signup">Get started <ArrowRight className="size-4" /></Link>
 						</Button>
-						<button onClick={() => setMobileMenu(!mobileMenu)} className="ml-1 md:hidden p-2 text-muted-foreground" aria-label={mobileMenu ? "Close menu" : "Open menu"} aria-expanded={mobileMenu}>
+						<button onClick={() => setMobileMenu(!mobileMenu)} className="ml-1 md:hidden p-2.5 text-muted-foreground min-w-[44px] min-h-[44px] inline-flex items-center justify-center" aria-label={mobileMenu ? "Close menu" : "Open menu"} aria-expanded={mobileMenu}>
 							{mobileMenu ? <X className="size-5" /> : <Menu className="size-5" />}
 						</button>
 					</div>
@@ -165,9 +165,9 @@ export default function Home() {
 						<motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-t border-border md:hidden">
 							<div className="flex flex-col gap-1 px-4 py-4 text-sm font-medium">
 								{[["#how", "How it works"], ["#rates", "Rates"], ["#trust", "Trust"], ["#app", "App"]].map(([href, label]) => (
-									<a key={href} href={href} onClick={() => setMobileMenu(false)} className="py-2 text-muted-foreground hover:text-foreground">{label}</a>
+									<a key={href} href={href} onClick={() => setMobileMenu(false)} className="py-3 text-muted-foreground hover:text-foreground min-h-[44px] flex items-center">{label}</a>
 								))}
-								<Link href="/login" onClick={() => setMobileMenu(false)} className="py-2 text-muted-foreground hover:text-foreground">Sign in</Link>
+								<Link href="/login" onClick={() => setMobileMenu(false)} className="py-3 text-muted-foreground hover:text-foreground min-h-[44px] flex items-center">Sign in</Link>
 							</div>
 						</motion.div>
 					)}
@@ -179,34 +179,34 @@ export default function Home() {
 				<div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-12 sm:py-16 lg:py-20">
 					{/* Announce pill */}
 					<FadeUp>
-						<div className="inline-flex items-center gap-2 rounded-full border-2 border-custom-black bg-white px-3 py-1.5 text-[13px] font-medium shadow-brutal-sm mb-8 sm:mb-10">
-							<span className="rounded-full bg-light-green px-2.5 py-0.5 font-display text-[11px] font-bold tracking-wide text-custom-black">NEW</span>
-							Same-day USDC payouts to any Nigerian bank →
+						<div className="inline-flex items-center gap-2 rounded-full border-2 border-custom-black bg-white px-3 py-1.5 text-[11px] sm:text-[13px] font-medium shadow-brutal-sm mb-6 sm:mb-8 lg:mb-10">
+							<span className="rounded-full bg-light-green px-2 sm:px-2.5 py-0.5 font-display text-[11px] font-bold tracking-wide text-custom-black shrink-0">NEW</span>
+							<span className="truncate">Same-day USDC payouts to any Nigerian bank →</span>
 						</div>
 					</FadeUp>
 
 					<div className="grid items-center gap-10 lg:gap-16 lg:grid-cols-[1.15fr_0.85fr]">
 						{/* Left — type stack */}
 						<FadeUp delay={0.05}>
-							<h1 className="font-display text-[clamp(48px,7.2vw,104px)] font-bold leading-[0.92] tracking-[-0.045em]">
+							<h1 className="font-display text-[clamp(36px,9vw,104px)] sm:text-[clamp(48px,7.2vw,104px)] font-bold leading-[0.92] tracking-[-0.045em]">
 								Stables to{" "}<span className="lime-highlight">naira.</span>
 								<br />No drama.
 							</h1>
-							<p className="mt-6 sm:mt-7 text-[16px] sm:text-[19px] text-muted-foreground max-w-[520px] leading-[1.5]">
+							<p className="mt-5 sm:mt-7 text-[15px] sm:text-[17px] lg:text-[19px] text-muted-foreground max-w-[520px] leading-[1.5]">
 								Off-ramp <strong className="text-foreground">USDT and USDC</strong> straight to your Nigerian bank account at the best rate on the street. Settled in minutes, not days.
 							</p>
-							<div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 items-start">
-								<Button size="xl" asChild className="btn-shine shadow-brutal w-full sm:w-auto text-[17px]">
+							<div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-start">
+								<Button size="xl" asChild className="btn-shine shadow-brutal w-full sm:w-auto text-base sm:text-[17px]">
 									<Link href="/signup">Cash out now <ArrowRight className="size-5" /></Link>
 								</Button>
-								<Button size="xl" variant="ghost" asChild className="w-full sm:w-auto text-[17px] gap-3">
+								<Button size="xl" variant="ghost" asChild className="w-full sm:w-auto text-base sm:text-[17px] gap-3">
 									<Link href="#how">
 										<span className="size-8 rounded-full bg-custom-black text-light-green inline-flex items-center justify-center"><Play className="size-3 fill-current" /></span>
 										See how it works
 									</Link>
 								</Button>
 							</div>
-							<div className="mt-8 sm:mt-11 flex flex-wrap gap-5 sm:gap-7 text-[13px] text-muted-foreground">
+							<div className="mt-6 sm:mt-11 flex flex-wrap gap-x-4 gap-y-2 sm:gap-5 lg:gap-7 text-[12px] sm:text-[13px] text-muted-foreground">
 								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-brand-800" strokeWidth={2.6} /> <strong className="text-foreground">NDPR</strong> compliant</span>
 								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-brand-800" strokeWidth={2.6} /> <strong className="text-foreground">92,000+</strong> Nigerians</span>
 								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-brand-800" strokeWidth={2.6} /> <strong className="text-foreground">5-min</strong> payouts</span>
@@ -303,7 +303,7 @@ export default function Home() {
 				</div>
 				<div className="flex w-max marquee-track">
 					{[...BANKS, ...BANKS].map((b, i) => (
-						<div key={i} className="inline-flex items-center gap-3 px-5 sm:px-7 py-3 mx-2 sm:mx-3 rounded-full border border-white/10 bg-white/[0.04] font-display font-semibold text-sm sm:text-[17px] text-white whitespace-nowrap">
+						<div key={i} className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-7 py-2.5 sm:py-3 mx-1.5 sm:mx-3 rounded-full border border-white/10 bg-white/[0.04] font-display font-semibold text-[13px] sm:text-[17px] text-white whitespace-nowrap">
 							<span className="size-2.5 rounded-full" style={{ background: b.color, boxShadow: `0 0 10px ${b.color}66` }} />
 							{b.name}
 						</div>
@@ -312,11 +312,11 @@ export default function Home() {
 			</section>
 
 			{/* ─── How it works ─── */}
-			<section id="how" className="py-16 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
+			<section id="how" className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<FadeUp>
-					<div className="mb-12 sm:mb-16 max-w-[720px]">
-						<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-4">◆ HOW IT WORKS</div>
-						<h2 className="font-display text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
+					<div className="mb-8 sm:mb-16 max-w-[720px]">
+						<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">◆ HOW IT WORKS</div>
+						<h2 className="font-display text-[clamp(28px,7vw,68px)] sm:text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
 							Three steps. <em className="italic">That&apos;s it.</em>
 						</h2>
 					</div>
@@ -328,9 +328,9 @@ export default function Home() {
 						{ n: "03", kicker: "Get paid", title: "Naira lands in your bank in under 5 minutes.", copy: "Average payout time is 4 min 12 sec. Slowest day this year was 11 min.", bg: "bg-custom-black", dark: true },
 					].map((s, i) => (
 						<FadeUp key={s.n} delay={i * 0.1}>
-							<div className={`grid grid-cols-1 md:grid-cols-2 ${s.bg} rounded-[24px] sm:rounded-[32px] border-2 border-custom-black overflow-hidden min-h-[300px] sm:min-h-[400px]`}>
-								<div className="p-6 sm:p-10 lg:p-14 flex flex-col justify-between gap-6">
-									<div className={`font-display text-[60px] sm:text-[80px] lg:text-[120px] font-[800] leading-[0.85] tracking-[-0.05em] ${s.dark ? "text-light-green" : "text-custom-black"}`}>
+							<div className={`grid grid-cols-1 md:grid-cols-2 ${s.bg} rounded-[20px] sm:rounded-[32px] border-2 border-custom-black overflow-hidden min-h-0 sm:min-h-[400px]`}>
+								<div className="p-5 sm:p-10 lg:p-14 flex flex-col justify-between gap-4 sm:gap-6">
+									<div className={`font-display text-[48px] sm:text-[80px] lg:text-[120px] font-[800] leading-[0.85] tracking-[-0.05em] ${s.dark ? "text-light-green" : "text-custom-black"}`}>
 										{s.n}
 									</div>
 									<div>
@@ -345,7 +345,7 @@ export default function Home() {
 										</p>
 									</div>
 								</div>
-								<div className={`border-t md:border-t-0 md:border-l-2 border-custom-black ${s.dark ? "bg-light-green/[0.04]" : "bg-custom-black/[0.03]"} flex items-center justify-center p-6 sm:p-8`}>
+								<div className={`border-t md:border-t-0 md:border-l-2 border-custom-black ${s.dark ? "bg-light-green/[0.04]" : "bg-custom-black/[0.03]"} flex items-center justify-center p-4 sm:p-8`}>
 									{s.n === "01" && <StepVisualRate rate={liveRateInt} />}
 									{s.n === "02" && <StepVisualSend />}
 									{s.n === "03" && <StepVisualPaid rate={liveRateInt} />}
@@ -359,16 +359,16 @@ export default function Home() {
 			{/* ─── Stats ─── */}
 			<section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<FadeUp>
-					<div className="grid grid-cols-2 lg:grid-cols-4 border-2 border-custom-black rounded-[20px] sm:rounded-[28px] overflow-hidden">
+					<div className="grid grid-cols-2 lg:grid-cols-4 border-2 border-custom-black rounded-[16px] sm:rounded-[28px] overflow-hidden">
 						{[
 							{ v: "₦42B+", l: "paid out to Nigerians", bg: "bg-background" },
 							{ v: "4:12", l: "avg payout time, minutes", bg: "bg-light-green" },
 							{ v: "92,000", l: "verified KYC users", bg: "bg-warm-beige" },
 							{ v: "0.0%", l: "spread on the rate", bg: "bg-background" },
 						].map((s, i) => (
-							<div key={i} className={`${s.bg} p-5 sm:p-7 lg:p-9 flex flex-col gap-2 ${i < 3 ? "border-r-2 border-custom-black" : ""} ${i < 2 ? "border-b-2 lg:border-b-0 border-custom-black" : ""}`}>
-								<div className="font-mono text-3xl sm:text-4xl lg:text-[56px] font-semibold leading-[0.95] tracking-[-0.03em] text-custom-black">{s.v}</div>
-								<div className="text-xs sm:text-[13px] text-muted-foreground font-medium leading-snug">{s.l}</div>
+							<div key={i} className={`${s.bg} p-4 sm:p-7 lg:p-9 flex flex-col gap-1.5 sm:gap-2 ${i < 3 ? "border-r-2 border-custom-black" : ""} ${i < 2 ? "border-b-2 lg:border-b-0 border-custom-black" : ""}`}>
+								<div className="font-mono text-2xl sm:text-4xl lg:text-[56px] font-semibold leading-[0.95] tracking-[-0.03em] text-custom-black">{s.v}</div>
+								<div className="text-[11px] sm:text-[13px] text-muted-foreground font-medium leading-snug">{s.l}</div>
 							</div>
 						))}
 					</div>
@@ -376,23 +376,23 @@ export default function Home() {
 			</section>
 
 			{/* ─── Trust ─── */}
-			<section id="trust" className="py-16 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
+			<section id="trust" className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<FadeUp>
-					<div className="mb-10 sm:mb-14 max-w-[720px]">
-						<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-4">◆ TRUST</div>
-						<h2 className="font-display text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
+					<div className="mb-8 sm:mb-14 max-w-[720px]">
+						<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">◆ TRUST</div>
+						<h2 className="font-display text-[clamp(28px,7vw,68px)] sm:text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
 							We hold the boring stuff <em className="italic">seriously</em> so you don&apos;t have to.
 						</h2>
 					</div>
 				</FadeUp>
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
 					{[
 						{ icon: Shield, title: "Funds in segregated wallets", copy: "Customer assets never touch operational treasury. Cold-storage majority, multi-sig on every withdrawal." },
 						{ icon: Check, title: "NDPR aligned, NITDA registered", copy: "Your data is encrypted at rest and in transit. We disclose nothing without legal compulsion." },
 						{ icon: Star, title: "Smile ID + Youverify backup", copy: "Two independent KYC providers. If one is down, the other catches your verification." },
 					].map((it, i) => (
 						<FadeUp key={i} delay={i * 0.08}>
-							<div className="bg-background border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-6 sm:p-8 flex flex-col gap-4 h-full">
+							<div className="bg-background border-2 border-custom-black rounded-[18px] sm:rounded-3xl p-5 sm:p-8 flex flex-col gap-3 sm:gap-4 h-full">
 								<div className="size-12 sm:size-[52px] rounded-2xl bg-light-green border-[1.5px] border-custom-black inline-flex items-center justify-center">
 									<it.icon className="size-5 sm:size-[22px]" strokeWidth={2.4} />
 								</div>
@@ -405,17 +405,17 @@ export default function Home() {
 			</section>
 
 			{/* ─── App Showcase ─── */}
-			<section id="app" className="py-16 sm:py-20 lg:py-28 px-4 sm:px-8 bg-custom-black text-white">
-				<div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+			<section id="app" className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 bg-custom-black text-white">
+				<div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 items-center">
 					<FadeUp>
-						<div className="font-mono text-xs font-semibold text-light-green tracking-[1.5px] mb-4">◆ MOBILE APP</div>
-						<h2 className="font-display text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
+						<div className="font-mono text-xs font-semibold text-light-green tracking-[1.5px] mb-3 sm:mb-4">◆ MOBILE APP</div>
+						<h2 className="font-display text-[clamp(28px,7vw,68px)] sm:text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
 							Built for thumbs.<br /><span className="text-light-green">Not for desks.</span>
 						</h2>
-						<p className="mt-6 text-[16px] sm:text-[18px] text-white/70 max-w-[480px] leading-[1.55]">
+						<p className="mt-5 sm:mt-6 text-[15px] sm:text-[17px] lg:text-[18px] text-white/70 max-w-[480px] leading-[1.55]">
 							Custom numpad. FaceID payouts. Live rate on your home screen widget. Designed in Lagos, for the way Nigerians actually move money.
 						</p>
-						<div className="flex flex-col gap-4 mt-8 sm:mt-10">
+						<div className="flex flex-col gap-3 sm:gap-4 mt-6 sm:mt-10">
 							{[
 								{ icon: Bolt, t: "One-tap rate lock", s: "Hit the rate the moment you see it." },
 								{ icon: Shield, t: "Biometric on every payout", s: "FaceID, TouchID, fingerprint, your call." },
@@ -432,11 +432,11 @@ export default function Home() {
 								</div>
 							))}
 						</div>
-						<div className="flex gap-3 mt-8">
-							<Button size="lg" asChild className="bg-light-green text-custom-black hover:bg-light-green/90 border-2 border-light-green shadow-brutal-sm">
+						<div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8">
+							<Button size="lg" asChild className="bg-light-green text-custom-black hover:bg-light-green/90 border-2 border-light-green shadow-brutal-sm w-full sm:w-auto">
 								<Link href="/signup"><Check className="size-4" /> iOS</Link>
 							</Button>
-							<Button size="lg" variant="outline" asChild className="border-2 border-white text-white hover:bg-white/10">
+							<Button size="lg" variant="outline" asChild className="border-2 border-white text-white hover:bg-white/10 w-full sm:w-auto">
 								<Link href="/signup"><Check className="size-4" /> Android</Link>
 							</Button>
 						</div>
@@ -448,10 +448,10 @@ export default function Home() {
 			</section>
 
 			{/* ─── FAQ ─── */}
-			<section className="py-16 sm:py-20 px-4 sm:px-8 max-w-[800px] mx-auto">
+			<section className="py-12 sm:py-20 px-4 sm:px-8 max-w-[800px] mx-auto">
 				<FadeUp>
 					<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-4">◆ FAQ</div>
-					<h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] mb-8 sm:mb-10">Common questions</h2>
+					<h2 className="font-display text-xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] mb-6 sm:mb-10">Common questions</h2>
 				</FadeUp>
 				<FadeUp delay={0.1}>
 					<div>
@@ -469,9 +469,9 @@ export default function Home() {
 			{/* ─── CTA ─── */}
 			<section className="py-8 sm:py-10 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<FadeUp>
-					<div className="bg-light-green border-2 border-custom-black rounded-[28px] sm:rounded-[36px] p-8 sm:p-12 lg:p-16 relative overflow-hidden">
+					<div className="bg-light-green border-2 border-custom-black rounded-[22px] sm:rounded-[36px] p-6 sm:p-12 lg:p-16 relative overflow-hidden">
 						{/* Logo watermark */}
-						<div className="absolute -right-10 -bottom-10 opacity-[0.15]">
+						<div className="absolute -right-10 -bottom-10 opacity-[0.15] hidden sm:block">
 							<svg width="400" height="400" viewBox="0 0 110 110" fill="none">
 								<path d="M4.99993 54.5605C4.99993 27.0705 25.7099 4.41769 52.3788 1.35297C55.7761 0.962547 58.5603 3.77234 58.5603 7.19206L58.5603 54.5605L58.5603 101.929C58.5603 105.349 55.7761 108.158 52.3788 107.768C25.7099 104.703 4.99993 82.0504 4.99993 54.5605Z" fill="#21241D"/>
 								<circle cx="76.9814" cy="31.0309" r="7.27554" fill="#21241D"/>
@@ -481,17 +481,17 @@ export default function Home() {
 							</svg>
 						</div>
 						<div className="relative max-w-[720px]">
-							<h2 className="font-display text-[clamp(36px,6vw,88px)] font-bold leading-[0.95] tracking-[-0.045em] text-custom-black">
+							<h2 className="font-display text-[clamp(28px,8vw,88px)] sm:text-[clamp(36px,6vw,88px)] font-bold leading-[0.95] tracking-[-0.045em] text-custom-black">
 								Your stables<br />deserve naira<br />in <em className="italic">minutes.</em>
 							</h2>
-							<p className="mt-6 text-[16px] sm:text-[18px] text-custom-black/75 max-w-[480px] leading-[1.5]">
+							<p className="mt-4 sm:mt-6 text-[15px] sm:text-[17px] lg:text-[18px] text-custom-black/75 max-w-[480px] leading-[1.5]">
 								Verify in 3 minutes. Cash out in 5. No phone calls, no &quot;send me proof&quot;, no drama.
 							</p>
-							<div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
-								<Button size="xl" asChild className="btn-shine bg-custom-black text-light-green hover:bg-custom-black/90 border-2 border-custom-black shadow-brutal w-full sm:w-auto text-[17px]">
+							<div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+								<Button size="xl" asChild className="btn-shine bg-custom-black text-light-green hover:bg-custom-black/90 border-2 border-custom-black shadow-brutal w-full sm:w-auto text-base sm:text-[17px]">
 									<Link href="/signup">Create account <ArrowRight className="size-5" /></Link>
 								</Button>
-								<Button size="xl" variant="outline" asChild className="border-2 border-custom-black w-full sm:w-auto text-[17px]">
+								<Button size="xl" variant="outline" asChild className="border-2 border-custom-black w-full sm:w-auto text-base sm:text-[17px]">
 									<Link href="/support">Talk to us</Link>
 								</Button>
 							</div>
@@ -503,10 +503,10 @@ export default function Home() {
 			{/* ─── Footer ─── */}
 			<footer className="bg-custom-black text-white py-12 sm:py-16 lg:py-20 px-4 sm:px-8">
 				<div className="max-w-[1280px] mx-auto">
-					<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-12 sm:mb-16">
+					<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-10 mb-10 sm:mb-16">
 						<div className="col-span-2 sm:col-span-3 lg:col-span-1">
 							<Logo inverted />
-							<p className="mt-5 text-[14px] leading-[1.6] text-white/60 max-w-[280px]">
+							<p className="mt-4 sm:mt-5 text-[13px] sm:text-[14px] leading-[1.6] text-white/60 max-w-[280px]">
 								Stablecoins to naira, fast. Built for traders, freelancers, and anyone moving money in and out of Nigeria.
 							</p>
 							<div className="inline-flex items-center gap-2 mt-5 px-3 py-1.5 rounded-full bg-light-green/[0.12] font-mono text-[11px] font-medium text-light-green">
@@ -528,7 +528,7 @@ export default function Home() {
 							</div>
 						))}
 					</div>
-					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-7 border-t border-white/10 text-xs text-white/50">
+					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 pt-6 sm:pt-7 border-t border-white/10 text-[11px] sm:text-xs text-white/50">
 						<span>© {new Date().getFullYear()} Clusteer Technologies Ltd. RC: 2049871. Lagos, Nigeria.</span>
 						<span className="font-mono">v3.2.1</span>
 					</div>
@@ -545,26 +545,26 @@ export default function Home() {
 function MobileSwap({ rate }: { rate: number }) {
 	const ngn = formatMoney(1000 * rate, "NGN", { decimals: 0 });
 	return (
-		<div className="rounded-[20px] border-2 border-custom-black bg-custom-black p-4 sm:p-5 shadow-brutal">
+		<div className="rounded-[18px] sm:rounded-[20px] border-2 border-custom-black bg-custom-black p-3.5 sm:p-5 shadow-brutal">
 			<div className="flex items-center gap-2 font-mono text-xs font-medium text-light-green tracking-wider mb-3">
 				<span className="live-dot size-2 rounded-full bg-light-green" /> LIVE — USDT / NGN
 			</div>
-			<div className="font-mono text-3xl sm:text-4xl font-semibold text-white tabular-nums tracking-[-0.03em]">
+			<div className="font-mono text-2xl sm:text-4xl font-semibold text-white tabular-nums tracking-[-0.03em]">
 				₦{rate.toLocaleString()}
 			</div>
 			<div className="mt-1 text-xs text-white/50">per 1 USDT</div>
-			<div className="mt-4 bg-background rounded-2xl p-4 border border-custom-black/10 space-y-2">
+			<div className="mt-3 sm:mt-4 bg-background rounded-2xl p-3 sm:p-4 border border-custom-black/10 space-y-2">
 				<div className="flex items-center gap-3 p-3 bg-warm-beige rounded-xl">
 					<AssetLogo symbol="USDT" size="sm" />
 					<div>
-						<div className="font-mono text-lg font-semibold">1,000.00</div>
+						<div className="font-mono text-base sm:text-lg font-semibold">1,000.00</div>
 						<div className="text-[10px] text-muted-foreground">You send · USDT</div>
 					</div>
 				</div>
 				<div className="flex items-center gap-3 p-3 bg-[#EFFCD0] rounded-xl">
 					<AssetLogo symbol="NGN" size="sm" />
-					<div>
-						<div className="font-mono text-lg font-semibold">{ngn}</div>
+					<div className="min-w-0">
+						<div className="font-mono text-base sm:text-lg font-semibold truncate">{ngn}</div>
 						<div className="text-[10px] text-brand-800 font-semibold">You receive · NGN</div>
 					</div>
 				</div>
@@ -583,14 +583,14 @@ function MobileSwap({ rate }: { rate: number }) {
 function StepVisualRate({ rate }: { rate: number }) {
 	const ngn = formatMoney(500 * rate, "NGN", { decimals: 0 });
 	return (
-		<div className="w-full max-w-[380px] bg-background border-[1.5px] border-custom-black rounded-[20px] p-5 sm:p-6 flex flex-col gap-3.5">
+		<div className="w-full max-w-[320px] sm:max-w-[380px] bg-background border-[1.5px] border-custom-black rounded-[20px] p-4 sm:p-6 flex flex-col gap-3">
 			<div className="flex justify-between items-baseline">
 				<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">You send</span>
 				<span className="text-[11px] text-brand-800 font-semibold">USDT • TRC-20</span>
 			</div>
 			<div className="flex items-center gap-3">
 				<AssetLogo symbol="USDT" size="lg" />
-				<div className="font-mono text-3xl sm:text-4xl font-semibold tracking-[-0.02em]">500.00</div>
+				<div className="font-mono text-2xl sm:text-4xl font-semibold tracking-[-0.02em]">500.00</div>
 			</div>
 			<div className="border-t border-dashed border-custom-black/20 my-1" />
 			<div className="flex justify-between items-baseline">
@@ -599,7 +599,7 @@ function StepVisualRate({ rate }: { rate: number }) {
 			</div>
 			<div className="bg-light-green p-3.5 sm:p-4 rounded-[14px] border-[1.5px] border-custom-black flex items-center gap-3">
 				<AssetLogo symbol="NGN" size="lg" />
-				<div className="font-mono text-2xl sm:text-[28px] font-semibold tracking-[-0.02em] text-custom-black">{ngn}</div>
+				<div className="font-mono text-xl sm:text-[28px] font-semibold tracking-[-0.02em] text-custom-black truncate">{ngn}</div>
 			</div>
 			<div className="text-[11px] text-muted-foreground font-mono text-right">Fee: ₦0 • Spread: 0.0%</div>
 		</div>
@@ -608,10 +608,10 @@ function StepVisualRate({ rate }: { rate: number }) {
 
 function StepVisualSend() {
 	return (
-		<div className="w-full max-w-[320px] bg-background border-[1.5px] border-custom-black rounded-[20px] p-5 sm:p-6 flex flex-col gap-4 items-center">
+		<div className="w-full max-w-[280px] sm:max-w-[320px] bg-background border-[1.5px] border-custom-black rounded-[20px] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4 items-center">
 			<div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Scan to send</div>
 			{/* Decorative QR pattern */}
-			<div className="w-[180px] sm:w-[200px] aspect-square p-3 bg-white border-[1.5px] border-custom-black rounded-2xl grid grid-cols-[repeat(15,1fr)]">
+			<div className="w-[150px] sm:w-[200px] aspect-square p-3 bg-white border-[1.5px] border-custom-black rounded-2xl grid grid-cols-[repeat(15,1fr)]">
 				{Array.from({ length: 225 }).map((_, i) => {
 					const corner = [0,1,2,15,16,17,30,31,32,180,181,182,195,196,197,210,211,212].includes(i);
 					const random = (i * 37) % 7 < 3;
@@ -632,7 +632,7 @@ function StepVisualSend() {
 function StepVisualPaid({ rate }: { rate: number }) {
 	const ngn = formatMoney(500 * rate, "NGN", { decimals: 0 });
 	return (
-		<div className="w-full max-w-[380px] bg-background border-[1.5px] border-background rounded-[20px] p-5 sm:p-6 flex flex-col gap-4">
+		<div className="w-full max-w-[320px] sm:max-w-[380px] bg-background border-[1.5px] border-background rounded-[20px] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4">
 			<div className="flex items-center gap-3">
 				<div className="size-11 rounded-full bg-light-green border-2 border-custom-black inline-flex items-center justify-center">
 					<Check className="size-5 text-custom-black" strokeWidth={3} />
@@ -649,7 +649,7 @@ function StepVisualPaid({ rate }: { rate: number }) {
 					<span className="font-display font-bold">GTBank</span>
 					<span className="font-mono text-[13px] text-muted-foreground">•• 3421</span>
 				</div>
-				<div className="font-mono text-[28px] font-semibold text-custom-black mt-2">
+				<div className="font-mono text-xl sm:text-[28px] font-semibold text-custom-black mt-2 truncate">
 					+{ngn}<span className="text-lg text-muted-foreground">.00</span>
 				</div>
 			</div>
@@ -672,8 +672,8 @@ function PhoneMockup({ rate }: { rate: number }) {
 			<div className="absolute inset-[10%_-10%] bg-[radial-gradient(circle,rgba(159,232,112,0.18)_0%,transparent_65%)] blur-[40px]" />
 
 			{/* Phone frame */}
-			<div className="relative z-10 w-[320px] sm:w-[340px] h-[660px] sm:h-[700px] rounded-[48px] sm:rounded-[56px] p-2.5 bg-[#0A0B08] border-2 border-white/80" style={{ boxShadow: "0 30px 80px -20px rgba(0,0,0,0.6)" }}>
-				<div className="w-full h-full bg-background rounded-[38px] sm:rounded-[46px] overflow-hidden relative">
+			<div className="relative z-10 w-[280px] sm:w-[320px] lg:w-[340px] h-[580px] sm:h-[660px] lg:h-[700px] rounded-[44px] sm:rounded-[48px] lg:rounded-[56px] p-2.5 bg-[#0A0B08] border-2 border-white/80" style={{ boxShadow: "0 30px 80px -20px rgba(0,0,0,0.6)" }}>
+				<div className="w-full h-full bg-background rounded-[34px] sm:rounded-[38px] lg:rounded-[46px] overflow-hidden relative">
 					{/* Notch */}
 					<div className="absolute top-3.5 left-1/2 -translate-x-1/2 w-[90px] sm:w-[110px] h-6 sm:h-7 bg-[#0A0B08] rounded-full z-20" />
 					{/* Status bar */}

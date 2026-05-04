@@ -40,57 +40,66 @@ export default function SignupPage() {
 
 	return (
 		<div>
-			<h1 className="font-display text-3xl font-bold tracking-tight">Create your account</h1>
-			<p className="mt-1 text-sm text-muted-foreground">Free to open. Takes 60 seconds.</p>
-			<form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-3">
+			<p className="mb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Get started</p>
+			<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-[-0.03em]">Create your account</h1>
+			<p className="mt-1.5 text-sm text-muted-foreground">Free to open. Takes 60 seconds.</p>
+
+			<form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 space-y-4">
 				<div className="space-y-1.5">
-					<Label htmlFor="name">Full name <span className="text-danger">*</span></Label>
-					<Input id="name" {...register("name")} />
+					<Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wide">Full name <span className="text-danger">*</span></Label>
+					<Input id="name" placeholder="John Doe" className="min-h-[48px]" {...register("name")} />
 					<div className="min-h-[16px]">
 						{errors.name && <p className="text-xs text-danger">{errors.name.message}</p>}
 					</div>
 				</div>
+
 				<div className="space-y-1.5">
-					<Label htmlFor="email">Email <span className="text-danger">*</span></Label>
-					<Input id="email" type="email" autoComplete="email" {...register("email")} />
+					<Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wide">Email <span className="text-danger">*</span></Label>
+					<Input id="email" type="email" placeholder="you@example.com" autoComplete="email" className="min-h-[48px]" {...register("email")} />
 					<div className="min-h-[16px]">
 						{errors.email && <p className="text-xs text-danger">{errors.email.message}</p>}
 					</div>
 				</div>
+
 				<div className="space-y-1.5">
-					<Label htmlFor="phone">Phone number <span className="text-danger">*</span></Label>
-					<Input id="phone" type="tel" placeholder="+234…" {...register("phone")} />
+					<Label htmlFor="phone" className="text-xs font-semibold uppercase tracking-wide">Phone <span className="text-danger">*</span></Label>
+					<Input id="phone" type="tel" placeholder="08012345678" className="min-h-[48px]" {...register("phone")} />
 					<div className="min-h-[16px]">
 						{errors.phone && <p className="text-xs text-danger">{errors.phone.message}</p>}
 					</div>
 				</div>
+
 				<div className="space-y-1.5">
-					<Label htmlFor="password">Password <span className="text-danger">*</span></Label>
+					<Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wide">Password <span className="text-danger">*</span></Label>
 					<div className="relative">
-						<Input id="password" type={showPassword ? "text" : "password"} {...register("password")} />
-						<button type="button" tabIndex={-1} onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground hover:text-foreground">
+						<Input id="password" type={showPassword ? "text" : "password"} placeholder="Min. 8 characters" className="min-h-[48px]" {...register("password")} />
+						<button type="button" tabIndex={-1} onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:text-foreground">
 							{showPassword ? "Hide" : "Show"}
 						</button>
 					</div>
 					<div className="min-h-[16px]">
 						{errors.password && <p className="text-xs text-danger">{errors.password.message}</p>}
 					</div>
-					<p className="text-xs text-muted-foreground">8+ characters with a number and uppercase letter.</p>
+					<p className="text-[11px] text-muted-foreground">8+ characters, one uppercase, one number.</p>
 				</div>
-				<label className="flex items-start gap-2 text-sm">
+
+				<label className="flex items-start gap-2.5 text-sm min-h-[44px]">
 					<Checkbox className="mt-0.5" {...register("terms")} />
-					<span className="text-muted-foreground">
-						I agree to the <Link href="/terms-of-service" className="text-primary hover:underline">Terms</Link> and acknowledge the{" "}
-						<Link href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>.
+					<span className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+						I agree to the <Link href="/terms-of-service" className="font-bold text-custom-black hover:underline">Terms</Link> and acknowledge the{" "}
+						<Link href="/privacy-policy" className="font-bold text-custom-black hover:underline">Privacy Policy</Link>.
 					</span>
 				</label>
 				{errors.terms && <p className="text-xs text-danger">{errors.terms.message}</p>}
-				<Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-					{isSubmitting ? "Creating…" : "Create account"}
+
+				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold shadow-brutal-sm" disabled={isSubmitting}>
+					{isSubmitting ? "Creating\u2026" : "Create account"}
 				</Button>
 			</form>
+
 			<p className="mt-6 text-center text-sm text-muted-foreground">
-				Already have an account? <Link href="/login" className="font-medium text-primary hover:underline">Log in</Link>
+				Already have an account?{" "}
+				<Link href="/login" className="font-bold text-custom-black hover:underline">Log in</Link>
 			</p>
 		</div>
 	);
