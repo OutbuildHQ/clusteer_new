@@ -27,7 +27,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
 	title: "Clusteer — Bridge your Naira into the global digital economy",
 	description:
-		"Buy, sell and hold stablecoins with Naira. Licensed, audited, and built for Nigeria.",
+		"Buy, sell and hold stablecoins with Naira. Built for Nigeria.",
 	keywords: [
 		"USDT to Naira",
 		"Buy USDT Nigeria",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "Clusteer — Bridge your Naira into the global digital economy",
 		description:
-			"Buy, sell and hold stablecoins with Naira. Licensed, audited, and built for Nigeria.",
+			"Buy, sell and hold stablecoins with Naira. Built for Nigeria.",
 		url: "https://clusteer.com",
 		siteName: "Clusteer",
 		type: "website",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
 		card: "summary_large_image",
 		title: "Clusteer — Bridge your Naira into the global digital economy",
 		description:
-			"Buy, sell and hold stablecoins with Naira. Licensed, audited, and built for Nigeria.",
+			"Buy, sell and hold stablecoins with Naira. Built for Nigeria.",
 		images: ["/og-image.png"],
 	},
 	robots: {

@@ -387,9 +387,9 @@ export default function Home() {
 				</FadeUp>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
 					{[
-						{ icon: Shield, title: "Funds in segregated wallets", copy: "Customer assets never touch operational treasury. Cold-storage majority, multi-sig on every withdrawal." },
-						{ icon: Check, title: "NDPR aligned, NITDA registered", copy: "Your data is encrypted at rest and in transit. We disclose nothing without legal compulsion." },
-						{ icon: Star, title: "Smile ID + Youverify backup", copy: "Two independent KYC providers. If one is down, the other catches your verification." },
+						{ icon: Shield, title: "Bank-grade encryption", copy: "All data encrypted at rest and in transit with AES-256. Your credentials and financial data are protected end-to-end." },
+						{ icon: Lock, title: "BVN-verified accounts", copy: "Every user is verified via BVN before they can trade. This keeps your account safe and our platform fraud-free." },
+						{ icon: ShieldCheck, title: "Two-factor authentication", copy: "Protect your account with 2FA on every login and withdrawal. Your funds stay locked even if someone gets your password." },
 					].map((it, i) => (
 						<FadeUp key={i} delay={i * 0.08}>
 							<div className="bg-background border-2 border-custom-black rounded-[18px] sm:rounded-3xl p-5 sm:p-8 flex flex-col gap-3 sm:gap-4 h-full">
@@ -433,12 +433,9 @@ export default function Home() {
 							))}
 						</div>
 						<div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8">
-							<Button size="lg" asChild className="bg-light-green text-custom-black hover:bg-light-green/90 border-2 border-light-green shadow-brutal-sm w-full sm:w-auto">
-								<Link href="/signup"><Check className="size-4" /> iOS</Link>
-							</Button>
-							<Button size="lg" variant="outline" asChild className="border-2 border-white text-white hover:bg-white/10 w-full sm:w-auto">
-								<Link href="/signup"><Check className="size-4" /> Android</Link>
-							</Button>
+							<div className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 bg-white/10 px-5 py-3 text-sm font-semibold text-white">
+								<Sparkles className="size-4" /> Mobile app coming soon
+							</div>
 						</div>
 					</FadeUp>
 					<FadeUp delay={0.15}>
@@ -459,7 +456,7 @@ export default function Home() {
 							{ q: "What stablecoins do you support?", a: "USDT and USDC on Tron (TRC-20), BSC (BEP-20), Ethereum (ERC-20), Solana (SPL), and Polygon. We auto-detect the chain." },
 							{ q: "How long do payouts take?", a: "Average 4 minutes 12 seconds. Naira hits your bank account via NIP instant transfer. No manual review for verified users." },
 							{ q: "What are your fees?", a: "0.75% flat fee on all buy/sell orders. No hidden spread — the rate you see is the rate you get. Internal Clusteer-to-Clusteer sends are free." },
-							{ q: "Is my money safe?", a: "Customer funds are held in segregated multi-sig wallets. Cold storage majority. We never commingle operational funds with customer assets." },
+							{ q: "Is my money safe?", a: "We use bank-grade AES-256 encryption, BVN verification for every account, and two-factor authentication on all withdrawals. Your data and funds are protected at every layer." },
 							{ q: "What KYC documents do I need?", a: "Tier 1: BVN only (2 minutes). Tier 2: NIN + government ID + selfie. Tier 3: proof of address + source of funds for high-volume traders." },
 						].map((item) => <FAQ key={item.q} q={item.q} a={item.a} />)}
 					</div>
@@ -529,7 +526,7 @@ export default function Home() {
 						))}
 					</div>
 					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 pt-6 sm:pt-7 border-t border-white/10 text-[11px] sm:text-xs text-white/50">
-						<span>© {new Date().getFullYear()} Clusteer Technologies Ltd. RC: 2049871. Lagos, Nigeria.</span>
+						<span>© {new Date().getFullYear()} Clusteer. All rights reserved.</span>
 						<span className="font-mono">v3.2.1</span>
 					</div>
 				</div>

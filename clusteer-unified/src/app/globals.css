@@ -230,9 +230,11 @@
 .shadow-brutal-sm { box-shadow: 3px 3px 0 0 #21241D; }
 
 /* Lime highlight underline */
-.lime-highlight { position: relative; display: inline-block; }
+.lime-highlight {
+	position: relative; display: inline-block; isolation: isolate;
+}
 .lime-highlight::after {
-	content: ''; position: absolute; left: -8px; right: -8px; bottom: 6px; height: 38%;
+	content: ''; position: absolute; left: -8px; right: -8px; bottom: 6%; height: 38%;
 	background: #9FE870; z-index: -1; border-radius: 4px; transform: rotate(-1deg);
 }
 

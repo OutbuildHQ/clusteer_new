@@ -6,11 +6,14 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 		<div className="min-h-[100dvh] grid lg:grid-cols-[1fr_1fr] bg-background">
 			{/* Brand side — warm beige with bold Clusteer personality */}
 			<div className="relative hidden lg:flex flex-col justify-between p-10 bg-warm-beige overflow-hidden">
-				{/* Large watermark logo */}
-				<div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center opacity-[0.04]">
-					<svg viewBox="0 0 100 100" className="w-[600px] h-[600px] text-custom-black">
-						<circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="2" />
-						<text x="50" y="58" textAnchor="middle" fontSize="24" fontWeight="bold" fill="currentColor">C</text>
+				{/* Large watermark — actual Clusteer logo */}
+				<div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center opacity-[0.05]">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 38" className="w-[500px] h-[500px]" fill="currentColor">
+						<path d="M0 19.002C0 9.249 7.347 1.212 16.809.125c1.205-.138 2.193.859 2.193 2.072v33.61c0 1.214-.988 2.21-2.193 2.072C7.347 36.792 0 28.755 0 19.002" />
+						<circle cx="25.537" cy="10.654" r="2.581" />
+						<circle cx="25.537" cy="19.002" r="2.581" />
+						<circle cx="25.537" cy="27.35" r="2.581" />
+						<circle cx="32.897" cy="19.002" r="2.581" />
 					</svg>
 				</div>
 
@@ -44,13 +47,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 					{/* Trust pills */}
 					<div className="mt-8 flex flex-wrap gap-2">
 						<span className="rounded-full border-2 border-custom-black bg-white px-3.5 py-1.5 text-xs font-semibold text-custom-black shadow-brutal-xs">
-							SEC Nigeria &middot; VASP
+							Bank-grade encryption
 						</span>
 						<span className="rounded-full border-2 border-custom-black bg-white px-3.5 py-1.5 text-xs font-semibold text-custom-black shadow-brutal-xs">
-							AES-256 encryption
+							BVN-verified accounts
 						</span>
 						<span className="rounded-full border-2 border-custom-black bg-white px-3.5 py-1.5 text-xs font-semibold text-custom-black shadow-brutal-xs">
-							Multi-sig custody
+							2FA security
 						</span>
 					</div>
 
@@ -72,7 +75,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 				</div>
 
 				<div className="relative z-10 text-xs text-custom-black/30">
-					&copy; {new Date().getFullYear()} Clusteer Technologies Ltd. RC 1234567
+					&copy; {new Date().getFullYear()} Clusteer. All rights reserved.
 				</div>
 			</div>
 
