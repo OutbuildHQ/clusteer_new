@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
 
+const MAX_TRANSFER_AMOUNT = Number(process.env.MAX_TRANSFER_AMOUNT) || 1_000_000;
+
 export async function POST(request: NextRequest) {
 	try {
 		const rateLimitResponse = rateLimit(request, RateLimitPresets.moderate);
@@ -29,9 +31,9 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const { recipientUserId, asset, amount, note, chain } = body;
+		const { recipient_user_id, asset, amount, note, chain } = body;
 
-		if (!recipientUserId || !asset || !amount) {
+		if (!recipient_user_id || !asset || !amount) {
 			return NextResponse.json(
 				{ status: false, message: "Missing required fields" },
 				{ status: 400 }
@@ -47,14 +49,14 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		if (parsedAmount > 1000000) {
+		if (parsedAmount > MAX_TRANSFER_AMOUNT) {
 			return NextResponse.json(
 				{ status: false, message: "Amount exceeds maximum transfer limit" },
 				{ status: 400 }
 			);
 		}
 
-		if (recipientUserId === userId) {
+		if (recipient_user_id === userId) {
 			return NextResponse.json(
 				{ status: false, message: "Cannot send to yourself" },
 				{ status: 400 }
@@ -99,7 +101,7 @@ export async function POST(request: NextRequest) {
 			method: "POST",
 			body: JSON.stringify({
 				sender_user_id: userId,
-				recipient_user_id: recipientUserId,
+				recipient_user_id,
 				asset: asset.toUpperCase(),
 				amount: parsedAmount,
 				chain: chain?.toLowerCase() || null,
@@ -122,7 +124,7 @@ export async function POST(request: NextRequest) {
 			message: "Transfer completed successfully",
 			data: {
 				transferId: transferData.id,
-				recipient: transferData.recipient_username || recipientUserId,
+				recipient: transferData.recipient_username || recipient_user_id,
 				amount: parsedAmount,
 				asset: asset.toUpperCase(),
 			},

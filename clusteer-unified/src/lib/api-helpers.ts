@@ -6,6 +6,10 @@
 const DJANGO_BASE = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";
 const DJANGO_API_KEY = process.env.BLOCKCHAIN_ENGINE_API_KEY || process.env.NEXT_PUBLIC_BLOCKCHAIN_ENGINE_API_KEY || "";
 
+if (!DJANGO_API_KEY) {
+	console.warn("[api-helpers] BLOCKCHAIN_ENGINE_API_KEY not configured — Django requests will fail");
+}
+
 /**
  * Decode Firebase JWT payload to extract user_id.
  * No verification needed — middleware already validated the token.

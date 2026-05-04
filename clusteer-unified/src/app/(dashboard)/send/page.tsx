@@ -53,6 +53,9 @@ export default function SendPage() {
 	const [note, setNote] = useState("");
 	const [otp, setOtp] = useState("");
 	const [submitting, setSubmitting] = useState(false);
+	const [recipientVerified, setRecipientVerified] = useState<boolean | null>(null);
+	const [recipientUsername, setRecipientUsername] = useState("");
+	const [verifyingRecipient, setVerifyingRecipient] = useState(false);
 
 	// Fetch wallet data
 	const { data: walletData, isLoading: walletLoading } = useQuery({
@@ -101,7 +104,28 @@ export default function SendPage() {
 	const total = amtNum + fee;
 	const amountNgn = amtNum * priceNgn;
 
-	const submit = () => {
+	const verifyRecipient = async (recipientId: string) => {
+		if (!recipientId) return;
+		setVerifyingRecipient(true);
+		setRecipientVerified(null);
+		setRecipientUsername("");
+		try {
+			const res = await fetch(`/api/transfer/verify-recipient/${encodeURIComponent(recipientId)}`);
+			const json = await res.json();
+			if (json.status && json.data?.exists) {
+				setRecipientVerified(true);
+				setRecipientUsername(json.data.username || recipientId);
+			} else {
+				setRecipientVerified(false);
+			}
+		} catch {
+			setRecipientVerified(false);
+		} finally {
+			setVerifyingRecipient(false);
+		}
+	};
+
+	const submit = async () => {
 		if (!amount || !address) {
 			toast.error("Fill in all required fields");
 			return;
@@ -127,6 +151,29 @@ export default function SendPage() {
 			toast.error("Address is too short. Please check and try again.");
 			return;
 		}
+
+		// Verify recipient exists before proceeding to review
+		if (recipientVerified !== true) {
+			setVerifyingRecipient(true);
+			try {
+				const res = await fetch(`/api/transfer/verify-recipient/${encodeURIComponent(address)}`);
+				const json = await res.json();
+				if (json.status && json.data?.exists) {
+					setRecipientVerified(true);
+					setRecipientUsername(json.data.username || address);
+					setStep("review");
+				} else {
+					setRecipientVerified(false);
+					toast.error("Recipient not found. Please check the address or username.");
+				}
+			} catch {
+				toast.error("Unable to verify recipient. Please try again.");
+			} finally {
+				setVerifyingRecipient(false);
+			}
+			return;
+		}
+
 		setStep("review");
 	};
 
@@ -145,7 +192,9 @@ export default function SendPage() {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					recipientUserId: address,
+					// For internal P2P transfers, `address` holds a Clusteer username/user ID
+					// (not a blockchain address). The Django endpoint validates this value.
+					recipient_user_id: address,
 					asset: asset,
 					amount: amtNum,
 					chain: chain.toLowerCase(),
@@ -239,7 +288,10 @@ export default function SendPage() {
 										</SelectContent>
 									</Select>
 								</div>
-								<Input id="address" className="font-mono mt-1.5" placeholder={`e.g. 0x… or ${chain === "Tron" ? "T…" : chain === "Solana" ? "8v…" : "bc1…"}`} value={address} onChange={(e) => setAddress(e.target.value)} />
+								<Input id="address" className="font-mono mt-1.5" placeholder={`e.g. 0x… or ${chain === "Tron" ? "T…" : chain === "Solana" ? "8v…" : "bc1…"}`} value={address} onChange={(e) => { setAddress(e.target.value); setRecipientVerified(null); }} onBlur={() => { if (address.length >= 5) verifyRecipient(address); }} />
+								{verifyingRecipient && <p className="mt-1 text-xs text-muted-foreground">Verifying recipient...</p>}
+								{recipientVerified === true && <p className="mt-1 text-xs text-green-600 flex items-center gap-1">&#10003; Verified: {recipientUsername}</p>}
+								{recipientVerified === false && <p className="mt-1 text-xs text-red-500">Recipient not found. Check the address or username.</p>}
 							</div>
 
 							<div>
@@ -269,7 +321,7 @@ export default function SendPage() {
 								<div className="flex justify-between font-medium"><span>You'll send</span><Num className="font-mono tabular-nums" value={total.toFixed(4) + " " + asset} /></div>
 							</div>
 
-							<Button onClick={submit} size="lg" className="w-full rounded-full shadow-brutal-sm">Continue <ArrowRight className="size-4" /></Button>
+							<Button onClick={submit} size="lg" className="w-full rounded-full shadow-brutal-sm" disabled={verifyingRecipient}>{verifyingRecipient ? <Loader2 className="size-4 animate-spin" /> : <>Continue <ArrowRight className="size-4" /></>}</Button>
 						</>
 					)}
 

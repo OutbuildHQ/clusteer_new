@@ -5,6 +5,8 @@ import QRCode from "qrcode";
 
 export async function GET(request: NextRequest) {
 	try {
+		// Auth check ensures only authenticated users can generate a 2FA secret.
+		// The secret is tied to the requesting user's email from their JWT.
 		const auth = getAuthFromRequest(request);
 		if (!auth) {
 			return NextResponse.json(

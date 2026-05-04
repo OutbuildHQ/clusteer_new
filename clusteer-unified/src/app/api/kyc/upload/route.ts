@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { DJANGO_URL, API_KEY } from "@/lib/api-helpers";
 
 // Allowed MIME types for document uploads
 const ALLOWED_MIME_TYPES = [
@@ -174,11 +175,8 @@ export async function POST(request: NextRequest) {
 			validatedFiles.push({ name, buffer, mimeType: file.type });
 		}
 
-		// Get Django backend configuration
-		const djangoUrl = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";
-		const djangoApiKey = process.env.BLOCKCHAIN_ENGINE_API_KEY;
-
-		if (!djangoApiKey) {
+		// Use standardized Django URL and API key from api-helpers
+		if (!API_KEY) {
 			console.error("BLOCKCHAIN_ENGINE_API_KEY not configured");
 			return NextResponse.json(
 				{ status: false, message: "Backend not configured" },
@@ -201,11 +199,11 @@ export async function POST(request: NextRequest) {
 			}
 
 			const uploadResponse = await fetch(
-				`${djangoUrl}/api/v1/user/${userId}/upload-kyc-documents/`,
+				`${DJANGO_URL}/api/v1/user/${userId}/upload-kyc-documents/`,
 				{
 					method: "POST",
 					headers: {
-						"X-API-KEY": djangoApiKey,
+						"X-API-KEY": API_KEY,
 					},
 					body: uploadFormData,
 				}

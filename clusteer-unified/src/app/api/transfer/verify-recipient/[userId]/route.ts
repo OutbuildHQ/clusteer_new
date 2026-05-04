@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
+import { djangoFetch } from "@/lib/api-helpers";
 
+// Public endpoint — no auth required. Anyone needs to verify a recipient before sending.
 export async function GET(
 	request: NextRequest,
 	{ params }: { params: Promise<{ userId: string }> }
 ) {
 	try {
-		const auth = getAuthFromRequest(request);
-		if (!auth) {
-			return NextResponse.json(
-				{ status: false, message: "Unauthorized" },
-				{ status: 401 }
-			);
-		}
-
 		const { userId: recipientUserId } = await params;
 
 		if (!recipientUserId) {

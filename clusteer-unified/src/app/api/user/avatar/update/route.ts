@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthFromRequest } from "@/lib/api-helpers";
+import { getAuthFromRequest, DJANGO_URL, API_KEY } from "@/lib/api-helpers";
 
 export async function PUT(request: NextRequest) {
 	try {
@@ -40,12 +40,43 @@ export async function PUT(request: NextRequest) {
 			);
 		}
 
-		// TODO: Upload to Firebase Storage or forward to Django when backend supports it
-		return NextResponse.json({
-			status: true,
-			message: "Avatar update coming soon",
-			data: { avatar: "" },
-		});
+		const { userId } = auth;
+
+		// Forward the multipart FormData to Django (don't use djangoFetch — it sets Content-Type: application/json)
+		const forwardFormData = new FormData();
+		forwardFormData.append("avatar", avatarFile);
+
+		try {
+			const djangoRes = await fetch(
+				`${DJANGO_URL}/api/v1/user/${userId}/avatar/update/`,
+				{
+					method: "POST",
+					headers: { "X-API-KEY": API_KEY },
+					body: forwardFormData,
+				}
+			);
+
+			const djangoData = await djangoRes.json();
+
+			if (!djangoRes.ok) {
+				return NextResponse.json(
+					{ status: false, message: djangoData.message || djangoData.error || "Avatar upload failed" },
+					{ status: djangoRes.status }
+				);
+			}
+
+			return NextResponse.json({
+				status: true,
+				message: "Avatar updated successfully",
+				data: { avatar: djangoData.avatar_url || djangoData.avatar || "" },
+			});
+		} catch (error) {
+			console.error("Django avatar upload error:", error);
+			return NextResponse.json(
+				{ status: false, message: "Unable to connect to upload service. Please try again later." },
+				{ status: 503 }
+			);
+		}
 	} catch (error) {
 		console.error("Avatar update error:", error);
 		return NextResponse.json(

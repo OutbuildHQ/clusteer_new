@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
+		// Django's estimate-fee endpoint uses POST (accepts body params for chain + amount)
 		const response = await djangoFetch("/estimate-fee/", {
 			method: "POST",
 			body: JSON.stringify({

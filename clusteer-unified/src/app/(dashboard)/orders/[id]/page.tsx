@@ -10,7 +10,27 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
 
-async function fetchOrder(orderId: string) {
+interface OrderDetail {
+	order_id?: string;
+	id?: string;
+	order_type?: string;
+	type?: string;
+	status: string;
+	crypto_currency?: string;
+	crypto_amount?: number;
+	fiat_amount?: number;
+	total_amount?: number;
+	exchange_rate?: number;
+	platform_fee?: number;
+	payment_method?: string;
+	blockchain_tx_hash?: string;
+	chain?: string;
+	amount?: number;
+	created_at?: string;
+	updated_at?: string;
+}
+
+async function fetchOrder(orderId: string): Promise<OrderDetail> {
 	const res = await fetch(`/api/order?id=${orderId}`);
 	if (!res.ok) throw new Error("Failed to fetch order");
 	const json = await res.json();
@@ -120,7 +140,7 @@ export default function OrderDetailPage() {
 							<p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Blockchain Transaction</p>
 							<div className="flex items-center gap-2">
 								<code className="text-sm font-mono break-all flex-1">{order.blockchain_tx_hash}</code>
-								<button onClick={() => copyToClipboard(order.blockchain_tx_hash)} className="shrink-0 p-1.5 rounded hover:bg-background transition-colors">
+								<button onClick={() => copyToClipboard(order.blockchain_tx_hash!)} className="shrink-0 p-1.5 rounded hover:bg-background transition-colors">
 									<Copy className="size-3.5" />
 								</button>
 							</div>

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
 
+const MAX_TRADE_AMOUNT = Number(process.env.MAX_TRADE_AMOUNT) || 1_000_000;
+
 export async function POST(request: NextRequest) {
 	try {
 		const rateLimitResponse = rateLimit(request, RateLimitPresets.moderate);
@@ -47,7 +49,7 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		if (parsedAmount > 1000000) {
+		if (parsedAmount > MAX_TRADE_AMOUNT) {
 			return NextResponse.json(
 				{ status: false, message: "Amount exceeds maximum limit" },
 				{ status: 400 }
