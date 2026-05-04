@@ -1,189 +1,144 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
 
 export async function GET(request: NextRequest) {
 	try {
-		// Get the auth token from cookies (already verified by middleware)
-		const token = request.cookies.get("auth_token")?.value;
-
-		if (!token) {
+		const auth = getAuthFromRequest(request);
+		if (!auth) {
 			return NextResponse.json(
 				{ status: false, message: "Unauthorized" },
 				{ status: 401 }
 			);
 		}
 
-		// Decode the Firebase JWT to get user ID (no verification needed - middleware already did it)
-		// Firebase JWT format: header.payload.signature
-		const parts = token.split('.');
-		if (parts.length !== 3) {
-			return NextResponse.json(
-				{ status: false, message: "Invalid token format" },
-				{ status: 401 }
-			);
-		}
+		const { userId } = auth;
 
-		let userId;
+		// Ensure wallets exist (ignore errors — wallet might already exist)
 		try {
-			// Decode the payload (base64)
-			const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-			userId = payload.user_id || payload.sub; // Firebase uses 'sub' for user ID
-		} catch (error) {
-			console.error("Failed to decode token payload:", error);
-			return NextResponse.json(
-				{ status: false, message: "Invalid token" },
-				{ status: 401 }
-			);
-		}
-
-		const authUser = { id: userId };
-
-		// Get blockchain engine URL and API key
-		const blockchainEngineUrl = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";
-		const blockchainEngineApiKey = process.env.BLOCKCHAIN_ENGINE_API_KEY;
-
-		if (!blockchainEngineApiKey) {
-			console.error("BLOCKCHAIN_ENGINE_API_KEY not configured");
-			return NextResponse.json(
-				{ status: false, message: "Blockchain engine not configured" },
-				{ status: 500 }
-			);
-		}
-
-		// First, try to create wallets for the user if they don't exist
-		try {
-			await fetch(`${blockchainEngineUrl}/api/v1/wallet/create/`, {
+			await djangoFetch("/wallet/create/", {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"X-API-KEY": blockchainEngineApiKey,
-				},
-				body: JSON.stringify({
-					user_id: authUser.id,
-				}),
+				body: JSON.stringify({ user_id: userId }),
 			});
-			// Ignore errors - wallet might already exist
-		} catch (error) {
-			console.log("Wallet creation attempt (might already exist):", error);
+		} catch {
+			// wallet might already exist
 		}
 
 		// Fetch user balances from blockchain engine
-		let balancesResponse;
+		let balancesData: any;
 		try {
-			balancesResponse = await fetch(`${blockchainEngineUrl}/api/v1/user/${authUser.id}/balance/`, {
-				method: "GET",
-				headers: {
-					"X-API-KEY": blockchainEngineApiKey,
-				},
-			});
+			const balancesResponse = await djangoFetch(`/user/${userId}/balance/`);
 
 			if (!balancesResponse.ok) {
-				// If user doesn't have wallets yet, return empty array
 				if (balancesResponse.status === 404) {
-					return NextResponse.json({
-						status: true,
-						walletAssets: [],
-					});
+					return NextResponse.json({ status: true, walletAssets: [] });
 				}
-
 				throw new Error(`Blockchain engine returned ${balancesResponse.status}`);
 			}
+
+			balancesData = await balancesResponse.json();
+			console.log("Blockchain engine balances data:", balancesData);
 		} catch (error) {
 			console.log("Wallet fetch error:", error);
-			// If blockchain engine is not available, return demo wallets with zero balance
-			// This allows the app to function without the backend
 			return NextResponse.json({
 				status: true,
 				walletAssets: [
-					{
-						name: "USDT Wallet",
-						type: "CRYPTO" as const,
-						currency: "USDT" as const,
-						address: "",
-						balance: 0,
-					},
-					{
-						name: "USDC Wallet",
-						type: "CRYPTO" as const,
-						currency: "USDC" as const,
-						address: "",
-						balance: 0,
-					},
-					{
-						name: "NGN Wallet",
-						type: "FIAT" as const,
-						currency: "NGN" as const,
-						address: "",
-						balance: 0,
-					},
+					{ name: "USDT Wallet", type: "CRYPTO" as const, currency: "USDT" as const, address: "", balance: 0, addresses: [] },
+					{ name: "USDC Wallet", type: "CRYPTO" as const, currency: "USDC" as const, address: "", balance: 0, addresses: [] },
+					{ name: "NGN Wallet", type: "FIAT" as const, currency: "NGN" as const, address: "", balance: 0, addresses: [] },
 				],
 				message: "Blockchain engine temporarily unavailable. Showing wallets with zero balance.",
 			});
 		}
 
-		const balancesData = await balancesResponse.json();
-		console.log("Blockchain engine balances data:", balancesData);
+		// Try to fetch wallet details for addresses
+		let walletDetails: any = null;
+		try {
+			const walletResponse = await djangoFetch(`/user/${userId}/wallets/`);
+			if (walletResponse.ok) {
+				walletDetails = await walletResponse.json();
+				console.log("Wallet details:", walletDetails);
+			}
+		} catch {
+			console.log("Could not fetch wallet details for addresses");
+		}
+
+		// Build a map of chain -> address from wallet details
+		const addressMap: Record<string, { chain: string; address: string }[]> = {};
+		if (walletDetails?.wallets || walletDetails?.data) {
+			const wallets = walletDetails.wallets || walletDetails.data || [];
+			for (const w of wallets) {
+				const chain = (w.chain || w.network || "").toLowerCase();
+				const address = w.address || w.wallet_address || "";
+				if (!chain || !address) continue;
+
+				// Extract stablecoin from chain name (e.g., "sol_usdt" -> "usdt")
+				const parts = chain.split("_");
+				const stablecoin = parts[parts.length - 1];
+				const chainName = parts.length > 1 ? parts[0] : chain;
+
+				if (!addressMap[stablecoin]) addressMap[stablecoin] = [];
+				addressMap[stablecoin].push({ chain: chainName, address });
+			}
+		}
+
+		// Also check if balance response itself contains address data
+		if (balancesData.wallets) {
+			for (const w of balancesData.wallets) {
+				const chain = (w.chain || w.network || "").toLowerCase();
+				const address = w.address || w.wallet_address || "";
+				if (!chain || !address) continue;
+
+				const parts = chain.split("_");
+				const stablecoin = parts[parts.length - 1];
+				const chainName = parts.length > 1 ? parts[0] : chain;
+
+				if (!addressMap[stablecoin]) addressMap[stablecoin] = [];
+				// Avoid duplicates
+				if (!addressMap[stablecoin].some((a) => a.chain === chainName)) {
+					addressMap[stablecoin].push({ chain: chainName, address });
+				}
+			}
+		}
 
 		// Aggregate balances by stablecoin type across all networks
 		const stablecoinBalances: Record<string, number> = {};
 
 		Object.entries(balancesData.balances || {}).forEach(([chain, balance]) => {
 			const balanceNum = parseFloat(balance as string) || 0;
+			const parts = chain.toLowerCase().split("_");
+			const stablecoin = parts[parts.length - 1];
 
-			// Extract stablecoin type from chain name
-			// e.g., "sol_usdt" -> "usdt", "tron_usdt" -> "usdt"
-			const parts = chain.toLowerCase().split('_');
-			const stablecoin = parts[parts.length - 1]; // Get last part (usdt, usdc, etc.)
-
-			// Aggregate balance for this stablecoin
 			if (!stablecoinBalances[stablecoin]) {
 				stablecoinBalances[stablecoin] = 0;
 			}
 			stablecoinBalances[stablecoin] += balanceNum;
-
-			console.log(`Chain: ${chain}, Stablecoin: ${stablecoin}, Balance: ${balanceNum}`);
 		});
 
-		// Transform aggregated balances to wallet assets
+		// Transform aggregated balances to wallet assets with addresses
 		const walletAssets = Object.entries(stablecoinBalances).map(([stablecoin, balance]) => {
 			const currency = stablecoin.toUpperCase() as "NGN" | "USDT" | "USDC";
+			const addresses = addressMap[stablecoin] || [];
+			// Use the first available address as the primary address
+			const primaryAddress = addresses.length > 0 ? addresses[0].address : "";
 
 			return {
 				name: `${currency} Wallet`,
-				type: 'CRYPTO' as const,
+				type: "CRYPTO" as const,
 				currency,
-				address: '', // Address would need to be fetched separately if needed
+				address: primaryAddress,
 				balance,
+				addresses,
 			};
 		});
 
-		// If no wallets found, return default wallets with zero balance
 		const finalWallets = walletAssets.length > 0 ? walletAssets : [
-			{
-				name: "USDT Wallet",
-				type: "CRYPTO" as const,
-				currency: "USDT" as const,
-				address: "",
-				balance: 0,
-			},
-			{
-				name: "USDC Wallet",
-				type: "CRYPTO" as const,
-				currency: "USDC" as const,
-				address: "",
-				balance: 0,
-			},
-			{
-				name: "NGN Wallet",
-				type: "FIAT" as const,
-				currency: "NGN" as const,
-				address: "",
-				balance: 0,
-			},
+			{ name: "USDT Wallet", type: "CRYPTO" as const, currency: "USDT" as const, address: "", balance: 0, addresses: [] },
+			{ name: "USDC Wallet", type: "CRYPTO" as const, currency: "USDC" as const, address: "", balance: 0, addresses: [] },
+			{ name: "NGN Wallet", type: "FIAT" as const, currency: "NGN" as const, address: "", balance: 0, addresses: [] },
 		];
 
 		console.log("Aggregated wallet assets:", finalWallets);
 
-		// Return wallets data in the expected format
 		return NextResponse.json({
 			status: true,
 			walletAssets: finalWallets,

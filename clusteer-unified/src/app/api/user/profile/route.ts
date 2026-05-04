@@ -1,79 +1,83 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
 
 export async function GET(request: NextRequest) {
 	try {
-		// Get the auth token from cookies (already verified by middleware)
-		const token = request.cookies.get("auth_token")?.value;
-
-		if (!token) {
+		const auth = getAuthFromRequest(request);
+		if (!auth) {
 			return NextResponse.json(
 				{ status: false, message: "Unauthorized" },
 				{ status: 401 }
 			);
 		}
 
-		// Decode the Firebase JWT to get user data
-		const parts = token.split('.');
-		if (parts.length !== 3) {
-			return NextResponse.json(
-				{ status: false, message: "Invalid token format" },
-				{ status: 401 }
-			);
-		}
+		const { userId, token } = auth;
 
-		let userProfile;
+		// Decode JWT for baseline profile data
+		let jwtEmail = "";
+		let jwtEmailVerified = false;
 		try {
-			// Decode the payload (base64)
-			const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-
-			// Extract user data from Firebase JWT
-			const userId = payload.user_id || payload.sub;
-			const email = payload.email || '';
-			const emailVerified = payload.email_verified || false;
-
-			// Create user profile from JWT data
-			userProfile = {
-				id: userId,
-				email: email,
-				username: email.split('@')[0], // Use email prefix as username
-				is_verified: emailVerified,
-				two_factor_enabled: false,
-				created_at: new Date().toISOString(),
-				updated_at: new Date().toISOString(),
-			};
-
-			console.log("User profile from Firebase JWT:", {
-				userId: userProfile.id,
-				email: userProfile.email,
-				username: userProfile.username,
-				is_verified: userProfile.is_verified,
-			});
-		} catch (error) {
-			console.error("Failed to decode token payload:", error);
-			return NextResponse.json(
-				{ status: false, message: "Invalid token" },
-				{ status: 401 }
-			);
+			const parts = token.split(".");
+			const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
+			jwtEmail = payload.email || "";
+			jwtEmailVerified = payload.email_verified || false;
+		} catch {
+			// fallback — userId is still valid from getAuthFromRequest
 		}
 
-		// Return user profile data from Firebase JWT
+		// Base profile from JWT
+		const baseProfile = {
+			id: userId,
+			email: jwtEmail,
+			username: jwtEmail.split("@")[0],
+			firstName: "",
+			lastName: "",
+			phone: "",
+			avatar: "",
+			is_verified: jwtEmailVerified,
+			emailVerified: jwtEmailVerified,
+			twoFactorEnabled: false,
+			kyc_status: "not_started",
+			dateJoined: new Date().toISOString(),
+			created_at: new Date().toISOString(),
+			updated_at: new Date().toISOString(),
+		};
+
+		// Try to fetch richer profile from Django backend
+		try {
+			const djangoResponse = await djangoFetch(`/user/${userId}/profile/`);
+			if (djangoResponse.ok) {
+				const djangoData = await djangoResponse.json();
+				const profile = djangoData.data || djangoData;
+
+				// Merge Django fields over JWT defaults (Django takes priority)
+				return NextResponse.json({
+					status: true,
+					data: {
+						...baseProfile,
+						username: profile.username || baseProfile.username,
+						firstName: profile.first_name || profile.firstName || baseProfile.firstName,
+						lastName: profile.last_name || profile.lastName || baseProfile.lastName,
+						phone: profile.phone || profile.phone_number || baseProfile.phone,
+						avatar: profile.avatar || profile.avatar_url || baseProfile.avatar,
+						is_verified: profile.is_verified ?? baseProfile.is_verified,
+						emailVerified: profile.email_verified ?? profile.is_verified ?? baseProfile.emailVerified,
+						twoFactorEnabled: profile.two_factor_enabled ?? profile.twoFactorEnabled ?? baseProfile.twoFactorEnabled,
+						kyc_status: profile.kyc_status || baseProfile.kyc_status,
+						dateJoined: profile.date_joined || profile.created_at || baseProfile.dateJoined,
+						created_at: profile.created_at || baseProfile.created_at,
+						updated_at: profile.updated_at || baseProfile.updated_at,
+					},
+				});
+			}
+		} catch (error) {
+			console.log("Django profile fetch failed, using JWT data:", error);
+		}
+
+		// Fallback: return JWT-derived profile
 		return NextResponse.json({
 			status: true,
-			data: {
-				id: userProfile.id,
-				username: userProfile.username,
-				firstName: "",
-				lastName: "",
-				email: userProfile.email,
-				phone: "",
-				avatar: "",
-				is_verified: userProfile.is_verified,
-				emailVerified: userProfile.is_verified,
-				twoFactorEnabled: userProfile.two_factor_enabled,
-				dateJoined: userProfile.created_at,
-				created_at: userProfile.created_at,
-				updated_at: userProfile.updated_at,
-			},
+			data: baseProfile,
 		});
 	} catch (error) {
 		console.error("Profile fetch error:", error);

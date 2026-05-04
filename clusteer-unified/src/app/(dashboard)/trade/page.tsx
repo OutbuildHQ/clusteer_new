@@ -112,9 +112,6 @@ export default function TradePage() {
 					side: mode,
 					amount: amtNum,
 					chain,
-					...(mode === "buy"
-						? { walletAddress: selected.address }
-						: { signedTransaction: "pending" }),
 				}),
 			});
 			const data = await res.json();

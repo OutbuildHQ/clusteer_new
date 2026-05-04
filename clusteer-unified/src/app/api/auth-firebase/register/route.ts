@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { registerWithFirebase } from "@/lib/auth-firebase";
 import { isFirebaseConfigured } from "@/lib/firebase";
+import { djangoFetch } from "@/lib/api-helpers";
 
 export async function POST(request: NextRequest) {
   // Rate limiting
@@ -45,6 +46,16 @@ export async function POST(request: NextRequest) {
       phone,
       password,
     });
+
+    // Fire-and-forget: create wallets in Django
+    try {
+      await djangoFetch("/wallet/create/", {
+        method: "POST",
+        body: JSON.stringify({ user_id: user.id || user.firebaseUid }),
+      });
+    } catch (e) {
+      console.error("Wallet creation failed (non-blocking):", e);
+    }
 
     return NextResponse.json({
       status: true,

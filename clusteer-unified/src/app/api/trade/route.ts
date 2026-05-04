@@ -1,19 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
-
-/**
- * Helper to extract user ID from Firebase JWT (already verified by middleware)
- */
-function getUserIdFromToken(token: string): string | null {
-	try {
-		const parts = token.split(".");
-		if (parts.length !== 3) return null;
-		const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
-		return payload.user_id || payload.sub || null;
-	} catch {
-		return null;
-	}
-}
+import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
 
 export async function POST(request: NextRequest) {
 	try {
@@ -22,22 +9,15 @@ export async function POST(request: NextRequest) {
 			return rateLimitResponse;
 		}
 
-		const token = request.cookies.get("auth_token")?.value;
-
-		if (!token) {
+		const auth = getAuthFromRequest(request);
+		if (!auth) {
 			return NextResponse.json(
 				{ status: false, message: "Unauthorized" },
 				{ status: 401 }
 			);
 		}
 
-		const userId = getUserIdFromToken(token);
-		if (!userId) {
-			return NextResponse.json(
-				{ status: false, message: "Invalid token" },
-				{ status: 401 }
-			);
-		}
+		const { userId } = auth;
 
 		let body;
 		try {
@@ -49,7 +29,7 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const { side, amount, chain, signedTransaction, walletAddress } = body;
+		const { side, amount, chain } = body;
 
 		// Validate input
 		if (!side || !amount || !chain) {
@@ -89,46 +69,15 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		if (side.toLowerCase() === "sell" && !signedTransaction) {
-			return NextResponse.json(
-				{ status: false, message: "Signed transaction required for sell orders" },
-				{ status: 400 }
-			);
-		}
-
-		if (side.toLowerCase() === "buy" && !walletAddress) {
-			return NextResponse.json(
-				{ status: false, message: "Wallet address required for buy orders" },
-				{ status: 400 }
-			);
-		}
-
-		const blockchainEngineUrl = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";
-		const blockchainEngineApiKey = process.env.BLOCKCHAIN_ENGINE_API_KEY;
-
-		if (!blockchainEngineApiKey) {
-			return NextResponse.json(
-				{ status: false, message: "Service temporarily unavailable" },
-				{ status: 503 }
-			);
-		}
-
 		const tradePayload = {
 			user_id: userId,
 			chain: chain.toLowerCase(),
 			side: side.toLowerCase(),
 			amount: parsedAmount,
-			...(side.toLowerCase() === "sell"
-				? { signed_transaction: signedTransaction }
-				: { destination_address: walletAddress }),
 		};
 
-		const tradeResponse = await fetch(`${blockchainEngineUrl}/api/v1/trade/`, {
+		const tradeResponse = await djangoFetch("/manual-trade/", {
 			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-API-KEY": blockchainEngineApiKey,
-			},
 			body: JSON.stringify(tradePayload),
 		});
 

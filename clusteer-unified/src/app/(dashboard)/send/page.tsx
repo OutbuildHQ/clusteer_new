@@ -81,7 +81,23 @@ export default function SendPage() {
 	};
 
 	const amtNum = parseFloat(amount) || 0;
-	const fee = chain === "Tron" ? 1 : chain === "BSC" ? 0.5 : 2.5;
+
+	// Fetch fee estimate from Django; fall back to hardcoded values on error
+	const hardcodedFee = chain === "Tron" ? 1 : chain === "BSC" ? 0.5 : 2.5;
+	const { data: feeData, isLoading: feeLoading } = useQuery({
+		queryKey: ["estimateFee", chain, amtNum],
+		queryFn: async () => {
+			if (amtNum <= 0) return null;
+			const res = await fetch(`/api/system/estimate-fee?chain=${chain.toLowerCase()}&amount=${amtNum}`);
+			const json = await res.json();
+			if (!json.status) return null;
+			return json.data;
+		},
+		enabled: amtNum > 0,
+		retry: false,
+		staleTime: 15_000,
+	});
+	const fee = feeData?.fee ?? hardcodedFee;
 	const total = amtNum + fee;
 	const amountNgn = amtNum * priceNgn;
 
@@ -132,6 +148,7 @@ export default function SendPage() {
 					recipientUserId: address,
 					asset: asset,
 					amount: amtNum,
+					chain: chain.toLowerCase(),
 					note: note || undefined,
 				}),
 			});
@@ -248,7 +265,7 @@ export default function SendPage() {
 							</div>
 
 							<div className="rounded-[14px] bg-warm-beige p-4 text-xs space-y-1">
-								<div className="flex justify-between"><span className="text-muted-foreground">Network fee</span><Num className="font-mono tabular-nums" value={fee + " " + asset} /></div>
+								<div className="flex justify-between"><span className="text-muted-foreground">Network fee</span>{feeLoading && amtNum > 0 ? <span className="font-mono tabular-nums text-muted-foreground">estimating...</span> : <Num className="font-mono tabular-nums" value={fee + " " + asset} />}</div>
 								<div className="flex justify-between font-medium"><span>You'll send</span><Num className="font-mono tabular-nums" value={total.toFixed(4) + " " + asset} /></div>
 							</div>
 

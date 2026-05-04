@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { getAuthFromRequest } from "@/lib/api-helpers";
 import { rateLimit } from "@/lib/rate-limiter";
 import { checkRateLimit as redisCheckRateLimit } from "@/lib/redis-rate-limiter";
 
@@ -48,24 +48,13 @@ export function successResponse(data: unknown, message: string = "Success") {
  * Authenticate user from request
  */
 export async function authenticateRequest(request: NextRequest) {
-	const token = request.cookies.get("auth_token")?.value;
+	const auth = getAuthFromRequest(request);
 
-	if (!token) {
+	if (!auth) {
 		return { user: null, error: "Unauthorized" };
 	}
 
-	try {
-		const { data: { user }, error } = await supabase.auth.getUser(token);
-
-		if (error || !user) {
-			return { user: null, error: "Invalid or expired token" };
-		}
-
-		return { user, error: null };
-	} catch (error) {
-		console.error("Authentication error:", error);
-		return { user: null, error: "Authentication failed" };
-	}
+	return { user: { id: auth.userId }, error: null };
 }
 
 /**

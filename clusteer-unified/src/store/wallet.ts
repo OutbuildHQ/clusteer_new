@@ -2,12 +2,18 @@ import { create } from "zustand";
 
 export type WalletCurrency = "NGN" | "USDT" | "USDC";
 
+export interface WalletAddress {
+	chain: string;
+	address: string;
+}
+
 export interface Wallet {
 	name: string;
 	type: "FIAT" | "CRYPTO";
 	currency: WalletCurrency;
 	address: string;
 	balance: number;
+	addresses?: WalletAddress[];
 }
 
 interface WalletStore {

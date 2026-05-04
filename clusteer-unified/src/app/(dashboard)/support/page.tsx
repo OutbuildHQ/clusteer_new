@@ -11,9 +11,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
 	Search, MessageCircle, Mail, ChevronRight, BookOpen, Shield, Wallet, ArrowLeftRight,
-	Plus, Clock, Send, Headphones, X, CheckCircle2, AlertCircle,
+	Plus, Clock, Send, Headphones, X, CheckCircle2, AlertCircle, Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getSupportTickets, createSupportTicket, getFAQs } from "@/lib/api/support";
+import type { SupportTicket, FAQ as FAQType, FAQData } from "@/lib/api/support";
+import { useUser } from "@/store/user";
 
 const TOPICS = [
 	{ icon: Wallet, slug: "deposits-withdrawals", title: "Deposits & withdrawals", desc: "Receiving and sending stablecoins safely." },
@@ -22,17 +26,12 @@ const TOPICS = [
 	{ icon: BookOpen, slug: "kyc-verification", title: "KYC verification", desc: "Tiers, documents, and limits." },
 ];
 
-const FAQ = [
+const FALLBACK_FAQ = [
 	{ q: "How long do deposits take?", a: "After the network confirms, funds arrive in your Clusteer wallet typically within 3\u201315 minutes depending on the chain." },
 	{ q: "What are your trading fees?", a: "A flat 0.75% on buy, sell, and swap orders. No hidden spreads \u2014 the rate you see is the rate you get." },
 	{ q: "I sent stablecoins on the wrong network. What now?", a: "Unfortunately, cross-network recovery is not always possible. Contact support immediately with the TX hash \u2014 we'll do our best to help." },
 	{ q: "How do I upgrade to Tier 2?", a: "Go to Identity Verification, provide your BVN, a government ID, and a selfie. Most approvals complete in under 5 minutes." },
 	{ q: "Can I withdraw to my Nigerian bank?", a: "Yes, sell your stablecoins for NGN and withdraw to any linked Nigerian bank account. Withdrawals clear within 15 minutes on business days." },
-];
-
-const MOCK_TICKETS = [
-	{ id: "T-0442", subject: "Withdrawal not received", status: "open", priority: "high", createdAt: "2026-04-28T10:30:00Z", lastReply: "2026-04-28T14:15:00Z" },
-	{ id: "T-0438", subject: "KYC Tier 2 document rejected", status: "resolved", priority: "medium", createdAt: "2026-04-25T08:00:00Z", lastReply: "2026-04-26T09:30:00Z" },
 ];
 
 const CHAT_MESSAGES: { role: "bot" | "user"; text: string; time: string }[] = [
@@ -51,11 +50,15 @@ function relativeTime(iso: string) {
 const statusColor: Record<string, string> = {
 	open: "bg-primary/10 text-primary border-primary/20",
 	"in-progress": "bg-warning/10 text-warning border-warning/20",
+	in_progress: "bg-warning/10 text-warning border-warning/20",
+	waiting_response: "bg-warning/10 text-warning border-warning/20",
 	resolved: "bg-success/10 text-success border-success/20",
 	closed: "bg-muted text-muted-foreground",
 };
 
 export default function SupportPage() {
+	const user = useUser();
+	const queryClient = useQueryClient();
 	const [q, setQ] = useState("");
 	const [showNewTicket, setShowNewTicket] = useState(false);
 	const [showChat, setShowChat] = useState(false);
@@ -63,16 +66,61 @@ export default function SupportPage() {
 	const [chatMessages, setChatMessages] = useState(CHAT_MESSAGES);
 	const [ticketForm, setTicketForm] = useState({ subject: "", category: "general", priority: "medium", description: "" });
 
-	const filtered = FAQ.filter((f) => !q || f.q.toLowerCase().includes(q.toLowerCase()));
+	// Fetch tickets from Django
+	const { data: tickets = [], isLoading: ticketsLoading } = useQuery({
+		queryKey: ["tickets", user?.id],
+		queryFn: () => getSupportTickets(user!.id),
+		enabled: !!user?.id,
+	});
+
+	// Fetch FAQs from Django
+	const { data: faqData } = useQuery({
+		queryKey: ["faqs"],
+		queryFn: () => getFAQs(),
+	});
+
+	// Flatten FAQ data from categorized format to flat array
+	const faqList: { q: string; a: string }[] = (() => {
+		if (!faqData) return FALLBACK_FAQ;
+		const items: { q: string; a: string }[] = [];
+		Object.values(faqData).forEach((categoryFaqs) => {
+			categoryFaqs.forEach((faq) => {
+				items.push({ q: faq.question, a: faq.answer });
+			});
+		});
+		return items.length > 0 ? items : FALLBACK_FAQ;
+	})();
+
+	const filtered = faqList.filter((f) => !q || f.q.toLowerCase().includes(q.toLowerCase()));
+
+	// Create ticket mutation
+	const createTicketMutation = useMutation({
+		mutationFn: (data: { subject: string; category: string; priority: string; description: string }) =>
+			createSupportTicket(user!.id, {
+				user_email: user?.email || "",
+				user_name: user?.username || user?.firstName || "",
+				subject: data.subject,
+				category: data.category,
+				description: data.description,
+				priority: data.priority,
+			}),
+		onSuccess: () => {
+			toast.success("Ticket submitted \u2014 we'll reply within a few hours.");
+			setShowNewTicket(false);
+			setTicketForm({ subject: "", category: "general", priority: "medium", description: "" });
+			queryClient.invalidateQueries({ queryKey: ["tickets", user?.id] });
+		},
+		onError: () => {
+			toast.error("Failed to submit ticket. Please try again.");
+		},
+	});
 
 	function submitTicket() {
 		if (!ticketForm.subject || !ticketForm.description) {
 			toast.error("Please fill in subject and description");
 			return;
 		}
-		toast.success("Ticket submitted \u2014 we'll reply within a few hours.");
-		setShowNewTicket(false);
-		setTicketForm({ subject: "", category: "general", priority: "medium", description: "" });
+		createTicketMutation.mutate(ticketForm);
 	}
 
 	function sendChat() {
@@ -135,7 +183,12 @@ export default function SupportPage() {
 					</Button>
 				</CardHeader>
 				<CardContent className="p-0">
-					{MOCK_TICKETS.length === 0 ? (
+					{ticketsLoading ? (
+						<div className="py-12 text-center">
+							<Loader2 className="size-6 animate-spin text-muted-foreground mx-auto" />
+							<p className="text-sm text-muted-foreground mt-2">Loading tickets...</p>
+						</div>
+					) : tickets.length === 0 ? (
 						<div className="py-12 text-center px-4">
 							<MessageCircle className="size-10 text-muted-foreground/40 mx-auto mb-3" />
 							<p className="font-display font-bold">No tickets yet</p>
@@ -144,21 +197,22 @@ export default function SupportPage() {
 						</div>
 					) : (
 						<div className="divide-y divide-border">
-							{MOCK_TICKETS.map((t) => (
-								<Link key={t.id} href={`/support/${t.id}`} className="flex items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 hover:bg-warm-beige/50 transition-colors">
+							{tickets.map((t) => (
+								<Link key={t.ticket_number} href={`/support/${t.ticket_number}`} className="flex items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 hover:bg-warm-beige/50 transition-colors">
 									<div className="min-w-0 flex-1">
 										<div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
-											<span className="text-[10px] sm:text-xs font-mono text-muted-foreground tabular-nums">{t.id}</span>
+											<span className="text-[10px] sm:text-xs font-mono text-muted-foreground tabular-nums">{t.ticket_number}</span>
 											<Badge className={`text-[10px] ${statusColor[t.status] ?? statusColor.closed}`}>
-												{t.status.replace("-", " ")}
+												{t.status.replace(/_/g, " ")}
 											</Badge>
 											{t.priority === "high" && <Badge variant="danger" className="text-[10px]">High</Badge>}
+											{t.priority === "urgent" && <Badge variant="danger" className="text-[10px]">Urgent</Badge>}
 										</div>
 										<p className="font-medium text-xs sm:text-sm truncate">{t.subject}</p>
 									</div>
 									<div className="text-right shrink-0 hidden sm:block">
 										<p className="text-xs text-muted-foreground">Last reply</p>
-										<p className="text-xs font-mono font-medium tabular-nums">{relativeTime(t.lastReply)}</p>
+										<p className="text-xs font-mono font-medium tabular-nums">{relativeTime(t.updated_at)}</p>
 									</div>
 									<ChevronRight className="size-4 text-muted-foreground shrink-0" />
 								</Link>
@@ -265,7 +319,10 @@ export default function SupportPage() {
 							/>
 						</div>
 						<div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
-							<Button className="flex-1 rounded-full shadow-brutal-sm" onClick={submitTicket}>Submit ticket</Button>
+							<Button className="flex-1 rounded-full shadow-brutal-sm" onClick={submitTicket} disabled={createTicketMutation.isPending}>
+								{createTicketMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : null}
+								Submit ticket
+							</Button>
 							<Button variant="outline" className="flex-1 rounded-full border-2 border-custom-black" onClick={() => setShowNewTicket(false)}>Cancel</Button>
 						</div>
 					</div>

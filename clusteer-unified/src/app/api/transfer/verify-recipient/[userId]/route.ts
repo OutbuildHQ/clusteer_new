@@ -1,39 +1,53 @@
-import { supabaseAdmin } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
 
 export async function GET(
 	request: NextRequest,
 	{ params }: { params: Promise<{ userId: string }> }
 ) {
 	try {
-		const { userId } = await params;
+		const auth = getAuthFromRequest(request);
+		if (!auth) {
+			return NextResponse.json(
+				{ status: false, message: "Unauthorized" },
+				{ status: 401 }
+			);
+		}
 
-		if (!userId) {
+		const { userId: recipientUserId } = await params;
+
+		if (!recipientUserId) {
 			return NextResponse.json(
 				{ status: false, message: "User ID is required" },
 				{ status: 400 }
 			);
 		}
 
-		// Get user from database
-		const { data: user, error } = await supabaseAdmin
-			.from("users")
-			.select("username, is_verified")
-			.eq("id", userId)
-			.single();
+		const response = await djangoFetch(`/user/${recipientUserId}/profile/`);
 
-		if (error || !user) {
+		if (response.status === 404) {
+			return NextResponse.json({
+				status: true,
+				data: { exists: false },
+			});
+		}
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}));
 			return NextResponse.json(
-				{ status: false, message: "User not found" },
-				{ status: 404 }
+				{ status: false, message: errorData.error || "Failed to verify recipient" },
+				{ status: response.status }
 			);
 		}
+
+		const data = await response.json();
 
 		return NextResponse.json({
 			status: true,
 			data: {
-				username: user.username,
-				is_verified: user.is_verified,
+				exists: true,
+				username: data.username,
+				is_verified: data.kyc_status === "approved",
 			},
 		});
 	} catch (error) {

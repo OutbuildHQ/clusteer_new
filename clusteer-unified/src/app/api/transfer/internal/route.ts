@@ -1,19 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
-
-/**
- * Helper to extract user ID from Firebase JWT (already verified by middleware)
- */
-function getUserIdFromToken(token: string): string | null {
-	try {
-		const parts = token.split(".");
-		if (parts.length !== 3) return null;
-		const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
-		return payload.user_id || payload.sub || null;
-	} catch {
-		return null;
-	}
-}
+import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
 
 export async function POST(request: NextRequest) {
 	try {
@@ -22,22 +9,15 @@ export async function POST(request: NextRequest) {
 			return rateLimitResponse;
 		}
 
-		const token = request.cookies.get("auth_token")?.value;
-
-		if (!token) {
+		const auth = getAuthFromRequest(request);
+		if (!auth) {
 			return NextResponse.json(
 				{ status: false, message: "Unauthorized" },
 				{ status: 401 }
 			);
 		}
 
-		const userId = getUserIdFromToken(token);
-		if (!userId) {
-			return NextResponse.json(
-				{ status: false, message: "Invalid token" },
-				{ status: 401 }
-			);
-		}
+		const { userId } = auth;
 
 		let body;
 		try {
@@ -49,7 +29,7 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const { recipientUserId, asset, amount, note } = body;
+		const { recipientUserId, asset, amount, note, chain } = body;
 
 		if (!recipientUserId || !asset || !amount) {
 			return NextResponse.json(
@@ -81,31 +61,15 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const blockchainEngineUrl = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";
-		const blockchainEngineApiKey = process.env.BLOCKCHAIN_ENGINE_API_KEY;
-
-		if (!blockchainEngineApiKey) {
-			return NextResponse.json(
-				{ status: false, message: "Service temporarily unavailable" },
-				{ status: 503 }
-			);
-		}
-
 		// Verify sender balance
 		let senderBalance = 0;
 		try {
-			const balancesResponse = await fetch(
-				`${blockchainEngineUrl}/api/v1/user/${userId}/balance/`,
-				{
-					method: "GET",
-					headers: { "X-API-KEY": blockchainEngineApiKey },
-				}
-			);
+			const balancesResponse = await djangoFetch(`/user/${userId}/balance/`);
 
 			if (balancesResponse.ok) {
 				const balancesData = await balancesResponse.json();
-				Object.entries(balancesData.balances || {}).forEach(([chain, balance]) => {
-					const parts = chain.toLowerCase().split("_");
+				Object.entries(balancesData.balances || {}).forEach(([chainKey, balance]) => {
+					const parts = chainKey.toLowerCase().split("_");
 					const stablecoin = parts[parts.length - 1];
 					if (stablecoin === asset.toLowerCase()) {
 						senderBalance += parseFloat(balance as string) || 0;
@@ -130,24 +94,18 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Execute internal transfer via blockchain engine
-		const transferResponse = await fetch(
-			`${blockchainEngineUrl}/api/v1/transfer/internal/`,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"X-API-KEY": blockchainEngineApiKey,
-				},
-				body: JSON.stringify({
-					sender_id: userId,
-					recipient_id: recipientUserId,
-					asset: asset.toUpperCase(),
-					amount: parsedAmount,
-					note: note || null,
-				}),
-			}
-		);
+		// Execute P2P transfer via blockchain engine
+		const transferResponse = await djangoFetch("/p2p-transfer/", {
+			method: "POST",
+			body: JSON.stringify({
+				sender_user_id: userId,
+				recipient_user_id: recipientUserId,
+				asset: asset.toUpperCase(),
+				amount: parsedAmount,
+				chain: chain?.toLowerCase() || null,
+				note: note || null,
+			}),
+		});
 
 		if (!transferResponse.ok) {
 			const errorData = await transferResponse.json().catch(() => ({}));
