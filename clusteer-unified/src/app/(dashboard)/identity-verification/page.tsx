@@ -192,7 +192,7 @@ export default function KYCPage() {
 										<Input className="font-mono mt-1.5" value={idNumber} onChange={(e) => setIdNumber(e.target.value)} />
 									</div>
 								</div>
-								<div className="flex justify-end"><Button className="w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setStep(2)}>Continue</Button></div>
+								<div className="flex justify-end"><Button className="w-full sm:w-auto rounded-full btn-shine shadow-brutal-sm" onClick={() => setStep(2)}>Continue</Button></div>
 							</div>
 						)}
 
@@ -202,7 +202,7 @@ export default function KYCPage() {
 								<UploadCard icon={<FileText className="size-5" />} title="Back of ID" hint="JPG or PDF \u00B7 max 10MB" />
 								<div className="flex flex-col sm:flex-row justify-between gap-2">
 									<Button variant="outline" className="w-full sm:w-auto rounded-full border-2 border-custom-black" onClick={() => setStep(1)}>Back</Button>
-									<Button className="w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setStep(3)}>Continue</Button>
+									<Button className="w-full sm:w-auto rounded-full btn-shine shadow-brutal-sm" onClick={() => setStep(3)}>Continue</Button>
 								</div>
 							</div>
 						)}
@@ -213,7 +213,7 @@ export default function KYCPage() {
 								<div className="flex flex-col sm:flex-row justify-between gap-2">
 									<Button variant="outline" className="w-full sm:w-auto rounded-full border-2 border-custom-black" onClick={() => setStep(2)}>Back</Button>
 									<Button
-										className="w-full sm:w-auto rounded-full shadow-brutal-sm"
+										className="w-full sm:w-auto rounded-full btn-shine shadow-brutal-sm"
 										onClick={handleSubmitStep1}
 										disabled={submitMutation.isPending || !bvn || !idNumber}
 									>
@@ -235,7 +235,7 @@ export default function KYCPage() {
 										<div className="text-xs sm:text-sm opacity-90">We'll email you when verification is complete \u2014 usually within 5 minutes.</div>
 									</div>
 								</div>
-								<div className="flex justify-end"><Button className="w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setStep(1)}>Done</Button></div>
+								<div className="flex justify-end"><Button className="w-full sm:w-auto rounded-full btn-shine shadow-brutal-sm" onClick={() => setStep(1)}>Done</Button></div>
 							</div>
 						)}
 					</CardContent>

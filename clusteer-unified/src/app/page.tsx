@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { Logo } from "@/components/brand/logo";
+import { Footer } from "@/components/app/footer";
 import { Button } from "@/components/ui/button";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Num } from "@/components/primitives/num";
@@ -500,52 +501,7 @@ export default function Home() {
 			</section>
 
 			{/* ─── Footer ─── */}
-			<footer className="bg-custom-black text-white py-12 sm:py-16 lg:py-20 px-4 sm:px-8">
-				<div className="max-w-[1280px] mx-auto">
-					<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-10 mb-10 sm:mb-16">
-						<div className="col-span-2 sm:col-span-3 lg:col-span-1">
-							<Logo inverted />
-							<p className="mt-4 sm:mt-5 text-[13px] sm:text-[14px] leading-[1.6] text-white/60 max-w-[280px]">
-								Stablecoins to naira, fast. Built for traders, freelancers, and anyone moving money in and out of Nigeria.
-							</p>
-							<div className="inline-flex items-center gap-2 mt-5 px-3 py-1.5 rounded-full bg-light-green/[0.12] font-mono text-[11px] font-medium text-light-green">
-								<span className="live-dot size-1.5 rounded-full bg-light-green" />
-								All systems operational
-							</div>
-							{/* Socials */}
-							<div className="flex items-center gap-3 mt-6">
-								{[
-									{ label: "X", href: "#", icon: <svg className="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> },
-									{ label: "Instagram", href: "#", icon: <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg> },
-									{ label: "Facebook", href: "#", icon: <svg className="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> },
-									{ label: "LinkedIn", href: "#", icon: <svg className="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> },
-								].map((s) => (
-									<a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label} className="size-9 rounded-full border border-white/20 bg-white/5 inline-flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors">
-										{s.icon}
-									</a>
-								))}
-							</div>
-						</div>
-						{[
-							{ t: "Product", l: [{ label: "Buy stables", href: "/trade" }, { label: "Sell stables", href: "/trade" }, { label: "Swap", href: "/trade" }, { label: "Mobile app", href: "#app" }, { label: "Pricing", href: "#rates" }] },
-							{ t: "Company", l: [{ label: "About", href: "/about" }, { label: "Press", href: "/press" }, { label: "Contact", href: "/contact" }, { label: "Status", href: "/status" }] },
-							{ t: "Resources", l: [{ label: "Help center", href: "/help" }, { label: "Rate alerts", href: "/rate-alerts" }, { label: "Security", href: "#trust" }, { label: "FAQ", href: "/faq" }] },
-							{ t: "Legal", l: [{ label: "Terms", href: "/terms-of-service" }, { label: "Privacy", href: "/privacy-policy" }, { label: "AML/CFT", href: "/aml-cft" }] },
-						].map((c) => (
-							<div key={c.t}>
-								<div className="font-mono text-[11px] font-semibold text-white/40 tracking-[1.5px] mb-4">{c.t.toUpperCase()}</div>
-								<ul className="flex flex-col gap-2.5">
-									{c.l.map((it) => <li key={it.label}>{it.href.startsWith("#") ? <a href={it.href} className="text-sm text-white/75 hover:text-white transition-colors">{it.label}</a> : <Link href={it.href} className="text-sm text-white/75 hover:text-white transition-colors">{it.label}</Link>}</li>)}
-								</ul>
-							</div>
-						))}
-					</div>
-					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 pt-6 sm:pt-7 border-t border-white/10 text-[11px] sm:text-xs text-white/50">
-						<span>© {new Date().getFullYear()} Clusteer. All rights reserved.</span>
-						<span className="font-mono">v3.2.1</span>
-					</div>
-				</div>
-			</footer>
+			<Footer />
 		</div>
 	);
 }

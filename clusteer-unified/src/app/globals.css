@@ -23,6 +23,24 @@
 	--clusteer-green-800: oklch(0.42 0.13 136);
 	--clusteer-green-900: oklch(0.32 0.09 138);
 
+	/* Warm amber accent scale */
+	--clusteer-amber-50: oklch(0.987 0.022 80);
+	--clusteer-amber-100: oklch(0.962 0.042 80);
+	--clusteer-amber-200: oklch(0.925 0.084 80);
+	--clusteer-amber-300: oklch(0.865 0.14 75);
+	--clusteer-amber-400: oklch(0.795 0.175 70);
+	--clusteer-amber-500: oklch(0.735 0.158 75);
+
+	/* Gradient tokens */
+	--gradient-brand: linear-gradient(135deg, oklch(0.82 0.17 120), oklch(0.62 0.2 120));
+	--gradient-dark: linear-gradient(135deg, #21241D, #2E3228);
+	--gradient-warm: linear-gradient(135deg, #F0EBE6, oklch(0.97 0.02 120));
+	--gradient-surface: linear-gradient(180deg, oklch(0.993 0.006 120), oklch(0.985 0.003 120));
+
+	/* Tinted surfaces */
+	--card-tinted: oklch(0.993 0.006 120);
+	--surface-warm: oklch(0.98 0.008 80);
+
 	/* Old Clusteer palette — exact colors */
 	--light-green: hsl(78, 100%, 48%);
 	--medium-green: hsl(78, 100%, 48%);
@@ -137,6 +155,15 @@
 	--color-brand-800: var(--clusteer-green-800);
 	--color-brand-900: var(--clusteer-green-900);
 
+	--color-warm-50: var(--clusteer-amber-50);
+	--color-warm-100: var(--clusteer-amber-100);
+	--color-warm-200: var(--clusteer-amber-200);
+	--color-warm-300: var(--clusteer-amber-300);
+	--color-warm-400: var(--clusteer-amber-400);
+	--color-warm-500: var(--clusteer-amber-500);
+	--color-card-tinted: var(--card-tinted);
+	--color-surface-warm: var(--surface-warm);
+
 	/* Old Clusteer palette utilities */
 	--color-light-green: var(--light-green);
 	--color-medium-green: var(--medium-green);
@@ -193,6 +220,16 @@
 	--border: oklch(1 0 0 / 0.1);
 	--input: oklch(1 0 0 / 0.12);
 	--ring: var(--clusteer-green-400);
+
+	--card-tinted: oklch(0.2 0.01 120);
+	--surface-warm: oklch(0.22 0.008 80);
+
+	--clusteer-amber-50: oklch(0.22 0.02 80);
+	--clusteer-amber-100: oklch(0.28 0.035 80);
+	--clusteer-amber-200: oklch(0.35 0.06 80);
+	--clusteer-amber-300: oklch(0.45 0.09 75);
+	--clusteer-amber-400: oklch(0.58 0.12 70);
+	--clusteer-amber-500: oklch(0.68 0.14 75);
 
 	--sidebar: oklch(0.16 0.015 254);
 	--sidebar-foreground: oklch(0.985 0 0);
@@ -301,3 +338,11 @@
 button {
 	cursor: pointer;
 }
+
+/* Gradient & surface utilities */
+.bg-gradient-brand { background: var(--gradient-brand); }
+.bg-gradient-dark { background: var(--gradient-dark); }
+.bg-gradient-warm { background: var(--gradient-warm); }
+.bg-gradient-surface { background: var(--gradient-surface); }
+.bg-card-tinted { background: var(--card-tinted); }
+.bg-surface-warm { background: var(--surface-warm); }

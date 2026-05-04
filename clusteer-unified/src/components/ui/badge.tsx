@@ -1,5 +1,8 @@
+"use client";
+
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
@@ -23,9 +26,25 @@ const badgeVariants = cva(
 
 export interface BadgeProps
 	extends React.HTMLAttributes<HTMLSpanElement>,
-		VariantProps<typeof badgeVariants> {}
+		VariantProps<typeof badgeVariants> {
+	animated?: boolean;
+}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className, variant, animated, ...props }: BadgeProps) {
+	if (animated) {
+		const { children, ...rest } = props;
+		return (
+			<motion.span
+				initial={{ scale: 0.85, opacity: 0 }}
+				animate={{ scale: 1, opacity: 1 }}
+				transition={{ type: "spring", stiffness: 400, damping: 20 }}
+				className={cn(badgeVariants({ variant }), className)}
+				{...(rest as any)}
+			>
+				{children}
+			</motion.span>
+		);
+	}
 	return <span className={cn(badgeVariants({ variant }), className)} {...props} />;
 }
 

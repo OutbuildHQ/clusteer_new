@@ -10,6 +10,7 @@ const cardVariants = cva(
 				default: "",
 				warm: "bg-warm-beige",
 				brutal: "shadow-brutal-sm",
+				interactive: "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_-5px_rgba(0,0,0,0.08)] cursor-pointer",
 			},
 		},
 		defaultVariants: {

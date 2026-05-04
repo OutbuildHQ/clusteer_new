@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Bell, Eye, Zap, Mail, MessageSquare, SlidersHorizontal, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/brand/logo";
+import { Footer } from "@/components/app/footer";
 
 export default function RateAlertsPage() {
 	return (
@@ -187,6 +188,9 @@ export default function RateAlertsPage() {
 					Rate alerts are free for all verified Clusteer users. You must complete KYC verification to access this feature.
 				</p>
 			</section>
+
+			{/* ─── Footer ─── */}
+			<Footer />
 		</div>
 	);
 }

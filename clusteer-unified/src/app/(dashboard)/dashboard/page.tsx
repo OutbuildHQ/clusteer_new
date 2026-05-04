@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getUserWallet } from "@/lib/api/wallet/queries";
 import { getUserInfo, getAllTransactions } from "@/lib/api/user/queries";
 import { generateAreaSeries } from "@/lib/mock-data";
-import { formatMoney, formatPct, relativeTime } from "@/lib/utils";
+import { generateSparkData } from "@/lib/spark-utils";
+import { formatMoney, relativeTime } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,7 @@ import { Sparkline } from "@/components/primitives/sparkline";
 import { PriceAreaChart } from "@/components/primitives/price-area-chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TableSkeleton } from "@/components/primitives/table-skeleton";
-import { ArrowDownToLine, ArrowUpRight, ArrowLeftRight, Eye, EyeOff, ArrowUpDown, AlertCircle } from "lucide-react";
+import { ArrowDownToLine, ArrowUpRight, ArrowLeftRight, Eye, EyeOff, ArrowUpDown, AlertCircle, TrendingUp, BarChart3, Clock } from "lucide-react";
 
 export default function DashboardPage() {
 	const [hideBalance, setHideBalance] = useState(false);
@@ -42,7 +43,7 @@ export default function DashboardPage() {
 	const transactions = transactionsData?.data ?? [];
 
 	const totalNgn = assets.reduce((s, a) => s + (a.balance ?? 0), 0);
-	const series = generateAreaSeries(30, totalNgn || 1_000);
+	const series = useMemo(() => generateAreaSeries(30, totalNgn || 1_000), [totalNgn]);
 	const topTransactions = transactions.slice(0, 5);
 
 	const firstName = userData?.firstName ?? userData?.username ?? "there";
@@ -60,7 +61,7 @@ export default function DashboardPage() {
 				<div className="flex gap-2">
 					<Button asChild variant="outline" size="sm" className="rounded-full"><Link href="/receive"><ArrowDownToLine className="size-4" /><span className="hidden sm:inline">Receive</span></Link></Button>
 					<Button asChild variant="outline" size="sm" className="rounded-full"><Link href="/send"><ArrowUpRight className="size-4" /><span className="hidden sm:inline">Send</span></Link></Button>
-					<Button asChild size="sm" className="rounded-full shadow-brutal-sm"><Link href="/trade"><ArrowLeftRight className="size-4" /><span className="hidden sm:inline">Trade</span></Link></Button>
+					<Button asChild size="sm" className="rounded-full btn-shine shadow-brutal-sm"><Link href="/trade"><ArrowLeftRight className="size-4" /><span className="hidden sm:inline">Trade</span></Link></Button>
 				</div>
 			</header>
 
@@ -79,6 +80,10 @@ export default function DashboardPage() {
 								)}
 								<div className="mt-1 flex items-center gap-2 text-sm">
 									<span className="text-muted-foreground">Portfolio value</span>
+									{/* TODO: calculate from actual wallet data */}
+									<span className="inline-flex items-center gap-1 text-success text-sm font-mono">
+										<TrendingUp className="size-3.5" />+2.4% (24h)
+									</span>
 								</div>
 							</div>
 						</div>
@@ -109,6 +114,23 @@ export default function DashboardPage() {
 				</Card>
 			</div>
 
+			{/* Quick stats */}
+			{/* TODO: wire to real API data */}
+			<div className="flex flex-wrap gap-2">
+				{[
+					{ icon: BarChart3, label: "24h Volume", value: "₦0" },
+					{ icon: ArrowUpDown, label: "Total Trades", value: "0" },
+					{ icon: Clock, label: "Pending", value: "0" },
+					{ icon: TrendingUp, label: "Avg Rate", value: "₦1,570" },
+				].map((s) => (
+					<div key={s.label} className="inline-flex items-center gap-2 rounded-full border-2 border-custom-black/10 bg-card-tinted px-3 py-1.5 text-xs">
+						<s.icon className="size-3.5 text-muted-foreground" />
+						<span className="text-muted-foreground">{s.label}</span>
+						<span className="font-mono font-semibold tabular-nums">{s.value}</span>
+					</div>
+				))}
+			</div>
+
 			{/* Assets */}
 			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
 				<CardHeader className="flex-row items-center justify-between p-4 sm:p-6 lg:p-8">
@@ -125,11 +147,13 @@ export default function DashboardPage() {
 							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
 						</div>
 					) : assets.length === 0 ? (
-						<div className="py-12 text-center px-4">
-							<ArrowUpDown className="size-10 text-muted-foreground/40 mx-auto mb-3" />
-							<p className="font-display font-bold">No assets yet</p>
-							<p className="text-sm text-muted-foreground mt-1">Your assets will appear here once you start trading.</p>
-							<Button asChild size="sm" className="mt-4 w-full sm:w-auto shadow-brutal-sm"><Link href="/trade">Make your first trade</Link></Button>
+						<div className="py-12 text-center px-4 bg-grid">
+							<div className="size-14 rounded-2xl bg-light-green border-[1.5px] border-custom-black inline-flex items-center justify-center mb-4">
+								<ArrowUpDown className="size-6 text-custom-black" />
+							</div>
+							<p className="font-display font-bold text-lg">Your wallet is waiting</p>
+							<p className="text-sm text-muted-foreground mt-1">Buy your first USDT in under 2 minutes</p>
+							<Button asChild size="sm" className="mt-4 w-full sm:w-auto btn-shine shadow-brutal-sm"><Link href="/trade">Start with ₦5,000</Link></Button>
 						</div>
 					) : (
 						<Table>
@@ -138,6 +162,7 @@ export default function DashboardPage() {
 									<TableHead className="px-3 sm:px-4">Asset</TableHead>
 									<TableHead className="hidden sm:table-cell">Currency</TableHead>
 									<TableHead className="hidden md:table-cell">Type</TableHead>
+									<TableHead className="hidden md:table-cell">7d</TableHead>
 									<TableHead className="text-right px-3 sm:px-4">Balance</TableHead>
 								</TableRow>
 							</TableHeader>
@@ -155,6 +180,9 @@ export default function DashboardPage() {
 										</TableCell>
 										<TableCell className="hidden sm:table-cell"><span className="text-sm font-mono">{a.currency}</span></TableCell>
 										<TableCell className="hidden md:table-cell"><Badge variant="outline" className="capitalize">{a.type}</Badge></TableCell>
+										<TableCell className="hidden md:table-cell">
+											<Sparkline data={generateSparkData(a.currency || a.name)} width={80} height={24} />
+										</TableCell>
 										<TableCell className="text-right px-3 sm:px-4">
 											<Num as="div" className="font-mono tabular-nums text-sm" value={hideBalance ? masked : (a.balance ?? 0).toFixed(2) + " " + a.currency} />
 										</TableCell>
@@ -182,11 +210,13 @@ export default function DashboardPage() {
 							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
 						</div>
 					) : topTransactions.length === 0 ? (
-						<div className="py-12 text-center px-4">
-							<ArrowUpDown className="size-10 text-muted-foreground/40 mx-auto mb-3" />
-							<p className="font-display font-bold">No transactions yet</p>
-							<p className="text-sm text-muted-foreground mt-1">Your transaction history will appear here once you start trading.</p>
-							<Button asChild size="sm" className="mt-4 w-full sm:w-auto shadow-brutal-sm"><Link href="/trade">Make your first trade</Link></Button>
+						<div className="py-12 text-center px-4 bg-grid">
+							<div className="size-14 rounded-2xl bg-light-green border-[1.5px] border-custom-black inline-flex items-center justify-center mb-4">
+								<ArrowUpDown className="size-6 text-custom-black" />
+							</div>
+							<p className="font-display font-bold text-lg">Your first trade is one tap away</p>
+							<p className="text-sm text-muted-foreground mt-1">Buy or sell stablecoins and they'll show up here</p>
+							<Button asChild size="sm" className="mt-4 w-full sm:w-auto btn-shine shadow-brutal-sm"><Link href="/trade">Make your first trade</Link></Button>
 						</div>
 					) : (
 						<Table>
@@ -202,7 +232,13 @@ export default function DashboardPage() {
 								{topTransactions.map((t) => (
 									<TableRow key={t.id}>
 										<TableCell className="px-3 sm:px-4">
-											<div className="font-medium capitalize text-sm">{t.type} <span className="text-muted-foreground hidden sm:inline">· {t.orderNumber ?? t.id}</span></div>
+											<div className="flex items-center gap-2 font-medium capitalize text-sm">
+												<span className={`size-2 rounded-full shrink-0 ${
+													t.type === "deposit" || t.type === "buy" ? "bg-success" :
+													t.type === "withdrawal" || t.type === "sell" ? "bg-danger" : "bg-info"
+												}`} />
+												{t.type} <span className="text-muted-foreground hidden sm:inline">· {t.orderNumber ?? t.id}</span>
+											</div>
 											{t.description && <div className="text-xs text-muted-foreground truncate max-w-[140px] sm:max-w-none">{t.description}</div>}
 										</TableCell>
 										<TableCell className="px-3 sm:px-4">

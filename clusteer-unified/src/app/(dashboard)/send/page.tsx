@@ -321,7 +321,7 @@ export default function SendPage() {
 								<div className="flex justify-between font-medium"><span>You'll send</span><Num className="font-mono tabular-nums" value={total.toFixed(4) + " " + asset} /></div>
 							</div>
 
-							<Button onClick={submit} size="lg" className="w-full rounded-full shadow-brutal-sm" disabled={verifyingRecipient}>{verifyingRecipient ? <Loader2 className="size-4 animate-spin" /> : <>Continue <ArrowRight className="size-4" /></>}</Button>
+							<Button onClick={submit} size="lg" className="w-full rounded-full btn-shine shadow-brutal-sm" disabled={verifyingRecipient}>{verifyingRecipient ? <Loader2 className="size-4 animate-spin" /> : <>Continue <ArrowRight className="size-4" /></>}</Button>
 						</>
 					)}
 
@@ -347,7 +347,7 @@ export default function SendPage() {
 							</div>
 							<div className="flex gap-2">
 								<Button variant="outline" className="flex-1 rounded-full border-2 border-custom-black" onClick={() => setStep("form")}>Back</Button>
-								<Button className="flex-1 rounded-full shadow-brutal-sm" onClick={confirm}>Confirm & authorize</Button>
+								<Button className="flex-1 rounded-full btn-shine shadow-brutal-sm" onClick={confirm}>Confirm & authorize</Button>
 							</div>
 						</div>
 					)}
@@ -363,7 +363,7 @@ export default function SendPage() {
 							<Input className="font-mono text-center text-lg sm:text-xl lg:text-2xl tracking-widest rounded-[14px] border-2 border-custom-black" maxLength={6} placeholder="000000" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))} />
 							<div className="flex gap-2">
 								<Button variant="outline" className="flex-1 rounded-full border-2 border-custom-black" onClick={() => setStep("review")} disabled={submitting}>Back</Button>
-								<Button className="flex-1 rounded-full shadow-brutal-sm" onClick={authorize} disabled={submitting}>
+								<Button className="flex-1 rounded-full btn-shine shadow-brutal-sm" onClick={authorize} disabled={submitting}>
 									{submitting ? <Loader2 className="size-4 animate-spin" /> : "Authorize"}
 								</Button>
 							</div>
@@ -402,7 +402,7 @@ function DoneDialog({ open, onClose, amount, asset, chain }: { open: boolean; on
 					<div className="mt-1 flex items-center justify-between"><span className="text-muted-foreground">Status</span><span className="text-warning">Broadcasting…</span></div>
 				</div>
 				<DialogFooter>
-					<Button className="rounded-full shadow-brutal-sm" onClick={onClose}>Done</Button>
+					<Button className="rounded-full btn-shine shadow-brutal-sm" onClick={onClose}>Done</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

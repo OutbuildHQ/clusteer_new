@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Logo } from "@/components/brand/logo";
+import { Footer } from "@/components/app/footer";
 import {
 	ArrowLeft,
 	ArrowRight,
@@ -255,27 +256,7 @@ export default function HelpCenter() {
 			</section>
 
 			{/* ─── Footer ─── */}
-			<footer className="bg-custom-black text-white py-10 sm:py-14 px-4 sm:px-8 mt-8 sm:mt-12">
-				<div className="max-w-[1280px] mx-auto">
-					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-						<div>
-							<Logo inverted />
-							<p className="mt-3 text-[13px] text-white/60 max-w-[320px]">
-								Stablecoins to naira, fast. Built for traders, freelancers, and anyone moving money in and out of Nigeria.
-							</p>
-						</div>
-						<div className="flex flex-wrap gap-4 text-sm text-white/60">
-							<Link href="/" className="hover:text-white transition-colors">Home</Link>
-							<Link href="/faq" className="hover:text-white transition-colors">FAQ</Link>
-							<Link href="/terms-of-service" className="hover:text-white transition-colors">Terms</Link>
-							<Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy</Link>
-						</div>
-					</div>
-					<div className="mt-8 pt-6 border-t border-white/10 text-[11px] sm:text-xs text-white/50">
-						© {new Date().getFullYear()} Clusteer. All rights reserved.
-					</div>
-				</div>
-			</footer>
+			<Footer />
 		</div>
 	);
 }

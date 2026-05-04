@@ -11,6 +11,8 @@ import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Num } from "@/components/primitives/num";
 import { Badge } from "@/components/ui/badge";
 import { TableSkeleton } from "@/components/primitives/table-skeleton";
+import { Sparkline } from "@/components/primitives/sparkline";
+import { generateSparkData } from "@/lib/spark-utils";
 import { Wallet, AlertCircle } from "lucide-react";
 
 export default function AssetsPage() {
@@ -39,11 +41,13 @@ export default function AssetsPage() {
 							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
 						</div>
 					) : assets.length === 0 ? (
-						<div className="py-12 text-center px-4">
-							<Wallet className="size-10 text-muted-foreground/40 mx-auto mb-3" />
-							<p className="font-display font-bold">No assets available</p>
-							<p className="text-sm text-muted-foreground mt-1">Supported assets will appear here once they are configured.</p>
-							<Button asChild size="sm" className="mt-4 w-full sm:w-auto shadow-brutal-sm"><Link href="/trade">Start trading</Link></Button>
+						<div className="py-12 text-center px-4 bg-grid">
+							<div className="size-14 rounded-2xl bg-light-green border-[1.5px] border-custom-black inline-flex items-center justify-center mb-4">
+								<Wallet className="size-6 text-custom-black" />
+							</div>
+							<p className="font-display font-bold text-lg">Your wallet is waiting</p>
+							<p className="text-sm text-muted-foreground mt-1">Supported assets will appear once you start trading</p>
+							<Button asChild size="sm" className="mt-4 w-full sm:w-auto btn-shine shadow-brutal-sm"><Link href="/trade">Start trading</Link></Button>
 						</div>
 					) : (
 					<Table>
@@ -52,6 +56,7 @@ export default function AssetsPage() {
 								<TableHead className="px-3 sm:px-4">Asset</TableHead>
 								<TableHead className="hidden sm:table-cell">Type</TableHead>
 								<TableHead className="hidden md:table-cell">Address</TableHead>
+								<TableHead className="hidden md:table-cell">7d</TableHead>
 								<TableHead className="text-right px-3 sm:px-4">Balance</TableHead>
 							</TableRow>
 						</TableHeader>
@@ -72,6 +77,9 @@ export default function AssetsPage() {
 										<code className="font-mono tabular-nums text-xs text-muted-foreground truncate max-w-[160px] block">
 											{a.address || "\u2014"}
 										</code>
+									</TableCell>
+									<TableCell className="hidden md:table-cell">
+										<Sparkline data={generateSparkData(a.currency || a.name)} width={80} height={24} />
 									</TableCell>
 									<TableCell className="text-right px-3 sm:px-4">
 										<Num as="div" className="font-mono tabular-nums text-sm" value={(a.balance ?? 0).toFixed(2) + " " + a.currency} />

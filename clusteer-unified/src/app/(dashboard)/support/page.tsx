@@ -144,7 +144,7 @@ export default function SupportPage() {
 					<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">How can we help?</h1>
 					<p className="mt-1 text-xs sm:text-sm text-muted-foreground">Search our guides, or get in touch 24/7.</p>
 				</div>
-				<Button size="sm" className="w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setShowNewTicket(true)}>
+				<Button size="sm" className="w-full sm:w-auto rounded-full btn-shine shadow-brutal-sm" onClick={() => setShowNewTicket(true)}>
 					<Plus className="size-4" /> New ticket
 				</Button>
 			</div>
@@ -189,11 +189,13 @@ export default function SupportPage() {
 							<p className="text-sm text-muted-foreground mt-2">Loading tickets...</p>
 						</div>
 					) : tickets.length === 0 ? (
-						<div className="py-12 text-center px-4">
-							<MessageCircle className="size-10 text-muted-foreground/40 mx-auto mb-3" />
-							<p className="font-display font-bold">No tickets yet</p>
-							<p className="text-sm text-muted-foreground mt-1">Submit a ticket when you need help.</p>
-							<Button size="sm" className="mt-4 w-full sm:w-auto rounded-full shadow-brutal-sm" onClick={() => setShowNewTicket(true)}>Create your first ticket</Button>
+						<div className="py-12 text-center px-4 bg-grid">
+							<div className="size-14 rounded-2xl bg-light-green border-[1.5px] border-custom-black inline-flex items-center justify-center mb-4">
+								<MessageCircle className="size-6 text-custom-black" />
+							</div>
+							<p className="font-display font-bold text-lg">No tickets — that's a good sign!</p>
+							<p className="text-sm text-muted-foreground mt-1">If you need help, we're just a message away</p>
+							<Button size="sm" className="mt-4 w-full sm:w-auto rounded-full btn-shine shadow-brutal-sm" onClick={() => setShowNewTicket(true)}>Create your first ticket</Button>
 						</div>
 					) : (
 						<div className="divide-y divide-border">
@@ -319,7 +321,7 @@ export default function SupportPage() {
 							/>
 						</div>
 						<div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
-							<Button className="flex-1 rounded-full shadow-brutal-sm" onClick={submitTicket} disabled={createTicketMutation.isPending}>
+							<Button className="flex-1 rounded-full btn-shine shadow-brutal-sm" onClick={submitTicket} disabled={createTicketMutation.isPending}>
 								{createTicketMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : null}
 								Submit ticket
 							</Button>

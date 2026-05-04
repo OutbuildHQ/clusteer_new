@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "motion/react";
 import { getAllTransactions } from "@/lib/api/user/queries";
 import { formatMoney, relativeTime } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +16,9 @@ import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Num } from "@/components/primitives/num";
 import { TableSkeleton } from "@/components/primitives/table-skeleton";
 import { Search, Download, ArrowUpDown, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.03 } } };
+const fadeIn = { hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0, transition: { duration: 0.2 } } };
 
 export default function TransactionsPage() {
 	const [q, setQ] = useState("");
@@ -99,9 +103,9 @@ export default function TransactionsPage() {
 										<TableHead className="hidden md:table-cell text-right">When</TableHead>
 									</TableRow>
 								</TableHeader>
-								<TableBody>
+								<motion.tbody variants={stagger} initial="hidden" animate="visible">
 									{rows.map((o) => (
-										<TableRow key={o.id}>
+										<motion.tr key={o.id} variants={fadeIn} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
 											<TableCell className="hidden md:table-cell"><code className="font-mono text-xs text-muted-foreground tabular-nums">{o.orderNumber ?? o.id}</code></TableCell>
 											<TableCell className="px-3 sm:px-4"><span className="capitalize font-medium text-sm">{o.type}</span></TableCell>
 											<TableCell className="hidden sm:table-cell">
@@ -117,9 +121,9 @@ export default function TransactionsPage() {
 												<Badge variant={o.status === "completed" ? "success" : o.status === "failed" ? "danger" : "warning"} className="capitalize">{o.status}</Badge>
 											</TableCell>
 											<TableCell className="hidden md:table-cell text-right text-sm text-muted-foreground">{relativeTime(o.dateCreated ?? o.date)}</TableCell>
-										</TableRow>
+										</motion.tr>
 									))}
-								</TableBody>
+								</motion.tbody>
 							</Table>
 							{rows.length === 0 && (
 								<div className="py-12 text-center px-4">
@@ -130,7 +134,7 @@ export default function TransactionsPage() {
 											? "No transactions match your current filters. Try adjusting your search."
 											: "Your transaction history will appear here once you start trading."}
 									</p>
-									<Button asChild size="sm" className="mt-4 w-full sm:w-auto shadow-brutal-sm">
+									<Button asChild size="sm" className="mt-4 w-full sm:w-auto btn-shine shadow-brutal-sm">
 										<Link href="/trade">Make your first trade</Link>
 									</Button>
 								</div>

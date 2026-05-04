@@ -1,6 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/app/footer";
 
 export default function AmlCftPolicyPage() {
 	return (
@@ -168,6 +169,9 @@ export default function AmlCftPolicyPage() {
 					</section>
 				</div>
 			</div>
+
+			{/* ─── Footer ─── */}
+			<Footer />
 		</div>
 	);
 }

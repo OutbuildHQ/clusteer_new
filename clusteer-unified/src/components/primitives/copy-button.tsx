@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Check, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -33,7 +34,17 @@ export function CopyButton({
 				className,
 			)}
 		>
-			{copied ? <Check className="size-3.5 text-success" /> : <Copy className="size-3.5" />}
+			<AnimatePresence mode="wait">
+				{copied ? (
+					<motion.span key="check" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ type: "spring", stiffness: 500, damping: 25 }}>
+						<Check className="size-3.5 text-success" />
+					</motion.span>
+				) : (
+					<motion.span key="copy" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }}>
+						<Copy className="size-3.5" />
+					</motion.span>
+				)}
+			</AnimatePresence>
 			<span>{copied ? "Copied" : "Copy"}</span>
 		</button>
 	);

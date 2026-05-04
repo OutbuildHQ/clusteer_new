@@ -1,6 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/app/footer";
 
 export default function PrivacyPolicyPage() {
 	return (
@@ -203,10 +204,10 @@ export default function PrivacyPolicyPage() {
 					</section>
 				</div>
 
-				<footer className="mt-16 pt-8 border-t border-border text-center text-muted-foreground">
-					<p>&copy; {new Date().getFullYear()} Clusteer. All rights reserved.</p>
-				</footer>
-			</div>
+				</div>
+
+			{/* ─── Footer ─── */}
+			<Footer />
 		</div>
 	);
 }
