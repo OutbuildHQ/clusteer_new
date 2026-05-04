@@ -143,7 +143,6 @@ export async function middleware(request: NextRequest) {
 		"/wallet",
 		"/settings",
 		"/billing",
-		"/help",
 		"/support",
 		"/notifications",
 		"/bank-accounts",

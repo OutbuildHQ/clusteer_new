@@ -37,13 +37,13 @@ export default function ResetPasswordPage() {
 
 	return (
 		<div>
-			<h1 className="font-display text-3xl font-bold tracking-tight">Set a new password</h1>
+			<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Set a new password</h1>
 			<p className="mt-1 text-sm text-muted-foreground">Choose something strong and unique.</p>
-			<form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-3">
+			<form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 space-y-4">
 				<div className="space-y-1.5">
 					<Label htmlFor="password">New password <span className="text-danger">*</span></Label>
 					<div className="relative">
-						<Input id="password" type={showPassword ? "text" : "password"} {...register("password")} />
+						<Input id="password" type={showPassword ? "text" : "password"} className="min-h-[48px]" {...register("password")} />
 						<button type="button" tabIndex={-1} onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground hover:text-foreground">
 							{showPassword ? "Hide" : "Show"}
 						</button>
@@ -55,7 +55,7 @@ export default function ResetPasswordPage() {
 				<div className="space-y-1.5">
 					<Label htmlFor="confirm">Confirm password <span className="text-danger">*</span></Label>
 					<div className="relative">
-						<Input id="confirm" type={showConfirm ? "text" : "password"} {...register("confirm")} />
+						<Input id="confirm" type={showConfirm ? "text" : "password"} className="min-h-[48px]" {...register("confirm")} />
 						<button type="button" tabIndex={-1} onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground hover:text-foreground">
 							{showConfirm ? "Hide" : "Show"}
 						</button>
@@ -64,12 +64,12 @@ export default function ResetPasswordPage() {
 						{errors.confirm && <p className="text-xs text-danger">{errors.confirm.message}</p>}
 					</div>
 				</div>
-				<Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold shadow-brutal-sm" disabled={isSubmitting}>
 					{isSubmitting ? "Saving…" : "Update password"}
 				</Button>
 			</form>
 			<div className="mt-6 text-center text-sm text-muted-foreground">
-				<Link href="/login" className="hover:text-foreground">Back to login</Link>
+				<Link href="/login" className="hover:text-foreground inline-flex items-center min-h-[44px]">Back to login</Link>
 			</div>
 		</div>
 	);

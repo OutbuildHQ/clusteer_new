@@ -27,7 +27,7 @@ export default function VerifyEmailPage() {
 			<div className="flex size-12 items-center justify-center rounded-full bg-brand-50 text-brand-700">
 				<MailCheck className="size-5" />
 			</div>
-			<h1 className="mt-5 font-display text-3xl font-bold tracking-tight">Verify your email</h1>
+			<h1 className="mt-5 font-display text-2xl sm:text-3xl font-bold tracking-tight">Verify your email</h1>
 			<p className="mt-1 text-sm text-muted-foreground">
 				We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>.
 			</p>
@@ -38,11 +38,11 @@ export default function VerifyEmailPage() {
 					</InputOTPGroup>
 				</InputOTP>
 			</div>
-			<Button size="lg" className="mt-6 w-full" disabled={code.length !== 6} onClick={submit}>
+			<Button size="lg" className="mt-6 w-full min-h-[52px] text-[15px] font-bold shadow-brutal-sm" disabled={code.length !== 6} onClick={submit}>
 				Verify email
 			</Button>
 			<div className="mt-6 text-center text-sm text-muted-foreground">
-				<Link href="/login" className="hover:text-foreground">Back to login</Link>
+				<Link href="/login" className="hover:text-foreground inline-flex items-center min-h-[44px]">Back to login</Link>
 			</div>
 		</div>
 	);

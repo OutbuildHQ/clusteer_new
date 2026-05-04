@@ -26,7 +26,7 @@ function VerifyOtpContent() {
 
 	return (
 		<div>
-			<h1 className="font-display text-3xl font-bold tracking-tight">Enter your code</h1>
+			<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Enter your code</h1>
 			<p className="mt-1 text-sm text-muted-foreground">
 				We sent a 6-digit code to <span className="font-medium text-foreground">{email ?? "your email"}</span>.
 			</p>
@@ -37,17 +37,17 @@ function VerifyOtpContent() {
 					</InputOTPGroup>
 				</InputOTP>
 			</div>
-			<Button size="lg" className="mt-6 w-full" disabled={code.length !== 6} onClick={submit}>
+			<Button size="lg" className="mt-6 w-full min-h-[52px] text-[15px] font-bold shadow-brutal-sm" disabled={code.length !== 6} onClick={submit}>
 				Verify
 			</Button>
 			<div className="mt-6 text-center text-sm text-muted-foreground">
 				Didn&apos;t receive a code?{" "}
-				<button className="font-medium text-primary hover:underline" onClick={() => toast.success("Code resent")}>
+				<button className="font-medium text-primary hover:underline min-h-[44px] inline-flex items-center" onClick={() => toast.success("Code resent")}>
 					Resend
 				</button>
 			</div>
 			<div className="mt-3 text-center">
-				<Link href="/login" className="text-xs text-muted-foreground hover:text-foreground">Back to login</Link>
+				<Link href="/login" className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center min-h-[44px]">Back to login</Link>
 			</div>
 		</div>
 	);

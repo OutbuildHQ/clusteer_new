@@ -81,6 +81,7 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<body
 				className={`${inter.variable} ${sora.variable} ${jetbrains.variable} antialiased min-h-screen`}
+				suppressHydrationWarning
 			>
 				<ThemeProvider>
 					<ReactQueryClientProvider>{children}</ReactQueryClientProvider>
