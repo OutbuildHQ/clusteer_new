@@ -92,7 +92,7 @@ export default function SignupPage() {
 				</label>
 				{errors.terms && <p className="text-xs text-danger">{errors.terms.message}</p>}
 
-				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold shadow-brutal-sm" disabled={isSubmitting}>
+				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold btn-shine shadow-brutal-sm" disabled={isSubmitting}>
 					{isSubmitting ? "Creating\u2026" : "Create account"}
 				</Button>
 			</form>

@@ -88,7 +88,7 @@ export default function LoginPage() {
 					<Checkbox {...register("remember")} defaultChecked /> Keep me logged in
 				</label>
 
-				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold shadow-brutal-sm" disabled={isSubmitting}>
+				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold btn-shine shadow-brutal-sm" disabled={isSubmitting}>
 					{isSubmitting ? "Signing in\u2026" : "Continue"}
 				</Button>
 			</form>

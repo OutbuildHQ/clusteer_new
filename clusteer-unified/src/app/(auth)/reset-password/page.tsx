@@ -64,7 +64,7 @@ export default function ResetPasswordPage() {
 						{errors.confirm && <p className="text-xs text-danger">{errors.confirm.message}</p>}
 					</div>
 				</div>
-				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold shadow-brutal-sm" disabled={isSubmitting}>
+				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold btn-shine shadow-brutal-sm" disabled={isSubmitting}>
 					{isSubmitting ? "Saving…" : "Update password"}
 				</Button>
 			</form>

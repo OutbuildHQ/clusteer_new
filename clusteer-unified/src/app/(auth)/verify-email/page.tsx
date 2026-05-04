@@ -38,7 +38,7 @@ export default function VerifyEmailPage() {
 					</InputOTPGroup>
 				</InputOTP>
 			</div>
-			<Button size="lg" className="mt-6 w-full min-h-[52px] text-[15px] font-bold shadow-brutal-sm" disabled={code.length !== 6} onClick={submit}>
+			<Button size="lg" className="mt-6 w-full min-h-[52px] text-[15px] font-bold btn-shine shadow-brutal-sm" disabled={code.length !== 6} onClick={submit}>
 				Verify email
 			</Button>
 			<div className="mt-6 text-center text-sm text-muted-foreground">
