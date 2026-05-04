@@ -146,18 +146,19 @@ export default function TradePage() {
 
 	return (
 		<div className="max-w-2xl mx-auto">
-			<h1 className="font-display text-2xl font-bold tracking-tight mb-6">Buy & Sell Stablecoins</h1>
-			<Card>
-				<CardHeader>
+			<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-1">&#9670; Exchange</p>
+			<h1 className="font-display text-2xl font-bold tracking-[-0.02em] mb-6">Buy & Sell Stablecoins</h1>
+			<Card className="border-2 border-custom-black rounded-[20px]">
+				<CardHeader className="p-6 sm:p-8">
 					<Tabs value={mode} onValueChange={(v) => { setMode(v as "buy" | "sell"); setShowConfirm(false); }}>
-						<TabsList className="grid w-full grid-cols-2">
-							<TabsTrigger value="buy">Buy with Naira</TabsTrigger>
-							<TabsTrigger value="sell">Sell to Naira</TabsTrigger>
+						<TabsList className="grid w-full grid-cols-2 border-2 border-custom-black rounded-[14px] p-1 bg-warm-beige/40">
+							<TabsTrigger value="buy" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Buy with Naira</TabsTrigger>
+							<TabsTrigger value="sell" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Sell to Naira</TabsTrigger>
 						</TabsList>
 					</Tabs>
 				</CardHeader>
 
-				<CardContent className="space-y-3">
+				<CardContent className="space-y-3 px-6 sm:px-8 pb-6 sm:pb-8">
 					{!showConfirm ? (
 						<>
 							{mode === "buy" && (
@@ -202,31 +203,31 @@ export default function TradePage() {
 									/>
 								</>
 							)}
-							<div className="rounded-lg bg-muted/50 p-3 text-xs space-y-1.5">
-								<div className="flex justify-between"><span className="text-muted-foreground">Rate</span><Num value={`1 ${asset} = ${formatMoney(rate, "NGN", { decimals: 0 })}`} /></div>
-								<div className="flex justify-between"><span className="text-muted-foreground">Fee (0.75%)</span><Num value={formatMoney(feeAmt, "NGN", { decimals: 0 })} /></div>
-								<div className="flex justify-between font-medium border-t border-border pt-1.5 mt-1.5">
+							<div className="rounded-[14px] bg-warm-beige p-4 text-xs space-y-1.5">
+								<div className="flex justify-between"><span className="text-muted-foreground">Rate</span><Num className="font-mono tabular-nums" value={`1 ${asset} = ${formatMoney(rate, "NGN", { decimals: 0 })}`} /></div>
+								<div className="flex justify-between"><span className="text-muted-foreground">Fee (0.75%)</span><Num className="font-mono tabular-nums" value={formatMoney(feeAmt, "NGN", { decimals: 0 })} /></div>
+								<div className="flex justify-between font-medium border-t border-custom-black/10 pt-1.5 mt-1.5">
 									<span>You&#39;ll receive</span>
-									<Num value={mode === "buy" ? youGet.toFixed(2) + " " + asset : formatMoney(youPay, "NGN", { decimals: 0 })} />
+									<Num className="font-mono tabular-nums" value={mode === "buy" ? youGet.toFixed(2) + " " + asset : formatMoney(youPay, "NGN", { decimals: 0 })} />
 								</div>
 							</div>
 
-							<Button size="lg" className="w-full" onClick={handleSubmitClick}>
+							<Button size="lg" className="w-full rounded-full shadow-brutal-sm" onClick={handleSubmitClick}>
 								{mode === "buy" ? "Buy " + asset : "Sell " + asset}
 							</Button>
-							<p className="text-center text-xs text-muted-foreground inline-flex items-center justify-center gap-1.5 w-full">
+							<p className="text-center text-xs text-muted-foreground inline-flex items-center justify-center gap-1.5 w-full font-mono">
 								<Clock className="size-3" />
 								Rate refreshes in {countdown}s
 							</p>
 						</>
 					) : (
 						<div className="space-y-4">
-							<div className="rounded-xl border border-border bg-muted/30 p-4 space-y-3">
-								<h3 className="font-semibold text-sm">Order summary</h3>
+							<div className="rounded-[14px] border-2 border-custom-black bg-warm-beige p-4 space-y-3">
+								<h3 className="font-display font-bold text-sm">Order summary</h3>
 								<div className="space-y-2 text-sm">
 									<div className="flex justify-between">
 										<span className="text-muted-foreground">You {mode === "buy" ? "pay" : "sell"}</span>
-										<span className="font-medium">
+										<span className="font-mono font-medium tabular-nums">
 											{mode === "buy"
 												? formatMoney(amtNum, "NGN", { decimals: 0 })
 												: amtNum.toFixed(amtNum > 1 ? 4 : 6) + " " + asset}
@@ -235,40 +236,40 @@ export default function TradePage() {
 									<div className="flex justify-center"><ArrowDown className="size-4 text-muted-foreground" /></div>
 									<div className="flex justify-between">
 										<span className="text-muted-foreground">You receive</span>
-										<span className="font-medium">
+										<span className="font-mono font-medium tabular-nums">
 											{mode === "buy"
 												? youGet.toFixed(youGet > 1 ? 4 : 8) + " " + asset
 												: formatMoney(youPay, "NGN", { decimals: 0 })}
 										</span>
 									</div>
 								</div>
-								<div className="border-t border-border pt-3 space-y-1.5 text-xs">
+								<div className="border-t border-custom-black/10 pt-3 space-y-1.5 text-xs">
 									<div className="flex justify-between">
 										<span className="text-muted-foreground">Exchange rate</span>
-										<span>1 {asset} = {formatMoney(rate, "NGN", { decimals: 0 })}</span>
+										<span className="font-mono tabular-nums">1 {asset} = {formatMoney(rate, "NGN", { decimals: 0 })}</span>
 									</div>
 									<div className="flex justify-between">
 										<span className="text-muted-foreground">Fee (0.75%)</span>
-										<span>{formatMoney(feeAmt, "NGN", { decimals: 0 })}</span>
+										<span className="font-mono tabular-nums">{formatMoney(feeAmt, "NGN", { decimals: 0 })}</span>
 									</div>
 								</div>
 							</div>
 
-							<div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-xs text-amber-600 dark:text-amber-400">
+							<div className="flex items-center gap-2 rounded-[14px] bg-amber-500/10 border-2 border-amber-500/20 px-3 py-2 text-xs text-amber-600 dark:text-amber-400">
 								<AlertTriangle className="size-3.5 shrink-0" />
 								<span>Quote refreshes every 10s. Final rate is locked on confirmation.</span>
 							</div>
 
-							<p className="text-center text-xs text-muted-foreground inline-flex items-center justify-center gap-1.5 w-full">
+							<p className="text-center text-xs text-muted-foreground inline-flex items-center justify-center gap-1.5 w-full font-mono">
 								<Clock className="size-3" />
 								Rate refreshes in {countdown}s
 							</p>
 
 							<div className="flex gap-3">
-								<Button variant="outline" size="lg" className="flex-1" onClick={cancelConfirm} disabled={submitting}>
+								<Button variant="outline" size="lg" className="flex-1 rounded-full border-2 border-custom-black" onClick={cancelConfirm} disabled={submitting}>
 									Cancel
 								</Button>
-								<Button size="lg" className="flex-1" onClick={confirmOrder} disabled={submitting}>
+								<Button size="lg" className="flex-1 rounded-full shadow-brutal-sm" onClick={confirmOrder} disabled={submitting}>
 									{submitting ? <Loader2 className="size-4 animate-spin" /> : "Confirm order"}
 								</Button>
 							</div>
@@ -282,23 +283,23 @@ export default function TradePage() {
 
 function InputPanel({ label, amount, onAmount, readOnly, asset, helper, unit }: { label: string; amount: string; onAmount?: (v: string) => void; readOnly?: boolean; asset: React.ReactNode; helper?: string; unit: string }) {
 	return (
-		<div className="rounded-xl border border-border bg-background p-4">
+		<div className="rounded-[14px] border-2 border-custom-black/20 bg-[#EFFCD0]/30 p-4">
 			<div className="flex items-center justify-between">
-				<span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{label}</span>
+				<span className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">{label}</span>
 				{helper && <span className="text-xs text-muted-foreground">{helper}</span>}
 			</div>
 			<div className="mt-2 flex items-center gap-3">
 				<input
 					inputMode="decimal"
 					readOnly={readOnly}
-					className="mono flex-1 bg-transparent outline-none text-2xl sm:text-3xl font-semibold tabular-nums placeholder:text-muted-foreground/40"
+					className="font-mono flex-1 bg-transparent outline-none text-2xl sm:text-3xl font-semibold tabular-nums placeholder:text-muted-foreground/40"
 					placeholder="0"
 					value={amount}
 					onChange={(e) => onAmount?.(e.target.value)}
 				/>
 				<div>{asset}</div>
 			</div>
-			<div className="mt-1 text-xs text-muted-foreground">{unit}</div>
+			<div className="mt-1 text-xs text-muted-foreground font-mono">{unit}</div>
 		</div>
 	);
 }
@@ -306,8 +307,8 @@ function InputPanel({ label, amount, onAmount, readOnly, asset, helper, unit }: 
 function ArrowDivider() {
 	return (
 		<div className="flex justify-center -my-1">
-			<div className="z-10 rounded-full border border-border bg-background p-1.5 shadow-sm">
-				<ArrowDown className="size-4 text-muted-foreground" />
+			<div className="z-10 rounded-full border-2 border-custom-black bg-white p-1.5 shadow-brutal-sm">
+				<ArrowDown className="size-4 text-custom-black" />
 			</div>
 		</div>
 	);
@@ -315,7 +316,7 @@ function ArrowDivider() {
 
 function FiatPill() {
 	return (
-		<div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1.5 text-sm font-medium">
+		<div className="inline-flex items-center gap-2 rounded-full border-2 border-custom-black bg-warm-beige px-3 py-1.5 text-sm font-medium">
 			<AssetLogo symbol="NGN" size="sm" />
 			{FIAT.symbol}
 		</div>
@@ -330,7 +331,7 @@ function AssetSelect({ value, onChange, assets }: { value: string; onChange: (v:
 	];
 	return (
 		<Select value={value} onValueChange={onChange}>
-			<SelectTrigger className="h-9 w-auto gap-2 rounded-full border-border bg-muted px-3 text-sm font-medium">
+			<SelectTrigger className="h-9 w-auto gap-2 rounded-full border-2 border-custom-black bg-warm-beige px-3 text-sm font-medium">
 				<span className="inline-flex items-center gap-2"><AssetLogo symbol={value} size="sm" />{value}</span>
 			</SelectTrigger>
 			<SelectContent>

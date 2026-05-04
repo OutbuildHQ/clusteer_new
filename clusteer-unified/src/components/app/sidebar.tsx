@@ -47,11 +47,13 @@ export function Sidebar() {
 		router.push("/login");
 	}
 	return (
-		<aside className="hidden lg:flex lg:w-[260px] xl:w-[280px] shrink-0 flex-col border-r border-border bg-sidebar">
-			<div className="px-5 py-5">
+		<aside className="hidden lg:flex lg:w-[260px] xl:w-[280px] shrink-0 flex-col border-r-2 border-custom-black bg-background">
+			<div className="px-5 pt-6 pb-5">
 				<Link href="/dashboard"><Logo /></Link>
 			</div>
-			<nav className="flex-1 px-3 pb-4">
+			<div className="mx-5 h-[2px] bg-custom-black/10" />
+			<nav className="flex-1 px-3 pt-4 pb-4">
+				<p className="px-3 pb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">Menu</p>
 				<ul className="space-y-0.5">
 					{LINKS.map((l) => {
 						const active = pathname === l.href || pathname.startsWith(l.href + "/");
@@ -60,10 +62,10 @@ export function Sidebar() {
 								<Link
 									href={l.href}
 									className={cn(
-										"flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all min-h-[44px]",
+										"flex items-center gap-3 rounded-full px-3 py-2.5 text-sm font-medium transition-all min-h-[44px]",
 										active
-											? "bg-custom-black text-light-green shadow-sm"
-											: "text-sidebar-foreground hover:bg-muted",
+											? "bg-custom-black text-light-green shadow-brutal-sm"
+											: "text-foreground hover:bg-warm-beige",
 									)}
 								>
 									<l.icon className="size-[18px] shrink-0" />
@@ -73,7 +75,8 @@ export function Sidebar() {
 						);
 					})}
 				</ul>
-				<div className="my-3 h-px bg-sidebar-border" />
+				<div className="my-4 mx-2 h-[2px] bg-custom-black/10" />
+				<p className="px-3 pb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">Other</p>
 				<ul className="space-y-0.5">
 					{SECONDARY.map((l) => {
 						const active = pathname.startsWith(l.href);
@@ -82,10 +85,10 @@ export function Sidebar() {
 								<Link
 									href={l.href}
 									className={cn(
-										"flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all min-h-[44px]",
+										"flex items-center gap-3 rounded-full px-3 py-2.5 text-sm font-medium transition-all min-h-[44px]",
 										active
-											? "bg-sidebar-accent text-sidebar-accent-foreground"
-											: "text-sidebar-foreground hover:bg-muted",
+											? "bg-custom-black text-light-green shadow-brutal-sm"
+											: "text-foreground hover:bg-warm-beige",
 									)}
 								>
 									<l.icon className="size-[18px] shrink-0" />
@@ -96,10 +99,10 @@ export function Sidebar() {
 					})}
 				</ul>
 			</nav>
-			<div className="border-t border-sidebar-border p-3">
-				<div className="flex items-center gap-3 rounded-lg px-2 py-2">
-					<Avatar className="size-9">
-						<AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+			<div className="border-t-2 border-custom-black/10 p-3">
+				<div className="flex items-center gap-3 rounded-2xl bg-warm-beige/60 px-3 py-2.5">
+					<Avatar className="size-9 border-2 border-custom-black">
+						<AvatarFallback className="bg-custom-black text-light-green text-sm font-semibold">
 							{CURRENT_USER.firstName[0]}
 						</AvatarFallback>
 					</Avatar>
@@ -110,7 +113,7 @@ export function Sidebar() {
 							<span className="truncate text-xs text-muted-foreground">{CURRENT_USER.email}</span>
 						</div>
 					</div>
-					<button onClick={handleSignOut} className="rounded-md p-1.5 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground" title="Sign out">
+					<button onClick={handleSignOut} className="rounded-full border-2 border-custom-black p-1.5 text-muted-foreground hover:bg-custom-black hover:text-light-green transition-colors" title="Sign out">
 						<LogOut className="size-4" />
 					</button>
 				</div>

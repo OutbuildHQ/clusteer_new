@@ -159,15 +159,16 @@ export default function SendPage() {
 
 	return (
 		<div className="max-w-2xl mx-auto">
-			<h1 className="font-display text-2xl font-bold tracking-tight mb-6">Send stablecoins</h1>
-			<Card>
-				<CardHeader>
+			<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-1">&#9670; Transfer</p>
+			<h1 className="font-display text-2xl font-bold tracking-[-0.02em] mb-6">Send stablecoins</h1>
+			<Card className="border-2 border-custom-black rounded-[20px]">
+				<CardHeader className="p-6 sm:p-8">
 					<StepsHorizontal
 						current={step === "form" ? 0 : step === "review" ? 1 : step === "otp" ? 2 : 3}
 						steps={["Details", "Review", "Authorize", "Submitted"]}
 					/>
 				</CardHeader>
-				<CardContent className="space-y-5">
+				<CardContent className="space-y-5 px-6 sm:px-8 pb-6 sm:pb-8">
 					{step === "form" && (
 						<>
 							<div>
@@ -188,7 +189,7 @@ export default function SendPage() {
 									</SelectContent>
 								</Select>
 								<div className="mt-1.5 text-xs text-muted-foreground">
-									Available: <Num value={selected.balance + " " + selected.symbol} /> · <Num value={formatMoney(selected.balance * priceNgn, "NGN", { decimals: 0 })} />
+									Available: <Num className="font-mono tabular-nums" value={selected.balance + " " + selected.symbol} /> · <Num className="font-mono tabular-nums" value={formatMoney(selected.balance * priceNgn, "NGN", { decimals: 0 })} />
 								</div>
 							</div>
 
@@ -199,7 +200,7 @@ export default function SendPage() {
 										<button
 											key={c}
 											onClick={() => setChain(c)}
-											className={`rounded-lg border px-3 py-2 text-sm transition ${chain === c ? "border-primary bg-primary/5 text-foreground" : "border-border text-muted-foreground hover:bg-muted"}`}
+											className={`rounded-full border-2 px-4 py-2 text-sm font-medium transition ${chain === c ? "border-custom-black bg-[#EFFCD0] text-foreground shadow-brutal-sm" : "border-custom-black/30 text-muted-foreground hover:bg-warm-beige"}`}
 										>
 											<ChainBadge chain={c} />
 										</button>
@@ -221,24 +222,24 @@ export default function SendPage() {
 										</SelectContent>
 									</Select>
 								</div>
-								<Input id="address" className="mono mt-1.5" placeholder={`e.g. 0x… or ${chain === "Tron" ? "T…" : chain === "Solana" ? "8v…" : "bc1…"}`} value={address} onChange={(e) => setAddress(e.target.value)} />
+								<Input id="address" className="font-mono mt-1.5" placeholder={`e.g. 0x… or ${chain === "Tron" ? "T…" : chain === "Solana" ? "8v…" : "bc1…"}`} value={address} onChange={(e) => setAddress(e.target.value)} />
 							</div>
 
 							<div>
 								<Label htmlFor="amount">Amount</Label>
-								<div className="mt-1.5 flex items-center gap-2 rounded-lg border border-input bg-background px-3 py-0 focus-within:ring-2 focus-within:ring-ring">
+								<div className="mt-1.5 flex items-center gap-2 rounded-[14px] border-2 border-custom-black/20 bg-[#EFFCD0]/30 px-3 py-0 focus-within:ring-2 focus-within:ring-ring">
 									<input
 										id="amount"
 										inputMode="decimal"
-										className="mono h-11 flex-1 bg-transparent outline-none text-lg tabular-nums"
+										className="font-mono h-11 flex-1 bg-transparent outline-none text-lg tabular-nums"
 										placeholder="0.00"
 										value={amount}
 										onChange={(e) => setAmount(e.target.value)}
 									/>
 									<span className="text-sm font-medium text-muted-foreground">{asset}</span>
-									<button onClick={() => setAmount(selected.balance.toString())} className="rounded-md px-2 py-1 text-xs font-semibold text-primary hover:bg-primary/5">MAX</button>
+									<button onClick={() => setAmount(selected.balance.toString())} className="rounded-full px-2 py-1 text-xs font-semibold text-primary hover:bg-primary/5">MAX</button>
 								</div>
-								<div className="mt-1 text-xs text-muted-foreground">≈ <Num value={formatMoney(amountNgn, "NGN", { decimals: 0 })} /></div>
+								<div className="mt-1 text-xs text-muted-foreground font-mono">≈ <Num className="font-mono tabular-nums" value={formatMoney(amountNgn, "NGN", { decimals: 0 })} /></div>
 							</div>
 
 							<div>
@@ -246,52 +247,54 @@ export default function SendPage() {
 								<Input id="note" className="mt-1.5" placeholder="What's this for?" value={note} onChange={(e) => setNote(e.target.value)} />
 							</div>
 
-							<div className="rounded-lg bg-muted/50 p-3 text-xs space-y-1">
-								<div className="flex justify-between"><span className="text-muted-foreground">Network fee</span><Num value={fee + " " + asset} /></div>
-								<div className="flex justify-between font-medium"><span>You'll send</span><Num value={total.toFixed(4) + " " + asset} /></div>
+							<div className="rounded-[14px] bg-warm-beige p-4 text-xs space-y-1">
+								<div className="flex justify-between"><span className="text-muted-foreground">Network fee</span><Num className="font-mono tabular-nums" value={fee + " " + asset} /></div>
+								<div className="flex justify-between font-medium"><span>You'll send</span><Num className="font-mono tabular-nums" value={total.toFixed(4) + " " + asset} /></div>
 							</div>
 
-							<Button onClick={submit} size="lg" className="w-full">Continue <ArrowRight className="size-4" /></Button>
+							<Button onClick={submit} size="lg" className="w-full rounded-full shadow-brutal-sm">Continue <ArrowRight className="size-4" /></Button>
 						</>
 					)}
 
 					{step === "review" && (
 						<div className="space-y-4">
-							<div className="rounded-lg border border-border p-4">
-								<div className="text-xs uppercase text-muted-foreground tracking-wide">You're sending</div>
-								<Num as="div" className="mt-1 font-display text-2xl sm:text-3xl font-bold" value={amount + " " + asset} />
-								<Num as="div" tone="muted" value={formatMoney(amountNgn, "NGN", { decimals: 0 })} />
+							<div className="rounded-[14px] border-2 border-custom-black bg-warm-beige p-6">
+								<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; You're sending</div>
+								<Num as="div" className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums" value={amount + " " + asset} />
+								<Num as="div" tone="muted" className="font-mono tabular-nums" value={formatMoney(amountNgn, "NGN", { decimals: 0 })} />
 							</div>
-							<dl className="divide-y divide-border rounded-lg border border-border">
+							<dl className="divide-y divide-border rounded-[14px] border-2 border-custom-black">
 								<Row k="To">
-									<code className="mono text-xs">{address.slice(0, 12)}…{address.slice(-8)}</code>
+									<code className="font-mono text-xs">{address.slice(0, 12)}…{address.slice(-8)}</code>
 								</Row>
 								<Row k="Network"><ChainBadge chain={chain} /></Row>
-								<Row k="Network fee"><Num value={fee + " " + asset} /></Row>
-								<Row k="Total"><Num className="font-semibold" value={total.toFixed(4) + " " + asset} /></Row>
+								<Row k="Network fee"><Num className="font-mono tabular-nums" value={fee + " " + asset} /></Row>
+								<Row k="Total"><Num className="font-mono font-semibold tabular-nums" value={total.toFixed(4) + " " + asset} /></Row>
 								{note && <Row k="Note">{note}</Row>}
 							</dl>
-							<div className="flex gap-3 rounded-lg border border-warning/30 bg-warning-bg p-3 text-warning">
+							<div className="flex gap-3 rounded-[14px] border-2 border-warning/30 bg-warning-bg p-3 text-warning">
 								<AlertTriangle className="size-5 shrink-0 mt-0.5" />
 								<div className="text-xs">Double-check the address. On-chain transactions cannot be reversed.</div>
 							</div>
 							<div className="flex gap-2">
-								<Button variant="outline" className="flex-1" onClick={() => setStep("form")}>Back</Button>
-								<Button className="flex-1" onClick={confirm}>Confirm & authorize</Button>
+								<Button variant="outline" className="flex-1 rounded-full border-2 border-custom-black" onClick={() => setStep("form")}>Back</Button>
+								<Button className="flex-1 rounded-full shadow-brutal-sm" onClick={confirm}>Confirm & authorize</Button>
 							</div>
 						</div>
 					)}
 
 					{step === "otp" && (
 						<div className="space-y-4">
-							<div className="flex items-center gap-3 rounded-lg border border-border bg-card p-4">
-								<Shield className="size-5 text-primary" />
+							<div className="flex items-center gap-3 rounded-[14px] border-2 border-custom-black bg-[#EFFCD0]/30 p-4">
+								<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center">
+									<Shield className="size-5 text-custom-black" />
+								</div>
 								<div className="text-sm">Enter the 6-digit code from your authenticator app.</div>
 							</div>
-							<Input className="mono text-center text-xl sm:text-2xl tracking-widest" maxLength={6} placeholder="000000" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))} />
+							<Input className="font-mono text-center text-xl sm:text-2xl tracking-widest rounded-[14px] border-2 border-custom-black" maxLength={6} placeholder="000000" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))} />
 							<div className="flex gap-2">
-								<Button variant="outline" className="flex-1" onClick={() => setStep("review")} disabled={submitting}>Back</Button>
-								<Button className="flex-1" onClick={authorize} disabled={submitting}>
+								<Button variant="outline" className="flex-1 rounded-full border-2 border-custom-black" onClick={() => setStep("review")} disabled={submitting}>Back</Button>
+								<Button className="flex-1 rounded-full shadow-brutal-sm" onClick={authorize} disabled={submitting}>
 									{submitting ? <Loader2 className="size-4 animate-spin" /> : "Authorize"}
 								</Button>
 							</div>
@@ -321,16 +324,16 @@ function DoneDialog({ open, onClose, amount, asset, chain }: { open: boolean; on
 		<Dialog open={open} onOpenChange={(o) => !o && onClose()}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Transaction submitted</DialogTitle>
+					<DialogTitle className="font-display font-bold tracking-[-0.02em]">Transaction submitted</DialogTitle>
 					<DialogDescription>Your {asset} transfer is broadcasting to the {chain} network.</DialogDescription>
 				</DialogHeader>
-				<div className="rounded-lg border border-border bg-muted/40 p-4 text-sm">
-					<div className="flex items-center justify-between"><span className="text-muted-foreground">Amount</span><Num value={amount + " " + asset} /></div>
+				<div className="rounded-[14px] border-2 border-custom-black bg-[#EFFCD0]/30 p-4 text-sm">
+					<div className="flex items-center justify-between"><span className="text-muted-foreground">Amount</span><Num className="font-mono tabular-nums" value={amount + " " + asset} /></div>
 					<div className="mt-1 flex items-center justify-between"><span className="text-muted-foreground">Network</span><ChainBadge chain={chain} /></div>
 					<div className="mt-1 flex items-center justify-between"><span className="text-muted-foreground">Status</span><span className="text-warning">Broadcasting…</span></div>
 				</div>
 				<DialogFooter>
-					<Button onClick={onClose}>Done</Button>
+					<Button className="rounded-full shadow-brutal-sm" onClick={onClose}>Done</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

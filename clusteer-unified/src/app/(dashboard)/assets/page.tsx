@@ -23,29 +23,32 @@ export default function AssetsPage() {
 
 	return (
 		<div className="space-y-6">
-			<h1 className="font-display text-2xl font-bold tracking-tight">Assets</h1>
-			<Card>
-				<CardHeader><CardTitle>All supported assets</CardTitle></CardHeader>
+			<div>
+				<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Wallet</p>
+				<h1 className="font-display text-2xl font-bold tracking-[-0.02em]">Assets</h1>
+			</div>
+			<Card className="border-2 border-custom-black rounded-[20px]">
+				<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">All supported assets</CardTitle></CardHeader>
 				<CardContent className="p-0">
 					{isLoading ? (
 						<TableSkeleton columns={4} rows={5} />
 					) : error ? (
 						<div className="py-12 text-center">
 							<AlertCircle className="size-10 text-destructive/40 mx-auto mb-3" />
-							<p className="font-medium">Failed to load assets</p>
+							<p className="font-display font-bold">Failed to load assets</p>
 							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
 						</div>
 					) : assets.length === 0 ? (
 						<div className="py-12 text-center">
 							<Wallet className="size-10 text-muted-foreground/40 mx-auto mb-3" />
-							<p className="font-medium">No assets available</p>
+							<p className="font-display font-bold">No assets available</p>
 							<p className="text-sm text-muted-foreground mt-1">Supported assets will appear here once they are configured.</p>
-							<Button asChild size="sm" className="mt-4 w-full sm:w-auto"><Link href="/trade">Start trading</Link></Button>
+							<Button asChild size="sm" className="mt-4 w-full sm:w-auto shadow-brutal-sm"><Link href="/trade">Start trading</Link></Button>
 						</div>
 					) : (
 					<Table>
 						<TableHeader>
-							<TableRow>
+							<TableRow className="bg-warm-beige/40">
 								<TableHead>Asset</TableHead>
 								<TableHead>Type</TableHead>
 								<TableHead>Address</TableHead>
@@ -66,12 +69,12 @@ export default function AssetsPage() {
 									</TableCell>
 									<TableCell><Badge variant="outline" className="capitalize">{a.type}</Badge></TableCell>
 									<TableCell>
-										<code className="mono text-xs text-muted-foreground truncate max-w-[160px] block">
+										<code className="font-mono tabular-nums text-xs text-muted-foreground truncate max-w-[160px] block">
 											{a.address || "—"}
 										</code>
 									</TableCell>
 									<TableCell className="text-right">
-										<Num as="div" value={(a.balance ?? 0).toFixed(2) + " " + a.currency} />
+										<Num as="div" className="font-mono tabular-nums" value={(a.balance ?? 0).toFixed(2) + " " + a.currency} />
 									</TableCell>
 								</TableRow>
 							))}

@@ -86,25 +86,28 @@ export default function SettingsPage() {
 
 	return (
 		<div className="space-y-6">
-			<h1 className="font-display text-2xl font-bold tracking-tight">Settings</h1>
+			<div>
+				<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Account</p>
+				<h1 className="font-display text-2xl font-bold tracking-[-0.02em]">Settings</h1>
+			</div>
 			<Tabs defaultValue="profile">
-				<TabsList className="w-full overflow-x-auto flex-nowrap justify-start no-scrollbar">
-					<TabsTrigger value="profile">Profile</TabsTrigger>
-					<TabsTrigger value="security">Security</TabsTrigger>
-					<TabsTrigger value="notifications">Notifications</TabsTrigger>
-					<TabsTrigger value="payment">Payment methods</TabsTrigger>
-					<TabsTrigger value="preferences">Preferences</TabsTrigger>
+				<TabsList className="w-full overflow-x-auto flex-nowrap justify-start no-scrollbar border-2 border-custom-black rounded-[14px] p-1 bg-warm-beige/40">
+					<TabsTrigger value="profile" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Profile</TabsTrigger>
+					<TabsTrigger value="security" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Security</TabsTrigger>
+					<TabsTrigger value="notifications" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Notifications</TabsTrigger>
+					<TabsTrigger value="payment" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Payment methods</TabsTrigger>
+					<TabsTrigger value="preferences" className="rounded-[10px] font-display font-bold data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Preferences</TabsTrigger>
 				</TabsList>
 
 				{/* ===================== PROFILE TAB ===================== */}
 				<TabsContent value="profile" className="space-y-4">
-					<Card>
-						<CardHeader><CardTitle>Your profile</CardTitle><CardDescription>Basic information on your account.</CardDescription></CardHeader>
-						<CardContent className="space-y-4">
+					<Card className="border-2 border-custom-black rounded-[20px]">
+						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Your profile</CardTitle><CardDescription>Basic information on your account.</CardDescription></CardHeader>
+						<CardContent className="space-y-4 px-6 sm:px-8 pb-6 sm:pb-8">
 							<div className="flex items-center gap-4">
-								<Avatar className="size-16"><AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">{firstName?.[0] ?? "?"}</AvatarFallback></Avatar>
+								<Avatar className="size-16 border-2 border-custom-black"><AvatarFallback className="bg-light-green text-custom-black text-xl font-semibold">{firstName?.[0] ?? "?"}</AvatarFallback></Avatar>
 								<div>
-									<Button variant="outline" size="sm">Upload photo</Button>
+									<Button variant="outline" size="sm" className="border-2 border-custom-black rounded-full">Upload photo</Button>
 									<p className="mt-1 text-xs text-muted-foreground">PNG or JPG, max 5MB</p>
 								</div>
 							</div>
@@ -114,34 +117,34 @@ export default function SettingsPage() {
 								<div><Label>Email</Label><Input className="mt-1.5" defaultValue={email} /></div>
 								<div><Label>Phone</Label><Input className="mt-1.5" defaultValue={phone} /></div>
 							</div>
-							<div className="flex justify-end"><Button>Save changes</Button></div>
+							<div className="flex justify-end"><Button className="rounded-full shadow-brutal-sm">Save changes</Button></div>
 						</CardContent>
 					</Card>
 				</TabsContent>
 
 				{/* ===================== SECURITY TAB ===================== */}
 				<TabsContent value="security" className="space-y-4">
-					<Card>
-						<CardHeader><CardTitle>Sign-in</CardTitle></CardHeader>
-						<CardContent className="divide-y divide-border">
-							<Row icon={<Key className="size-5" />} title="Password" hint="Last changed 2 months ago" cta={<Button variant="outline" size="sm" asChild><Link href="/forgot-password">Change</Link></Button>} />
+					<Card className="border-2 border-custom-black rounded-[20px]">
+						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Sign-in</CardTitle></CardHeader>
+						<CardContent className="divide-y divide-border px-6 sm:px-8 pb-6 sm:pb-8">
+							<Row icon={<Key className="size-5" />} title="Password" hint="Last changed 2 months ago" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black" asChild><Link href="/forgot-password">Change</Link></Button>} />
 							<Row icon={<ShieldCheck className="size-5" />} title="Two-factor authentication" hint="Authenticator app · enabled" cta={<Switch defaultChecked />} />
-							<Row icon={<Smartphone className="size-5" />} title="Trusted devices" hint="2 devices signed in" cta={<Button variant="outline" size="sm">Manage</Button>} />
+							<Row icon={<Smartphone className="size-5" />} title="Trusted devices" hint="2 devices signed in" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black">Manage</Button>} />
 						</CardContent>
 					</Card>
-					<Card>
-						<CardHeader><CardTitle className="text-danger">Danger zone</CardTitle></CardHeader>
-						<CardContent>
-							<Row icon={<Trash2 className="size-5 text-danger" />} title="Delete account" hint="This action is permanent." cta={<Button variant="destructive" size="sm">Delete account</Button>} />
+					<Card className="border-2 border-danger rounded-[20px]">
+						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em] text-danger">Danger zone</CardTitle></CardHeader>
+						<CardContent className="px-6 sm:px-8 pb-6 sm:pb-8">
+							<Row icon={<Trash2 className="size-5 text-danger" />} title="Delete account" hint="This action is permanent." cta={<Button variant="destructive" size="sm" className="rounded-full">Delete account</Button>} />
 						</CardContent>
 					</Card>
 				</TabsContent>
 
 				{/* ===================== NOTIFICATIONS TAB ===================== */}
 				<TabsContent value="notifications" className="space-y-4">
-					<Card>
-						<CardHeader><CardTitle>Notifications</CardTitle></CardHeader>
-						<CardContent className="divide-y divide-border">
+					<Card className="border-2 border-custom-black rounded-[20px]">
+						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Notifications</CardTitle></CardHeader>
+						<CardContent className="divide-y divide-border px-6 sm:px-8 pb-6 sm:pb-8">
 							{notifQuery.isLoading && (
 								<div className="flex items-center justify-center py-8">
 									<Loader2 className="size-5 animate-spin text-muted-foreground" />
@@ -177,12 +180,12 @@ export default function SettingsPage() {
 
 				{/* ===================== PAYMENT METHODS TAB ===================== */}
 				<TabsContent value="payment" className="space-y-4">
-					<Card>
-						<CardHeader className="flex-row items-center justify-between">
-							<div><CardTitle>Payment methods</CardTitle><CardDescription>Bank accounts used for NGN deposit and withdrawal.</CardDescription></div>
-							<Button size="sm" onClick={() => setShowAddBank(true)}>Add bank</Button>
+					<Card className="border-2 border-custom-black rounded-[20px]">
+						<CardHeader className="flex-row items-center justify-between p-6 sm:p-8">
+							<div><CardTitle className="font-display font-bold tracking-[-0.02em]">Payment methods</CardTitle><CardDescription>Bank accounts used for NGN deposit and withdrawal.</CardDescription></div>
+							<Button size="sm" className="rounded-full shadow-brutal-sm" onClick={() => setShowAddBank(true)}>Add bank</Button>
 						</CardHeader>
-						<CardContent className="space-y-3">
+						<CardContent className="space-y-3 px-6 sm:px-8 pb-6 sm:pb-8">
 							{banksQuery.isLoading && (
 								<div className="flex items-center justify-center py-8">
 									<Loader2 className="size-5 animate-spin text-muted-foreground" />
@@ -213,15 +216,15 @@ export default function SettingsPage() {
 
 							{/* ---- Inline add-bank form ---- */}
 							{showAddBank && (
-								<div className="rounded-lg border border-border bg-card p-4 space-y-3">
+								<div className="rounded-[16px] border-2 border-custom-black bg-warm-beige p-4 space-y-3">
 									<div className="grid grid-cols-1 gap-3 md:grid-cols-3">
 										<div><Label>Bank name</Label><Input className="mt-1.5" placeholder="GTBank" value={newBank.bank_name} onChange={(e) => setNewBank({ ...newBank, bank_name: e.target.value })} /></div>
-										<div><Label>Account number</Label><Input className="mt-1.5" placeholder="0123456789" value={newBank.account_number} onChange={(e) => setNewBank({ ...newBank, account_number: e.target.value.replace(/\D/g, "") })} /></div>
+										<div><Label>Account number</Label><Input className="mt-1.5 font-mono" placeholder="0123456789" value={newBank.account_number} onChange={(e) => setNewBank({ ...newBank, account_number: e.target.value.replace(/\D/g, "") })} /></div>
 										<div><Label>Account name</Label><Input className="mt-1.5" placeholder="John Doe" value={newBank.account_name} onChange={(e) => setNewBank({ ...newBank, account_name: e.target.value })} /></div>
 									</div>
 									<div className="flex justify-end gap-2">
-										<Button variant="outline" size="sm" onClick={() => { setShowAddBank(false); setNewBank({ bank_name: "", account_number: "", account_name: "" }); }}>Cancel</Button>
-										<Button size="sm" disabled={addBankMutation.isPending || !newBank.bank_name || !newBank.account_number || !newBank.account_name} onClick={() => addBankMutation.mutate(newBank)}>
+										<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black" onClick={() => { setShowAddBank(false); setNewBank({ bank_name: "", account_number: "", account_name: "" }); }}>Cancel</Button>
+										<Button size="sm" className="rounded-full shadow-brutal-sm" disabled={addBankMutation.isPending || !newBank.bank_name || !newBank.account_number || !newBank.account_name} onClick={() => addBankMutation.mutate(newBank)}>
 											{addBankMutation.isPending ? <><Loader2 className="size-4 animate-spin mr-1" />Saving...</> : "Save"}
 										</Button>
 									</div>
@@ -233,12 +236,12 @@ export default function SettingsPage() {
 
 				{/* ===================== PREFERENCES TAB ===================== */}
 				<TabsContent value="preferences" className="space-y-4">
-					<Card>
-						<CardHeader><CardTitle>Preferences</CardTitle></CardHeader>
-						<CardContent className="divide-y divide-border">
-							<Row title="Display currency" hint="NGN is default for fiat pairs" cta={<Button variant="outline" size="sm">NGN</Button>} />
-							<Row title="Language" hint="Interface language" cta={<Button variant="outline" size="sm">English</Button>} />
-							<Row title="Theme" hint="Follows your system" cta={<Button variant="outline" size="sm">System</Button>} />
+					<Card className="border-2 border-custom-black rounded-[20px]">
+						<CardHeader className="p-6 sm:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em]">Preferences</CardTitle></CardHeader>
+						<CardContent className="divide-y divide-border px-6 sm:px-8 pb-6 sm:pb-8">
+							<Row title="Display currency" hint="NGN is default for fiat pairs" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black">NGN</Button>} />
+							<Row title="Language" hint="Interface language" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black">English</Button>} />
+							<Row title="Theme" hint="Follows your system" cta={<Button variant="outline" size="sm" className="rounded-full border-2 border-custom-black">System</Button>} />
 						</CardContent>
 					</Card>
 				</TabsContent>
@@ -250,7 +253,7 @@ export default function SettingsPage() {
 function Row({ icon, title, hint, cta }: { icon?: React.ReactNode; title: string; hint?: string; cta: React.ReactNode }) {
 	return (
 		<div className="flex items-center gap-4 py-4 first:pt-0 last:pb-0">
-			{icon && <div className="rounded-lg bg-muted p-2 text-muted-foreground">{icon}</div>}
+			{icon && <div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center text-custom-black">{icon}</div>}
 			<div className="flex-1 min-w-0">
 				<div className="font-medium">{title}</div>
 				{hint && <div className="text-xs text-muted-foreground">{hint}</div>}
@@ -262,16 +265,16 @@ function Row({ icon, title, hint, cta }: { icon?: React.ReactNode; title: string
 
 function BankCard({ name, number, holder, primary, onDelete, deleting }: { name: string; number: string; holder: string; primary?: boolean; onDelete: () => void; deleting: boolean }) {
 	return (
-		<div className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
+		<div className="flex items-center justify-between rounded-[16px] border-2 border-custom-black bg-card p-4">
 			<div className="flex items-center gap-4">
-				<div className="rounded-lg bg-primary/10 p-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3" /></svg></div>
+				<div className="size-10 sm:size-12 rounded-xl bg-light-green border-[1.5px] border-custom-black flex items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-custom-black"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3" /></svg></div>
 				<div>
-					<div className="font-medium">{name} <span className="text-muted-foreground font-normal">{number}</span></div>
+					<div className="font-medium">{name} <span className="text-muted-foreground font-normal font-mono tabular-nums">{number}</span></div>
 					<div className="text-xs text-muted-foreground">{holder}</div>
 				</div>
 			</div>
 			<div className="flex items-center gap-2">
-				{primary && <span className="rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">Primary</span>}
+				{primary && <span className="rounded-full bg-[#EFFCD0] border-[1.5px] border-custom-black px-2.5 py-1 text-xs font-medium text-custom-black">Primary</span>}
 				<Button variant="ghost" size="sm" onClick={onDelete} disabled={deleting}>
 					{deleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
 				</Button>

@@ -53,9 +53,9 @@
 
 	/* shadcn surfaces — light */
 	--radius: 0.625rem;
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.145 0 0);
-	--card: oklch(1 0 0);
+	--background: #FAFAF7;
+	--foreground: #21241D;
+	--card: #FFFFFF;
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
@@ -221,6 +221,49 @@
 /* Hide scrollbar but keep scroll functionality */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Selection color */
+::selection { background: #9FE870; color: #21241D; }
+
+/* Neo-brutalist box shadow */
+.shadow-brutal { box-shadow: 5px 5px 0 0 #21241D; }
+.shadow-brutal-sm { box-shadow: 3px 3px 0 0 #21241D; }
+
+/* Lime highlight underline */
+.lime-highlight { position: relative; display: inline-block; }
+.lime-highlight::after {
+	content: ''; position: absolute; left: -8px; right: -8px; bottom: 6px; height: 38%;
+	background: #9FE870; z-index: -1; border-radius: 4px; transform: rotate(-1deg);
+}
+
+/* Floating badges — with rotation like the prototype */
+@keyframes float-1 { 0%,100% { transform: translate(0,0) rotate(-6deg); } 50% { transform: translate(8px,-12px) rotate(-4deg); } }
+@keyframes float-2 { 0%,100% { transform: translate(0,0) rotate(8deg); } 50% { transform: translate(-10px,8px) rotate(6deg); } }
+@keyframes float-3 { 0%,100% { transform: translate(0,0) rotate(-3deg); } 50% { transform: translate(6px,10px) rotate(-1deg); } }
+.float-1 { animation: float-1 6s ease-in-out infinite; }
+.float-2 { animation: float-2 7s ease-in-out infinite; }
+.float-3 { animation: float-3 8s ease-in-out infinite; }
+
+/* Bank marquee */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { animation: marquee 35s linear infinite; }
+
+/* Button shine sweep — light white gradient visible on both light and dark buttons */
+.btn-shine { position: relative; overflow: hidden; }
+.btn-shine::after {
+	content: ''; position: absolute; inset: 0; z-index: 1;
+	background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.5) 45%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.5) 55%, transparent 80%);
+	transform: translateX(-120%); transition: transform 0.7s ease;
+	pointer-events: none;
+}
+.btn-shine:hover::after { transform: translateX(120%); }
+
+/* Live dot pulse */
+@keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+.live-dot { animation: pulse-dot 1.6s ease-in-out infinite; box-shadow: 0 0 12px currentColor; }
+
+/* Chart bar rise */
+@keyframes bar-rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 
 /* Tabular numerics — apply to any element showing money / amounts */
 .tabular,

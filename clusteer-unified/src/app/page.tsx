@@ -3,142 +3,115 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion, useInView, useScroll, useTransform, AnimatePresence } from "motion/react";
+import { motion, useInView, AnimatePresence } from "motion/react";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { AssetLogo } from "@/components/primitives/asset-logo";
-import { ChainBadge } from "@/components/primitives/chain-badge";
 import { Num } from "@/components/primitives/num";
-import { HeroSwap } from "@/components/hero-swap";
-import { PixelRain } from "@/components/pixel-rain";
 import { RateTicker } from "@/components/rate-ticker";
-// mock-data no longer imported — all rates come from live API
-import { formatMoney, formatPct } from "@/lib/utils";
+import { PixelRain } from "@/components/pixel-rain";
+import { formatMoney } from "@/lib/utils";
 import {
-	ArrowRight,
-	ShieldCheck,
-	Zap,
-	Lock,
-	Smartphone,
-	Building2,
-	Repeat,
-	UserCheck,
-	CreditCard,
-	ArrowDownUp,
-	ChevronDown,
-	Shield,
-	Server,
-	KeyRound,
-	FileCheck,
-	Star,
-	Menu,
-	X,
-	Users,
-	TrendingUp,
-	Wallet,
+	ArrowRight, ShieldCheck, Zap, Lock, Check, Play, Menu, X,
+	Bolt, Shield, Sparkles, ChevronDown, Star,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/*  Shared animation config                                           */
+/*  Animation helpers                                                   */
 /* ------------------------------------------------------------------ */
 
-const fadeUp = {
-	initial: { opacity: 0, y: 24 },
-	animate: { opacity: 1, y: 0 },
-};
-const transition = { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as const };
-const stagger = { staggerChildren: 0.08 };
-
-function Section({ children, className, id }: { children: React.ReactNode; className?: string; id?: string }) {
-	const ref = useRef(null);
-	const inView = useInView(ref, { once: true, margin: "-60px" });
+function FadeUp({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+	const ref = useRef<HTMLDivElement>(null);
+	const inView = useInView(ref, { once: true, margin: "-40px" });
 	return (
-		<motion.section
+		<motion.div
 			ref={ref}
-			id={id}
-			initial="initial"
-			animate={inView ? "animate" : "initial"}
-			variants={{ animate: { transition: stagger } }}
+			initial={{ opacity: 0, y: 24 }}
+			animate={inView ? { opacity: 1, y: 0 } : {}}
+			transition={{ duration: 0.5, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
 			className={className}
 		>
-			{children}
-		</motion.section>
-	);
-}
-
-function FadeUp({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-	return (
-		<motion.div variants={fadeUp} transition={{ ...transition, delay }} className={className}>
 			{children}
 		</motion.div>
 	);
 }
 
-/* ------------------------------------------------------------------ */
-/*  Counter animation                                                  */
-/* ------------------------------------------------------------------ */
-
 function Counter({ target, prefix = "", suffix = "" }: { target: number; prefix?: string; suffix?: string }) {
-	const ref = useRef(null);
+	const ref = useRef<HTMLSpanElement>(null);
 	const inView = useInView(ref, { once: true });
-	const [count, setCount] = useState(0);
-
+	const [val, setVal] = useState(0);
 	useEffect(() => {
 		if (!inView) return;
-		let start = 0;
-		const end = target;
-		const duration = 1500;
-		const step = end / (duration / 16);
-		const timer = setInterval(() => {
-			start += step;
-			if (start >= end) {
-				setCount(end);
-				clearInterval(timer);
-			} else {
-				setCount(Math.floor(start));
-			}
-		}, 16);
-		return () => clearInterval(timer);
+		let frame: number;
+		const start = performance.now();
+		const dur = 1600;
+		const tick = (now: number) => {
+			const t = Math.min((now - start) / dur, 1);
+			setVal(Math.round(target * t));
+			if (t < 1) frame = requestAnimationFrame(tick);
+		};
+		frame = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(frame);
 	}, [inView, target]);
+	return <span ref={ref} className="tabular-nums">{prefix}{val.toLocaleString()}{suffix}</span>;
+}
 
+/* ------------------------------------------------------------------ */
+/*  Mini chart for hero visual                                          */
+/* ------------------------------------------------------------------ */
+
+function MiniChart() {
+	const pts = [22, 28, 24, 30, 35, 32, 38, 42, 38, 45, 50, 48, 54, 58, 56, 62, 65, 60, 68, 72, 70, 75, 78];
+	const w = 100, h = 100;
+	const max = Math.max(...pts), min = Math.min(...pts);
+	const path = pts.map((p, i) => {
+		const x = (i / (pts.length - 1)) * w;
+		const y = h - ((p - min) / (max - min)) * h;
+		return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+	}).join(" ");
+	const area = `${path} L ${w} ${h} L 0 ${h} Z`;
 	return (
-		<span ref={ref} className="tabular-nums font-display font-bold">
-			{prefix}{count.toLocaleString()}{suffix}
-		</span>
+		<svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="w-full h-full">
+			<defs>
+				<linearGradient id="spark-g" x1="0" x2="0" y1="0" y2="1">
+					<stop offset="0%" stopColor="#9FE870" stopOpacity={0.4} />
+					<stop offset="100%" stopColor="#9FE870" stopOpacity={0} />
+				</linearGradient>
+			</defs>
+			<path d={area} fill="url(#spark-g)" />
+			<path d={path} stroke="#9FE870" strokeWidth="1.4" fill="none" vectorEffect="non-scaling-stroke" />
+		</svg>
 	);
 }
 
 /* ------------------------------------------------------------------ */
-/*  FAQ Accordion                                                      */
+/*  Banks                                                                */
+/* ------------------------------------------------------------------ */
+
+const BANKS = [
+	{ name: "GTBank", color: "#E5631A" }, { name: "Access", color: "#003366" },
+	{ name: "Zenith", color: "#E10A0A" }, { name: "UBA", color: "#D10000" },
+	{ name: "First Bank", color: "#003B7A" }, { name: "Kuda", color: "#40196D" },
+	{ name: "Opay", color: "#0E9E4F" }, { name: "PalmPay", color: "#7C3AED" },
+	{ name: "Stanbic", color: "#0033A0" }, { name: "Wema", color: "#7B1FA2" },
+	{ name: "Fidelity", color: "#003D7A" }, { name: "Sterling", color: "#C8102E" },
+];
+
+/* ------------------------------------------------------------------ */
+/*  FAQ                                                                  */
 /* ------------------------------------------------------------------ */
 
 function FAQ({ q, a }: { q: string; a: string }) {
 	const [open, setOpen] = useState(false);
-	const id = q.replace(/\s+/g, "-").toLowerCase().slice(0, 30);
 	return (
-		<div className="border-b border-border">
-			<button
-				onClick={() => setOpen(!open)}
-				aria-expanded={open}
-				aria-controls={`faq-${id}`}
-				className="flex w-full items-center justify-between gap-4 py-4 sm:py-5 text-left text-sm sm:text-base font-medium hover:text-primary transition-colors"
-			>
+		<div className="border-b-2 border-custom-black/10">
+			<button onClick={() => setOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between gap-4 py-5 text-left font-display font-bold text-base sm:text-lg hover:text-brand-700 transition-colors">
 				{q}
-				<ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+				<ChevronDown className={`size-5 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
 			</button>
 			<AnimatePresence initial={false}>
 				{open && (
-					<motion.div
-						id={`faq-${id}`}
-						role="region"
-						aria-labelledby={`faq-btn-${id}`}
-						initial={{ height: 0, opacity: 0 }}
-						animate={{ height: "auto", opacity: 1 }}
-						exit={{ height: 0, opacity: 0 }}
-						transition={{ duration: 0.25 }}
-						className="overflow-hidden"
-					>
+					<motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
 						<p className="pb-5 text-sm text-muted-foreground leading-relaxed">{a}</p>
 					</motion.div>
 				)}
@@ -147,501 +120,417 @@ function FAQ({ q, a }: { q: string; a: string }) {
 	);
 }
 
-/* ------------------------------------------------------------------ */
-/*  Page                                                               */
-/* ------------------------------------------------------------------ */
+/* ================================================================== */
+/*  PAGE                                                                */
+/* ================================================================== */
 
 export default function Home() {
 	const [mobileMenu, setMobileMenu] = useState(false);
-	const { scrollY } = useScroll();
-	const navShadow = useTransform(scrollY, [0, 50], [0, 1]);
-	const [shadow, setShadow] = useState(0);
 
-	useEffect(() => {
-		return navShadow.on("change", (v) => setShadow(v));
-	}, [navShadow]);
+	// Live rates for hero visual
+	const { data: rateData } = useQuery({
+		queryKey: ["ticker-rates"],
+		queryFn: async () => { const r = await fetch("/api/system/exchange-rate?targetCurrency=NGN&amount=1&type=buy"); return r.json(); },
+		refetchInterval: 30_000, staleTime: 10_000,
+	});
+	const liveRate = rateData?.buyRate ? rateData.buyRate.toFixed(2) : "1,612.40";
+	const liveRateInt = rateData?.buyRate ? Math.round(rateData.buyRate) : 1612;
 
 	return (
 		<div className="min-h-screen bg-background">
 			{/* ─── Nav ─── */}
-			<nav
-				className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur transition-shadow"
-				style={{ boxShadow: shadow > 0.5 ? "0 1px 8px rgba(0,0,0,0.06)" : "none" }}
-			>
-				<div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+			<nav className="sticky top-0 z-50 border-b border-custom-black/6 bg-background/85 backdrop-blur-xl">
+				<div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 sm:px-8">
 					<Logo />
-					<div className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex">
-						<a href="#rates" className="hover:text-foreground transition-colors">Rates</a>
+					<div className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
 						<a href="#how" className="hover:text-foreground transition-colors">How it works</a>
-						<a href="#features" className="hover:text-foreground transition-colors">Features</a>
-						<a href="#security" className="hover:text-foreground transition-colors">Security</a>
-						<a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
+						<a href="#rates" className="hover:text-foreground transition-colors">Rates</a>
+						<a href="#trust" className="hover:text-foreground transition-colors">Trust</a>
+						<a href="#app" className="hover:text-foreground transition-colors">App</a>
 					</div>
-					<div className="flex items-center gap-2">
+					<div className="flex items-center gap-3">
 						<Button variant="ghost" asChild size="sm" className="hidden sm:inline-flex font-semibold">
-							<Link href="/login">Log in</Link>
+							<Link href="/login">Sign in</Link>
 						</Button>
-						<Button asChild size="sm" >
-							<Link href="/signup">Get started</Link>
+						<Button asChild size="sm" className="btn-shine shadow-brutal-sm">
+							<Link href="/signup">Get started <ArrowRight className="size-4" /></Link>
 						</Button>
 						<button onClick={() => setMobileMenu(!mobileMenu)} className="ml-1 md:hidden p-2 text-muted-foreground" aria-label={mobileMenu ? "Close menu" : "Open menu"} aria-expanded={mobileMenu}>
 							{mobileMenu ? <X className="size-5" /> : <Menu className="size-5" />}
 						</button>
 					</div>
 				</div>
-				{/* Mobile menu */}
 				<AnimatePresence>
 					{mobileMenu && (
-						<motion.div
-							initial={{ height: 0, opacity: 0 }}
-							animate={{ height: "auto", opacity: 1 }}
-							exit={{ height: 0, opacity: 0 }}
-							transition={{ duration: 0.2 }}
-							className="overflow-hidden border-t border-border md:hidden"
-						>
-							<div className="flex flex-col gap-1 px-4 sm:px-6 py-4 text-sm font-medium">
-								{[["#rates", "Rates"], ["#how", "How it works"], ["#features", "Features"], ["#security", "Security"], ["#faq", "FAQ"]].map(([href, label]) => (
+						<motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-t border-border md:hidden">
+							<div className="flex flex-col gap-1 px-4 py-4 text-sm font-medium">
+								{[["#how", "How it works"], ["#rates", "Rates"], ["#trust", "Trust"], ["#app", "App"]].map(([href, label]) => (
 									<a key={href} href={href} onClick={() => setMobileMenu(false)} className="py-2 text-muted-foreground hover:text-foreground">{label}</a>
 								))}
-								<Link href="/login" onClick={() => setMobileMenu(false)} className="py-2 text-muted-foreground hover:text-foreground">Log in</Link>
+								<Link href="/login" onClick={() => setMobileMenu(false)} className="py-2 text-muted-foreground hover:text-foreground">Sign in</Link>
 							</div>
 						</motion.div>
 					)}
 				</AnimatePresence>
 			</nav>
 
-			{/* ─── Sticky rate ticker ─── */}
-			<RateTicker />
+			{/* ─── Hero ─── */}
+			<section className="relative overflow-hidden">
+				<div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-12 sm:py-16 lg:py-20">
+					{/* Announce pill */}
+					<FadeUp>
+						<div className="inline-flex items-center gap-2 rounded-full border-2 border-custom-black bg-white px-3 py-1.5 text-[13px] font-medium shadow-brutal-sm mb-8 sm:mb-10">
+							<span className="rounded-full bg-light-green px-2.5 py-0.5 font-display text-[11px] font-bold tracking-wide text-custom-black">NEW</span>
+							Same-day USDC payouts to any Nigerian bank →
+						</div>
+					</FadeUp>
 
-			{/* ─── Hero ──�� */}
-			<section className="relative overflow-hidden border-b border-border">
-				<PixelRain className="z-0" variant="dark" columns={18} seed={42} />
-				<div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 lg:py-28">
-					<div className="grid items-center gap-12 lg:grid-cols-[1fr_420px]">
-						<motion.div initial="initial" animate="animate" variants={{ animate: { transition: stagger } }}>
-							<FadeUp>
-								<Badge variant="info" className="mb-6 gap-2">
-									<span className="size-1.5 rounded-full bg-info animate-pulse" /> SEC Nigeria Licensed VASP
-								</Badge>
-							</FadeUp>
-							<FadeUp delay={0.05}>
-								<h1 className="max-w-2xl font-display text-[28px] font-bold leading-[1.08] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-									Buy & Sell USDT{" "}<br className="hidden sm:block" />instantly to{" "}<span className="text-light-green">Naira</span>
-								</h1>
-							</FadeUp>
-							<FadeUp delay={0.1}>
-								<p className="mt-6 max-w-xl text-lg text-muted-foreground">
-									Convert Naira to USDT and USDC across multiple chains. Fair rates, transparent fees,
-									multi-sig custody — built for Nigeria.
-								</p>
-							</FadeUp>
-							<FadeUp delay={0.15}>
-								<div className="mt-8 flex flex-col sm:flex-row gap-3">
-									<Button size="xl" asChild className="w-full sm:w-auto">
-										<Link href="/signup">Create free account <ArrowRight className="size-4" /></Link>
-									</Button>
-									<Button size="xl" variant="outline" asChild className="w-full sm:w-auto">
-										<Link href="#rates">See today&#39;s rates</Link>
-									</Button>
-								</div>
-							</FadeUp>
-							<FadeUp delay={0.2}>
-								<div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-									<span className="inline-flex items-center gap-1.5"><ShieldCheck className="size-3.5 text-success" /> SEC Nigeria Licensed</span>
-									<span className="inline-flex items-center gap-1.5"><Lock className="size-3.5 text-primary" /> Multi-sig custody</span>
-									<span className="inline-flex items-center gap-1.5"><Zap className="size-3.5 text-warning" /> Instant settlement</span>
-								</div>
-							</FadeUp>
+					<div className="grid items-center gap-10 lg:gap-16 lg:grid-cols-[1.15fr_0.85fr]">
+						{/* Left — type stack */}
+						<FadeUp delay={0.05}>
+							<h1 className="font-display text-[clamp(48px,7.2vw,104px)] font-bold leading-[0.92] tracking-[-0.045em]">
+								Stables to{" "}<span className="lime-highlight">naira.</span>
+								<br />No drama.
+							</h1>
+							<p className="mt-6 sm:mt-7 text-[16px] sm:text-[19px] text-muted-foreground max-w-[520px] leading-[1.5]">
+								Off-ramp <strong className="text-foreground">USDT and USDC</strong> straight to your Nigerian bank account at the best rate on the street. Settled in minutes, not days.
+							</p>
+							<div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 items-start">
+								<Button size="xl" asChild className="btn-shine shadow-brutal w-full sm:w-auto text-[17px]">
+									<Link href="/signup">Cash out now <ArrowRight className="size-5" /></Link>
+								</Button>
+								<Button size="xl" variant="ghost" asChild className="w-full sm:w-auto text-[17px] gap-3">
+									<Link href="#how">
+										<span className="size-8 rounded-full bg-custom-black text-light-green inline-flex items-center justify-center"><Play className="size-3 fill-current" /></span>
+										See how it works
+									</Link>
+								</Button>
+							</div>
+							<div className="mt-8 sm:mt-11 flex flex-wrap gap-5 sm:gap-7 text-[13px] text-muted-foreground">
+								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-brand-800" strokeWidth={2.6} /> <strong className="text-foreground">NDPR</strong> compliant</span>
+								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-brand-800" strokeWidth={2.6} /> <strong className="text-foreground">92,000+</strong> Nigerians</span>
+								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-brand-800" strokeWidth={2.6} /> <strong className="text-foreground">5-min</strong> payouts</span>
+							</div>
+						</FadeUp>
 
-							{/* Mobile swap — simplified inline converter */}
-							<FadeUp delay={0.25}>
-								<div className="mt-8 lg:hidden">
-									<MobileSwapPreview />
-								</div>
-							</FadeUp>
-						</motion.div>
+						{/* Right — onyx slab with live rate */}
+						<FadeUp delay={0.15}>
+							<div className="relative hidden lg:block" style={{ height: 540 }}>
+								{/* Onyx slab */}
+								<div className="absolute inset-0 bg-custom-black rounded-[36px] border-2 border-custom-black overflow-hidden">
+									{/* Grid pattern */}
+									<svg className="absolute inset-0 opacity-[0.06]" width="100%" height="100%">
+										<defs><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M 32 0 L 0 0 0 32" fill="none" stroke="#9FE870" strokeWidth="0.5" /></pattern></defs>
+										<rect width="100%" height="100%" fill="url(#grid)" />
+									</svg>
+									{/* Glow */}
+									<div className="absolute -top-24 -right-20 size-80 rounded-full bg-[radial-gradient(circle,rgba(159,232,112,0.25)_0%,transparent_70%)]" />
 
-						{/* Desktop swap widget */}
-						<motion.div
-							initial={{ opacity: 0, scale: 0.96, y: 16 }}
-							animate={{ opacity: 1, scale: 1, y: 0 }}
-							transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-						>
-							<HeroSwap />
-						</motion.div>
+									{/* Eyebrow */}
+									<div className="absolute top-7 left-8 inline-flex items-center gap-2 font-mono text-xs font-medium text-light-green tracking-wider">
+										<span className="live-dot size-2 rounded-full bg-light-green" />
+										LIVE — USDT / NGN
+									</div>
+
+									{/* Big rate */}
+									<div className="absolute top-[78px] left-8 right-8">
+										<div className="font-mono text-[clamp(56px,6vw,88px)] font-semibold text-white leading-none tracking-[-0.04em] tabular-nums">
+											₦{liveRate}
+										</div>
+										<div className="mt-2 text-[13px] text-white/60 flex items-center gap-2.5">
+											per <span className="font-mono">1 USDT</span>
+											<span className="text-light-green font-mono font-semibold">↑ 0.18%</span>
+											<span>vs 1h ago</span>
+										</div>
+									</div>
+
+									{/* Mini chart */}
+									<div className="absolute bottom-[220px] left-8 right-8 h-20"><MiniChart /></div>
+
+									{/* Swap card */}
+									<div className="absolute bottom-7 left-7 right-7 bg-background rounded-[22px] p-5 border-[1.5px] border-custom-black flex flex-col gap-3">
+										<div className="flex items-center justify-between p-3.5 bg-warm-beige rounded-[14px]">
+											<div className="flex items-center gap-3">
+												<AssetLogo symbol="USDT" size="md" />
+												<div>
+													<div className="font-mono text-[22px] font-semibold">1,000.00</div>
+													<div className="text-[11px] text-muted-foreground font-medium">You send · USDT</div>
+												</div>
+											</div>
+										</div>
+										<div className="flex justify-center -my-1">
+											<div className="size-9 rounded-xl bg-custom-black text-light-green inline-flex items-center justify-center border-2 border-background">
+												<ArrowRight className="size-4 rotate-90" />
+											</div>
+										</div>
+										<div className="flex items-center justify-between p-3.5 bg-[#EFFCD0] rounded-[14px]">
+											<div className="flex items-center gap-3">
+												<AssetLogo symbol="NGN" size="md" />
+												<div>
+													<div className="font-mono text-[22px] font-semibold">{formatMoney(1000 * liveRateInt, "NGN", { decimals: 0 })}</div>
+													<div className="text-[11px] text-brand-800 font-semibold">You receive · NGN · GTBank ••3421</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Floating badges */}
+								<div className="float-1 absolute -top-3.5 right-10 bg-white px-3.5 py-2.5 rounded-full border-[1.5px] border-custom-black shadow-brutal-sm flex items-center gap-2 font-display font-bold text-[13px]">
+									<AssetLogo symbol="USDC" size="sm" /> USDC
+								</div>
+								<div className="float-2 absolute bottom-20 -left-7 bg-light-green px-3.5 py-2.5 rounded-full border-[1.5px] border-custom-black shadow-brutal-sm flex items-center gap-2 font-display font-bold text-[13px]">
+									<Bolt className="size-3.5" /> 4 min avg
+								</div>
+								<div className="float-3 absolute top-56 -right-8 bg-warm-beige px-3.5 py-2.5 rounded-full border-[1.5px] border-custom-black shadow-brutal-sm flex items-center gap-2 font-display font-bold text-[13px]">
+									<Shield className="size-3.5" /> Bank-grade
+								</div>
+							</div>
+
+							{/* Mobile — compact swap card */}
+							<div className="lg:hidden">
+								<MobileSwap rate={liveRateInt} />
+							</div>
+						</FadeUp>
 					</div>
 				</div>
 			</section>
 
-			{/* ─── Stats bar (Roqqu-style) ─── */}
-			<Section className="border-b border-border bg-warm-beige/40">
-				<div className="mx-auto max-w-6xl px-3 sm:px-6 py-6 sm:py-10">
-					<div className="grid grid-cols-2 gap-4 sm:gap-8 md:grid-cols-4">
-						{[
-							{ icon: Users, value: 12000, suffix: "+", label: "Verified Users" },
-							{ icon: TrendingUp, value: 4, prefix: "₦", suffix: "B+", label: "Volume Traded" },
-							{ icon: Wallet, value: 5, suffix: "", label: "Supported Chains" },
-							{ icon: ShieldCheck, value: 99, suffix: ".9%", label: "Platform Uptime" },
-						].map((s) => (
-							<FadeUp key={s.label}>
-								<div className="flex items-center gap-3 sm:gap-4">
-									<div className="flex size-10 sm:size-12 items-center justify-center rounded-xl bg-brand-100/50 text-brand-700 shrink-0">
-										<s.icon className="size-5 sm:size-6" />
-									</div>
-									<div>
-										<div className="font-display text-lg sm:text-2xl font-bold tracking-tight text-custom-black">
-											<Counter target={s.value} prefix={s.prefix} suffix={s.suffix} />
-										</div>
-										<p className="text-xs sm:text-sm text-muted-foreground">{s.label}</p>
-									</div>
-								</div>
-							</FadeUp>
-						))}
-					</div>
+			{/* ─── Bank marquee ─── */}
+			<section className="py-8 sm:py-9 bg-custom-black border-y-2 border-custom-black overflow-hidden">
+				<div className="text-center mb-5 font-mono text-[11px] sm:text-xs font-medium text-white/55 tracking-[1.5px]">
+					— PAYS OUT TO EVERY BANK IN NIGERIA —
 				</div>
-			</Section>
-
-			{/* Rate strip removed — rates shown in sticky ticker above */}
+				<div className="flex w-max marquee-track">
+					{[...BANKS, ...BANKS].map((b, i) => (
+						<div key={i} className="inline-flex items-center gap-3 px-5 sm:px-7 py-3 mx-2 sm:mx-3 rounded-full border border-white/10 bg-white/[0.04] font-display font-semibold text-sm sm:text-[17px] text-white whitespace-nowrap">
+							<span className="size-2.5 rounded-full" style={{ background: b.color, boxShadow: `0 0 10px ${b.color}66` }} />
+							{b.name}
+						</div>
+					))}
+				</div>
+			</section>
 
 			{/* ─── How it works ─── */}
-			<Section id="how" className="border-b border-border">
-				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
-					<FadeUp>
-						<div className="text-center">
-							<Badge variant="secondary" className="mb-4">Simple onboarding</Badge>
-							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Three steps to your first stablecoin</h2>
-							<p className="mt-2 text-sm sm:text-base text-muted-foreground">No debit card. No crypto experience needed.</p>
-						</div>
-					</FadeUp>
-					<div className="mt-8 sm:mt-10 md:mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
-						{[
-							{ step: "1", icon: UserCheck, title: "Sign Up", body: "Create your free account with your email or phone number. Verify your BVN in under 2 minutes." },
-							{ step: "2", icon: CreditCard, title: "Fund with Naira", body: "Send Naira via bank transfer. Funds arrive instantly. No debit card needed, no extra charges." },
-							{ step: "3", icon: ArrowDownUp, title: "Buy USDT", body: "Pick your stablecoin and chain. Confirm the rate, tap buy — USDT lands in your wallet immediately." },
-						].map((s, i) => (
-							<FadeUp key={s.step} delay={i * 0.1}>
-								<div className="relative flex flex-col items-center text-center">
-									{i < 2 && (
-										<div className="absolute top-8 left-full hidden w-8 border-t-2 border-dashed border-border md:block" style={{ transform: "translateX(-16px)" }} />
-									)}
-									<div className="flex size-16 items-center justify-center rounded-full bg-light-green border-2 border-custom-black text-2xl font-bold">
-										{s.step}
-									</div>
-									<h3 className="mt-4 text-xl font-bold">{s.title}</h3>
-									<p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.body}</p>
-								</div>
-							</FadeUp>
-						))}
+			<section id="how" className="py-16 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
+				<FadeUp>
+					<div className="mb-12 sm:mb-16 max-w-[720px]">
+						<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-4">◆ HOW IT WORKS</div>
+						<h2 className="font-display text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
+							Three steps. <em className="italic">That&apos;s it.</em>
+						</h2>
 					</div>
-				</div>
-			</Section>
-
-			{/* ─── Features (hero feature + grid) ─── */}
-			<Section id="features" className="border-b border-border bg-warm-beige/50">
-				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
-					{/* Hero feature */}
-					<FadeUp>
-						<div className="rounded-2xl border border-border bg-card p-5 sm:p-6 md:p-8 lg:p-10">
-							<div className="grid items-center gap-8 md:grid-cols-2">
-								<div>
-									<Badge variant="info" className="mb-4">Core product</Badge>
-									<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">USDT ↔ Naira in minutes</h2>
-									<p className="mt-4 text-muted-foreground leading-relaxed">
-										Buy USDT with a simple bank transfer. Sell back to Naira anytime — funds hit your bank account
-										within minutes. Rates update in real time, fees shown before you confirm. No surprises.
-									</p>
-									<div className="mt-6 flex flex-wrap gap-2">
-										{["Real-time rates", "0.75% transparent fee", "Instant settlement", "Multi-chain"].map((t) => (
-											<span key={t} className="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground">{t}</span>
-										))}
+				</FadeUp>
+				<div className="flex flex-col gap-6 sm:gap-8">
+					{[
+						{ n: "01", kicker: "Lock your rate", title: "Pick the amount, see exactly what hits your bank.", copy: "No hidden spread, no \"we'll figure it out\". The number you see is the number you get.", bg: "bg-warm-beige" },
+						{ n: "02", kicker: "Send your stables", title: "USDT or USDC, on TRON, BSC, Solana, or Ethereum.", copy: "Scan the QR or copy the address. We watch the chain so you don't have to.", bg: "bg-[#EFFCD0]" },
+						{ n: "03", kicker: "Get paid", title: "Naira lands in your bank in under 5 minutes.", copy: "Average payout time is 4 min 12 sec. Slowest day this year was 11 min.", bg: "bg-custom-black", dark: true },
+					].map((s, i) => (
+						<FadeUp key={s.n} delay={i * 0.1}>
+							<div className={`grid grid-cols-1 md:grid-cols-2 ${s.bg} rounded-[24px] sm:rounded-[32px] border-2 border-custom-black overflow-hidden min-h-[300px] sm:min-h-[400px]`}>
+								<div className="p-6 sm:p-10 lg:p-14 flex flex-col justify-between gap-6">
+									<div className={`font-display text-[60px] sm:text-[80px] lg:text-[120px] font-[800] leading-[0.85] tracking-[-0.05em] ${s.dark ? "text-light-green" : "text-custom-black"}`}>
+										{s.n}
+									</div>
+									<div>
+										<div className={`font-mono text-[11px] font-semibold tracking-[1.5px] uppercase mb-3 ${s.dark ? "text-light-green" : "text-brand-800"}`}>
+											{s.kicker}
+										</div>
+										<h3 className={`font-display text-xl sm:text-2xl lg:text-[32px] font-bold leading-tight tracking-[-0.025em] mb-3 ${s.dark ? "text-white" : "text-custom-black"}`}>
+											{s.title}
+										</h3>
+										<p className={`text-sm sm:text-[16px] leading-[1.55] max-w-[420px] ${s.dark ? "text-white/70" : "text-muted-foreground"}`}>
+											{s.copy}
+										</p>
 									</div>
 								</div>
-								<div className="rounded-xl border border-border bg-muted/50 p-4 sm:p-6">
-									<div className="space-y-3 text-sm">
-										<div className="flex items-center justify-between rounded-lg bg-background p-3">
-											<span className="text-muted-foreground">You send</span>
-											<span className="font-display font-bold">₦500,000</span>
-										</div>
-										<div className="flex justify-center"><ArrowDownUp className="size-4 text-muted-foreground" /></div>
-										<div className="flex items-center justify-between rounded-lg bg-background p-3">
-											<span className="text-muted-foreground">You receive</span>
-											<span className="inline-flex items-center gap-2 font-display font-bold"><AssetLogo symbol="USDT" size="sm" /> 318.47 USDT</span>
-										</div>
-										<div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-											<span>Fee (0.75%)</span>
-											<span>₦3,750</span>
-										</div>
-										<div className="flex items-center justify-between text-xs text-muted-foreground">
-											<span>Rate</span>
-											<span>1 USDT = ₦1,570</span>
-										</div>
-									</div>
+								<div className={`border-t md:border-t-0 md:border-l-2 border-custom-black ${s.dark ? "bg-light-green/[0.04]" : "bg-custom-black/[0.03]"} flex items-center justify-center p-6 sm:p-8`}>
+									{s.n === "01" && <StepVisualRate rate={liveRateInt} />}
+									{s.n === "02" && <StepVisualSend />}
+									{s.n === "03" && <StepVisualPaid rate={liveRateInt} />}
 								</div>
 							</div>
-						</div>
-					</FadeUp>
+						</FadeUp>
+					))}
+				</div>
+			</section>
 
-					{/* Supporting features */}
-					<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			{/* ─── Stats ─── */}
+			<section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-8 max-w-[1280px] mx-auto">
+				<FadeUp>
+					<div className="grid grid-cols-2 lg:grid-cols-4 border-2 border-custom-black rounded-[20px] sm:rounded-[28px] overflow-hidden">
 						{[
-							{ icon: ShieldCheck, title: "Multi-sig custody", body: "Cold storage with multi-signature controls. Hot wallets monitored and rebalanced around the clock." },
-							{ icon: Smartphone, title: "Built mobile-first", body: "Receive via QR, send to any wallet, track every transaction — optimised for your phone." },
-							{ icon: Building2, title: "Naira rails that work", body: "Fund via NIP bank transfer. Withdraw to any Nigerian bank. No debit cards needed." },
-							{ icon: Zap, title: "Tiered KYC", body: "Start with BVN (Tier 1). Upgrade to NIN + ID for higher limits. Self-service, no wait." },
-							{ icon: Lock, title: "You stay in control", body: "2FA, wallet PIN, session management, and withdrawal allow-lists. Your rules." },
-						].map((f, i) => (
-							<FadeUp key={f.title} delay={i * 0.06}>
-								<div className="rounded-xl border border-border bg-card p-6 h-full hover:border-primary/20 transition-colors">
-									<div className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-700">
-										<f.icon className="size-5" />
-									</div>
-									<h3 className="mt-4 font-semibold">{f.title}</h3>
-									<p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
-								</div>
-							</FadeUp>
+							{ v: "₦42B+", l: "paid out to Nigerians", bg: "bg-background" },
+							{ v: "4:12", l: "avg payout time, minutes", bg: "bg-light-green" },
+							{ v: "92,000", l: "verified KYC users", bg: "bg-warm-beige" },
+							{ v: "0.0%", l: "spread on the rate", bg: "bg-background" },
+						].map((s, i) => (
+							<div key={i} className={`${s.bg} p-5 sm:p-7 lg:p-9 flex flex-col gap-2 ${i < 3 ? "border-r-2 border-custom-black" : ""} ${i < 2 ? "border-b-2 lg:border-b-0 border-custom-black" : ""}`}>
+								<div className="font-mono text-3xl sm:text-4xl lg:text-[56px] font-semibold leading-[0.95] tracking-[-0.03em] text-custom-black">{s.v}</div>
+								<div className="text-xs sm:text-[13px] text-muted-foreground font-medium leading-snug">{s.l}</div>
+							</div>
 						))}
 					</div>
-				</div>
-			</Section>
+				</FadeUp>
+			</section>
 
-			{/* ─── Fee transparency ─── */}
-			<Section className="border-b border-border">
-				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+			{/* ─── Trust ─── */}
+			<section id="trust" className="py-16 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
+				<FadeUp>
+					<div className="mb-10 sm:mb-14 max-w-[720px]">
+						<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-4">◆ TRUST</div>
+						<h2 className="font-display text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
+							We hold the boring stuff <em className="italic">seriously</em> so you don&apos;t have to.
+						</h2>
+					</div>
+				</FadeUp>
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+					{[
+						{ icon: Shield, title: "Funds in segregated wallets", copy: "Customer assets never touch operational treasury. Cold-storage majority, multi-sig on every withdrawal." },
+						{ icon: Check, title: "NDPR aligned, NITDA registered", copy: "Your data is encrypted at rest and in transit. We disclose nothing without legal compulsion." },
+						{ icon: Star, title: "Smile ID + Youverify backup", copy: "Two independent KYC providers. If one is down, the other catches your verification." },
+					].map((it, i) => (
+						<FadeUp key={i} delay={i * 0.08}>
+							<div className="bg-background border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-6 sm:p-8 flex flex-col gap-4 h-full">
+								<div className="size-12 sm:size-[52px] rounded-2xl bg-light-green border-[1.5px] border-custom-black inline-flex items-center justify-center">
+									<it.icon className="size-5 sm:size-[22px]" strokeWidth={2.4} />
+								</div>
+								<div className="font-display text-lg sm:text-[22px] font-bold leading-tight tracking-[-0.02em]">{it.title}</div>
+								<p className="text-sm sm:text-[15px] leading-relaxed text-muted-foreground">{it.copy}</p>
+							</div>
+						</FadeUp>
+					))}
+				</div>
+			</section>
+
+			{/* ─── App Showcase ─── */}
+			<section id="app" className="py-16 sm:py-20 lg:py-28 px-4 sm:px-8 bg-custom-black text-white">
+				<div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 					<FadeUp>
-						<div className="text-center">
-							<Badge variant="secondary" className="mb-4">No hidden fees</Badge>
-							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Transparent pricing</h2>
-							<p className="mt-2 text-sm sm:text-base text-muted-foreground">What you see is what you pay. Always.</p>
-						</div>
-					</FadeUp>
-					<FadeUp delay={0.1}>
-						{/* Desktop table */}
-						<div className="mx-auto mt-10 max-w-2xl rounded-xl border border-border bg-card overflow-hidden hidden sm:block">
-							<table className="w-full text-sm">
-								<thead>
-									<tr className="border-b border-border bg-muted/50">
-										<th className="px-4 sm:px-6 py-3 text-left font-medium text-muted-foreground">Action</th>
-										<th className="px-4 sm:px-6 py-3 text-right font-medium text-muted-foreground">Fee</th>
-									</tr>
-								</thead>
-								<tbody>
-									{[
-										["Buy stablecoins (NGN → USDT/USDC)", "0.75%"],
-										["Sell stablecoins (USDT/USDC → NGN)", "0.75%"],
-										["Internal send (Clusteer → Clusteer)", "Free"],
-										["External withdrawal", "Network fee only"],
-										["Receive stablecoins", "Free"],
-										["Naira deposit (bank transfer)", "Free"],
-										["Naira withdrawal (to bank)", "Free"],
-									].map(([action, fee], i) => (
-										<tr key={i} className="border-b border-border last:border-0">
-											<td className="px-4 sm:px-6 py-3.5">{action}</td>
-											<td className="px-4 sm:px-6 py-3.5 text-right font-medium">
-												<span className={fee === "Free" ? "text-success" : ""}>{fee === "Free" ? "✓ Free" : fee}</span>
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
-						{/* Mobile stacked cards */}
-						<div className="mt-8 space-y-2 sm:hidden">
+						<div className="font-mono text-xs font-semibold text-light-green tracking-[1.5px] mb-4">◆ MOBILE APP</div>
+						<h2 className="font-display text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
+							Built for thumbs.<br /><span className="text-light-green">Not for desks.</span>
+						</h2>
+						<p className="mt-6 text-[16px] sm:text-[18px] text-white/70 max-w-[480px] leading-[1.55]">
+							Custom numpad. FaceID payouts. Live rate on your home screen widget. Designed in Lagos, for the way Nigerians actually move money.
+						</p>
+						<div className="flex flex-col gap-4 mt-8 sm:mt-10">
 							{[
-								["Buy stablecoins", "NGN → USDT/USDC", "0.75%"],
-								["Sell stablecoins", "USDT/USDC → NGN", "0.75%"],
-								["Internal send", "Clusteer → Clusteer", "Free"],
-								["External withdrawal", "To external wallet", "Network fee only"],
-								["Receive stablecoins", "From any wallet", "Free"],
-								["Naira deposit", "Bank transfer", "Free"],
-								["Naira withdrawal", "To your bank", "Free"],
-							].map(([action, desc, fee], i) => (
-								<div key={i} className="flex items-center justify-between rounded-lg border border-border bg-card p-3.5">
-									<div>
-										<p className="text-sm font-medium">{action}</p>
-										<p className="text-xs text-muted-foreground">{desc}</p>
+								{ icon: Bolt, t: "One-tap rate lock", s: "Hit the rate the moment you see it." },
+								{ icon: Shield, t: "Biometric on every payout", s: "FaceID, TouchID, fingerprint, your call." },
+								{ icon: Sparkles, t: "Home-screen widget", s: "USDT/NGN rate without unlocking the phone." },
+							].map((f, i) => (
+								<div key={i} className="flex items-start gap-3.5">
+									<div className="size-10 rounded-xl bg-light-green/[0.12] text-light-green inline-flex items-center justify-center shrink-0">
+										<f.icon className="size-[18px]" />
 									</div>
-									<span className={`text-sm font-semibold shrink-0 ml-3 ${fee === "Free" ? "text-success" : ""}`}>{fee === "Free" ? "✓ Free" : fee}</span>
+									<div>
+										<div className="font-display font-bold text-[17px]">{f.t}</div>
+										<div className="text-sm text-white/60 mt-0.5">{f.s}</div>
+									</div>
 								</div>
 							))}
 						</div>
-					</FadeUp>
-				</div>
-			</Section>
-
-			{/* ─── Security ��── */}
-			<Section id="security" className="border-b border-border bg-warm-beige/50">
-				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
-					<FadeUp>
-						<div className="text-center">
-							<Badge variant="secondary" className="mb-4">Bank-grade security</Badge>
-							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Your stablecoins are safe with us</h2>
-							<p className="mt-2 max-w-xl mx-auto text-muted-foreground">
-								We built Clusteer with the same security standards used by banks and institutional custodians.
-							</p>
+						<div className="flex gap-3 mt-8">
+							<Button size="lg" asChild className="bg-light-green text-custom-black hover:bg-light-green/90 border-2 border-light-green shadow-brutal-sm">
+								<Link href="/signup"><Check className="size-4" /> iOS</Link>
+							</Button>
+							<Button size="lg" variant="outline" asChild className="border-2 border-white text-white hover:bg-white/10">
+								<Link href="/signup"><Check className="size-4" /> Android</Link>
+							</Button>
 						</div>
 					</FadeUp>
-					<div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-						{[
-							{ icon: Shield, title: "Multi-sig wallets", body: "Hot, warm, and cold wallets with multi-signature approval. No single point of compromise." },
-							{ icon: Server, title: "Cold storage", body: "The majority of stablecoins are held offline in air-gapped cold storage." },
-							{ icon: KeyRound, title: "AES-256 encryption", body: "Private keys and PII encrypted at rest with AES-256-GCM. Column-level encryption on all sensitive fields." },
-							{ icon: FileCheck, title: "Audit trail", body: "Every action — admin or user — is logged immutably. Full compliance with SEC Nigeria requirements." },
-						].map((s, i) => (
-							<FadeUp key={s.title} delay={i * 0.08}>
-								<div className="rounded-xl border border-border bg-card p-6 text-center h-full">
-									<div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
-										<s.icon className="size-6" />
-									</div>
-									<h3 className="mt-4 font-semibold">{s.title}</h3>
-									<p className="mt-2 text-xs text-muted-foreground leading-relaxed">{s.body}</p>
-								</div>
-							</FadeUp>
-						))}
-					</div>
-					{/* Networks inline */}
-					<FadeUp delay={0.2}>
-						<div className="mt-12 rounded-xl border border-border bg-card p-6 text-center">
-							<p className="text-sm font-medium">Supported networks</p>
-							<p className="mt-1 text-xs text-muted-foreground">USDT and USDC across five chains. We auto-route for the lowest fee.</p>
-							<div className="mt-4 flex flex-wrap justify-center gap-2">
-								{["Tron", "BSC", "Ethereum", "Solana", "Polygon"].map((c) => (
-									<ChainBadge key={c} chain={c} className="px-3 py-1.5 text-sm" />
-								))}
-							</div>
-						</div>
+					<FadeUp delay={0.15}>
+						<PhoneMockup rate={liveRateInt} />
 					</FadeUp>
 				</div>
-			</Section>
-
-			{/* ─── Testimonials ─── */}
-			<Section className="border-b border-border">
-				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
-					<FadeUp>
-						<div className="text-center">
-							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Trusted by Nigerians</h2>
-							<p className="mt-2 text-muted-foreground">What our users say.</p>
-						</div>
-					</FadeUp>
-					<div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-						{[
-							{ name: "Adaeze O.", role: "Freelancer, Lagos", quote: "I receive USDT from clients abroad and sell to Naira on Clusteer. The rate is always fair and money hits my bank in minutes. Better than any P2P platform I've used.", rating: 5 },
-							{ name: "Tunde B.", role: "Trader, Abuja", quote: "The BVN verification was instant — I was buying USDT within 5 minutes of signing up. The multi-chain support means I can always pick the cheapest network.", rating: 5 },
-							{ name: "Fatima Y.", role: "Student, Kano", quote: "I use Clusteer to save in USDT instead of keeping Naira. The app is simple, fees are clear, and I feel safe knowing my funds are in cold storage.", rating: 5 },
-						].map((t, i) => (
-							<FadeUp key={t.name} delay={i * 0.1}>
-								<div className="rounded-xl border border-border bg-card p-6 h-full flex flex-col">
-									<div className="flex gap-0.5 mb-3">
-										{Array.from({ length: t.rating }).map((_, j) => (
-											<Star key={j} className="size-4 fill-warning text-warning" />
-										))}
-									</div>
-									<p className="text-sm text-muted-foreground leading-relaxed flex-1">&ldquo;{t.quote}&rdquo;</p>
-									<div className="mt-4 pt-4 border-t border-border">
-										<p className="font-semibold text-sm">{t.name}</p>
-										<p className="text-xs text-muted-foreground">{t.role}</p>
-									</div>
-								</div>
-							</FadeUp>
-						))}
-					</div>
-				</div>
-			</Section>
+			</section>
 
 			{/* ─── FAQ ─── */}
-			<Section id="faq" className="border-b border-border bg-muted/30">
-				<div className="mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
-					<FadeUp>
-						<div className="text-center mb-8 sm:mb-10">
-							<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Frequently asked questions</h2>
-						</div>
-					</FadeUp>
-					<FadeUp delay={0.1}>
-						<div>
-							{[
-								{ q: "What is USDT?", a: "USDT (Tether) is a stablecoin — a digital currency pegged 1:1 to the US Dollar. 1 USDT always equals approximately $1. It's the most widely used stablecoin in the world and the easiest way to hold dollar-value without a domiciliary account." },
-								{ q: "How do I buy USDT with Naira?", a: "Sign up, verify your BVN (takes under 2 minutes), fund your account via bank transfer, and buy USDT at the live rate. The whole process takes under 10 minutes for first-time users." },
-								{ q: "What are your fees?", a: "Buy and sell: 0.75%. Internal transfers between Clusteer users are free. External withdrawals only cost the blockchain network fee. Naira deposits and withdrawals are free." },
-								{ q: "Is my money safe?", a: "Yes. Stablecoins are held in multi-signature cold storage wallets. All private keys are encrypted with AES-256-GCM. We maintain full audit trails and are licensed by the SEC Nigeria as a VASP." },
-								{ q: "Which chains do you support?", a: "USDT is available on Tron (TRC-20), BSC (BEP-20), and Ethereum (ERC-20). USDC is available on Ethereum, Solana, and Polygon. We auto-suggest the cheapest network for each transfer." },
-								{ q: "How long do withdrawals take?", a: "Naira withdrawals to your bank arrive within minutes during business hours. Stablecoin withdrawals to external wallets depend on the chain — typically 1-5 minutes for Tron, 2-10 minutes for others." },
-								{ q: "Do I need a bank account?", a: "Yes, you need a Nigerian bank account to deposit and withdraw Naira. You can add multiple bank accounts in your settings." },
-								{ q: "What KYC documents do I need?", a: "Tier 1 requires only your BVN. Tier 2 adds NIN and a government-issued ID. Tier 3 adds proof of address. Higher tiers unlock higher transaction limits." },
-							].map((item) => (
-								<FAQ key={item.q} q={item.q} a={item.a} />
-							))}
-						</div>
-					</FadeUp>
-				</div>
-			</Section>
+			<section className="py-16 sm:py-20 px-4 sm:px-8 max-w-[800px] mx-auto">
+				<FadeUp>
+					<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-4">◆ FAQ</div>
+					<h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] mb-8 sm:mb-10">Common questions</h2>
+				</FadeUp>
+				<FadeUp delay={0.1}>
+					<div>
+						{[
+							{ q: "What stablecoins do you support?", a: "USDT and USDC on Tron (TRC-20), BSC (BEP-20), Ethereum (ERC-20), Solana (SPL), and Polygon. We auto-detect the chain." },
+							{ q: "How long do payouts take?", a: "Average 4 minutes 12 seconds. Naira hits your bank account via NIP instant transfer. No manual review for verified users." },
+							{ q: "What are your fees?", a: "0.75% flat fee on all buy/sell orders. No hidden spread — the rate you see is the rate you get. Internal Clusteer-to-Clusteer sends are free." },
+							{ q: "Is my money safe?", a: "Customer funds are held in segregated multi-sig wallets. Cold storage majority. We never commingle operational funds with customer assets." },
+							{ q: "What KYC documents do I need?", a: "Tier 1: BVN only (2 minutes). Tier 2: NIN + government ID + selfie. Tier 3: proof of address + source of funds for high-volume traders." },
+						].map((item) => <FAQ key={item.q} q={item.q} a={item.a} />)}
+					</div>
+				</FadeUp>
+			</section>
 
 			{/* ─── CTA ─── */}
-			<Section className="border-b-2 border-custom-black bg-gradient-to-br from-brand-800 via-brand-700 to-brand-900 text-white">
-				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
-					<div className="grid items-center gap-8 sm:gap-10 md:grid-cols-2">
-						<FadeUp>
-							<div>
-								<h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Start trading stablecoins today.</h2>
-								<p className="mt-3 text-white/70 text-sm sm:text-base">Join thousands of Nigerians already using Clusteer.</p>
-								<div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-white/80">
-									{["1. Create account", "2. Verify BVN", "3. Buy USDT"].map((s, i) => (
-										<span key={s} className="inline-flex items-center gap-2">
-											{i > 0 && <ArrowRight className="size-3 text-white/40 hidden sm:block" />}
-											<span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs sm:text-sm">{s}</span>
-										</span>
-									))}
-								</div>
-							</div>
-						</FadeUp>
-						<FadeUp delay={0.1}>
-							<div className="flex flex-col items-stretch sm:items-start md:items-end gap-4">
-								<Button size="xl" asChild  className="w-full sm:w-auto">
-									<Link href="/signup">Create free account <ArrowRight className="size-4" /></Link>
+			<section className="py-8 sm:py-10 px-4 sm:px-8 max-w-[1280px] mx-auto">
+				<FadeUp>
+					<div className="bg-light-green border-2 border-custom-black rounded-[28px] sm:rounded-[36px] p-8 sm:p-12 lg:p-16 relative overflow-hidden">
+						{/* Logo watermark */}
+						<div className="absolute -right-10 -bottom-10 opacity-[0.15]">
+							<svg width="400" height="400" viewBox="0 0 110 110" fill="none">
+								<path d="M4.99993 54.5605C4.99993 27.0705 25.7099 4.41769 52.3788 1.35297C55.7761 0.962547 58.5603 3.77234 58.5603 7.19206L58.5603 54.5605L58.5603 101.929C58.5603 105.349 55.7761 108.158 52.3788 107.768C25.7099 104.703 4.99993 82.0504 4.99993 54.5605Z" fill="#21241D"/>
+								<circle cx="76.9814" cy="31.0309" r="7.27554" fill="#21241D"/>
+								<circle cx="76.9814" cy="54.5603" r="7.27554" fill="#21241D"/>
+								<circle cx="76.9814" cy="78.0898" r="7.27554" fill="#21241D"/>
+								<circle cx="97.7243" cy="54.5603" r="7.27554" fill="#21241D"/>
+							</svg>
+						</div>
+						<div className="relative max-w-[720px]">
+							<h2 className="font-display text-[clamp(36px,6vw,88px)] font-bold leading-[0.95] tracking-[-0.045em] text-custom-black">
+								Your stables<br />deserve naira<br />in <em className="italic">minutes.</em>
+							</h2>
+							<p className="mt-6 text-[16px] sm:text-[18px] text-custom-black/75 max-w-[480px] leading-[1.5]">
+								Verify in 3 minutes. Cash out in 5. No phone calls, no &quot;send me proof&quot;, no drama.
+							</p>
+							<div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+								<Button size="xl" asChild className="btn-shine bg-custom-black text-light-green hover:bg-custom-black/90 border-2 border-custom-black shadow-brutal w-full sm:w-auto text-[17px]">
+									<Link href="/signup">Create account <ArrowRight className="size-5" /></Link>
 								</Button>
-								<p className="text-xs text-white/50 text-center sm:text-left md:text-right">No debit card required. All you need is a BVN.</p>
+								<Button size="xl" variant="outline" asChild className="border-2 border-custom-black w-full sm:w-auto text-[17px]">
+									<Link href="/support">Talk to us</Link>
+								</Button>
 							</div>
-						</FadeUp>
+						</div>
 					</div>
-				</div>
-			</Section>
+				</FadeUp>
+			</section>
 
 			{/* ─── Footer ─── */}
-			<footer className="border-t border-border">
-				<div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
-					<div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 md:grid-cols-4">
-						<div className="col-span-2 md:col-span-1">
-							<Logo />
-							<p className="mt-3 text-xs text-muted-foreground leading-relaxed">
-								Buy, sell, and hold stablecoins with Naira. Licensed by the SEC Nigeria.
+			<footer className="bg-custom-black text-white py-12 sm:py-16 lg:py-20 px-4 sm:px-8">
+				<div className="max-w-[1280px] mx-auto">
+					<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-12 sm:mb-16">
+						<div className="col-span-2 sm:col-span-3 lg:col-span-1">
+							<Logo inverted />
+							<p className="mt-5 text-[14px] leading-[1.6] text-white/60 max-w-[280px]">
+								Stablecoins to naira, fast. Built for traders, freelancers, and anyone moving money in and out of Nigeria.
 							</p>
-						</div>
-						<div>
-							<p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Product</p>
-							<div className="mt-3 flex flex-col gap-2 text-sm">
-								<Link href="/signup" className="text-muted-foreground hover:text-foreground transition-colors">Get started</Link>
-								<a href="#rates" className="text-muted-foreground hover:text-foreground transition-colors">Rates</a>
-								<a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
-								<a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
+							<div className="inline-flex items-center gap-2 mt-5 px-3 py-1.5 rounded-full bg-light-green/[0.12] font-mono text-[11px] font-medium text-light-green">
+								<span className="live-dot size-1.5 rounded-full bg-light-green" />
+								All systems operational
 							</div>
 						</div>
-						<div>
-							<p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Legal</p>
-							<div className="mt-3 flex flex-col gap-2 text-sm">
-								<Link href="/terms-of-service" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link>
-								<Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
-								<Link href="/security-info" className="text-muted-foreground hover:text-foreground transition-colors">Security</Link>
+						{[
+							{ t: "Product", l: ["Buy stables", "Sell stables", "Swap", "Mobile app", "Pricing"] },
+							{ t: "Company", l: ["About", "Careers", "Press", "Contact", "Status"] },
+							{ t: "Resources", l: ["Help center", "Rate alerts", "Developer API", "Security"] },
+							{ t: "Legal", l: ["Terms", "Privacy", "AML/CFT", "NDPR"] },
+						].map((c) => (
+							<div key={c.t}>
+								<div className="font-mono text-[11px] font-semibold text-white/40 tracking-[1.5px] mb-4">{c.t.toUpperCase()}</div>
+								<ul className="flex flex-col gap-2.5">
+									{c.l.map((it) => <li key={it}><a className="text-sm text-white/75 hover:text-white transition-colors">{it}</a></li>)}
+								</ul>
 							</div>
-						</div>
-						<div>
-							<p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Support</p>
-							<div className="mt-3 flex flex-col gap-2 text-sm">
-								<Link href="/help" className="text-muted-foreground hover:text-foreground transition-colors">Help centre</Link>
-								<a href="mailto:support@clusteer.com" className="text-muted-foreground hover:text-foreground transition-colors">support@clusteer.com</a>
-							</div>
-						</div>
+						))}
 					</div>
-					<div className="mt-8 sm:mt-10 border-t border-border pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-muted-foreground text-center sm:text-left">
-						<p>© {new Date().getFullYear()} Clusteer Technologies Ltd. RC 1234567. Licensed by the Securities and Exchange Commission, Nigeria (VASP).</p>
-						<p className="text-muted-foreground/60">All stablecoin balances are held in multi-signature custodial wallets.</p>
+					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-7 border-t border-white/10 text-xs text-white/50">
+						<span>© {new Date().getFullYear()} Clusteer Technologies Ltd. RC: 2049871. Lagos, Nigeria.</span>
+						<span className="font-mono">v3.2.1</span>
 					</div>
 				</div>
 			</footer>
@@ -650,39 +539,213 @@ export default function Home() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Mobile swap preview                                                */
+/*  Mobile swap preview                                                 */
 /* ------------------------------------------------------------------ */
 
-function MobileSwapPreview() {
-	const { data } = useQuery({ queryKey: ["ticker-rates"], queryFn: async () => { const r = await fetch("/api/system/exchange-rate?targetCurrency=NGN&amount=1&type=buy"); return r.json(); }, staleTime: 30_000 });
-	const rate = data?.buyRate ? Math.round(data.buyRate) : 1570;
-	const receive = (100000 / rate).toFixed(2);
+function MobileSwap({ rate }: { rate: number }) {
+	const ngn = formatMoney(1000 * rate, "NGN", { decimals: 0 });
 	return (
-		<div className="pointer-events-auto rounded-xl border border-border bg-card p-4 shadow-sm">
-			<div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-				<div className="flex items-center gap-2">
-					<AssetLogo symbol="NGN" size="sm" />
-					<div className="min-w-0">
-						<p className="text-[10px] text-muted-foreground">You pay</p>
-						<p className="font-display font-bold text-sm truncate">₦100,000</p>
-					</div>
-				</div>
-				<ArrowRight className="size-3.5 text-muted-foreground" />
-				<div className="flex items-center gap-2 justify-end">
-					<div className="min-w-0 text-right">
-						<p className="text-[10px] text-muted-foreground">You receive</p>
-						<p className="font-display font-bold text-sm truncate">{receive} USDT</p>
-					</div>
+		<div className="rounded-[20px] border-2 border-custom-black bg-custom-black p-4 sm:p-5 shadow-brutal">
+			<div className="flex items-center gap-2 font-mono text-xs font-medium text-light-green tracking-wider mb-3">
+				<span className="live-dot size-2 rounded-full bg-light-green" /> LIVE — USDT / NGN
+			</div>
+			<div className="font-mono text-3xl sm:text-4xl font-semibold text-white tabular-nums tracking-[-0.03em]">
+				₦{rate.toLocaleString()}
+			</div>
+			<div className="mt-1 text-xs text-white/50">per 1 USDT</div>
+			<div className="mt-4 bg-background rounded-2xl p-4 border border-custom-black/10 space-y-2">
+				<div className="flex items-center gap-3 p-3 bg-warm-beige rounded-xl">
 					<AssetLogo symbol="USDT" size="sm" />
+					<div>
+						<div className="font-mono text-lg font-semibold">1,000.00</div>
+						<div className="text-[10px] text-muted-foreground">You send · USDT</div>
+					</div>
+				</div>
+				<div className="flex items-center gap-3 p-3 bg-[#EFFCD0] rounded-xl">
+					<AssetLogo symbol="NGN" size="sm" />
+					<div>
+						<div className="font-mono text-lg font-semibold">{ngn}</div>
+						<div className="text-[10px] text-brand-800 font-semibold">You receive · NGN</div>
+					</div>
 				</div>
 			</div>
-			<div className="mt-3 flex items-center justify-between text-[11px] text-muted-foreground">
-				<span>1 USDT = {formatMoney(rate, "NGN", { decimals: 0 })}</span>
-				<span className="text-success font-medium">Fee: 0.75%</span>
-			</div>
-			<Button asChild className="mt-3 w-full" size="sm">
-				<Link href="/signup">Buy USDT now</Link>
+			<Button asChild size="lg" className="btn-shine mt-4 w-full shadow-brutal-sm">
+				<Link href="/signup">Cash out now</Link>
 			</Button>
+		</div>
+	);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Step visuals for How it Works                                       */
+/* ------------------------------------------------------------------ */
+
+function StepVisualRate({ rate }: { rate: number }) {
+	const ngn = formatMoney(500 * rate, "NGN", { decimals: 0 });
+	return (
+		<div className="w-full max-w-[380px] bg-background border-[1.5px] border-custom-black rounded-[20px] p-5 sm:p-6 flex flex-col gap-3.5">
+			<div className="flex justify-between items-baseline">
+				<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">You send</span>
+				<span className="text-[11px] text-brand-800 font-semibold">USDT • TRC-20</span>
+			</div>
+			<div className="flex items-center gap-3">
+				<AssetLogo symbol="USDT" size="lg" />
+				<div className="font-mono text-3xl sm:text-4xl font-semibold tracking-[-0.02em]">500.00</div>
+			</div>
+			<div className="border-t border-dashed border-custom-black/20 my-1" />
+			<div className="flex justify-between items-baseline">
+				<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">You get</span>
+				<span className="font-mono text-[11px] text-brand-800 font-semibold">@ ₦{rate.toLocaleString()}</span>
+			</div>
+			<div className="bg-light-green p-3.5 sm:p-4 rounded-[14px] border-[1.5px] border-custom-black flex items-center gap-3">
+				<AssetLogo symbol="NGN" size="lg" />
+				<div className="font-mono text-2xl sm:text-[28px] font-semibold tracking-[-0.02em] text-custom-black">{ngn}</div>
+			</div>
+			<div className="text-[11px] text-muted-foreground font-mono text-right">Fee: ₦0 • Spread: 0.0%</div>
+		</div>
+	);
+}
+
+function StepVisualSend() {
+	return (
+		<div className="w-full max-w-[320px] bg-background border-[1.5px] border-custom-black rounded-[20px] p-5 sm:p-6 flex flex-col gap-4 items-center">
+			<div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Scan to send</div>
+			{/* Decorative QR pattern */}
+			<div className="w-[180px] sm:w-[200px] aspect-square p-3 bg-white border-[1.5px] border-custom-black rounded-2xl grid grid-cols-[repeat(15,1fr)]">
+				{Array.from({ length: 225 }).map((_, i) => {
+					const corner = [0,1,2,15,16,17,30,31,32,180,181,182,195,196,197,210,211,212].includes(i);
+					const random = (i * 37) % 7 < 3;
+					return <div key={i} className={`aspect-square ${corner || random ? "bg-custom-black" : ""}`} />;
+				})}
+			</div>
+			<div className="font-mono text-[11px] font-medium text-muted-foreground text-center break-all max-w-[280px]">
+				TR7NHqjeKQxGTCi8q8ZY4pL8…HX9w
+			</div>
+			<div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#EFFCD0] border-[1.5px] border-custom-black text-xs font-semibold">
+				<span className="live-dot size-2 rounded-full bg-brand-800" />
+				Watching mempool
+			</div>
+		</div>
+	);
+}
+
+function StepVisualPaid({ rate }: { rate: number }) {
+	const ngn = formatMoney(500 * rate, "NGN", { decimals: 0 });
+	return (
+		<div className="w-full max-w-[380px] bg-background border-[1.5px] border-background rounded-[20px] p-5 sm:p-6 flex flex-col gap-4">
+			<div className="flex items-center gap-3">
+				<div className="size-11 rounded-full bg-light-green border-2 border-custom-black inline-flex items-center justify-center">
+					<Check className="size-5 text-custom-black" strokeWidth={3} />
+				</div>
+				<div>
+					<div className="font-display text-lg font-bold">Payout settled</div>
+					<div className="text-xs text-muted-foreground font-mono">04:12 elapsed • Block #61,832,409</div>
+				</div>
+			</div>
+			<div className="bg-warm-beige rounded-[14px] p-4 border border-custom-black/8">
+				<div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Credited to</div>
+				<div className="flex items-center gap-2.5">
+					<span className="size-2 rounded-full bg-[#E5631A]" />
+					<span className="font-display font-bold">GTBank</span>
+					<span className="font-mono text-[13px] text-muted-foreground">•• 3421</span>
+				</div>
+				<div className="font-mono text-[28px] font-semibold text-custom-black mt-2">
+					+{ngn}<span className="text-lg text-muted-foreground">.00</span>
+				</div>
+			</div>
+			<div className="flex justify-between text-xs text-muted-foreground">
+				<span>Ref: <span className="font-mono">CL-9F2A3D81</span></span>
+				<span className="text-brand-800 font-semibold">✓ NIBSS confirmed</span>
+			</div>
+		</div>
+	);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Phone mockup for App Showcase                                       */
+/* ------------------------------------------------------------------ */
+
+function PhoneMockup({ rate }: { rate: number }) {
+	return (
+		<div className="relative flex justify-center">
+			{/* Glow */}
+			<div className="absolute inset-[10%_-10%] bg-[radial-gradient(circle,rgba(159,232,112,0.18)_0%,transparent_65%)] blur-[40px]" />
+
+			{/* Phone frame */}
+			<div className="relative z-10 w-[320px] sm:w-[340px] h-[660px] sm:h-[700px] rounded-[48px] sm:rounded-[56px] p-2.5 bg-[#0A0B08] border-2 border-white/80" style={{ boxShadow: "0 30px 80px -20px rgba(0,0,0,0.6)" }}>
+				<div className="w-full h-full bg-background rounded-[38px] sm:rounded-[46px] overflow-hidden relative">
+					{/* Notch */}
+					<div className="absolute top-3.5 left-1/2 -translate-x-1/2 w-[90px] sm:w-[110px] h-6 sm:h-7 bg-[#0A0B08] rounded-full z-20" />
+					{/* Status bar */}
+					<div className="absolute top-4 left-6 right-6 flex justify-between font-display font-semibold text-xs z-30">
+						<span>9:41</span><span>•••</span>
+					</div>
+
+					{/* Content */}
+					<div className="px-4 sm:px-5 pt-14 pb-5 flex flex-col gap-3.5">
+						{/* Header */}
+						<div className="flex justify-between items-center">
+							<div>
+								<div className="text-[11px] text-muted-foreground">Welcome back</div>
+								<div className="font-display text-base sm:text-lg font-bold">Adaeze ✦</div>
+							</div>
+							<div className="size-8 sm:size-9 rounded-full bg-custom-black text-light-green inline-flex items-center justify-center font-display font-bold text-sm">A</div>
+						</div>
+
+						{/* Balance card */}
+						<div className="bg-custom-black text-white rounded-[20px] sm:rounded-3xl p-4 sm:p-5 relative overflow-hidden">
+							<div className="absolute -top-10 -right-10 size-32 sm:size-40 rounded-full bg-[radial-gradient(circle,rgba(159,232,112,0.3)_0%,transparent_70%)]" />
+							<div className="text-[10px] sm:text-[11px] text-light-green font-mono tracking-[1.5px]">TOTAL BALANCE</div>
+							<div className="font-mono text-[28px] sm:text-4xl font-semibold mt-1.5 sm:mt-2 tracking-[-0.02em]">
+								₦2,481,302<span className="text-lg sm:text-xl opacity-50">.40</span>
+							</div>
+							<div className="text-[11px] text-white/60 mt-1">≈ <span className="font-mono">1,538.21 USDT</span></div>
+							<div className="flex gap-1.5 sm:gap-2 mt-3 sm:mt-4">
+								{[
+									{ label: "Buy", bg: "bg-light-green text-custom-black" },
+									{ label: "Sell", bg: "bg-white/[0.08] text-white" },
+									{ label: "Swap", bg: "bg-white/[0.08] text-white" },
+								].map((b) => (
+									<div key={b.label} className={`flex-1 py-2 sm:py-2.5 rounded-xl ${b.bg} font-display font-bold text-xs sm:text-[13px] text-center`}>{b.label}</div>
+								))}
+							</div>
+						</div>
+
+						{/* Rate card */}
+						<div className="bg-light-green rounded-[14px] sm:rounded-[18px] p-3 sm:p-4 flex items-center justify-between">
+							<div>
+								<div className="text-[10px] sm:text-[11px] text-brand-800 font-mono font-semibold">USDT / NGN</div>
+								<div className="font-mono text-lg sm:text-[22px] font-semibold text-custom-black">₦{rate.toLocaleString()}</div>
+							</div>
+							<div className="w-16 sm:w-20 h-7 sm:h-9">
+								<MiniChart />
+							</div>
+						</div>
+
+						{/* Recent */}
+						<div>
+							<div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Recent</div>
+							{[
+								{ t: "Sold USDT", d: "Just now", a: "+₦322,480", g: true },
+								{ t: "Bought USDC", d: "2 hours ago", a: "-₦161,240", g: false },
+							].map((r, i) => (
+								<div key={i} className="flex items-center justify-between p-2 sm:p-2.5 bg-white rounded-xl border border-custom-black/6 mb-1.5">
+									<div className="flex items-center gap-2 sm:gap-2.5">
+										<div className={`size-7 sm:size-8 rounded-full ${r.g ? "bg-[#EFFCD0] text-brand-800" : "bg-warm-beige text-custom-black"} inline-flex items-center justify-center`}>
+											{r.g ? "−" : "+"}
+										</div>
+										<div>
+											<div className="text-xs sm:text-[13px] font-semibold">{r.t}</div>
+											<div className="text-[10px] sm:text-[11px] text-muted-foreground">{r.d}</div>
+										</div>
+									</div>
+									<div className={`font-mono text-xs sm:text-[13px] font-semibold ${r.g ? "text-brand-800" : ""}`}>{r.a}</div>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 }
