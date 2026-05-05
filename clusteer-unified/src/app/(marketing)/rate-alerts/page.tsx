@@ -3,27 +3,10 @@
 import Link from "next/link";
 import { ArrowRight, Bell, Eye, Zap, Mail, MessageSquare, SlidersHorizontal, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Logo } from "@/components/brand/logo";
-import { Footer } from "@/components/app/footer";
 
 export default function RateAlertsPage() {
 	return (
-		<div className="min-h-screen bg-background">
-			{/* ─── Nav ─── */}
-			<nav className="sticky top-0 z-50 border-b border-custom-black/6 bg-background/85 backdrop-blur-xl">
-				<div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 sm:px-8">
-					<Link href="/"><Logo /></Link>
-					<div className="flex items-center gap-3">
-						<Button variant="ghost" asChild size="sm" className="hidden sm:inline-flex font-semibold">
-							<Link href="/login">Sign in</Link>
-						</Button>
-						<Button asChild size="sm" className="btn-shine shadow-brutal-sm">
-							<Link href="/signup">Get started <ArrowRight className="size-4" /></Link>
-						</Button>
-					</div>
-				</div>
-			</nav>
-
+		<>
 			{/* ─── Hero ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="max-w-[720px]">
@@ -188,9 +171,6 @@ export default function RateAlertsPage() {
 					Rate alerts are free for all verified Clusteer users. You must complete KYC verification to access this feature.
 				</p>
 			</section>
-
-			{/* ─── Footer ─── */}
-			<Footer />
-		</div>
+		</>
 	);
 }

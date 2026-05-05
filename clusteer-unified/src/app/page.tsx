@@ -144,10 +144,10 @@ export default function Home() {
 				<div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 sm:px-8">
 					<Logo />
 					<div className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
-						<a href="#how" className="hover:text-foreground transition-colors">How it works</a>
-						<a href="#rates" className="hover:text-foreground transition-colors">Rates</a>
-						<a href="#trust" className="hover:text-foreground transition-colors">Trust</a>
-						<a href="#app" className="hover:text-foreground transition-colors">App</a>
+						<a href="#how" className="rounded-full px-3 py-1.5 hover:bg-warm-beige transition-all duration-200">How it works</a>
+						<a href="#rates" className="rounded-full px-3 py-1.5 hover:bg-warm-beige transition-all duration-200">Rates</a>
+						<a href="#trust" className="rounded-full px-3 py-1.5 hover:bg-warm-beige transition-all duration-200">Trust</a>
+						<a href="#app" className="rounded-full px-3 py-1.5 hover:bg-warm-beige transition-all duration-200">App</a>
 					</div>
 					<div className="flex items-center gap-3">
 						<Button variant="ghost" asChild size="sm" className="hidden sm:inline-flex font-semibold">

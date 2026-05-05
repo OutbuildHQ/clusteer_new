@@ -55,7 +55,7 @@ export function Footer() {
 							<div key={c.t}>
 								<div className="font-mono text-[11px] font-semibold text-white/40 tracking-[1.5px] mb-4">{c.t.toUpperCase()}</div>
 								<ul className="flex flex-col gap-2.5">
-									{c.l.map((it) => <li key={it.label}>{it.href.startsWith("#") ? <a href={it.href} className="text-sm text-white/75 hover:text-white transition-colors">{it.label}</a> : <Link href={it.href} className="text-sm text-white/75 hover:text-white transition-colors">{it.label}</Link>}</li>)}
+									{c.l.map((it) => <li key={it.label}>{it.href.startsWith("#") ? <a href={it.href} className="group text-sm text-white/60 hover:text-light-green transition-colors duration-200">{it.label}<span className="inline-block ml-0 opacity-0 group-hover:ml-1.5 group-hover:opacity-100 transition-all duration-200 text-xs">→</span></a> : <Link href={it.href} className="group text-sm text-white/60 hover:text-light-green transition-colors duration-200">{it.label}<span className="inline-block ml-0 opacity-0 group-hover:ml-1.5 group-hover:opacity-100 transition-all duration-200 text-xs">→</span></Link>}</li>)}
 								</ul>
 							</div>
 						))}

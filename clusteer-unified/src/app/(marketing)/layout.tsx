@@ -18,10 +18,10 @@ export default function MarketingLayout({
 						<Logo />
 					</Link>
 					<div className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
-						<Link href="/about" className="hover:text-foreground transition-colors">About</Link>
-						<Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
-						<Link href="/press" className="hover:text-foreground transition-colors">Press</Link>
-						<Link href="/status" className="hover:text-foreground transition-colors">Status</Link>
+						<Link href="/about" className="rounded-full px-3 py-1.5 hover:bg-warm-beige transition-all duration-200">About</Link>
+						<Link href="/contact" className="rounded-full px-3 py-1.5 hover:bg-warm-beige transition-all duration-200">Contact</Link>
+						<Link href="/press" className="rounded-full px-3 py-1.5 hover:bg-warm-beige transition-all duration-200">Press</Link>
+						<Link href="/status" className="rounded-full px-3 py-1.5 hover:bg-warm-beige transition-all duration-200">Status</Link>
 					</div>
 					<div className="flex items-center gap-3">
 						<Button variant="ghost" asChild size="sm" className="hidden sm:inline-flex font-semibold">

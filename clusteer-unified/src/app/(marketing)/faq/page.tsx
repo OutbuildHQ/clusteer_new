@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Logo } from "@/components/brand/logo";
-import { Footer } from "@/components/app/footer";
 import {
-	ArrowLeft,
 	ArrowRight,
 	ChevronDown,
 	Globe,
@@ -121,25 +118,7 @@ const CATEGORIES = [
 
 export default function FAQPage() {
 	return (
-		<div className="min-h-screen bg-background">
-			{/* ─── Top bar ─── */}
-			<nav className="sticky top-0 z-50 border-b border-custom-black/6 bg-background/85 backdrop-blur-xl">
-				<div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 sm:px-8">
-					<Link href="/" className="flex items-center gap-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-						<ArrowLeft className="size-4" />
-						<Logo />
-					</Link>
-					<div className="flex items-center gap-3">
-						<Button variant="ghost" asChild size="sm" className="hidden sm:inline-flex font-semibold">
-							<Link href="/login">Sign in</Link>
-						</Button>
-						<Button asChild size="sm" className="btn-shine shadow-brutal-sm">
-							<Link href="/signup">Get started <ArrowRight className="size-4" /></Link>
-						</Button>
-					</div>
-				</div>
-			</nav>
-
+		<>
 			{/* ─── Hero ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto text-center">
 				<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-3 sm:mb-4">
@@ -228,9 +207,6 @@ export default function FAQPage() {
 					</div>
 				</div>
 			</section>
-
-			{/* ─── Footer ─── */}
-			<Footer />
-		</div>
+		</>
 	);
 }
