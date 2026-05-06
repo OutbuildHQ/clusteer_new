@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import { useQuery } from "@tanstack/react-query";
 import { getUserWallet } from "@/lib/api/wallet/queries";
 import { getUserInfo, getAllTransactions } from "@/lib/api/user/queries";
@@ -229,8 +230,14 @@ export default function DashboardPage() {
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{topTransactions.map((t) => (
-									<TableRow key={t.id}>
+								{topTransactions.map((t, i) => (
+									<motion.tr
+										key={t.id}
+										initial={{ opacity: 0, y: 6 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ delay: i * 0.04, duration: 0.2 }}
+										className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+									>
 										<TableCell className="px-3 sm:px-4">
 											<div className="flex items-center gap-2 font-medium capitalize text-sm">
 												<span className={`size-2 rounded-full shrink-0 ${
@@ -250,7 +257,7 @@ export default function DashboardPage() {
 											</Badge>
 										</TableCell>
 										<TableCell className="hidden md:table-cell text-right text-sm text-muted-foreground">{relativeTime(t.dateCreated ?? t.date)}</TableCell>
-									</TableRow>
+									</motion.tr>
 								))}
 							</TableBody>
 						</Table>

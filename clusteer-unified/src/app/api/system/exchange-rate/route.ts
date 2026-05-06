@@ -52,15 +52,6 @@ async function fetchLiveRates() {
 			timestamp: Date.now(),
 		};
 
-		console.log("Clusteer P2P rates calculated:", {
-			officialRate: officialUsdToNgn.toFixed(2),
-			buyRate: buyRate.toFixed(2),
-			sellRate: sellRate.toFixed(2),
-			buyPremium: `${(BUY_PREMIUM * 100).toFixed(1)}%`,
-			sellPremium: `${(SELL_PREMIUM * 100).toFixed(1)}%`,
-			spread: `₦${(sellRate - buyRate).toFixed(2)}`,
-		});
-
 		return rateCache;
 	} catch (error) {
 		console.error("Failed to calculate rates:", error);

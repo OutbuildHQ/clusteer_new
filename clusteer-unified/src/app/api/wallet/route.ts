@@ -36,9 +36,8 @@ export async function GET(request: NextRequest) {
 			}
 
 			balancesData = await balancesResponse.json();
-			console.log("Blockchain engine balances data:", balancesData);
 		} catch (error) {
-			console.log("Wallet fetch error:", error);
+			console.error("Wallet fetch error:", error);
 			return NextResponse.json({
 				status: true,
 				walletAssets: [
@@ -56,10 +55,9 @@ export async function GET(request: NextRequest) {
 			const walletResponse = await djangoFetch(`/user/${userId}/wallets/`);
 			if (walletResponse.ok) {
 				walletDetails = await walletResponse.json();
-				console.log("Wallet details:", walletDetails);
 			}
 		} catch {
-			console.log("Could not fetch wallet details for addresses");
+			// wallet details unavailable — addresses will be empty
 		}
 
 		// Build a map of chain -> address from wallet details
@@ -136,8 +134,6 @@ export async function GET(request: NextRequest) {
 			{ name: "USDC Wallet", type: "CRYPTO" as const, currency: "USDC" as const, address: "", balance: 0, addresses: [] },
 			{ name: "NGN Wallet", type: "FIAT" as const, currency: "NGN" as const, address: "", balance: 0, addresses: [] },
 		];
-
-		console.log("Aggregated wallet assets:", finalWallets);
 
 		return NextResponse.json({
 			status: true,

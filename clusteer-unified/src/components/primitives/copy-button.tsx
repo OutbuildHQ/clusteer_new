@@ -40,7 +40,7 @@ export function CopyButton({
 						<Check className="size-3.5 text-success" />
 					</motion.span>
 				) : (
-					<motion.span key="copy" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }}>
+					<motion.span key="copy" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ type: "spring", stiffness: 500, damping: 25 }}>
 						<Copy className="size-3.5" />
 					</motion.span>
 				)}

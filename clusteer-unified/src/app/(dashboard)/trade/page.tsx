@@ -91,11 +91,12 @@ export default function TradePage() {
 		return amtNum * rate * feePct;
 	}, [mode, amtNum, rate]);
 
-	// Reset countdown when rate refreshes
+	// Reset countdown whenever exchange rate data refreshes
 	useEffect(() => {
+		setCountdown(10);
 		const timer = setInterval(() => setCountdown((c) => (c <= 1 ? 10 : c - 1)), 1000);
 		return () => clearInterval(timer);
-	}, []);
+	}, [exchangeRateData]);
 
 	const handleSubmitClick = () => {
 		if (!amount) return toast.error("Enter an amount");

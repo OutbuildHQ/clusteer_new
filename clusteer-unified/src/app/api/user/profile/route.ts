@@ -70,8 +70,8 @@ export async function GET(request: NextRequest) {
 					},
 				});
 			}
-		} catch (error) {
-			console.log("Django profile fetch failed, using JWT data:", error);
+		} catch {
+			// Django unavailable — fall back to JWT-derived profile below
 		}
 
 		// Fallback: return JWT-derived profile

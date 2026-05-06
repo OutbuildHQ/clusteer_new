@@ -184,13 +184,11 @@ export async function POST(request: NextRequest) {
 					);
 				}
 			}
-		} catch (error) {
-			console.log("Duplicate check error (non-critical):", error);
+		} catch {
 			// Continue with verification even if duplicate check fails
 		}
 
 		// Submit KYC verification to Django backend
-		console.log(`Starting ${verificationType} verification for user ${userId}`);
 
 		try {
 			const kycResponse = await fetch(
@@ -227,11 +225,6 @@ export async function POST(request: NextRequest) {
 			}
 
 			const kycResult = await kycResponse.json();
-
-			console.log(`${verificationType} verification result:`, {
-				success: kycResult.status,
-				verified: kycResult.data?.verified,
-			});
 
 			return NextResponse.json({
 				status: kycResult.status,

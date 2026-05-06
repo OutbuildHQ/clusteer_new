@@ -30,22 +30,25 @@ export interface BadgeProps
 	animated?: boolean;
 }
 
-function Badge({ className, variant, animated, ...props }: BadgeProps) {
+function Badge({ className, variant, animated, children, onClick, id, style, title, "aria-label": ariaLabel, ...props }: BadgeProps & { "aria-label"?: string }) {
 	if (animated) {
-		const { children, ...rest } = props;
 		return (
 			<motion.span
 				initial={{ scale: 0.85, opacity: 0 }}
 				animate={{ scale: 1, opacity: 1 }}
 				transition={{ type: "spring", stiffness: 400, damping: 20 }}
 				className={cn(badgeVariants({ variant }), className)}
-				{...(rest as any)}
+				onClick={onClick as React.MouseEventHandler}
+				id={id}
+				style={style}
+				title={title}
+				aria-label={ariaLabel}
 			>
 				{children}
 			</motion.span>
 		);
 	}
-	return <span className={cn(badgeVariants({ variant }), className)} {...props} />;
+	return <span className={cn(badgeVariants({ variant }), className)} {...props} onClick={onClick} id={id} style={style} title={title} aria-label={ariaLabel}>{children}</span>;
 }
 
 export { Badge, badgeVariants };

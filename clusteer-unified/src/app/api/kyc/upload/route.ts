@@ -224,8 +224,6 @@ export async function POST(request: NextRequest) {
 
 			const uploadResult = await uploadResponse.json();
 
-			console.log(`Documents uploaded successfully for user ${userId}`);
-
 			return NextResponse.json({
 				status: true,
 				message: "Documents uploaded successfully",

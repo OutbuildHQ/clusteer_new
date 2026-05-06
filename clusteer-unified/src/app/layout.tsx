@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Sora } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import ReactQueryClientProvider from "@/providers/ReactQueryClientProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import CookieConsent from "@/components/app/cookie-consent";
 import "./globals.css";
 
 const inter = Inter({
@@ -86,6 +87,7 @@ export default function RootLayout({
 				<ThemeProvider>
 					<ReactQueryClientProvider>{children}</ReactQueryClientProvider>
 					<Toaster position="bottom-center" richColors closeButton />
+					<CookieConsent />
 				</ThemeProvider>
 			</body>
 		</html>
