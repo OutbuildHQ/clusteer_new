@@ -34,7 +34,8 @@ export default function IdentityVerificationForm() {
 		},
 	});
 
-	const onSubmit = (values: FieldValues) => console.log(values);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const onSubmit = (_values: FieldValues) => {};
 
 	return (
 		<Form {...form}>

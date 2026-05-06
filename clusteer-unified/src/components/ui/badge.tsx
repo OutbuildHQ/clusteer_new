@@ -38,7 +38,7 @@ function Badge({ className, variant, animated, children, onClick, id, style, tit
 				animate={{ scale: 1, opacity: 1 }}
 				transition={{ type: "spring", stiffness: 400, damping: 20 }}
 				className={cn(badgeVariants({ variant }), className)}
-				onClick={onClick as React.MouseEventHandler}
+				onClick={onClick}
 				id={id}
 				style={style}
 				title={title}

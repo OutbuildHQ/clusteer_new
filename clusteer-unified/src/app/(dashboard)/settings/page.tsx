@@ -93,13 +93,17 @@ export default function SettingsPage() {
 				<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">Settings</h1>
 			</div>
 			<Tabs value={activeTab} onValueChange={setActiveTab}>
-				<TabsList className="w-full overflow-x-auto flex-nowrap justify-start no-scrollbar border-2 border-custom-black rounded-[14px] p-1 bg-warm-beige/40">
-					<TabsTrigger value="profile" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Profile</TabsTrigger>
-					<TabsTrigger value="security" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Security</TabsTrigger>
-					<TabsTrigger value="notifications" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Notifications</TabsTrigger>
-					<TabsTrigger value="payment" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Payment</TabsTrigger>
-					<TabsTrigger value="preferences" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Preferences</TabsTrigger>
-				</TabsList>
+				<div className="relative">
+					<TabsList className="w-full overflow-x-auto flex-nowrap justify-start no-scrollbar border-2 border-custom-black rounded-[14px] p-1 bg-warm-beige/40">
+						<TabsTrigger value="profile" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Profile</TabsTrigger>
+						<TabsTrigger value="security" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Security</TabsTrigger>
+						<TabsTrigger value="notifications" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Notifications</TabsTrigger>
+						<TabsTrigger value="payment" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Payment</TabsTrigger>
+						<TabsTrigger value="preferences" className="rounded-[10px] font-display font-bold text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-brutal-sm">Preferences</TabsTrigger>
+					</TabsList>
+					{/* Right-edge fade — hints at horizontal scroll on mobile */}
+					<div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-8 rounded-r-[14px] bg-gradient-to-l from-warm-beige/60 to-transparent sm:hidden" />
+				</div>
 
 				{/* Client-only: AnimatePresence safe because this is "use client" */}
 			<AnimatePresence mode="wait">
