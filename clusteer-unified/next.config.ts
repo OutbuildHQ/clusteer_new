@@ -5,11 +5,6 @@ const nextConfig: NextConfig = {
 		ignoreBuildErrors: false,
 	},
 
-	// Fix Turbopack workspace-root warning caused by multiple lockfiles in monorepo
-	turbopack: {
-		root: __dirname,
-	},
-
 	// Security headers
 	async headers() {
 		return [
