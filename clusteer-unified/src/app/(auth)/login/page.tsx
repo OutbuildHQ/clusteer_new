@@ -47,7 +47,7 @@ export default function LoginPage() {
 
 			signIn(values.email);
 			toast.success("Welcome back!");
-			router.push("/dashboard");
+			window.location.href = "/dashboard";
 		} catch {
 			toast.error("Unable to connect. Please try again.");
 		}
