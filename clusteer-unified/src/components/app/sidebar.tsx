@@ -25,18 +25,23 @@ const NAV = [
 	{ id: "support",                 href: "/support",                 label: "Support",       icon: HelpCircle },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+	mobile?: boolean;
+	onNavClick?: () => void;
+}
+
+export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 	const pathname = usePathname();
 	const total = ASSETS.reduce((s, a) => s + a.balanceNgn, 0);
 
 	return (
 		<aside
-			className="hidden lg:flex lg:w-[248px] shrink-0 flex-col overflow-y-auto"
-			style={{ borderRight: "1px solid var(--c-line)", background: "var(--c-surface)", padding: "18px 14px", height: "100vh" }}
+			className={mobile ? "flex flex-col overflow-y-auto h-full" : "hidden lg:flex lg:w-[248px] shrink-0 flex-col overflow-y-auto"}
+			style={{ borderRight: mobile ? "none" : "1px solid var(--c-line)", background: "var(--c-surface)", padding: "18px 14px", height: mobile ? "100%" : "100vh" }}
 		>
 			{/* Logo header */}
 			<div className="flex items-center gap-2.5 px-2 pb-3.5 mb-2" style={{ borderBottom: "1px solid var(--c-line)" }}>
-				<Link href="/dashboard"><Logo /></Link>
+				<Link href="/dashboard" onClick={onNavClick}><Logo /></Link>
 				<span
 					className="ml-auto inline-flex items-center h-[22px] px-2 rounded-full text-[11.5px] font-medium"
 					style={{ background: "var(--c-surface-2)", color: "var(--c-text-2)", border: "1px solid var(--c-line)" }}
@@ -54,6 +59,7 @@ export function Sidebar() {
 						<Link
 							key={n.id}
 							href={n.href}
+							onClick={onNavClick}
 							className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13.5px] font-medium transition-colors ${!active ? "hover:bg-[var(--c-surface-2)] hover:text-[var(--c-text)]" : ""}`}
 							style={
 								active

@@ -174,6 +174,8 @@
 
 /* Modal animation */
 @keyframes modalIn { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
 
 /* ---- Dashboard form focus states ---- */
 /* Only bordered form fields get the lime focus ring — not bare inputs inside wrappers */
