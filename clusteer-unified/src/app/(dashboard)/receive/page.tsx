@@ -69,15 +69,15 @@ export default function ReceiveIndex() {
 	return (
 		<div className="max-w-xl mx-auto space-y-4">
 			<div>
-				<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Deposit</p>
+				<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-[var(--c-text-3)]">&#9670; Deposit</p>
 				<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">Receive</h1>
 			</div>
-			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
+			<Card className="rounded-[16px] border border-[var(--c-line)]">
 				<CardHeader className="p-4 sm:p-6 lg:p-8"><CardTitle className="font-display font-bold tracking-[-0.02em] text-base sm:text-lg">Scan or share your deposit address</CardTitle></CardHeader>
 				<CardContent className="space-y-4 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 						<div>
-							<label className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">Asset</label>
+							<label className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-[var(--c-text-3)]">Asset</label>
 							<Select value={asset} onValueChange={(v) => { setAsset(v); const found = assets.find((a) => a.symbol === v); setChain(found?.chains[0] ?? "Tron"); }}>
 								<SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
 								<SelectContent>
@@ -90,7 +90,7 @@ export default function ReceiveIndex() {
 							</Select>
 						</div>
 						<div>
-							<label className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">Network</label>
+							<label className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-[var(--c-text-3)]">Network</label>
 							<Select value={chain} onValueChange={(v) => setChain(v as any)}>
 								<SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
 								<SelectContent>
@@ -102,17 +102,17 @@ export default function ReceiveIndex() {
 
 					<div className="flex flex-col items-center gap-4 py-2">
 						{selected.address ? (
-							<div className="rounded-[14px] border-2 border-custom-black p-4 bg-white">
+							<div className="rounded-[14px] border border-[var(--c-line)] p-4 bg-white">
 								<QR value={address} size={192} />
 							</div>
 						) : (
-							<div className="flex items-center justify-center w-48 h-48 rounded-[14px] border-2 border-dashed border-custom-black/30 bg-warm-beige/30 text-xs text-muted-foreground text-center p-4">
+							<div className="flex items-center justify-center w-48 h-48 rounded-[14px] border-2 border-dashed border-custom-black/30 bg-[var(--c-surface-2)]/30 text-xs text-muted-foreground text-center p-4">
 								No deposit address available yet. Your wallet may still be initializing.
 							</div>
 						)}
 						<div className="w-full">
-							<label className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">Deposit address</label>
-							<div className="mt-1 flex items-center gap-2 rounded-[14px] border-2 border-custom-black bg-warm-beige p-3">
+							<label className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-[var(--c-text-3)]">Deposit address</label>
+							<div className="mt-1 flex items-center gap-2 rounded-[14px] border border-[var(--c-line)] bg-[var(--c-surface-2)] p-3">
 								<code className="font-mono flex-1 break-all text-xs tabular-nums">{address}</code>
 								{selected.address && <CopyButton value={address} label="Address" />}
 							</div>

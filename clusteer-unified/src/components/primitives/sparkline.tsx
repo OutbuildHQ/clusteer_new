@@ -7,12 +7,14 @@ export function Sparkline({
 	width = 120,
 	height = 36,
 	tone = "auto",
+	color,
 	className,
 }: {
 	data: number[];
 	width?: number;
 	height?: number;
 	tone?: "auto" | "positive" | "negative" | "neutral";
+	color?: string;
 	className?: string;
 }) {
 	if (!data.length) return null;
@@ -29,12 +31,13 @@ export function Sparkline({
 
 	const direction = data[data.length - 1] >= data[0] ? "positive" : "negative";
 	const effective = tone === "auto" ? direction : tone;
-	const stroke =
+	const stroke = color ?? (
 		effective === "positive"
-			? "var(--success)"
+			? "var(--c-up)"
 			: effective === "negative"
-			? "var(--danger)"
-			: "var(--muted-foreground)";
+			? "var(--c-down)"
+			: "var(--c-text-3)"
+	);
 
 	return (
 		<svg

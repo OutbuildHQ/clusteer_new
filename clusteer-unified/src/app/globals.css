@@ -11,6 +11,51 @@
    ========================================================= */
 
 :root {
+	/* ── Design System v2 — Onyx + Lime palette ─────────────── */
+	--c-onyx-900: #0B0E0C;
+	--c-onyx-800: #131815;
+	--c-onyx-700: #1B201D;
+	--c-onyx-600: #262C28;
+	--c-lime-400: #DBFF6B;
+	--c-lime-500: #C9F542;
+	--c-lime-600: #A8D820;
+	--c-cream:    #F4F1EA;
+
+	/* Signal colours */
+	--c-up:        #00A86B;
+	--c-up-soft:   #E6F6EF;
+	--c-down:      #E5484D;
+	--c-down-soft: #FDECEC;
+	--c-warn:      #E8A53A;
+	--c-warn-soft: #FCF3E1;
+	--c-info:      #1B7EC2;
+	--c-info-soft: #E6F2FA;
+
+	/* Neutral surfaces (warm cream system) */
+	--c-bg:          #F4F1EA;
+	--c-surface:     #FFFFFF;
+	--c-surface-2:   #F8F6F1;
+	--c-surface-3:   #EDE9DF;
+	--c-line:        #E2DDD0;
+	--c-line-strong: #C8C2B1;
+	--c-text:        #0B0E0C;
+	--c-text-2:      #4A5048;
+	--c-text-3:      #7C8278;
+
+	/* Shadows */
+	--sh-1: 0 1px 2px rgba(11,14,12,0.05);
+	--sh-2: 0 4px 12px rgba(11,14,12,0.06), 0 1px 2px rgba(11,14,12,0.04);
+	--sh-3: 0 12px 32px rgba(11,14,12,0.10), 0 2px 4px rgba(11,14,12,0.05);
+	--focus: 0 0 0 3px rgba(201,245,66,0.45);
+
+	/* Chain accents */
+	--c-tron: #EF0027; --c-bsc: #F0B90B; --c-sol-hex: #9945FF;
+	--c-eth-hex: #627EEA; --c-usdt-hex: #26A17B; --c-btc-hex: #F7931A;
+
+	/* Density */
+	--row-h: 44px;
+	--pad: 24px;
+
 	/* Brand — Clusteer Green (derived from hsl(78, 100%, 48%)) */
 	--clusteer-green-50: oklch(0.975 0.04 120);
 	--clusteer-green-100: oklch(0.945 0.08 118);
@@ -71,8 +116,8 @@
 
 	/* shadcn surfaces — light */
 	--radius: 0.625rem;
-	--background: #FAFAF7;
-	--foreground: #21241D;
+	--background: #F4F1EA;
+	--foreground: #0B0E0C;
 	--card: #FFFFFF;
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
@@ -96,14 +141,15 @@
 	--chart-4: var(--chain-eth);
 	--chart-5: var(--chain-sol);
 
-	--sidebar: oklch(0.985 0 0);
-	--sidebar-foreground: oklch(0.145 0 0);
-	--sidebar-primary: var(--clusteer-green-600);
-	--sidebar-primary-foreground: oklch(0.13 0.02 120);
-	--sidebar-accent: oklch(0.965 0 0);
-	--sidebar-accent-foreground: oklch(0.205 0 0);
-	--sidebar-border: oklch(0.922 0 0);
-	--sidebar-ring: var(--clusteer-green-500);
+	/* Sidebar — client: white light / onyx-800 dark; active items invert */
+	--sidebar: #FFFFFF;
+	--sidebar-foreground: #0B0E0C;
+	--sidebar-primary: #0B0E0C;
+	--sidebar-primary-foreground: #F4F1EA;
+	--sidebar-accent: #F4F1EA;
+	--sidebar-accent-foreground: #0B0E0C;
+	--sidebar-border: #E2DDD0;
+	--sidebar-ring: #C9F542;
 
 	--toast-width: min(380px, 90vw);
 }
@@ -143,6 +189,32 @@
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
+
+	/* Design system v2 Tailwind mappings */
+	--color-onyx-900: var(--c-onyx-900);
+	--color-onyx-800: var(--c-onyx-800);
+	--color-onyx-700: var(--c-onyx-700);
+	--color-onyx-600: var(--c-onyx-600);
+	--color-lime-400: var(--c-lime-400);
+	--color-lime-500: var(--c-lime-500);
+	--color-lime-600: var(--c-lime-600);
+	--color-cream: var(--c-cream);
+	--color-up: var(--c-up);
+	--color-up-soft: var(--c-up-soft);
+	--color-down: var(--c-down);
+	--color-down-soft: var(--c-down-soft);
+	--color-warn: var(--c-warn);
+	--color-warn-soft: var(--c-warn-soft);
+	--color-info: var(--c-info);
+	--color-info-soft: var(--c-info-soft);
+	--color-ds-bg: var(--c-bg);
+	--color-ds-surface: var(--c-surface);
+	--color-ds-surface-2: var(--c-surface-2);
+	--color-ds-surface-3: var(--c-surface-3);
+	--color-ds-line: var(--c-line);
+	--color-ds-text: var(--c-text);
+	--color-ds-text-2: var(--c-text-2);
+	--color-ds-text-3: var(--c-text-3);
 
 	--color-brand-50: var(--clusteer-green-50);
 	--color-brand-100: var(--clusteer-green-100);
@@ -231,14 +303,37 @@
 	--clusteer-amber-400: oklch(0.58 0.12 70);
 	--clusteer-amber-500: oklch(0.68 0.14 75);
 
-	--sidebar: oklch(0.16 0.015 254);
-	--sidebar-foreground: oklch(0.985 0 0);
-	--sidebar-primary: var(--clusteer-green-400);
-	--sidebar-primary-foreground: oklch(0.145 0.015 254);
-	--sidebar-accent: oklch(0.235 0.015 254);
-	--sidebar-accent-foreground: oklch(0.985 0 0);
-	--sidebar-border: oklch(1 0 0 / 0.1);
-	--sidebar-ring: var(--clusteer-green-400);
+	/* Dark sidebar: onyx-800 bg, lime active */
+	--sidebar: #131815;
+	--sidebar-foreground: #F4F1EA;
+	--sidebar-primary: #C9F542;
+	--sidebar-primary-foreground: #0B0E0C;
+	--sidebar-accent: #1B201D;
+	--sidebar-accent-foreground: #F4F1EA;
+	--sidebar-border: #2A302C;
+	--sidebar-ring: #C9F542;
+
+	/* Dark mode signal softs */
+	--c-up-soft:   rgba(0,168,107,0.14);
+	--c-down-soft: rgba(229,72,77,0.14);
+	--c-warn-soft: rgba(232,165,58,0.14);
+	--c-info-soft: rgba(27,126,194,0.15);
+
+	/* Dark mode surfaces */
+	--c-bg:          #0B0E0C;
+	--c-surface:     #131815;
+	--c-surface-2:   #1B201D;
+	--c-surface-3:   #262C28;
+	--c-line:        #2A302C;
+	--c-line-strong: #3A413C;
+	--c-text:        #F4F1EA;
+	--c-text-2:      #A8AFA6;
+	--c-text-3:      #6E756B;
+
+	/* Dark shadows */
+	--sh-1: 0 1px 2px rgba(0,0,0,0.5);
+	--sh-2: 0 4px 14px rgba(0,0,0,0.45);
+	--sh-3: 0 14px 40px rgba(0,0,0,0.55);
 }
 
 @layer base {
@@ -346,3 +441,81 @@ button {
 .bg-gradient-surface { background: var(--gradient-surface); }
 .bg-card-tinted { background: var(--card-tinted); }
 .bg-surface-warm { background: var(--surface-warm); }
+
+/* ── Design system v2 utilities ─────────────────────────── */
+
+/* Signal colours */
+.text-up   { color: var(--c-up); }
+.text-down { color: var(--c-down); }
+.text-warn { color: var(--c-warn); }
+.text-info { color: var(--c-info); }
+.text-muted-ds { color: var(--c-text-2); }
+.text-dim  { color: var(--c-text-3); }
+
+.bg-up-soft   { background: var(--c-up-soft); }
+.bg-down-soft { background: var(--c-down-soft); }
+.bg-warn-soft { background: var(--c-warn-soft); }
+.bg-info-soft { background: var(--c-info-soft); }
+
+/* Onyx surfaces */
+.bg-onyx-900 { background: var(--c-onyx-900); }
+.bg-onyx-800 { background: var(--c-onyx-800); }
+.bg-onyx-700 { background: var(--c-onyx-700); }
+.bg-onyx-600 { background: var(--c-onyx-600); }
+
+/* Lime accents */
+.bg-lime-500 { background: var(--c-lime-500); }
+.text-lime-500 { color: var(--c-lime-500); }
+.text-onyx-900 { color: var(--c-onyx-900); }
+.text-cream { color: var(--c-cream); }
+
+/* Cream/neutral */
+.bg-cream { background: var(--c-cream); }
+
+/* Shadow utilities */
+.shadow-ds-1 { box-shadow: var(--sh-1); }
+.shadow-ds-2 { box-shadow: var(--sh-2); }
+.shadow-ds-3 { box-shadow: var(--sh-3); }
+
+/* DS card primitive — white surface, border, rounded-lg */
+.ds-card {
+	background: var(--c-surface);
+	border: 1px solid var(--c-line);
+	border-radius: 14px;
+	box-shadow: var(--sh-1);
+}
+.ds-card-hd {
+	padding: 16px var(--pad);
+	border-bottom: 1px solid var(--c-line);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+/* DS badge primitives */
+.ds-badge {
+	display: inline-flex; align-items: center; gap: 6px;
+	height: 22px; padding: 0 8px; border-radius: 999px;
+	font-size: 11.5px; font-weight: 500;
+	background: var(--c-surface-2); color: var(--c-text-2);
+	border: 1px solid var(--c-line);
+}
+.ds-badge-up   { background: var(--c-up-soft);   color: var(--c-up);   border-color: transparent; }
+.ds-badge-down { background: var(--c-down-soft); color: var(--c-down); border-color: transparent; }
+.ds-badge-warn { background: var(--c-warn-soft); color: var(--c-warn); border-color: transparent; }
+.ds-badge-lime { background: var(--c-lime-500);  color: var(--c-onyx-900); border-color: transparent; }
+
+/* DS dot */
+.ds-dot { width: 6px; height: 6px; border-radius: 999px; display: inline-block; flex-shrink: 0; }
+.ds-dot-up   { background: var(--c-up); }
+.ds-dot-down { background: var(--c-down); }
+.ds-dot-warn { background: var(--c-warn); }
+
+/* DS progress bar */
+.ds-bar { height: 6px; border-radius: 999px; background: var(--c-surface-3); overflow: hidden; }
+.ds-bar > span { display: block; height: 100%; background: var(--c-lime-500); border-radius: 999px; }
+
+/* Density toggle support */
+[data-density="dense"]   { --row-h: 36px; --pad: 16px; }
+[data-density="spacious"] { --row-h: 52px; --pad: 32px; }
