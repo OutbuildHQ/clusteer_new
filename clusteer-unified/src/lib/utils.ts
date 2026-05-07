@@ -40,7 +40,9 @@ export function truncateAddress(addr: string, head = 6, tail = 4) {
 }
 
 export function formatDateTime(d: Date | string | number) {
+	if (!d) return "—";
 	const date = typeof d === "string" || typeof d === "number" ? new Date(d) : d;
+	if (isNaN(date.getTime())) return "—";
 	return new Intl.DateTimeFormat("en-GB", {
 		day: "2-digit",
 		month: "short",
@@ -63,7 +65,9 @@ export function parseNumber(s: string): number {
 
 /** Format a date to "12 Mar 2026" (legacy compat) */
 export function getFormattedDate(d: Date | string | number) {
+	if (!d) return "—";
 	const date = typeof d === "string" || typeof d === "number" ? new Date(d) : d;
+	if (isNaN(date.getTime())) return "—";
 	return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(date);
 }
 
@@ -73,7 +77,9 @@ export function getInitials(name: string) {
 }
 
 export function relativeTime(d: Date | string | number) {
+	if (!d) return "—";
 	const date = typeof d === "string" || typeof d === "number" ? new Date(d) : d;
+	if (isNaN(date.getTime())) return "—";
 	const diff = (Date.now() - date.getTime()) / 1000;
 	const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 	if (diff < 60) return rtf.format(-Math.round(diff), "second");
