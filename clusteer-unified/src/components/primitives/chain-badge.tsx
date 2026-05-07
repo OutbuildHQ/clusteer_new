@@ -1,12 +1,14 @@
 import { cn } from "@/lib/utils";
 
-/** Blockchain networks that carry USDT/USDC. Not tradeable assets. */
 const CHAIN_COLORS: Record<string, string> = {
-	Tron: "var(--chain-trx)",
+	Bitcoin: "var(--chain-btc)",
 	Ethereum: "var(--chain-eth)",
-	BSC: "var(--chain-bnb)",
+	Tron: "var(--chain-trx)",
 	Solana: "var(--chain-sol)",
+	BSC: "var(--chain-bnb)",
 	Polygon: "var(--chain-polygon)",
+	Arbitrum: "var(--chain-eth)",
+	Optimism: "var(--chain-eth)",
 };
 
 export function ChainBadge({ chain, className }: { chain: string; className?: string }) {

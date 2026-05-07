@@ -158,7 +158,7 @@ export default function AlertSettingsPage() {
 			case "transactions":
 				return "text-success bg-success/10";
 			case "users":
-				return "text-primary bg-primary/10";
+				return "text-[var(--c-lime-500)] bg-[var(--c-lime-500)]/10";
 			case "system":
 				return "text-orange-600 bg-orange-50";
 		}
@@ -219,14 +219,14 @@ export default function AlertSettingsPage() {
 		const categoryAlerts = groupedAlerts[category];
 
 		return (
-			<div className="bg-card rounded-lg border border-border p-6">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
 				<div className="flex items-center gap-3 mb-6">
 					<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getCategoryColor(category)}`}>
 						<Icon className="w-5 h-5" />
 					</div>
 					<div>
-						<h3 className="text-lg font-semibold text-foreground">{title}</h3>
-						<p className="text-sm text-muted-foreground">{categoryAlerts.length} alert(s) configured</p>
+						<h3 className="text-lg font-semibold text-[var(--c-text)]">{title}</h3>
+						<p className="text-sm text-[var(--c-text-3)]">{categoryAlerts.length} alert(s) configured</p>
 					</div>
 				</div>
 
@@ -234,19 +234,19 @@ export default function AlertSettingsPage() {
 					{categoryAlerts.map((alert) => (
 						<div
 							key={alert.id}
-							className="p-4 border border-border rounded-lg hover:border-primary/20 transition-colors"
+							className="p-4 border border-[var(--c-line)] rounded-lg hover:border-primary/20 transition-colors"
 						>
 							<div className="flex items-start justify-between mb-3">
 								<div className="flex-1">
 									<div className="flex items-center gap-3 mb-1">
-										<h4 className="text-sm font-semibold text-foreground">{alert.name}</h4>
+										<h4 className="text-sm font-semibold text-[var(--c-text)]">{alert.name}</h4>
 										{alert.enabled && (
 											<span className="px-2 py-0.5 bg-success/10 text-success text-xs font-medium rounded">
 												Active
 											</span>
 										)}
 									</div>
-									<p className="text-sm text-muted-foreground">{alert.description}</p>
+									<p className="text-sm text-[var(--c-text-3)]">{alert.description}</p>
 								</div>
 								<label className="relative inline-flex items-center cursor-pointer ml-4">
 									<input
@@ -255,25 +255,25 @@ export default function AlertSettingsPage() {
 										onChange={() => toggleAlert(alert.id)}
 										className="sr-only peer"
 									/>
-									<div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ring/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+									<div className="w-11 h-6 bg-[var(--c-surface-2)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ring/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[var(--c-surface)] after:border-[var(--c-line)] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--c-lime-500)]"></div>
 								</label>
 							</div>
 
 							{alert.enabled && (
-								<div className="space-y-3 pt-3 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
+								<div className="space-y-3 pt-3 border-t border-[var(--c-line)] animate-in fade-in slide-in-from-top-2 duration-200">
 									{/* Threshold Settings */}
 									{alert.threshold && (
 										<div className="flex items-center gap-3 p-3 bg-background rounded-lg">
 											<div className="flex-1">
-												<label className="block text-xs font-medium text-muted-foreground mb-1">Threshold</label>
+												<label className="block text-xs font-medium text-[var(--c-text-3)] mb-1">Threshold</label>
 												<div className="flex items-center gap-2">
 													<input
 														type="number"
 														value={alert.threshold.value}
 														onChange={(e) => updateThreshold(alert.id, Number(e.target.value))}
-														className="w-24 px-2 py-1 text-sm border border-border rounded focus:outline-none focus:ring-2 focus:ring-ring"
+														className="w-24 px-2 py-1 text-sm border border-[var(--c-line)] rounded focus:outline-none focus:ring-2 focus:ring-ring"
 													/>
-													<span className="text-sm text-muted-foreground">{alert.threshold.unit}</span>
+													<span className="text-sm text-[var(--c-text-3)]">{alert.threshold.unit}</span>
 												</div>
 											</div>
 										</div>
@@ -281,14 +281,14 @@ export default function AlertSettingsPage() {
 
 									{/* Notification Channels */}
 									<div>
-										<label className="block text-xs font-medium text-muted-foreground mb-2">Notification Channels</label>
+										<label className="block text-xs font-medium text-[var(--c-text-3)] mb-2">Notification Channels</label>
 										<div className="grid grid-cols-4 gap-2">
 											<button
 												onClick={() => toggleChannel(alert.id, "email")}
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.email
-														? "bg-primary text-white border-primary"
-														: "bg-card text-muted-foreground border-border hover:border-primary"
+														? "bg-[var(--c-lime-500)] text-white border-primary"
+														: "bg-[var(--c-surface)] text-[var(--c-text-3)] border-[var(--c-line)] hover:border-primary"
 												}`}
 											>
 												<Mail className="w-4 h-4" />
@@ -298,8 +298,8 @@ export default function AlertSettingsPage() {
 												onClick={() => toggleChannel(alert.id, "sms")}
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.sms
-														? "bg-primary text-white border-primary"
-														: "bg-card text-muted-foreground border-border hover:border-primary"
+														? "bg-[var(--c-lime-500)] text-white border-primary"
+														: "bg-[var(--c-surface)] text-[var(--c-text-3)] border-[var(--c-line)] hover:border-primary"
 												}`}
 											>
 												<MessageSquare className="w-4 h-4" />
@@ -309,8 +309,8 @@ export default function AlertSettingsPage() {
 												onClick={() => toggleChannel(alert.id, "push")}
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.push
-														? "bg-primary text-white border-primary"
-														: "bg-card text-muted-foreground border-border hover:border-primary"
+														? "bg-[var(--c-lime-500)] text-white border-primary"
+														: "bg-[var(--c-surface)] text-[var(--c-text-3)] border-[var(--c-line)] hover:border-primary"
 												}`}
 											>
 												<Smartphone className="w-4 h-4" />
@@ -320,8 +320,8 @@ export default function AlertSettingsPage() {
 												onClick={() => toggleChannel(alert.id, "sound")}
 												className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
 													alert.channels.sound
-														? "bg-primary text-white border-primary"
-														: "bg-card text-muted-foreground border-border hover:border-primary"
+														? "bg-[var(--c-lime-500)] text-white border-primary"
+														: "bg-[var(--c-surface)] text-[var(--c-text-3)] border-[var(--c-line)] hover:border-primary"
 												}`}
 											>
 												<Volume2 className="w-4 h-4" />
@@ -343,19 +343,19 @@ export default function AlertSettingsPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-4">
-					<button onClick={() => router.push("/admin")} className="p-2 hover:bg-muted rounded-lg transition-colors">
-						<ArrowLeft className="w-5 h-5 text-muted-foreground" />
+					<button onClick={() => router.push("/admin")} className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors">
+						<ArrowLeft className="w-5 h-5 text-[var(--c-text-3)]" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-foreground">Alert Settings</h1>
-						<p className="text-sm text-muted-foreground mt-1">Configure system notifications and alerts</p>
+						<h1 className="text-2xl font-bold text-[var(--c-text)]">Alert Settings</h1>
+						<p className="text-sm text-[var(--c-text-3)] mt-1">Configure system notifications and alerts</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
 					{hasChanges && (
 						<button
 							onClick={handleReset}
-							className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+							className="flex items-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 						>
 							<RotateCcw className="w-4 h-4" />
 							Reset
@@ -366,8 +366,8 @@ export default function AlertSettingsPage() {
 						disabled={!hasChanges || isLoading}
 						className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
 							hasChanges && !isLoading
-								? "bg-primary text-white hover:bg-primary/90 shadow-sm"
-								: "bg-muted text-muted-foreground cursor-not-allowed"
+								? "bg-[var(--c-lime-500)] text-white hover:bg-[var(--c-lime-500)]/90 shadow-sm"
+								: "bg-[var(--c-surface-2)] text-[var(--c-text-3)] cursor-not-allowed"
 						}`}
 					>
 						<Save className="w-4 h-4" />
@@ -398,25 +398,25 @@ export default function AlertSettingsPage() {
 			</div>
 
 			{/* Test Alerts Section */}
-			<div className="bg-card rounded-lg border border-border p-6">
-				<h3 className="text-lg font-semibold text-foreground mb-4">Test Alerts</h3>
-				<p className="text-sm text-muted-foreground mb-4">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+				<h3 className="text-lg font-semibold text-[var(--c-text)] mb-4">Test Alerts</h3>
+				<p className="text-sm text-[var(--c-text-3)] mb-4">
 					Send a test notification to verify your alert configuration is working correctly.
 				</p>
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors">
 						<Mail className="w-4 h-4" />
 						Test Email
 					</button>
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors">
 						<MessageSquare className="w-4 h-4" />
 						Test SMS
 					</button>
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors">
 						<Smartphone className="w-4 h-4" />
 						Test Push
 					</button>
-					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
+					<button className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors">
 						<Volume2 className="w-4 h-4" />
 						Test Sound
 					</button>

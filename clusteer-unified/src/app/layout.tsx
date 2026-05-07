@@ -84,11 +84,9 @@ export default function RootLayout({
 				className={`${inter.variable} ${sora.variable} ${jetbrains.variable} antialiased min-h-screen`}
 				suppressHydrationWarning
 			>
-				<ThemeProvider>
-					<ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-					<Toaster position="bottom-center" richColors closeButton />
-					<CookieConsent />
-				</ThemeProvider>
+				<ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+				<Toaster position="bottom-center" richColors closeButton />
+				<CookieConsent />
 			</body>
 		</html>
 	);

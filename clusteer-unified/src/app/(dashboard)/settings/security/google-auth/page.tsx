@@ -3,9 +3,6 @@
 import GoogleAuthForm from "@/components/forms/google-otp-form";
 import GoogleAuthQRCode from "@/components/google-auth-qrcode";
 import SecurityAlert from "@/components/security-alert";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
@@ -47,7 +44,7 @@ export default function Page() {
 		() => ({
 			"bind-new-authenticator": (
 				<div className="lg:max-w-[533px] mt-5">
-					<SecurityAlert content="For your assets security, it won’t be able to Withdraw or Sell in P2P within 24 hours of after setting up or changing the Google Authentication" />
+					<SecurityAlert content="For your assets security, it won't be able to Withdraw or Sell in P2P within 24 hours of after setting up or changing the Google Authentication" />
 					<div className="mt-5">
 						<span className="font-medium text-lg">
 							Add key in Google Authenticator and backup
@@ -60,12 +57,23 @@ export default function Page() {
 						</p>
 					</div>
 					<GoogleAuthQRCode />
-					<Button
+					<button
 						onClick={goNext}
-						className="mt-7.5 h-11 font-semibold border-black text-[#111111] bg-light-green border text-base shadow-xs hover:bg-muted w-full"
+						className="mt-7.5 w-full"
+						style={{
+							height: "44px",
+							fontWeight: 600,
+							border: "1px solid #000",
+							color: "#111111",
+							background: "var(--c-accent, #9FE870)",
+							fontSize: "16px",
+							borderRadius: "8px",
+							cursor: "pointer",
+							width: "100%",
+						}}
 					>
 						Next
-					</Button>
+					</button>
 				</div>
 			),
 			"security-verfification": (
@@ -79,12 +87,23 @@ export default function Page() {
 						Your account is secured with Google Authenticator
 					</p>
 
-					<Button
+					<button
 						onClick={goNext}
-						className="mt-7.5 h-11 font-semibold border-black text-[#111111] bg-light-green border text-base shadow-xs hover:bg-muted w-full"
+						className="mt-7.5 w-full"
+						style={{
+							height: "44px",
+							fontWeight: 600,
+							border: "1px solid #000",
+							color: "#111111",
+							background: "var(--c-accent, #9FE870)",
+							fontSize: "16px",
+							borderRadius: "8px",
+							cursor: "pointer",
+							width: "100%",
+						}}
 					>
 						Make a transaction
-					</Button>
+					</button>
 				</div>
 			),
 		}),
@@ -95,13 +114,22 @@ export default function Page() {
 		<section className="mt-5 lg:mt-10 pb-[113px] xl:pb-[140px]">
 			<header>
 				<div className="flex gap-x-5 items-center py-5 border-b lg:py-0 lg:border-b-0 border-[#21241D33]">
-					<Button
-						variant="ghost"
-						className="!p-0 size-6 hover:bg-transparent"
+					<button
 						onClick={goBack}
+						style={{
+							background: "transparent",
+							border: "none",
+							padding: 0,
+							width: "24px",
+							height: "24px",
+							cursor: "pointer",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
 					>
 						<ArrowLeft className="shrink-0 size-full" />
-					</Button>
+					</button>
 					<h1 className="text-foreground font-semibold text-xl sm:text2xl">
 						Configure Google Authenticator
 					</h1>

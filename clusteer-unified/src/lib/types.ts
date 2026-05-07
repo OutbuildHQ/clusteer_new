@@ -1,7 +1,5 @@
-/** Tradeable assets: stablecoins only. NGN is the fiat on/off-ramp. */
 export type AssetSymbol = "USDT" | "USDC" | "NGN";
-/** Blockchain networks that carry USDT/USDC. NOT tradeable assets. */
-export type Chain = "Tron" | "Ethereum" | "BSC" | "Solana" | "Polygon";
+export type Chain = "Bitcoin" | "Ethereum" | "Tron" | "Solana" | "BSC" | "Polygon";
 
 export type Asset = {
 	symbol: AssetSymbol;

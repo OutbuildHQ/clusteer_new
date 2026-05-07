@@ -141,22 +141,22 @@ export default function UserDetailPage() {
 	return (
 		<div className="space-y-6">
 			{/* Breadcrumb */}
-			<div className="flex items-center gap-2 text-sm text-muted-foreground">
+			<div className="flex items-center gap-2 text-sm text-[var(--c-text-3)]">
 				<button
 					onClick={() => router.push("/admin")}
-					className="hover:text-foreground transition-colors"
+					className="hover:text-[var(--c-text)] transition-colors"
 				>
 					Dashboard
 				</button>
 				<span>/</span>
 				<button
 					onClick={() => router.push("/admin/users")}
-					className="hover:text-foreground transition-colors"
+					className="hover:text-[var(--c-text)] transition-colors"
 				>
 					Users
 				</button>
 				<span>/</span>
-				<span className="text-foreground font-medium">Jacob</span>
+				<span className="text-[var(--c-text)] font-medium">Jacob</span>
 			</div>
 
 			{/* Header with Back Button and User Info */}
@@ -166,19 +166,19 @@ export default function UserDetailPage() {
 						onClick={() => router.push("/admin/users")}
 						className="p-2 hover:bg-background rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-muted-foreground" />
+						<ArrowLeft className="w-5 h-5 text-[var(--c-text-3)]" />
 					</button>
 					<div className="flex items-start gap-3">
 						<div className="relative">
-							<div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-								<User className="w-8 h-8 text-muted-foreground" />
+							<div className="w-16 h-16 bg-[var(--c-surface-2)] rounded-full flex items-center justify-center">
+								<User className="w-8 h-8 text-[var(--c-text-3)]" />
 							</div>
-							<div className="absolute bottom-0 right-0 w-5 h-5 bg-primary/100 rounded-full border-2 border-white flex items-center justify-center">
+							<div className="absolute bottom-0 right-0 w-5 h-5 bg-[var(--c-lime-500)]/100 rounded-full border-2 border-white flex items-center justify-center">
 								<Check className="w-3 h-3 text-white" strokeWidth={3} />
 							</div>
 						</div>
 						<div>
-							<h1 className="text-2xl font-semibold text-foreground">{user.name}</h1>
+							<h1 className="text-2xl font-semibold text-[var(--c-text)]">{user.name}</h1>
 							<div className="flex items-center gap-2 mt-1">
 								<span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
 									user.status === "Active"
@@ -209,24 +209,24 @@ export default function UserDetailPage() {
 				<div className="flex items-center gap-3">
 					<button
 						onClick={() => handleAction("archive")}
-						className="px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 					>
 						Archive
 					</button>
 					<button
 						onClick={() => handleAction("suspend")}
-						className="px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 					>
 						Suspend
 					</button>
 					<button
 						onClick={() => handleAction("reject-kyc")}
-						className="px-4 py-2 bg-card border border-border text-danger rounded-lg hover:bg-danger/10 transition-colors flex items-center gap-2"
+						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-danger rounded-lg hover:bg-danger/10 transition-colors flex items-center gap-2"
 					>
 						<X className="w-4 h-4" />
 						Reject KYC
 					</button>
-					<button className="px-4 py-2 bg-[#9EE76E] text-foreground rounded-lg hover:bg-[#9EE76E]/90 transition-colors flex items-center gap-2">
+					<button className="px-4 py-2 bg-[#9EE76E] text-[var(--c-text)] rounded-lg hover:bg-[#9EE76E]/90 transition-colors flex items-center gap-2">
 						<Check className="w-4 h-4" />
 						Verify KYC
 					</button>
@@ -234,10 +234,10 @@ export default function UserDetailPage() {
 			</div>
 
 			{/* Account Health & Risk Score */}
-			<div className="bg-card rounded-lg border border-border p-6">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-						<Shield className="w-5 h-5 text-muted-foreground" />
+					<h2 className="text-lg font-semibold text-[var(--c-text)] flex items-center gap-2">
+						<Shield className="w-5 h-5 text-[var(--c-text-3)]" />
 						Account Health & Security
 					</h2>
 					<span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium ${
@@ -254,12 +254,12 @@ export default function UserDetailPage() {
 
 				<div className="grid grid-cols-4 gap-6">
 					<div className="flex items-start gap-3">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<Clock className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<Clock className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
-							<p className="text-xs text-muted-foreground mb-1">Last Login</p>
-							<p className="text-sm font-medium text-foreground">{user.lastLogin}</p>
+							<p className="text-xs text-[var(--c-text-3)] mb-1">Last Login</p>
+							<p className="text-sm font-medium text-[var(--c-text)]">{user.lastLogin}</p>
 						</div>
 					</div>
 					<div className="flex items-start gap-3">
@@ -267,8 +267,8 @@ export default function UserDetailPage() {
 							<Monitor className="w-5 h-5 text-purple-600" />
 						</div>
 						<div>
-							<p className="text-xs text-muted-foreground mb-1">Device</p>
-							<p className="text-sm font-medium text-foreground">{user.deviceInfo}</p>
+							<p className="text-xs text-[var(--c-text-3)] mb-1">Device</p>
+							<p className="text-sm font-medium text-[var(--c-text)]">{user.deviceInfo}</p>
 						</div>
 					</div>
 					<div className="flex items-start gap-3">
@@ -276,8 +276,8 @@ export default function UserDetailPage() {
 							<MapPin className="w-5 h-5 text-success" />
 						</div>
 						<div>
-							<p className="text-xs text-muted-foreground mb-1">Location</p>
-							<p className="text-sm font-medium text-foreground">{user.location}</p>
+							<p className="text-xs text-[var(--c-text-3)] mb-1">Location</p>
+							<p className="text-sm font-medium text-[var(--c-text)]">{user.location}</p>
 						</div>
 					</div>
 					<div className="flex items-start gap-3">
@@ -285,63 +285,63 @@ export default function UserDetailPage() {
 							<MapPin className="w-5 h-5 text-orange-600" />
 						</div>
 						<div>
-							<p className="text-xs text-muted-foreground mb-1">IP Address</p>
-							<p className="text-sm font-medium text-foreground">{user.ipAddress}</p>
+							<p className="text-xs text-[var(--c-text-3)] mb-1">IP Address</p>
+							<p className="text-sm font-medium text-[var(--c-text)]">{user.ipAddress}</p>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			{/* User Info Card - Grid Layout */}
-			<div className="bg-card rounded-lg border border-border p-6">
-				<h2 className="text-lg font-semibold text-foreground mb-6">Contact Information</h2>
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+				<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">Contact Information</h2>
 				<div className="grid grid-cols-2 gap-6">
 					<div className="flex items-center gap-3">
 						<div className="p-2 bg-background rounded-lg">
-							<Mail className="w-5 h-5 text-muted-foreground" />
+							<Mail className="w-5 h-5 text-[var(--c-text-3)]" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs text-muted-foreground mb-1">Email Address</p>
-							<p className="text-sm font-medium text-foreground">{user.email}</p>
+							<p className="text-xs text-[var(--c-text-3)] mb-1">Email Address</p>
+							<p className="text-sm font-medium text-[var(--c-text)]">{user.email}</p>
 						</div>
 						<button
 							onClick={() => copyToClipboard(user.email)}
-							className="p-2 hover:bg-muted rounded-lg transition-colors"
+							className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 						>
-							<Copy className="w-4 h-4 text-muted-foreground" />
+							<Copy className="w-4 h-4 text-[var(--c-text-3)]" />
 						</button>
 					</div>
 					<div className="flex items-center gap-3">
 						<div className="p-2 bg-background rounded-lg">
-							<Phone className="w-5 h-5 text-muted-foreground" />
+							<Phone className="w-5 h-5 text-[var(--c-text-3)]" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs text-muted-foreground mb-1">Phone Number</p>
-							<p className="text-sm font-medium text-foreground">{user.phone}</p>
+							<p className="text-xs text-[var(--c-text-3)] mb-1">Phone Number</p>
+							<p className="text-sm font-medium text-[var(--c-text)]">{user.phone}</p>
 						</div>
 						<button
 							onClick={() => copyToClipboard(user.phone)}
-							className="p-2 hover:bg-muted rounded-lg transition-colors"
+							className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 						>
-							<Copy className="w-4 h-4 text-muted-foreground" />
+							<Copy className="w-4 h-4 text-[var(--c-text-3)]" />
 						</button>
 					</div>
 					<div className="flex items-center gap-3">
 						<div className="p-2 bg-background rounded-lg">
-							<CalendarDays className="w-5 h-5 text-muted-foreground" />
+							<CalendarDays className="w-5 h-5 text-[var(--c-text-3)]" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs text-muted-foreground mb-1">Member Since</p>
-							<p className="text-sm font-medium text-foreground">{user.joinDate}</p>
+							<p className="text-xs text-[var(--c-text-3)] mb-1">Member Since</p>
+							<p className="text-sm font-medium text-[var(--c-text)]">{user.joinDate}</p>
 						</div>
 					</div>
 					<div className="flex items-center gap-3">
 						<div className="p-2 bg-background rounded-lg">
-							<TrendingUp className="w-5 h-5 text-muted-foreground" />
+							<TrendingUp className="w-5 h-5 text-[var(--c-text-3)]" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs text-muted-foreground mb-1">Total Volume</p>
-							<p className="text-sm font-medium text-foreground">{user.volume}</p>
+							<p className="text-xs text-[var(--c-text-3)] mb-1">Total Volume</p>
+							<p className="text-sm font-medium text-[var(--c-text)]">{user.volume}</p>
 						</div>
 					</div>
 				</div>
@@ -350,45 +350,45 @@ export default function UserDetailPage() {
 			{/* Wallets with Frozen Funds Warning */}
 			<div className="grid grid-cols-2 gap-6">
 				{/* USDT Wallet */}
-				<div className="bg-card rounded-lg border border-border p-6">
+				<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
 					<div className="flex items-center justify-between mb-4">
-						<span className="text-sm text-muted-foreground">USDT Wallet</span>
+						<span className="text-sm text-[var(--c-text-3)]">USDT Wallet</span>
 						<button
 							onClick={() => copyToClipboard(user.usdtWallet)}
-							className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+							className="p-1.5 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 							title="Copy balance"
 						>
-							<Copy className="w-4 h-4 text-muted-foreground" />
+							<Copy className="w-4 h-4 text-[var(--c-text-3)]" />
 						</button>
 					</div>
-					<div className="text-3xl font-bold text-foreground mb-1">
+					<div className="text-3xl font-bold text-[var(--c-text)] mb-1">
 						{user.usdtWallet}
 					</div>
 					<div className="text-sm text-success font-medium">{user.usdtChange}</div>
 				</div>
 
 				{/* Naira Wallet with Frozen Funds */}
-				<div className="bg-card rounded-lg border border-border p-6">
+				<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
 					<div className="flex items-center justify-between mb-4">
-						<span className="text-sm text-muted-foreground">Naira Wallet</span>
+						<span className="text-sm text-[var(--c-text-3)]">Naira Wallet</span>
 						<button
 							onClick={() => copyToClipboard(user.nairaWallet)}
-							className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+							className="p-1.5 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 							title="Copy balance"
 						>
-							<Copy className="w-4 h-4 text-muted-foreground" />
+							<Copy className="w-4 h-4 text-[var(--c-text-3)]" />
 						</button>
 					</div>
-					<div className="text-3xl font-bold text-foreground mb-1">
+					<div className="text-3xl font-bold text-[var(--c-text)] mb-1">
 						{user.nairaWallet}
 					</div>
 
 					{/* Frozen Funds Warning */}
-					<div className="mt-4 pt-4 border-t border-border">
+					<div className="mt-4 pt-4 border-t border-[var(--c-line)]">
 						<div className="flex items-center justify-between mb-2">
 							<div className="flex items-center gap-2">
 								<AlertTriangle className="w-4 h-4 text-orange-600" />
-								<span className="text-sm font-medium text-foreground">Frozen Funds</span>
+								<span className="text-sm font-medium text-[var(--c-text)]">Frozen Funds</span>
 							</div>
 							<span className="text-lg font-bold text-orange-600">{user.frozenFund}</span>
 						</div>
@@ -411,24 +411,24 @@ export default function UserDetailPage() {
 			</div>
 
 			{/* KYC Documents with Click to View */}
-			<div className="bg-card rounded-lg border border-border p-6">
-				<h2 className="text-lg font-semibold text-foreground mb-6">KYC Documents</h2>
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+				<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">KYC Documents</h2>
 				<div className="grid grid-cols-2 gap-8">
 					<div className="space-y-3">
-						<div className="flex justify-between items-center py-2 border-b border-border">
-							<span className="text-sm text-muted-foreground">Document Type</span>
-							<span className="text-sm font-medium text-foreground">{user.kycDocumentType}</span>
+						<div className="flex justify-between items-center py-2 border-b border-[var(--c-line)]">
+							<span className="text-sm text-[var(--c-text-3)]">Document Type</span>
+							<span className="text-sm font-medium text-[var(--c-text)]">{user.kycDocumentType}</span>
 						</div>
-						<div className="flex justify-between items-center py-2 border-b border-border">
-							<span className="text-sm text-muted-foreground">ID Number</span>
-							<span className="text-sm font-medium text-foreground">{user.kycIdNumber}</span>
+						<div className="flex justify-between items-center py-2 border-b border-[var(--c-line)]">
+							<span className="text-sm text-[var(--c-text-3)]">ID Number</span>
+							<span className="text-sm font-medium text-[var(--c-text)]">{user.kycIdNumber}</span>
 						</div>
-						<div className="flex justify-between items-center py-2 border-b border-border">
-							<span className="text-sm text-muted-foreground">Upload Date</span>
-							<span className="text-sm font-medium text-foreground">{user.kycUploadDate}</span>
+						<div className="flex justify-between items-center py-2 border-b border-[var(--c-line)]">
+							<span className="text-sm text-[var(--c-text-3)]">Upload Date</span>
+							<span className="text-sm font-medium text-[var(--c-text)]">{user.kycUploadDate}</span>
 						</div>
 						<div className="flex justify-between items-center py-2">
-							<span className="text-sm text-muted-foreground">Face Match</span>
+							<span className="text-sm text-[var(--c-text-3)]">Face Match</span>
 							<span className="inline-flex items-center gap-1.5 text-sm font-medium text-success">
 								<Check className="w-4 h-4" />
 								{user.kycFaceMatch}
@@ -441,11 +441,11 @@ export default function UserDetailPage() {
 								setSelectedDocument("document");
 								setShowKycModal(true);
 							}}
-							className="relative w-32 h-32 bg-muted rounded-lg overflow-hidden border-2 border-dashed border-border hover:border-primary transition-all group"
+							className="relative w-32 h-32 bg-[var(--c-surface-2)] rounded-lg overflow-hidden border-2 border-dashed border-[var(--c-line)] hover:border-primary transition-all group"
 						>
 							<div className="w-full h-full flex flex-col items-center justify-center">
-								<ZoomIn className="w-6 h-6 text-muted-foreground group-hover:text-primary mb-2" />
-								<span className="text-xs text-muted-foreground group-hover:text-primary">View Document</span>
+								<ZoomIn className="w-6 h-6 text-[var(--c-text-3)] group-hover:text-[var(--c-lime-500)] mb-2" />
+								<span className="text-xs text-[var(--c-text-3)] group-hover:text-[var(--c-lime-500)]">View Document</span>
 							</div>
 						</button>
 						<button
@@ -453,11 +453,11 @@ export default function UserDetailPage() {
 								setSelectedDocument("selfie");
 								setShowKycModal(true);
 							}}
-							className="relative w-32 h-32 bg-muted rounded-lg overflow-hidden border-2 border-dashed border-border hover:border-primary transition-all group"
+							className="relative w-32 h-32 bg-[var(--c-surface-2)] rounded-lg overflow-hidden border-2 border-dashed border-[var(--c-line)] hover:border-primary transition-all group"
 						>
 							<div className="w-full h-full flex flex-col items-center justify-center">
-								<ZoomIn className="w-6 h-6 text-muted-foreground group-hover:text-primary mb-2" />
-								<span className="text-xs text-muted-foreground group-hover:text-primary">View Selfie</span>
+								<ZoomIn className="w-6 h-6 text-[var(--c-text-3)] group-hover:text-[var(--c-lime-500)] mb-2" />
+								<span className="text-xs text-[var(--c-text-3)] group-hover:text-[var(--c-lime-500)]">View Selfie</span>
 							</div>
 						</button>
 					</div>
@@ -465,15 +465,15 @@ export default function UserDetailPage() {
 			</div>
 
 			{/* Recent Transactions - Fixed Amount Display */}
-			<div className="bg-card rounded-lg border border-border p-6">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-lg font-semibold text-foreground">Recent Transactions</h2>
+					<h2 className="text-lg font-semibold text-[var(--c-text)]">Recent Transactions</h2>
 					<div className="flex items-center gap-3">
-						<button className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-sm text-muted-foreground hover:bg-background transition-colors">
+						<button className="flex items-center gap-2 px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm text-[var(--c-text-3)] hover:bg-background transition-colors">
 							<Calendar className="w-4 h-4" />
 							Select dates
 						</button>
-						<button className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-sm text-muted-foreground hover:bg-background transition-colors">
+						<button className="flex items-center gap-2 px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm text-[var(--c-text-3)] hover:bg-background transition-colors">
 							<Filter className="w-4 h-4" />
 							Apply filter
 						</button>
@@ -485,19 +485,19 @@ export default function UserDetailPage() {
 						<div className="overflow-x-auto">
 							<table className="w-full">
 								<thead>
-									<tr className="border-b border-border">
-										<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Txn ID</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Type</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Amount</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Date</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Status</th>
-										<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Action</th>
+									<tr className="border-b border-[var(--c-line)]">
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Txn ID</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Type</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Amount</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Date</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Status</th>
+										<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									{mockTransactions.map((tx, index) => (
-										<tr key={index} className="border-b border-border last:border-b-0 hover:bg-background transition-colors">
-											<td className="py-3 px-4 text-sm text-foreground">{tx.id}</td>
+										<tr key={index} className="border-b border-[var(--c-line)] last:border-b-0 hover:bg-background transition-colors">
+											<td className="py-3 px-4 text-sm text-[var(--c-text)]">{tx.id}</td>
 											<td className="py-3 px-4">
 												<span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
 													tx.type === "Buy"
@@ -516,7 +516,7 @@ export default function UserDetailPage() {
 													{tx.type === "Buy" ? "+" : "-"}${tx.amount.toFixed(2)}
 												</span>
 											</td>
-											<td className="py-3 px-4 text-sm text-foreground">{tx.date}</td>
+											<td className="py-3 px-4 text-sm text-[var(--c-text)]">{tx.date}</td>
 											<td className="py-3 px-4">
 												<span className={`inline-flex items-center gap-1.5 text-xs font-medium ${
 													tx.status === 'Success' ? 'text-success' :
@@ -532,7 +532,7 @@ export default function UserDetailPage() {
 												</span>
 											</td>
 											<td className="py-3 px-4">
-												<button className="text-muted-foreground hover:text-muted-foreground">
+												<button className="text-[var(--c-text-3)] hover:text-[var(--c-text-3)]">
 													<svg className="w-4 h-4" fill="currentColor" viewBox="0 0 4 16">
 														<circle cx="2" cy="2" r="2"/>
 														<circle cx="2" cy="8" r="2"/>
@@ -547,8 +547,8 @@ export default function UserDetailPage() {
 						</div>
 
 						{/* Pagination */}
-						<div className="flex items-center justify-between mt-6 pt-6 border-t border-border">
-							<button className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:bg-background rounded-lg transition-colors">
+						<div className="flex items-center justify-between mt-6 pt-6 border-t border-[var(--c-line)]">
+							<button className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--c-text-3)] hover:bg-background rounded-lg transition-colors">
 								<ArrowLeft className="w-4 h-4" />
 								Previous
 							</button>
@@ -559,15 +559,15 @@ export default function UserDetailPage() {
 										disabled={page === "..."}
 										className={`w-8 h-8 text-sm rounded-lg transition-colors ${
 											page === 1
-												? "bg-primary/10 text-primary font-medium"
-												: "text-muted-foreground hover:bg-background"
+												? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] font-medium"
+												: "text-[var(--c-text-3)] hover:bg-background"
 										} ${page === "..." ? "cursor-default" : ""}`}
 									>
 										{page}
 									</button>
 								))}
 							</div>
-							<button className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:bg-background rounded-lg transition-colors">
+							<button className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--c-text-3)] hover:bg-background rounded-lg transition-colors">
 								Next
 								<ArrowLeft className="w-4 h-4 rotate-180" />
 							</button>
@@ -575,48 +575,48 @@ export default function UserDetailPage() {
 					</>
 				) : (
 					<div className="text-center py-12">
-						<div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-							<TrendingUp className="w-8 h-8 text-muted-foreground" />
+						<div className="w-16 h-16 bg-[var(--c-surface-2)] rounded-full flex items-center justify-center mx-auto mb-4">
+							<TrendingUp className="w-8 h-8 text-[var(--c-text-3)]" />
 						</div>
-						<p className="text-muted-foreground font-medium mb-2">No transactions yet</p>
-						<p className="text-sm text-muted-foreground">This user hasn't made any transactions</p>
+						<p className="text-[var(--c-text-3)] font-medium mb-2">No transactions yet</p>
+						<p className="text-sm text-[var(--c-text-3)]">This user hasn't made any transactions</p>
 					</div>
 				)}
 			</div>
 
 			{/* Support Tickets */}
-			<div className="bg-card rounded-lg border border-border p-6">
-				<h2 className="text-lg font-semibold text-foreground mb-6">Support Tickets</h2>
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+				<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">Support Tickets</h2>
 				{mockSupportTickets.length > 0 ? (
 					<div className="overflow-x-auto">
 						<table className="w-full">
 							<thead>
-								<tr className="border-b border-border">
-									<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Ticket ID</th>
-									<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Subject</th>
-									<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Amount</th>
-									<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Date Opened</th>
-									<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Status</th>
+								<tr className="border-b border-[var(--c-line)]">
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Ticket ID</th>
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Subject</th>
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Amount</th>
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Date Opened</th>
+									<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)]">Status</th>
 								</tr>
 							</thead>
 							<tbody>
 								{mockSupportTickets.map((ticket) => (
-									<tr key={ticket.id} className="border-b border-border last:border-b-0 hover:bg-background transition-colors">
-										<td className="py-3 px-4 text-sm text-foreground">{ticket.id}</td>
-										<td className="py-3 px-4 text-sm text-foreground">{ticket.subject}</td>
-										<td className="py-3 px-4 text-sm text-foreground">{ticket.amount}</td>
-										<td className="py-3 px-4 text-sm text-foreground">{ticket.dateOpened}</td>
+									<tr key={ticket.id} className="border-b border-[var(--c-line)] last:border-b-0 hover:bg-background transition-colors">
+										<td className="py-3 px-4 text-sm text-[var(--c-text)]">{ticket.id}</td>
+										<td className="py-3 px-4 text-sm text-[var(--c-text)]">{ticket.subject}</td>
+										<td className="py-3 px-4 text-sm text-[var(--c-text)]">{ticket.amount}</td>
+										<td className="py-3 px-4 text-sm text-[var(--c-text)]">{ticket.dateOpened}</td>
 										<td className="py-3 px-4">
 											<span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
 												ticket.status === "Resolved"
 													? "bg-success/10 text-success"
 													: ticket.status === "Pending"
 													? "bg-orange-50 text-orange-700"
-													: "bg-primary/10 text-primary"
+													: "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]"
 											}`}>
 												<span className={`w-1.5 h-1.5 rounded-full ${
 													ticket.status === "Resolved" ? "bg-success" :
-													ticket.status === "Pending" ? "bg-orange-600" : "bg-primary"
+													ticket.status === "Pending" ? "bg-orange-600" : "bg-[var(--c-lime-500)]"
 												}`} />
 												{ticket.status}
 											</span>
@@ -628,38 +628,38 @@ export default function UserDetailPage() {
 					</div>
 				) : (
 					<div className="text-center py-12">
-						<div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-							<AlertTriangle className="w-8 h-8 text-muted-foreground" />
+						<div className="w-16 h-16 bg-[var(--c-surface-2)] rounded-full flex items-center justify-center mx-auto mb-4">
+							<AlertTriangle className="w-8 h-8 text-[var(--c-text-3)]" />
 						</div>
-						<p className="text-muted-foreground font-medium mb-2">No support tickets</p>
-						<p className="text-sm text-muted-foreground">This user hasn't created any support tickets</p>
+						<p className="text-[var(--c-text-3)] font-medium mb-2">No support tickets</p>
+						<p className="text-sm text-[var(--c-text-3)]">This user hasn't created any support tickets</p>
 					</div>
 				)}
 			</div>
 
 			{/* Internal Admin Notes - Timeline Format */}
-			<div className="bg-card rounded-lg border border-border p-6">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-lg font-semibold text-foreground">Internal Admin Notes</h2>
-					<button className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
+					<h2 className="text-lg font-semibold text-[var(--c-text)]">Internal Admin Notes</h2>
+					<button className="flex items-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors">
 						<span className="text-lg leading-none">+</span>
 						Add a note
 					</button>
 				</div>
 				<div className="space-y-4">
 					{mockAdminNotes.map((note, index) => (
-						<div key={note.id} className="flex gap-4 pb-4 border-b border-border last:border-b-0 last:pb-0">
-							<div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
-								<span className="text-xs font-medium text-muted-foreground">
+						<div key={note.id} className="flex gap-4 pb-4 border-b border-[var(--c-line)] last:border-b-0 last:pb-0">
+							<div className="w-8 h-8 bg-[var(--c-surface-2)] rounded-full flex items-center justify-center flex-shrink-0">
+								<span className="text-xs font-medium text-[var(--c-text-3)]">
 									{note.author.split(' ')[1].charAt(0)}
 								</span>
 							</div>
 							<div className="flex-1">
 								<div className="flex items-center justify-between mb-1">
-									<span className="text-sm font-medium text-foreground">{note.author}</span>
-									<span className="text-xs text-muted-foreground">{note.timestamp}</span>
+									<span className="text-sm font-medium text-[var(--c-text)]">{note.author}</span>
+									<span className="text-xs text-[var(--c-text-3)]">{note.timestamp}</span>
 								</div>
-								<p className="text-sm text-muted-foreground">{note.content}</p>
+								<p className="text-sm text-[var(--c-text-3)]">{note.content}</p>
 							</div>
 						</div>
 					))}
@@ -669,39 +669,39 @@ export default function UserDetailPage() {
 			{/* KYC Document Modal */}
 			{showKycModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-card rounded-lg max-w-4xl w-full p-6">
+					<div className="bg-[var(--c-surface)] rounded-lg max-w-4xl w-full p-6">
 						<div className="flex items-center justify-between mb-6">
-							<h3 className="text-lg font-semibold text-foreground">
+							<h3 className="text-lg font-semibold text-[var(--c-text)]">
 								KYC Document - {selectedDocument === "document" ? "ID Card" : "Selfie"}
 							</h3>
 							<div className="flex items-center gap-3">
-								<button className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-sm text-muted-foreground hover:bg-background transition-colors">
+								<button className="flex items-center gap-2 px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm text-[var(--c-text-3)] hover:bg-background transition-colors">
 									<Download className="w-4 h-4" />
 									Download
 								</button>
 								<button
 									onClick={() => setShowKycModal(false)}
-									className="p-2 hover:bg-muted rounded-lg transition-colors"
+									className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 								>
-									<X className="w-5 h-5 text-muted-foreground" />
+									<X className="w-5 h-5 text-[var(--c-text-3)]" />
 								</button>
 							</div>
 						</div>
-						<div className="bg-muted rounded-lg aspect-video flex items-center justify-center">
+						<div className="bg-[var(--c-surface-2)] rounded-lg aspect-video flex items-center justify-center">
 							<div className="text-center">
-								<ZoomIn className="w-16 h-16 text-muted-foreground mx-auto mb-3" />
-								<p className="text-muted-foreground">KYC Document Preview</p>
-								<p className="text-sm text-muted-foreground mt-1">Document would be displayed here</p>
+								<ZoomIn className="w-16 h-16 text-[var(--c-text-3)] mx-auto mb-3" />
+								<p className="text-[var(--c-text-3)]">KYC Document Preview</p>
+								<p className="text-sm text-[var(--c-text-3)] mt-1">Document would be displayed here</p>
 							</div>
 						</div>
 						<div className="flex items-center justify-end gap-3 mt-6">
 							<button
 								onClick={() => handleAction("reject-kyc")}
-								className="px-4 py-2 bg-card border border-border text-danger rounded-lg hover:bg-danger/10 transition-colors"
+								className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-danger rounded-lg hover:bg-danger/10 transition-colors"
 							>
 								Reject Document
 							</button>
-							<button className="px-4 py-2 bg-[#9EE76E] text-foreground rounded-lg hover:bg-[#9EE76E]/90 transition-colors">
+							<button className="px-4 py-2 bg-[#9EE76E] text-[var(--c-text)] rounded-lg hover:bg-[#9EE76E]/90 transition-colors">
 								Approve Document
 							</button>
 						</div>
@@ -712,26 +712,26 @@ export default function UserDetailPage() {
 			{/* Confirmation Modal for Actions */}
 			{showConfirmModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-card rounded-lg max-w-md w-full p-6">
+					<div className="bg-[var(--c-surface)] rounded-lg max-w-md w-full p-6">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
 								<AlertTriangle className="w-6 h-6 text-orange-600" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-foreground capitalize">
+								<h3 className="text-lg font-semibold text-[var(--c-text)] capitalize">
 									Confirm {showConfirmModal.replace("-", " ")}
 								</h3>
-								<p className="text-sm text-muted-foreground">This action requires confirmation</p>
+								<p className="text-sm text-[var(--c-text-3)]">This action requires confirmation</p>
 							</div>
 						</div>
 						<div className="mb-6">
-							<label className="block text-sm font-medium text-muted-foreground mb-2">
+							<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 								Reason (required)
 							</label>
 							<textarea
 								value={confirmReason}
 								onChange={(e) => setConfirmReason(e.target.value)}
-								className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+								className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 								rows={3}
 								placeholder="Enter reason for this action..."
 							/>
@@ -739,7 +739,7 @@ export default function UserDetailPage() {
 						<div className="flex items-center gap-3">
 							<button
 								onClick={() => setShowConfirmModal(null)}
-								className="flex-1 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+								className="flex-1 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 							>
 								Cancel
 							</button>
@@ -758,34 +758,34 @@ export default function UserDetailPage() {
 			{/* Release Frozen Funds Modal */}
 			{showReleaseFundsModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-card rounded-lg max-w-md w-full p-6">
+					<div className="bg-[var(--c-surface)] rounded-lg max-w-md w-full p-6">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center">
 								<Check className="w-6 h-6 text-success" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-foreground">Release Frozen Funds</h3>
-								<p className="text-sm text-muted-foreground">Confirm to release {user.frozenFund}</p>
+								<h3 className="text-lg font-semibold text-[var(--c-text)]">Release Frozen Funds</h3>
+								<p className="text-sm text-[var(--c-text-3)]">Confirm to release {user.frozenFund}</p>
 							</div>
 						</div>
 						<div className="bg-background rounded-lg p-4 mb-6">
 							<div className="flex justify-between mb-2">
-								<span className="text-sm text-muted-foreground">Amount to release:</span>
-								<span className="text-sm font-semibold text-foreground">{user.frozenFund}</span>
+								<span className="text-sm text-[var(--c-text-3)]">Amount to release:</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">{user.frozenFund}</span>
 							</div>
 							<div className="flex justify-between mb-2">
-								<span className="text-sm text-muted-foreground">Frozen by:</span>
-								<span className="text-sm text-foreground">{user.frozenBy}</span>
+								<span className="text-sm text-[var(--c-text-3)]">Frozen by:</span>
+								<span className="text-sm text-[var(--c-text)]">{user.frozenBy}</span>
 							</div>
 							<div className="flex justify-between">
-								<span className="text-sm text-muted-foreground">Frozen on:</span>
-								<span className="text-sm text-foreground">{user.frozenDate}</span>
+								<span className="text-sm text-[var(--c-text-3)]">Frozen on:</span>
+								<span className="text-sm text-[var(--c-text)]">{user.frozenDate}</span>
 							</div>
 						</div>
 						<div className="flex items-center gap-3">
 							<button
 								onClick={() => setShowReleaseFundsModal(false)}
-								className="flex-1 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+								className="flex-1 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 							>
 								Cancel
 							</button>

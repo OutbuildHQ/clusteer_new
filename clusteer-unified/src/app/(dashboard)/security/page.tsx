@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { DotIcon, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +9,21 @@ export default function Page() {
 	const user = useUser();
 	const is2FAEnabled = user?.twoFactorEnabled || false;
 	const isEmailVerified = user?.emailVerified || false;
+
+	const badgeStyle = (enabled: boolean) => ({
+		display: "inline-flex" as const,
+		alignItems: "center" as const,
+		gap: 4,
+		height: 24,
+		padding: "0 8px",
+		borderRadius: 999,
+		fontSize: 11.5,
+		fontWeight: 500,
+		background: enabled ? "rgba(21,128,61,0.1)" : "#E9E9E9",
+		color: enabled ? "#15803d" : "#344054",
+		border: "none",
+		marginLeft: "auto",
+	});
 
 	return (
 		<section className="mt-5 lg:mt-10 pb-[113px] xl:pb-[140px]">
@@ -36,20 +50,13 @@ export default function Page() {
 									width={46}
 									height={46}
 								/>
-								<Badge
-									variant="secondary"
-									className={`rounded-full ml-auto h-6 py-1 ${
-										is2FAEnabled
-											? "text-success bg-success/10"
-											: "text-[#344054] bg-[#E9E9E9]"
-									}`}
-								>
+								<span style={badgeStyle(is2FAEnabled)}>
 									<DotIcon
 										stroke={is2FAEnabled ? "#15803d" : "#344054"}
 										strokeWidth={8}
 									/>
 									{is2FAEnabled ? "Enabled" : "Disabled"}
-								</Badge>
+								</span>
 							</div>
 							<p className="font-medium text-lg mt-2.5">
 								Google Authenticator (recommended)
@@ -68,20 +75,13 @@ export default function Page() {
 						<li className="bg-[#F2F2F0] rounded-2xl border border-[#21241D1A] p-5 xl:max-w-[435px] w-full shrink-0 md:space-y-2">
 							<div className="flex items-center">
 								<Mail size={46} />
-								<Badge
-									variant="secondary"
-									className={`rounded-full ml-auto h-6 py-1 ${
-										isEmailVerified
-											? "text-success bg-success/10"
-											: "text-[#344054] bg-[#E9E9E9]"
-									}`}
-								>
+								<span style={badgeStyle(isEmailVerified)}>
 									<DotIcon
 										stroke={isEmailVerified ? "#15803d" : "#344054"}
 										strokeWidth={8}
 									/>
 									{isEmailVerified ? "Enabled" : "Disabled"}
-								</Badge>
+								</span>
 							</div>
 							<p className="font-medium text-lg mt-2.5">Email verification</p>
 							<p className="text-sm">
@@ -102,16 +102,13 @@ export default function Page() {
 								width={46}
 								height={46}
 							/>
-							<Badge
-								variant="secondary"
-								className="rounded-full ml-auto h-6 text-[#344054] bg-[#E9E9E9] py-1"
-							>
+							<span style={badgeStyle(false)}>
 								<DotIcon
 									stroke="#344054"
 									strokeWidth={8}
 								/>
 								Disabled
-							</Badge>
+							</span>
 						</div>
 						<p className="font-medium text-lg mt-2.5">
 							Phone number verification
@@ -139,16 +136,13 @@ export default function Page() {
 									width={46}
 									height={46}
 								/>
-								<Badge
-									variant="secondary"
-									className="rounded-full ml-auto h-6 text-success bg-success/10 py-1"
-								>
+								<span style={badgeStyle(true)}>
 									<DotIcon
 										stroke="#15803d"
 										strokeWidth={8}
 									/>
 									Enabled
-								</Badge>
+								</span>
 							</div>
 							<p className="font-medium text-lg mt-2.5">Login password</p>
 							<p className="text-sm">

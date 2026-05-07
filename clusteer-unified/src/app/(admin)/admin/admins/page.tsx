@@ -1,35 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
-	Shield,
-	Plus,
-	Search,
-	Filter,
-	MoreVertical,
-	Edit,
-	Trash2,
-	Lock,
-	Unlock,
-	Mail,
-	Phone,
-	Calendar,
-	Activity,
-	CheckCircle,
-	XCircle,
-	Clock,
-	User,
-	Key,
-	AlertCircle,
+	Shield, Plus, Search, Mail, Phone,
+	CheckCircle, AlertCircle, Lock, Unlock,
+	Trash2, Edit, X,
 } from "lucide-react";
-import { useToast } from "@/components/admin/Toast";
-import LoadingSpinner from "@/components/admin/LoadingSpinner";
-import Modal, { ConfirmModal } from "@/components/admin/Modal";
-import SearchBar from "@/components/admin/SearchBar";
-import { getRoleColor, getStatusColor } from "@/lib/status-utils";
-import { formatDate, formatRelativeTime } from "@/lib/date-utils";
+import { toast } from "sonner";
 
+/* ─── types ─── */
 interface Admin {
 	id: string;
 	name: string;
@@ -43,18 +22,41 @@ interface Admin {
 	avatar?: string;
 }
 
+/* ─── color helpers ─── */
+function roleStyle(r: string) {
+	return r === "Super Admin"
+		? { background: "var(--c-info-soft)", color: "var(--c-info)" }
+		: r === "Admin"
+		? { background: "var(--c-up-soft)", color: "var(--c-up)" }
+		: r === "Moderator"
+		? { background: "var(--c-warn-soft)", color: "var(--c-warn)" }
+		: { background: "var(--c-surface-3)", color: "var(--c-text-3)" };
+}
+
+function statusStyle(s: string) {
+	return s === "Active"
+		? { background: "var(--c-up-soft)", color: "var(--c-up)" }
+		: s === "Suspended"
+		? { background: "var(--c-down-soft)", color: "var(--c-down)" }
+		: { background: "var(--c-surface-3)", color: "var(--c-text-3)" };
+}
+
+/* ─── avatar initials ─── */
+function initials(name: string) {
+	return name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+}
+
+/* ─── page ─── */
 export default function AdminsPage() {
-	const router = useRouter();
-	const toast = useToast();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedRole, setSelectedRole] = useState<string>("All");
 	const [selectedStatus, setSelectedStatus] = useState<string>("All");
-	const [showCreateModal, setShowCreateModal] = useState(false);
-	const [showEditModal, setShowEditModal] = useState<Admin | null>(null);
+	const [showCreateDrawer, setShowCreateDrawer] = useState(false);
+	const [showEditDrawer, setShowEditDrawer] = useState<Admin | null>(null);
 	const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
-	// Form state
+	/* form state */
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
@@ -130,15 +132,15 @@ export default function AdminsPage() {
 	const statuses = ["All", "Active", "Inactive", "Suspended"];
 
 	const availablePermissions = [
-		{ id: "users", label: "User Management", description: "Create, edit, and delete users" },
-		{ id: "kyc", label: "KYC Management", description: "Approve/reject KYC submissions" },
-		{ id: "transactions", label: "Transaction Management", description: "View and manage transactions" },
-		{ id: "wallets", label: "Wallet Management", description: "Manage wallets and liquidity" },
-		{ id: "support", label: "Support Management", description: "Handle support tickets" },
-		{ id: "content", label: "Content Management", description: "Create and manage content" },
-		{ id: "reports", label: "Reports & Analytics", description: "View reports and analytics" },
-		{ id: "settings", label: "System Settings", description: "Modify system settings" },
-		{ id: "admins", label: "Admin Management", description: "Manage admin accounts" },
+		{ id: "users",        label: "User Management",        description: "Create, edit, and delete users" },
+		{ id: "kyc",          label: "KYC Management",         description: "Approve/reject KYC submissions" },
+		{ id: "transactions", label: "Transaction Management",  description: "View and manage transactions" },
+		{ id: "wallets",      label: "Wallet Management",       description: "Manage wallets and liquidity" },
+		{ id: "support",      label: "Support Management",      description: "Handle support tickets" },
+		{ id: "content",      label: "Content Management",      description: "Create and manage content" },
+		{ id: "reports",      label: "Reports & Analytics",     description: "View reports and analytics" },
+		{ id: "settings",     label: "System Settings",         description: "Modify system settings" },
+		{ id: "admins",       label: "Admin Management",        description: "Manage admin accounts" },
 	];
 
 	const filteredAdmins = admins.filter((admin) => {
@@ -150,23 +152,11 @@ export default function AdminsPage() {
 		return matchesSearch && matchesRole && matchesStatus;
 	});
 
-	const getStatusIcon = (status: Admin["status"]) => {
-		switch (status) {
-			case "Active":
-				return <CheckCircle className="w-4 h-4" />;
-			case "Inactive":
-				return <XCircle className="w-4 h-4" />;
-			case "Suspended":
-				return <AlertCircle className="w-4 h-4" />;
-		}
-	};
-
+	/* ─── handlers ─── */
 	const handleCreateAdmin = async () => {
 		setIsLoading(true);
 		try {
-			// Simulate API call
-			await new Promise(resolve => setTimeout(resolve, 1000));
-
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 			const newAdmin: Admin = {
 				id: `admin-${Date.now()}`,
 				name: formData.name,
@@ -177,49 +167,36 @@ export default function AdminsPage() {
 				createdDate: new Date().toISOString().split("T")[0],
 				lastLogin: "Never",
 				permissions: formData.permissions,
-				avatar: formData.name
-					.split(" ")
-					.map((n) => n[0])
-					.join("")
-					.toUpperCase(),
+				avatar: formData.name.split(" ").map((n) => n[0]).join("").toUpperCase(),
 			};
 			setAdmins([...admins, newAdmin]);
-			setShowCreateModal(false);
+			setShowCreateDrawer(false);
 			setFormData({ name: "", email: "", phone: "", role: "Admin", permissions: [] });
-			toast.success('Admin created', `${formData.name} has been added successfully`);
-		} catch (error) {
-			toast.error('Failed to create admin', 'An error occurred while creating the admin account');
+			toast.success(`${formData.name} has been added successfully`);
+		} catch {
+			toast.error("An error occurred while creating the admin account");
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	const handleUpdateAdmin = async () => {
-		if (!showEditModal) return;
+		if (!showEditDrawer) return;
 		setIsLoading(true);
 		try {
-			// Simulate API call
-			await new Promise(resolve => setTimeout(resolve, 1000));
-
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 			setAdmins(
 				admins.map((admin) =>
-					admin.id === showEditModal.id
-						? {
-								...admin,
-								name: formData.name,
-								email: formData.email,
-								phone: formData.phone,
-								role: formData.role,
-								permissions: formData.permissions,
-						  }
+					admin.id === showEditDrawer.id
+						? { ...admin, name: formData.name, email: formData.email, phone: formData.phone, role: formData.role, permissions: formData.permissions }
 						: admin
 				)
 			);
-			setShowEditModal(null);
+			setShowEditDrawer(null);
 			setFormData({ name: "", email: "", phone: "", role: "Admin", permissions: [] });
-			toast.success('Admin updated', 'Admin account has been updated successfully');
-		} catch (error) {
-			toast.error('Failed to update admin', 'An error occurred while updating the admin account');
+			toast.success("Admin account has been updated successfully");
+		} catch {
+			toast.error("An error occurred while updating the admin account");
 		} finally {
 			setIsLoading(false);
 		}
@@ -228,43 +205,40 @@ export default function AdminsPage() {
 	const handleDeleteAdmin = async (adminId: string) => {
 		setIsLoading(true);
 		try {
-			// Simulate API call
-			await new Promise(resolve => setTimeout(resolve, 1000));
-
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 			setAdmins(admins.filter((admin) => admin.id !== adminId));
 			setShowDeleteModal(null);
-			toast.success('Admin deleted', 'Admin account has been permanently deleted');
-		} catch (error) {
-			toast.error('Failed to delete admin', 'An error occurred while deleting the admin account');
+			toast.success("Admin account has been permanently deleted");
+		} catch {
+			toast.error("An error occurred while deleting the admin account");
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	const handleSuspendAdmin = async (adminId: string) => {
-		const admin = admins.find(a => a.id === adminId);
+		const admin = admins.find((a) => a.id === adminId);
 		if (!admin) return;
-
 		setIsLoading(true);
 		try {
-			// Simulate API call
-			await new Promise(resolve => setTimeout(resolve, 800));
-
+			await new Promise((resolve) => setTimeout(resolve, 800));
 			setAdmins(
 				admins.map((a) =>
-					a.id === adminId ? { ...a, status: a.status === "Suspended" ? "Active" : "Suspended" as Admin["status"] } : a
+					a.id === adminId
+						? { ...a, status: (a.status === "Suspended" ? "Active" : "Suspended") as Admin["status"] }
+						: a
 				)
 			);
 			const action = admin.status === "Suspended" ? "activated" : "suspended";
-			toast.success(`Admin ${action}`, `${admin.name} has been ${action} successfully`);
-		} catch (error) {
-			toast.error('Action failed', 'An error occurred while updating the admin status');
+			toast.success(`${admin.name} has been ${action} successfully`);
+		} catch {
+			toast.error("An error occurred while updating the admin status");
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	const openEditModal = (admin: Admin) => {
+	const openEditDrawer = (admin: Admin) => {
 		setFormData({
 			name: admin.name,
 			email: admin.email,
@@ -272,7 +246,13 @@ export default function AdminsPage() {
 			role: admin.role,
 			permissions: admin.permissions,
 		});
-		setShowEditModal(admin);
+		setShowEditDrawer(admin);
+	};
+
+	const closeDrawer = () => {
+		setShowCreateDrawer(false);
+		setShowEditDrawer(null);
+		setFormData({ name: "", email: "", phone: "", role: "Admin", permissions: [] });
 	};
 
 	const togglePermission = (permissionId: string) => {
@@ -284,377 +264,436 @@ export default function AdminsPage() {
 		});
 	};
 
-	return (
-		<div className="space-y-6">
-			{isLoading && <LoadingSpinner overlay />}
+	const isDrawerOpen = showCreateDrawer || !!showEditDrawer;
+	const isEditing = !!showEditDrawer;
 
-			{/* Header */}
-			<div className="flex items-center justify-between">
+	/* ─── stat cards data ─── */
+	const STAT_CARDS = [
+		{ label: "Total",     value: admins.length,                                        icon: Shield,       sub: "All administrators" },
+		{ label: "Active",    value: admins.filter((a) => a.status === "Active").length,    icon: CheckCircle,  sub: "Currently active"   },
+		{ label: "Suspended", value: admins.filter((a) => a.status === "Suspended").length, icon: AlertCircle,  sub: "Temporarily blocked" },
+		{ label: "Online now", value: 3,                                                    icon: Shield,       sub: "Currently online"   },
+	];
+
+	return (
+		<div className="space-y-5">
+			{/* ─── Header ─── */}
+			<div className="flex items-center justify-between gap-4 flex-wrap">
 				<div>
-					<h1 className="text-2xl font-bold text-foreground">Admin Management</h1>
-					<p className="text-sm text-muted-foreground mt-1">Manage administrator accounts and permissions</p>
+					<h1 className="text-[22px] font-semibold tracking-tight text-[var(--c-text)]">Staff</h1>
+					<p className="text-[13px] text-[var(--c-text-3)] mt-0.5">
+						{admins.length} admin accounts
+					</p>
 				</div>
 				<button
-					onClick={() => setShowCreateModal(true)}
-					className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+					onClick={() => setShowCreateDrawer(true)}
+					className="flex items-center gap-1.5 h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors"
+					style={{ background: "#84cc16", color: "#1a2e05" }}
 				>
-					<Plus className="w-4 h-4" />
-					Add Admin
+					<Plus className="size-3.5" />
+					Add admin
 				</button>
 			</div>
 
-			{/* Stats Cards */}
-			<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-				<div className="bg-gradient-to-br from-purple-50 to-white rounded-xl border border-purple-100 p-6 hover:shadow-lg transition-shadow">
-					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-purple-100 rounded-lg">
-							<Shield className="w-6 h-6 text-purple-600" />
+			{/* ─── 4-col stat cards ─── */}
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+				{STAT_CARDS.map((s) => {
+					const Icon = s.icon;
+					return (
+						<div key={s.label} className="ds-card p-5">
+							<div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.06em] text-[var(--c-text-3)]">
+								<Icon className="size-4" />
+								{s.label}
+							</div>
+							<div className="mt-2 font-display tabular-nums text-[26px] font-semibold leading-none text-[var(--c-text)]">
+								{s.value}
+							</div>
+							<div className="mt-1.5 text-[12px] text-[var(--c-text-3)]">{s.sub}</div>
 						</div>
-					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Total Admins</p>
-					<p className="text-3xl font-bold text-foreground mb-2">{admins.length}</p>
-					<p className="text-xs text-purple-600 font-medium">All administrators</p>
-				</div>
-
-				<div className="bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 p-6 hover:shadow-lg transition-shadow">
-					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-success/10 rounded-lg">
-							<CheckCircle className="w-6 h-6 text-success" />
-						</div>
-					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Active</p>
-					<p className="text-3xl font-bold text-foreground mb-2">
-						{admins.filter((a) => a.status === "Active").length}
-					</p>
-					<p className="text-xs text-success font-medium">Currently active</p>
-				</div>
-
-				<div className="bg-gradient-to-br from-red-50 to-white rounded-xl border border-red-100 p-6 hover:shadow-lg transition-shadow">
-					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-danger/10 rounded-lg">
-							<AlertCircle className="w-6 h-6 text-danger" />
-						</div>
-					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Suspended</p>
-					<p className="text-3xl font-bold text-foreground mb-2">
-						{admins.filter((a) => a.status === "Suspended").length}
-					</p>
-					<p className="text-xs text-danger font-medium">Temporarily blocked</p>
-				</div>
-
-				<div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-100 p-6 hover:shadow-lg transition-shadow">
-					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-primary/10 rounded-lg">
-							<Activity className="w-6 h-6 text-primary" />
-						</div>
-					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Online Now</p>
-					<p className="text-3xl font-bold text-foreground mb-2">3</p>
-					<p className="text-xs text-primary font-medium">Currently online</p>
-				</div>
+					);
+				})}
 			</div>
 
-			{/* Filters */}
-			<div className="bg-card rounded-lg border border-border p-4">
-				<div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-					<div className="flex-1">
-						<SearchBar
+			{/* ─── Table card ─── */}
+			<div className="ds-card overflow-hidden">
+				{/* Card header: search + filters */}
+				<div
+					className="flex items-center gap-3 px-5 py-3 flex-wrap"
+					style={{ borderBottom: "1px solid var(--c-line)" }}
+				>
+					{/* Search */}
+					<div className="relative">
+						<Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[var(--c-text-3)]" />
+						<input
+							className="h-8 pl-8 pr-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent w-[200px]"
+							placeholder="Name or email…"
 							value={searchQuery}
-							onChange={setSearchQuery}
-							placeholder="Search by name or email..."
+							onChange={(e) => setSearchQuery(e.target.value)}
 						/>
 					</div>
 
+					<div className="flex-1" />
+
+					{/* Role filter */}
 					<select
 						value={selectedRole}
 						onChange={(e) => setSelectedRole(e.target.value)}
-						className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+						className="h-8 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
 					>
 						{roles.map((role) => (
-							<option key={role} value={role}>
-								{role}
-							</option>
+							<option key={role} value={role}>{role}</option>
 						))}
 					</select>
 
+					{/* Status filter */}
 					<select
 						value={selectedStatus}
 						onChange={(e) => setSelectedStatus(e.target.value)}
-						className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+						className="h-8 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
 					>
 						{statuses.map((status) => (
-							<option key={status} value={status}>
-								{status}
-							</option>
+							<option key={status} value={status}>{status}</option>
 						))}
 					</select>
 				</div>
-			</div>
 
-			{/* Admins Table */}
-			<div className="bg-card rounded-lg border border-border">
-				<div className="p-6 border-b border-border">
-					<h2 className="text-lg font-semibold text-foreground">Administrator Accounts</h2>
-					<p className="text-sm text-muted-foreground mt-1">
-						Showing {filteredAdmins.length} of {admins.length} admins
-					</p>
-				</div>
-
-				<div className="overflow-x-auto">
-					<table className="w-full">
-						<thead>
-							<tr className="border-b border-border bg-background">
-								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
-									Admin
+				{/* Table */}
+				<table className="w-full text-[13px] border-collapse">
+					<thead>
+						<tr style={{ borderBottom: "1px solid var(--c-line)" }}>
+							{["Admin", "Role", "Status", "Last login", "Permissions", "Actions"].map((h) => (
+								<th
+									key={h}
+									className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--c-text-3)]"
+									style={{ background: "var(--c-surface-2)" }}
+								>
+									{h}
 								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
-									Contact
-								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">Role</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
-									Status
-								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
-									Last Login
-								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
-									Permissions
-								</th>
-								<th className="text-left py-3 px-6 text-xs font-semibold text-muted-foreground uppercase">
-									Actions
-								</th>
-							</tr>
-						</thead>
-						<tbody className="divide-y divide-border">
-							{filteredAdmins.map((admin) => (
-								<tr key={admin.id} className="hover:bg-background transition-colors">
-									<td className="py-4 px-6">
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{filteredAdmins.map((admin) => {
+							const rs = roleStyle(admin.role);
+							const ss = statusStyle(admin.status);
+							return (
+								<tr
+									key={admin.id}
+									className="transition-colors hover:bg-[var(--c-surface-2)]"
+									style={{ borderBottom: "1px solid var(--c-line)" }}
+								>
+									{/* Admin */}
+									<td className="px-4 py-3">
 										<div className="flex items-center gap-3">
-											<div className="w-10 h-10 bg-gradient-to-br from-brand-800 to-brand-900 rounded-full flex items-center justify-center">
-												<span className="text-white font-semibold text-sm">{admin.avatar}</span>
+											<div
+												className="size-8 shrink-0 rounded-full flex items-center justify-center text-[11px] font-bold"
+												style={{ background: "var(--c-onyx-700)", color: "var(--c-cream)" }}
+											>
+												{initials(admin.name)}
 											</div>
-											<div>
-												<div className="text-sm font-medium text-foreground">{admin.name}</div>
-												<div className="text-xs text-muted-foreground">Joined {formatDate(admin.createdDate)}</div>
-											</div>
-										</div>
-									</td>
-									<td className="py-4 px-6">
-										<div className="space-y-1">
-											<div className="flex items-center gap-2 text-sm text-foreground">
-												<Mail className="w-3 h-3 text-muted-foreground" />
-												{admin.email}
-											</div>
-											<div className="flex items-center gap-2 text-sm text-muted-foreground">
-												<Phone className="w-3 h-3 text-muted-foreground" />
-												{admin.phone}
+											<div className="min-w-0">
+												<div className="font-semibold text-[var(--c-text)] truncate">{admin.name}</div>
+												<div className="text-[11px] text-[var(--c-text-3)] truncate flex items-center gap-1">
+													<Mail className="size-3 shrink-0" />
+													{admin.email}
+												</div>
 											</div>
 										</div>
 									</td>
-									<td className="py-4 px-6">
+
+									{/* Role */}
+									<td className="px-4 py-3">
 										<span
-											className={`inline-flex items-center px-2 py-1 text-xs font-medium border rounded ${getRoleColor(
-												admin.role
-											)}`}
+											className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold"
+											style={rs}
 										>
 											{admin.role}
 										</span>
 									</td>
-									<td className="py-4 px-6">
-										<span
-											className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium border rounded ${getStatusColor(
-												admin.status
-											)}`}
-										>
-											{getStatusIcon(admin.status)}
-											{admin.status}
-										</span>
-									</td>
-									<td className="py-4 px-6">
-										<div className="flex items-center gap-2 text-sm text-foreground">
-											<Clock className="w-3 h-3 text-muted-foreground" />
-											{admin.lastLogin}
+
+									{/* Status */}
+									<td className="px-4 py-3">
+										<div className="flex items-center gap-1.5">
+											<span
+												className="inline-block size-[6px] rounded-full shrink-0"
+												style={{ background: ss.color }}
+											/>
+											<span className="text-[var(--c-text-2)]">{admin.status}</span>
 										</div>
 									</td>
-									<td className="py-4 px-6">
-										<div className="flex flex-wrap gap-1">
-											{admin.permissions.slice(0, 2).map((permission) => (
+
+									{/* Last login */}
+									<td className="px-4 py-3 text-[var(--c-text-3)]">{admin.lastLogin}</td>
+
+									{/* Permissions */}
+									<td className="px-4 py-3">
+										<div className="flex items-center gap-1 flex-wrap">
+											{admin.permissions.slice(0, 2).map((p) => (
 												<span
-													key={permission}
-													className="px-2 py-0.5 bg-muted text-muted-foreground text-xs rounded border border-border"
+													key={p}
+													className="px-2 py-0.5 rounded-full text-[11px] font-medium"
+													style={{ background: "var(--c-surface-3)", color: "var(--c-text-3)" }}
 												>
-													{permission}
+													{p}
 												</span>
 											))}
 											{admin.permissions.length > 2 && (
-												<span className="px-2 py-0.5 bg-muted text-muted-foreground text-xs rounded border border-border">
+												<span
+													className="px-2 py-0.5 rounded-full text-[11px] font-medium"
+													style={{ background: "var(--c-surface-3)", color: "var(--c-text-3)" }}
+												>
 													+{admin.permissions.length - 2}
 												</span>
 											)}
 										</div>
 									</td>
-									<td className="py-4 px-6">
-										<div className="flex items-center gap-2">
+
+									{/* Actions */}
+									<td className="px-4 py-3">
+										<div className="flex items-center gap-1">
 											<button
-												onClick={() => openEditModal(admin)}
-												className="p-1.5 hover:bg-muted rounded transition-colors"
+												onClick={() => openEditDrawer(admin)}
+												className="p-1.5 rounded-lg transition-colors hover:bg-[var(--c-surface-3)]"
 												title="Edit"
 											>
-												<Edit className="w-4 h-4 text-muted-foreground" />
+												<Edit className="size-4 text-[var(--c-text-3)]" />
 											</button>
 											<button
 												onClick={() => handleSuspendAdmin(admin.id)}
-												className="p-1.5 hover:bg-muted rounded transition-colors"
+												className="p-1.5 rounded-lg transition-colors hover:bg-[var(--c-surface-3)]"
 												title={admin.status === "Suspended" ? "Activate" : "Suspend"}
 											>
 												{admin.status === "Suspended" ? (
-													<Unlock className="w-4 h-4 text-success" />
+													<Unlock className="size-4 text-[var(--c-up)]" />
 												) : (
-													<Lock className="w-4 h-4 text-orange-600" />
+													<Lock className="size-4 text-[var(--c-warn)]" />
 												)}
 											</button>
 											<button
 												onClick={() => setShowDeleteModal(admin.id)}
-												className="p-1.5 hover:bg-muted rounded transition-colors"
+												className="p-1.5 rounded-lg transition-colors hover:bg-[var(--c-surface-3)]"
 												title="Delete"
 											>
-												<Trash2 className="w-4 h-4 text-danger" />
+												<Trash2 className="size-4 text-[var(--c-down)]" />
 											</button>
 										</div>
 									</td>
 								</tr>
-							))}
-						</tbody>
-					</table>
+							);
+						})}
+					</tbody>
+				</table>
+
+				{/* Footer */}
+				<div
+					className="flex items-center px-5 py-3 text-[13px] text-[var(--c-text-3)]"
+					style={{ borderTop: "1px solid var(--c-line)" }}
+				>
+					Showing {filteredAdmins.length} of {admins.length} accounts
 				</div>
 			</div>
 
-			{/* Create/Edit Admin Modal */}
-			{(showCreateModal || showEditModal) && (
-				<Modal
-					isOpen={showCreateModal || !!showEditModal}
-					onClose={() => {
-						setShowCreateModal(false);
-						setShowEditModal(null);
-						setFormData({ name: "", email: "", phone: "", role: "Admin", permissions: [] });
-					}}
-					title={showEditModal ? "Edit Admin" : "Create New Admin"}
-					size="xl"
+			{/* ─── Right-side drawer (Create / Edit) ─── */}
+			{isDrawerOpen && (
+				<div
+					className="fixed inset-0 z-50 flex justify-end"
+					onClick={(e) => { if (e.target === e.currentTarget) closeDrawer(); }}
 				>
-					<div className="space-y-6">
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<div>
-									<label className="block text-sm font-medium text-muted-foreground mb-2">Full Name *</label>
+					<div className="pointer-events-none absolute inset-0 bg-black/20" />
+					<aside
+						className="relative z-10 flex h-full w-[480px] flex-col overflow-hidden"
+						style={{ background: "var(--c-surface)", borderLeft: "1px solid var(--c-line)" }}
+					>
+						{/* Drawer header */}
+						<div
+							className="flex items-center gap-3 px-5 py-4"
+							style={{ borderBottom: "1px solid var(--c-line)" }}
+						>
+							<div className="flex-1">
+								<div className="font-semibold text-[15px] text-[var(--c-text)]">
+									{isEditing ? "Edit admin" : "Create admin"}
+								</div>
+								<div className="text-[12px] text-[var(--c-text-3)] mt-0.5">
+									{isEditing ? "Update account details and permissions" : "Add a new administrator account"}
+								</div>
+							</div>
+							<button
+								onClick={closeDrawer}
+								className="shrink-0 rounded-lg p-1.5 hover:bg-[var(--c-surface-2)] transition-colors text-[var(--c-text-3)]"
+							>
+								<X className="size-4" />
+							</button>
+						</div>
+
+						{/* Drawer body */}
+						<div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
+							{/* Full Name */}
+							<div>
+								<label className="block text-[12px] font-medium text-[var(--c-text-3)] uppercase tracking-[0.05em] mb-1.5">
+									Full Name
+								</label>
+								<input
+									type="text"
+									value={formData.name}
+									onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+									placeholder="e.g. John Doe"
+									className="w-full h-9 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
+								/>
+							</div>
+
+							{/* Email */}
+							<div>
+								<label className="block text-[12px] font-medium text-[var(--c-text-3)] uppercase tracking-[0.05em] mb-1.5">
+									Email Address
+								</label>
+								<div className="relative">
+									<Mail className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[var(--c-text-3)]" />
 									<input
-										type="text"
-										value={formData.name}
-										onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-										placeholder="e.g., John Doe"
-										className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+										type="email"
+										value={formData.email}
+										onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+										placeholder="admin@clusteer.com"
+										className="w-full h-9 pl-9 pr-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
 									/>
 								</div>
+							</div>
 
-								<div>
-									<label className="block text-sm font-medium text-muted-foreground mb-2">Role *</label>
-									<select
-										value={formData.role}
-										onChange={(e) => setFormData({ ...formData, role: e.target.value as Admin["role"] })}
-										className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-									>
-										<option value="Admin">Admin</option>
-										<option value="Super Admin">Super Admin</option>
-										<option value="Moderator">Moderator</option>
-										<option value="Support">Support</option>
-									</select>
+							{/* Phone */}
+							<div>
+								<label className="block text-[12px] font-medium text-[var(--c-text-3)] uppercase tracking-[0.05em] mb-1.5">
+									Phone Number
+								</label>
+								<div className="relative">
+									<Phone className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[var(--c-text-3)]" />
+									<input
+										type="tel"
+										value={formData.phone}
+										onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+										placeholder="+234 801 234 5678"
+										className="w-full h-9 pl-9 pr-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
+									/>
 								</div>
 							</div>
 
+							{/* Role */}
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">Email Address *</label>
-								<input
-									type="email"
-									value={formData.email}
-									onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-									placeholder="admin@clusteer.com"
-									className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-								/>
+								<label className="block text-[12px] font-medium text-[var(--c-text-3)] uppercase tracking-[0.05em] mb-1.5">
+									Role
+								</label>
+								<select
+									value={formData.role}
+									onChange={(e) => setFormData({ ...formData, role: e.target.value as Admin["role"] })}
+									className="w-full h-9 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
+								>
+									<option value="Admin">Admin</option>
+									<option value="Super Admin">Super Admin</option>
+									<option value="Moderator">Moderator</option>
+									<option value="Support">Support</option>
+								</select>
 							</div>
 
+							{/* Permissions */}
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">Phone Number *</label>
-								<input
-									type="tel"
-									value={formData.phone}
-									onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-									placeholder="+234 801 234 5678"
-									className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-								/>
-							</div>
-
-							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-3">
+								<label className="block text-[12px] font-medium text-[var(--c-text-3)] uppercase tracking-[0.05em] mb-2">
 									Permissions ({formData.permissions.length} selected)
 								</label>
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-3 bg-background rounded-lg">
+								<div className="space-y-2">
 									{availablePermissions.map((permission) => (
 										<label
 											key={permission.id}
-											className="flex items-start gap-3 p-3 border border-border bg-card rounded-lg cursor-pointer hover:border-primary/20 transition-colors"
+											className="flex items-start gap-3 p-3 rounded-lg border border-[var(--c-line)] cursor-pointer hover:border-[#84cc16] transition-colors"
+											style={{ background: "var(--c-surface-2)" }}
 										>
 											<input
 												type="checkbox"
 												checked={formData.permissions.includes(permission.id)}
 												onChange={() => togglePermission(permission.id)}
-												className="mt-1"
+												className="mt-0.5 accent-[#84cc16]"
 											/>
 											<div>
-												<div className="text-sm font-medium text-foreground">{permission.label}</div>
-												<div className="text-xs text-muted-foreground">{permission.description}</div>
+												<div className="text-[13px] font-medium text-[var(--c-text)]">{permission.label}</div>
+												<div className="text-[11px] text-[var(--c-text-3)] mt-0.5">{permission.description}</div>
 											</div>
 										</label>
 									))}
 								</div>
 							</div>
+						</div>
 
-							<div className="flex items-center justify-end gap-3 pt-4">
-								<button
-									onClick={() => {
-										setShowCreateModal(false);
-										setShowEditModal(null);
-										setFormData({ name: "", email: "", phone: "", role: "Admin", permissions: [] });
-									}}
-									className="px-4 py-2 text-muted-foreground bg-card border border-border rounded-lg hover:bg-background transition-colors"
-								>
-									Cancel
-								</button>
-								<button
-									onClick={showEditModal ? handleUpdateAdmin : handleCreateAdmin}
-									disabled={
-										!formData.name.trim() ||
-										!formData.email.trim() ||
-										!formData.phone.trim() ||
-										formData.permissions.length === 0
-									}
-									className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-								>
-									{showEditModal ? "Update Admin" : "Create Admin"}
-								</button>
-							</div>
-					</div>
-				</Modal>
+						{/* Drawer footer */}
+						<div
+							className="flex items-center justify-end gap-2 px-5 py-4"
+							style={{ borderTop: "1px solid var(--c-line)" }}
+						>
+							<button
+								onClick={closeDrawer}
+								className="h-9 px-4 rounded-lg border border-[var(--c-line)] text-[13px] font-medium text-[var(--c-text-2)] hover:bg-[var(--c-surface-2)] transition-colors"
+							>
+								Cancel
+							</button>
+							<button
+								onClick={isEditing ? handleUpdateAdmin : handleCreateAdmin}
+								disabled={
+									isLoading ||
+									!formData.name.trim() ||
+									!formData.email.trim() ||
+									!formData.phone.trim() ||
+									formData.permissions.length === 0
+								}
+								className="h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+								style={{ background: "#84cc16", color: "#1a2e05" }}
+							>
+								{isEditing ? "Update" : "Create"}
+							</button>
+						</div>
+					</aside>
+				</div>
 			)}
 
-			{/* Delete Confirmation Modal */}
-			<ConfirmModal
-				isOpen={!!showDeleteModal}
-				onClose={() => setShowDeleteModal(null)}
-				onConfirm={() => showDeleteModal && handleDeleteAdmin(showDeleteModal)}
-				title="Delete Admin Account?"
-				message="This action cannot be undone. This will permanently delete the admin account and remove all associated permissions."
-				confirmText="Delete Admin"
-				variant="danger"
-			/>
+			{/* ─── Delete confirmation modal ─── */}
+			{showDeleteModal && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center">
+					<div
+						className="absolute inset-0 bg-black/30"
+						onClick={() => setShowDeleteModal(null)}
+					/>
+					<div
+						className="relative ds-card max-w-[400px] w-full mx-4 p-6"
+						style={{ zIndex: 1 }}
+					>
+						<div className="flex items-start gap-3 mb-4">
+							<div
+								className="size-10 shrink-0 rounded-full flex items-center justify-center"
+								style={{ background: "var(--c-down-soft)" }}
+							>
+								<Trash2 className="size-5" style={{ color: "var(--c-down)" }} />
+							</div>
+							<div>
+								<div className="font-semibold text-[15px] text-[var(--c-text)]">Delete admin?</div>
+								<div className="text-[13px] text-[var(--c-text-3)] mt-1">
+									This action cannot be undone. The admin account and all associated permissions will be permanently removed.
+								</div>
+							</div>
+						</div>
+						<div className="flex items-center justify-end gap-2">
+							<button
+								onClick={() => setShowDeleteModal(null)}
+								className="h-9 px-4 rounded-lg border border-[var(--c-line)] text-[13px] font-medium text-[var(--c-text-2)] hover:bg-[var(--c-surface-2)] transition-colors"
+							>
+								Cancel
+							</button>
+							<button
+								onClick={() => handleDeleteAdmin(showDeleteModal)}
+								disabled={isLoading}
+								className="h-9 px-4 rounded-lg text-[13px] font-semibold text-white transition-colors disabled:opacity-50"
+								style={{ background: "var(--c-down)" }}
+							>
+								Delete
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
-

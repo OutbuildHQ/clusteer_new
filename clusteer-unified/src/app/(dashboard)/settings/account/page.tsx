@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/store/user";
 import {
 	TrendingUp,
@@ -12,17 +10,6 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Toast } from "@/components/toast";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import {
 	getAccountLimits,
 	createDataExportRequest,
@@ -42,6 +29,7 @@ export default function Page() {
 	const [isExporting, setIsExporting] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [kycStatus, setKycStatus] = useState<KYCVerification | null>(null);
+	const [showCloseModal, setShowCloseModal] = useState(false);
 	const [accountLimits, setAccountLimits] = useState<{
 		dailyWithdrawal: LimitData;
 		monthlyWithdrawal: LimitData;
@@ -131,6 +119,7 @@ export default function Page() {
 	};
 
 	const handleCloseAccount = async () => {
+		setShowCloseModal(false);
 		Toast.error(
 			"Account closure feature is currently under maintenance. Please contact support."
 		);
@@ -173,9 +162,8 @@ export default function Page() {
 						<h2 className="font-semibold text-lg text-foreground">
 							Account Status
 						</h2>
-						<Badge
-							variant="secondary"
-							className={`rounded-full h-7 py-1 ${
+						<span
+							className={`inline-flex items-center rounded-full h-7 px-3 py-1 text-xs font-medium ${
 								kycStatus?.status === "approved"
 									? "text-success bg-success/10"
 									: kycStatus?.status === "pending" || kycStatus?.status === "under_review"
@@ -211,7 +199,7 @@ export default function Page() {
 									Not Verified
 								</>
 							)}
-						</Badge>
+						</span>
 					</div>
 
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -246,12 +234,21 @@ export default function Page() {
 										Verify your identity to unlock higher transaction limits and
 										full platform features.
 									</p>
-									<Button
-										size="sm"
-										className="bg-primary border-custom-black/5 text-white h-8 px-4 rounded-full font-semibold"
+									<button
+										style={{
+											background: "var(--c-accent, #9FE870)",
+											color: "#fff",
+											border: "1px solid rgba(0,0,0,0.05)",
+											height: "32px",
+											padding: "0 16px",
+											borderRadius: "9999px",
+											fontWeight: 600,
+											fontSize: "14px",
+											cursor: "pointer",
+										}}
 									>
 										Verify Now
-									</Button>
+									</button>
 								</div>
 							</div>
 						</div>
@@ -296,12 +293,21 @@ export default function Page() {
 									<p className="text-sm text-danger mb-2">
 										{kycStatus.rejection_reason || "Your verification was rejected. Please review your documents and try again."}
 									</p>
-									<Button
-										size="sm"
-										className="bg-primary border-custom-black/5 text-white h-8 px-4 rounded-full font-semibold"
+									<button
+										style={{
+											background: "var(--c-accent, #9FE870)",
+											color: "#fff",
+											border: "1px solid rgba(0,0,0,0.05)",
+											height: "32px",
+											padding: "0 16px",
+											borderRadius: "9999px",
+											fontWeight: 600,
+											fontSize: "14px",
+											cursor: "pointer",
+										}}
 									>
 										Resubmit Documents
-									</Button>
+									</button>
 								</div>
 							</div>
 						</div>
@@ -435,15 +441,28 @@ export default function Page() {
 						</p>
 					</div>
 
-					<Button
+					<button
 						onClick={handleExportHistory}
 						disabled={isExporting}
-						variant="outline"
-						className="w-full lg:w-auto border-border h-10 px-6 rounded-full font-semibold"
+						style={{
+							background: "transparent",
+							color: "var(--c-fg, inherit)",
+							border: "1px solid var(--c-border, #e5e5e5)",
+							height: "40px",
+							padding: "0 24px",
+							borderRadius: "9999px",
+							fontWeight: 600,
+							fontSize: "14px",
+							cursor: isExporting ? "not-allowed" : "pointer",
+							opacity: isExporting ? 0.5 : 1,
+							display: "inline-flex",
+							alignItems: "center",
+							gap: "8px",
+						}}
 					>
-						<Download className="w-4 h-4 mr-2" />
+						<Download className="w-4 h-4" />
 						{isExporting ? "Processing..." : "Export as CSV"}
-					</Button>
+					</button>
 				</div>
 
 				{/* Close Account */}
@@ -474,39 +493,95 @@ export default function Page() {
 						</ul>
 					</div>
 
-					<AlertDialog>
-						<AlertDialogTrigger asChild>
-							<Button
-								variant="destructive"
-								className="w-full lg:w-auto h-10 px-6 rounded-full font-semibold"
-							>
-								Close My Account
-							</Button>
-						</AlertDialogTrigger>
-						<AlertDialogContent>
-							<AlertDialogHeader>
-								<AlertDialogTitle>
-									Are you absolutely sure?
-								</AlertDialogTitle>
-								<AlertDialogDescription>
-									This action cannot be undone. This will permanently delete your
-									account and remove all your data from our servers. Please
-									ensure you have withdrawn all funds before proceeding.
-								</AlertDialogDescription>
-							</AlertDialogHeader>
-							<AlertDialogFooter>
-								<AlertDialogCancel>Cancel</AlertDialogCancel>
-								<AlertDialogAction
-									onClick={handleCloseAccount}
-									className="bg-danger hover:bg-danger/90"
-								>
-									Yes, Close My Account
-								</AlertDialogAction>
-							</AlertDialogFooter>
-						</AlertDialogContent>
-					</AlertDialog>
+					<button
+						onClick={() => setShowCloseModal(true)}
+						style={{
+							background: "var(--c-danger, #ef4444)",
+							color: "#fff",
+							border: "none",
+							height: "40px",
+							padding: "0 24px",
+							borderRadius: "9999px",
+							fontWeight: 600,
+							fontSize: "14px",
+							cursor: "pointer",
+						}}
+					>
+						Close My Account
+					</button>
 				</div>
 			</div>
+
+			{/* Close Account Modal */}
+			{showCloseModal && (
+				<div
+					style={{
+						position: "fixed",
+						inset: 0,
+						zIndex: 50,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						background: "rgba(0,0,0,0.5)",
+					}}
+					onClick={() => setShowCloseModal(false)}
+				>
+					<div
+						style={{
+							background: "var(--c-surface, #fff)",
+							borderRadius: "16px",
+							padding: "24px",
+							maxWidth: "480px",
+							width: "90%",
+							boxShadow: "0 25px 50px rgba(0,0,0,0.25)",
+						}}
+						onClick={(e) => e.stopPropagation()}
+					>
+						<h3 style={{ fontSize: "18px", fontWeight: 600, marginBottom: "8px" }}>
+							Are you absolutely sure?
+						</h3>
+						<p style={{ fontSize: "14px", color: "var(--c-muted, #6b7280)", marginBottom: "24px" }}>
+							This action cannot be undone. This will permanently delete your
+							account and remove all your data from our servers. Please
+							ensure you have withdrawn all funds before proceeding.
+						</p>
+						<div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+							<button
+								onClick={() => setShowCloseModal(false)}
+								style={{
+									background: "transparent",
+									color: "var(--c-fg, inherit)",
+									border: "1px solid var(--c-border, #e5e5e5)",
+									height: "40px",
+									padding: "0 16px",
+									borderRadius: "8px",
+									fontWeight: 500,
+									fontSize: "14px",
+									cursor: "pointer",
+								}}
+							>
+								Cancel
+							</button>
+							<button
+								onClick={handleCloseAccount}
+								style={{
+									background: "var(--c-danger, #ef4444)",
+									color: "#fff",
+									border: "none",
+									height: "40px",
+									padding: "0 16px",
+									borderRadius: "8px",
+									fontWeight: 500,
+									fontSize: "14px",
+									cursor: "pointer",
+								}}
+							>
+								Yes, Close My Account
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</section>
 	);
 }

@@ -1,60 +1,39 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Bell, Menu, Search, Sun, Moon, ArrowLeftRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Bell, Menu, Search, Sun, Moon, User, Settings, LogOut, ChevronDown } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Sidebar } from "./sidebar";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { CURRENT_USER } from "@/lib/mock-data";
-import { useEffect, useRef, useState } from "react";
-
-function useThemeToggle() {
-	const [dark, setDark] = useState(false);
-	useEffect(() => {
-		setDark(document.documentElement.classList.contains("dark"));
-	}, []);
-	function toggle() {
-		const next = !dark;
-		document.documentElement.classList.toggle("dark", next);
-		setDark(next);
-	}
-	return { dark, toggle };
-}
+import { useTheme } from "next-themes";
 
 export function TopBar() {
-	const { dark, toggle } = useThemeToggle();
-	const searchRef = useRef<HTMLInputElement>(null);
-
-	// ⌘K / Ctrl+K focus
+	const { theme, setTheme } = useTheme();
+	const [mounted, setMounted] = useState(false);
+	const [userMenu, setUserMenu] = useState(false);
+	const menuRef = useRef<HTMLDivElement>(null);
+	useEffect(() => setMounted(true), []);
 	useEffect(() => {
-		function onKey(e: KeyboardEvent) {
-			if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-				e.preventDefault();
-				searchRef.current?.focus();
-			}
-		}
-		window.addEventListener("keydown", onKey);
-		return () => window.removeEventListener("keydown", onKey);
-	}, []);
-
+		if (!userMenu) return;
+		const close = (e: MouseEvent) => { if (menuRef.current && !menuRef.current.contains(e.target as Node)) setUserMenu(false); };
+		document.addEventListener("mousedown", close);
+		return () => document.removeEventListener("mousedown", close);
+	}, [userMenu]);
 	return (
 		<header
-			className="sticky top-0 z-30 flex h-[57px] shrink-0 items-center gap-3 px-6 border-b border-[var(--c-line)] bg-[var(--c-surface)]"
-			style={{ boxShadow: "var(--sh-1)" }}
+			className="sticky top-0 z-30 flex items-center gap-2 sm:gap-3 shrink-0 px-3 sm:px-4 lg:px-6"
+			style={{ borderBottom: "1px solid var(--c-line)", background: "var(--c-surface)", height: 56 }}
 		>
-			{/* Mobile hamburger */}
+			{/* Mobile menu */}
 			<Sheet>
 				<SheetTrigger asChild>
-					<Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
+					<button className="lg:hidden inline-flex items-center justify-center size-9 rounded-[10px]" style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }} aria-label="Open menu">
 						<Menu className="size-5" />
-					</Button>
+					</button>
 				</SheetTrigger>
-				<SheetContent side="left" className="w-[260px] p-0 border-r border-[var(--c-line)]">
-					<div className="h-full">
-						<Sidebar className="flex w-full border-r-0 h-full" />
-					</div>
+				<SheetContent side="left" className="w-[280px] p-0">
+					<div className="h-full"><Sidebar /></div>
 				</SheetContent>
 			</Sheet>
 
@@ -63,71 +42,80 @@ export function TopBar() {
 				<Logo monogramOnly />
 			</div>
 
-			{/* Global search */}
-			<div className="flex-1 max-w-[380px] hidden md:flex items-center gap-2 h-9 px-3 rounded-[10px] border border-[var(--c-line)] bg-[var(--c-bg)] text-[var(--c-text-3)]">
-				<Search className="size-4 shrink-0" />
-				<input
-					ref={searchRef}
-					type="search"
-					placeholder="Search assets, txns, addresses…"
-					className="flex-1 h-full bg-transparent text-[13px] text-[var(--c-text)] placeholder:text-[var(--c-text-3)] outline-none border-none"
-				/>
-				<kbd className="font-mono text-[11px] px-1.5 py-0.5 rounded border border-[var(--c-line)] bg-[var(--c-surface-2)] text-[var(--c-text-3)]">
-					⌘K
-				</kbd>
+			{/* Search */}
+			<div className="flex-1 max-w-[380px] hidden md:flex items-center gap-2 h-9 px-3 rounded-[10px] transition-shadow focus-within:shadow-[0_0_0_3px_rgba(159,232,112,0.45)]" style={{ border: "1px solid var(--c-line)", background: "var(--c-bg)" }}>
+				<Search className="size-4 shrink-0" style={{ color: "var(--c-text-3)" }} />
+				<input className="flex-1 bg-transparent outline-none text-[13.5px] border-none shadow-none" style={{ color: "var(--c-text)", fontFamily: "var(--f-sans)" }} placeholder="Search assets, txns, addresses…" />
+				<kbd className="text-[11px] px-1.5 py-0.5 rounded" style={{ fontFamily: "var(--f-mono)", background: "var(--c-surface-2)", border: "1px solid var(--c-line)", color: "var(--c-text-3)" }}>⌘K</kbd>
 			</div>
 
 			<div className="flex-1" />
 
-			{/* Right controls */}
-			<div className="flex items-center gap-1">
-				{/* Theme toggle */}
+			{/* Actions */}
+			<button
+				onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+				className="hidden sm:inline-flex items-center justify-center size-9 rounded-[10px] transition-colors"
+				style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}
+				title="Toggle theme"
+			>
+				{mounted ? (theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />) : <Sun className="size-4" />}
+			</button>
+			<Link href="#" className="relative inline-flex items-center justify-center size-9 rounded-[10px] transition-colors" style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}>
+				<Bell className="size-[17px]" />
+				<span className="absolute top-2 right-2 size-[7px] rounded-full" style={{ background: "var(--c-down)" }} />
+			</Link>
+
+			{/* User + dropdown */}
+			<div ref={menuRef} className="relative sm:pl-3 sm:ml-1 sm:border-l" style={{ borderColor: "var(--c-line)" }}>
 				<button
-					onClick={toggle}
-					title="Toggle theme"
-					className="h-9 w-9 flex items-center justify-center rounded-lg text-[var(--c-text-2)] hover:bg-[var(--c-surface-2)] transition-colors"
+					onClick={() => setUserMenu(!userMenu)}
+					className="flex items-center gap-2.5 rounded-lg px-1.5 py-1 transition-colors hover:bg-[var(--c-surface-2)]"
 				>
-					{dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+					<div className="size-8 rounded-full flex items-center justify-center text-[12px] font-semibold shrink-0" style={{ background: "linear-gradient(135deg, var(--c-lime-500), var(--c-onyx-700))", color: "var(--c-onyx-900)" }}>
+						AO
+					</div>
+					<div className="hidden sm:block text-left">
+						<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>Adaeze O.</div>
+						<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>adaeze@…ng</div>
+					</div>
+					<ChevronDown className="size-3.5 hidden sm:block" style={{ color: "var(--c-text-3)" }} />
 				</button>
 
-				{/* Notifications */}
-				<Link
-					href="/notifications"
-					className="relative h-9 w-9 flex items-center justify-center rounded-lg text-[var(--c-text-2)] hover:bg-[var(--c-surface-2)] transition-colors"
-					aria-label="Notifications"
-				>
-					<Bell className="size-4" />
-					<span className="absolute top-1.5 right-1.5 h-[7px] w-[7px] rounded-full bg-[var(--c-down)]" aria-hidden />
-				</Link>
-
-				{/* Trade CTA */}
-				<Link
-					href="/trade"
-					className="hidden md:flex items-center gap-1.5 h-9 px-3.5 ml-1 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:bg-[var(--c-lime-400)] transition-colors"
-				>
-					<ArrowLeftRight className="size-3.5" />
-					Trade
-				</Link>
-
-				{/* User avatar */}
-				<div className="flex items-center gap-2.5 ml-1 pl-3 border-l border-[var(--c-line)]">
-					<Avatar className="size-8 shrink-0">
-						<AvatarFallback
-							className="text-[11px] font-semibold"
-							style={{ background: "linear-gradient(135deg, var(--c-lime-500), var(--c-onyx-700))", color: "var(--c-onyx-900)" }}
+				{userMenu && (
+					<div
+						className="absolute right-0 top-full mt-2 w-52 py-1.5 rounded-[12px] overflow-hidden"
+						style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)", boxShadow: "var(--sh-3)", animation: "modalIn .15s cubic-bezier(.2,.7,.2,1)", zIndex: 50 }}
+					>
+						<Link
+							href="/settings"
+							onClick={() => setUserMenu(false)}
+							className="flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors hover:bg-[var(--c-surface-2)]"
+							style={{ color: "var(--c-text)" }}
 						>
-							{CURRENT_USER.name.split(" ").map(w => w[0]).slice(0, 2).join("")}
-						</AvatarFallback>
-					</Avatar>
-					<div className="hidden md:block min-w-0">
-						<div className="text-[13px] font-semibold leading-none text-[var(--c-text)] truncate">
-							{CURRENT_USER.firstName}.
-						</div>
-						<div className="text-[11px] text-[var(--c-text-3)] truncate max-w-[120px]">
-							{CURRENT_USER.email}
-						</div>
+							<User className="size-4" style={{ color: "var(--c-text-3)" }} />
+							Profile
+						</Link>
+						<Link
+							href="/settings"
+							onClick={() => setUserMenu(false)}
+							className="flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors hover:bg-[var(--c-surface-2)]"
+							style={{ color: "var(--c-text)" }}
+						>
+							<Settings className="size-4" style={{ color: "var(--c-text-3)" }} />
+							Settings
+						</Link>
+						<div className="my-1.5" style={{ height: 1, background: "var(--c-line)" }} />
+						<Link
+							href="/login"
+							onClick={() => setUserMenu(false)}
+							className="flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors hover:bg-[var(--c-surface-2)]"
+							style={{ color: "var(--c-down)" }}
+						>
+							<LogOut className="size-4" />
+							Sign out
+						</Link>
 					</div>
-				</div>
+				)}
 			</div>
 		</header>
 	);

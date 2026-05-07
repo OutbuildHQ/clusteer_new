@@ -1,450 +1,132 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-	Settings as SettingsIcon,
-	Shield,
-	Bell,
-	Database,
-	Key,
-	Globe,
-	DollarSign,
-	Users,
-	Mail,
-	Lock,
-	ChevronRight,
-	Save,
-	AlertCircle,
-	CheckCircle,
-	RefreshCw,
-	Download,
-	Upload,
-	Zap,
-	Clock,
-	Server,
-	FileText,
-} from "lucide-react";
-import { useToast } from "@/components/admin/Toast";
 
-export default function SettingsPage() {
-	const router = useRouter();
-	const toast = useToast();
-	const [isLoading, setIsLoading] = useState(false);
-	const [hasChanges, setHasChanges] = useState(false);
+/* ── inline mock data for the 2x2 grid ── */
+const WITHDRAWAL_LIMITS = [
+  ["Tier 1 daily", "\u20A6300,000"],
+  ["Tier 2 daily", "\u20A65,000,000"],
+  ["Tier 3 daily", "\u20A620,000,000"],
+  ["Single tx max", "\u20A65,000,000"],
+];
 
-	// General Settings
-	const [platformName, setPlatformName] = useState("Clusteer");
-	const [supportEmail, setSupportEmail] = useState("support@clusteer.com");
-	const [maintenanceMode, setMaintenanceMode] = useState(false);
+const APPROVAL_THRESHOLDS = [
+  ["Auto-approve <", "\u20A6500,000"],
+  ["Manual review \u2265", "\u20A65,000,000"],
+  ["Dual approval \u2265", "\u20A610,000,000"],
+  ["Cooling period (new device)", "24 hours"],
+];
 
-	// Security Settings
-	const [twoFactorRequired, setTwoFactorRequired] = useState(true);
-	const [sessionTimeout, setSessionTimeout] = useState(30);
-	const [maxLoginAttempts, setMaxLoginAttempts] = useState(3);
+const PROVIDERS = [
+  ["Paystack (NGN)", "Connected"],
+  ["NIBSS", "Connected"],
+  ["Sumsub KYC", "Connected"],
+  ["Chainalysis", "Connected"],
+  ["Fireblocks (custody)", "Connected"],
+  ["Twilio SMS", "Connected"],
+];
 
-	// Transaction Settings
-	const [minTransactionAmount, setMinTransactionAmount] = useState(10);
-	const [maxTransactionAmount, setMaxTransactionAmount] = useState(50000);
-	const [dailyLimit, setDailyLimit] = useState(100000);
-	const [transactionFee, setTransactionFee] = useState(2.5);
+const MAINTENANCE_TOGGLES = [
+  "Pause deposits",
+  "Pause withdrawals",
+  "Pause trading",
+  "Read-only mode",
+];
 
-	// KYC Settings
-	const [autoApproveKYC, setAutoApproveKYC] = useState(false);
-	const [kycExpiryDays, setKycExpiryDays] = useState(365);
+export default function AdminSettings() {
+  const [toggles, setToggles] = useState<Record<string, boolean>>({});
 
-	// Email Settings
-	const [emailNotifications, setEmailNotifications] = useState(true);
-	const [smtpHost, setSmtpHost] = useState("smtp.gmail.com");
-	const [smtpPort, setSmtpPort] = useState(587);
+  const handleToggle = (key: string) => {
+    setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
-	const handleSave = async () => {
-		setIsLoading(true);
-		try {
-			// Simulate API call
-			await new Promise(resolve => setTimeout(resolve, 1000));
-			console.log("Saving settings...");
-			toast.success('Settings saved', 'System settings have been updated successfully');
-			setHasChanges(false);
-		} catch (error) {
-			toast.error('Save failed', 'An error occurred while saving settings');
-		} finally {
-			setIsLoading(false);
-		}
-	};
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 600, color: "var(--c-text)", letterSpacing: "-0.02em" }}>System settings</h1>
 
-	const handleInputChange = (setter: (value: any) => void) => (value: any) => {
-		setter(value);
-		setHasChanges(true);
-	};
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        {/* Withdrawal limits */}
+        <div className="ds-card" style={{ padding: 20 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--c-text)", marginBottom: 16 }}>Withdrawal limits</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {WITHDRAWAL_LIMITS.map(([k, v]) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <label style={{ fontSize: 13, color: "var(--c-text)" }}>{k}</label>
+                <input
+                  defaultValue={v}
+                  style={{
+                    maxWidth: 160, textAlign: "right", padding: "6px 12px", borderRadius: 8,
+                    border: "1px solid var(--c-line)", background: "var(--c-surface)", color: "var(--c-text)",
+                    fontSize: 13, fontVariantNumeric: "tabular-nums", outline: "none",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
 
-	const settingsSections = [
-		{
-			icon: SettingsIcon,
-			title: "General Settings",
-			description: "Basic platform configuration",
-			color: "text-primary bg-primary/10",
-			settings: [
-				{
-					label: "Platform Name",
-					value: platformName,
-					onChange: handleInputChange(setPlatformName),
-					type: "text" as const,
-				},
-				{
-					label: "Support Email",
-					value: supportEmail,
-					onChange: handleInputChange(setSupportEmail),
-					type: "email" as const,
-				},
-				{
-					label: "Maintenance Mode",
-					value: maintenanceMode,
-					onChange: handleInputChange(setMaintenanceMode),
-					type: "toggle" as const,
-					description: "Disable user access for maintenance",
-				},
-			],
-		},
-		{
-			icon: Shield,
-			title: "Security Settings",
-			description: "Authentication and security policies",
-			color: "text-danger bg-danger/10",
-			settings: [
-				{
-					label: "Require 2FA for All Users",
-					value: twoFactorRequired,
-					onChange: handleInputChange(setTwoFactorRequired),
-					type: "toggle" as const,
-				},
-				{
-					label: "Session Timeout (minutes)",
-					value: sessionTimeout,
-					onChange: handleInputChange(setSessionTimeout),
-					type: "number" as const,
-					min: 5,
-					max: 120,
-				},
-				{
-					label: "Max Login Attempts",
-					value: maxLoginAttempts,
-					onChange: handleInputChange(setMaxLoginAttempts),
-					type: "number" as const,
-					min: 1,
-					max: 10,
-				},
-			],
-		},
-		{
-			icon: DollarSign,
-			title: "Transaction Settings",
-			description: "Limits and fees configuration",
-			color: "text-success bg-success/10",
-			settings: [
-				{
-					label: "Minimum Transaction Amount (USD)",
-					value: minTransactionAmount,
-					onChange: handleInputChange(setMinTransactionAmount),
-					type: "number" as const,
-					min: 1,
-				},
-				{
-					label: "Maximum Transaction Amount (USD)",
-					value: maxTransactionAmount,
-					onChange: handleInputChange(setMaxTransactionAmount),
-					type: "number" as const,
-					min: 100,
-				},
-				{
-					label: "Daily Transaction Limit (USD)",
-					value: dailyLimit,
-					onChange: handleInputChange(setDailyLimit),
-					type: "number" as const,
-					min: 1000,
-				},
-				{
-					label: "Transaction Fee (%)",
-					value: transactionFee,
-					onChange: handleInputChange(setTransactionFee),
-					type: "number" as const,
-					min: 0,
-					max: 10,
-					step: 0.1,
-				},
-			],
-		},
-		{
-			icon: Users,
-			title: "KYC Settings",
-			description: "Know Your Customer configuration",
-			color: "text-purple-600 bg-purple-50",
-			settings: [
-				{
-					label: "Auto-Approve KYC",
-					value: autoApproveKYC,
-					onChange: handleInputChange(setAutoApproveKYC),
-					type: "toggle" as const,
-					description: "Automatically approve KYC submissions (not recommended)",
-				},
-				{
-					label: "KYC Document Expiry (days)",
-					value: kycExpiryDays,
-					onChange: handleInputChange(setKycExpiryDays),
-					type: "number" as const,
-					min: 30,
-					max: 730,
-				},
-			],
-		},
-		{
-			icon: Mail,
-			title: "Email Settings",
-			description: "SMTP and email configuration",
-			color: "text-orange-600 bg-orange-50",
-			settings: [
-				{
-					label: "Enable Email Notifications",
-					value: emailNotifications,
-					onChange: handleInputChange(setEmailNotifications),
-					type: "toggle" as const,
-				},
-				{
-					label: "SMTP Host",
-					value: smtpHost,
-					onChange: handleInputChange(setSmtpHost),
-					type: "text" as const,
-				},
-				{
-					label: "SMTP Port",
-					value: smtpPort,
-					onChange: handleInputChange(setSmtpPort),
-					type: "number" as const,
-					min: 1,
-					max: 65535,
-				},
-			],
-		},
-	];
+        {/* Approval thresholds */}
+        <div className="ds-card" style={{ padding: 20 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--c-text)", marginBottom: 16 }}>Approval thresholds</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {APPROVAL_THRESHOLDS.map(([k, v]) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <label style={{ fontSize: 13, color: "var(--c-text)" }}>{k}</label>
+                <input
+                  defaultValue={v}
+                  style={{
+                    maxWidth: 160, textAlign: "right", padding: "6px 12px", borderRadius: 8,
+                    border: "1px solid var(--c-line)", background: "var(--c-surface)", color: "var(--c-text)",
+                    fontSize: 13, fontVariantNumeric: "tabular-nums", outline: "none",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
 
-	const quickActions = [
-		{
-			icon: Bell,
-			label: "Alert Settings",
-			description: "Configure system alerts",
-			onClick: () => router.push("/admin/settings/alerts"),
-			color: "text-primary",
-		},
-		{
-			icon: Key,
-			label: "API Keys",
-			description: "Manage API keys",
-			onClick: () => router.push("/admin/settings/api-keys"),
-			color: "text-purple-600",
-		},
-		{
-			icon: Database,
-			label: "Backup & Data",
-			description: "Manage backups",
-			onClick: () => router.push("/admin/settings/backup"),
-			color: "text-success",
-		},
-		{
-			icon: Zap,
-			label: "Integrations",
-			description: "Third-party services",
-			onClick: () => router.push("/admin/settings/integrations"),
-			color: "text-orange-600",
-		},
-		{
-			icon: FileText,
-			label: "Audit Logs",
-			description: "View activity logs",
-			onClick: () => router.push("/admin/settings/audit-logs"),
-			color: "text-danger",
-		},
-		{
-			icon: RefreshCw,
-			label: "Clear Cache",
-			description: "Reset system cache",
-			onClick: () => console.log("Clearing cache..."),
-			color: "text-muted-foreground",
-		},
-	];
+        {/* Provider integrations */}
+        <div className="ds-card" style={{ padding: 20 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--c-text)", marginBottom: 16 }}>Provider integrations</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {PROVIDERS.map(([k, v]) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, color: "var(--c-text)" }}>{k}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600, background: "var(--c-up-soft)", color: "var(--c-up)" }}>
+                  <span style={{ width: 5, height: 5, borderRadius: "50%", background: "var(--c-up)" }} />{v}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
 
-	return (
-		<div className="space-y-6">
-			{/* Header */}
-			<div className="flex items-center justify-between">
-				<div>
-					<h1 className="text-2xl font-bold text-foreground">System Settings</h1>
-					<p className="text-sm text-muted-foreground mt-1">Manage platform configuration and preferences</p>
-				</div>
-				<button
-					onClick={handleSave}
-					disabled={!hasChanges || isLoading}
-					className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-						hasChanges && !isLoading
-							? "bg-primary text-white hover:bg-primary/90 shadow-sm"
-							: "bg-muted text-muted-foreground cursor-not-allowed"
-					}`}
-				>
-					<Save className="w-4 h-4" />
-					{isLoading ? 'Saving...' : 'Save All Changes'}
-				</button>
-			</div>
-
-			{/* Unsaved Changes Banner */}
-			{hasChanges && (
-				<div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex items-center gap-3 animate-in slide-in-from-top duration-300">
-					<AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0" />
-					<div>
-						<p className="text-sm font-medium text-orange-900">You have unsaved changes</p>
-						<p className="text-xs text-orange-700">Don't forget to save your configuration</p>
-					</div>
-				</div>
-			)}
-
-			{/* Quick Actions */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-				{quickActions.map((action, idx) => {
-					const Icon = action.icon;
-					return (
-						<button
-							key={idx}
-							onClick={action.onClick}
-							className="bg-card rounded-lg border border-border p-4 text-left hover:border-primary/20 hover:shadow-md transition-all group"
-						>
-							<div className="flex items-center gap-3 mb-2">
-								<div className={`w-10 h-10 rounded-lg bg-background flex items-center justify-center group-hover:bg-primary/10 transition-colors`}>
-									<Icon className={`w-5 h-5 ${action.color}`} />
-								</div>
-								<ChevronRight className="w-4 h-4 text-muted-foreground ml-auto group-hover:translate-x-1 transition-transform" />
-							</div>
-							<h3 className="text-sm font-semibold text-foreground">{action.label}</h3>
-							<p className="text-xs text-muted-foreground mt-1">{action.description}</p>
-						</button>
-					);
-				})}
-			</div>
-
-			{/* Settings Sections */}
-			<div className="space-y-6">
-				{settingsSections.map((section, sectionIdx) => {
-					const Icon = section.icon;
-					return (
-						<div key={sectionIdx} className="bg-card rounded-lg border border-border p-6">
-							<div className="flex items-center gap-3 mb-6">
-								<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${section.color}`}>
-									<Icon className="w-5 h-5" />
-								</div>
-								<div>
-									<h3 className="text-lg font-semibold text-foreground">{section.title}</h3>
-									<p className="text-sm text-muted-foreground">{section.description}</p>
-								</div>
-							</div>
-
-							<div className="space-y-4">
-								{section.settings.map((setting, settingIdx) => (
-									<div
-										key={settingIdx}
-										className="flex items-center justify-between p-4 border border-border rounded-lg hover:border-primary/20 transition-colors"
-									>
-										<div className="flex-1">
-											<label className="block text-sm font-medium text-foreground mb-1">{setting.label}</label>
-											{'description' in setting && setting.description && (
-												<p className="text-xs text-muted-foreground">{setting.description}</p>
-											)}
-										</div>
-										<div className="ml-4">
-											{setting.type === "toggle" ? (
-												<label className="relative inline-flex items-center cursor-pointer">
-													<input
-														type="checkbox"
-														checked={setting.value as boolean}
-														onChange={(e) => setting.onChange(e.target.checked)}
-														className="sr-only peer"
-													/>
-													<div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ring/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-												</label>
-											) : (
-												<input
-													type={setting.type}
-													value={setting.value as string | number}
-													onChange={(e) =>
-														setting.onChange(
-															setting.type === "number" ? Number(e.target.value) : e.target.value
-														)
-													}
-													min={'min' in setting ? setting.min : undefined}
-													max={'max' in setting ? setting.max : undefined}
-													step={'step' in setting ? setting.step : undefined}
-													className="w-32 px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-sm"
-												/>
-											)}
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-					);
-				})}
-			</div>
-
-			{/* System Information */}
-			<div className="bg-card rounded-lg border border-border p-6">
-				<div className="flex items-center gap-3 mb-6">
-					<div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center">
-						<Server className="w-5 h-5 text-muted-foreground" />
-					</div>
-					<div>
-						<h3 className="text-lg font-semibold text-foreground">System Information</h3>
-						<p className="text-sm text-muted-foreground">Platform status and metrics</p>
-					</div>
-				</div>
-
-				<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-					<div className="p-4 bg-background rounded-lg">
-						<div className="flex items-center gap-2 mb-2">
-							<CheckCircle className="w-4 h-4 text-success" />
-							<span className="text-xs font-medium text-muted-foreground">Status</span>
-						</div>
-						<p className="text-sm font-semibold text-foreground">Online</p>
-					</div>
-					<div className="p-4 bg-background rounded-lg">
-						<div className="flex items-center gap-2 mb-2">
-							<Clock className="w-4 h-4 text-primary" />
-							<span className="text-xs font-medium text-muted-foreground">Uptime</span>
-						</div>
-						<p className="text-sm font-semibold text-foreground">99.8%</p>
-					</div>
-					<div className="p-4 bg-background rounded-lg">
-						<div className="flex items-center gap-2 mb-2">
-							<Database className="w-4 h-4 text-purple-600" />
-							<span className="text-xs font-medium text-muted-foreground">DB Size</span>
-						</div>
-						<p className="text-sm font-semibold text-foreground">2.4 GB</p>
-					</div>
-					<div className="p-4 bg-background rounded-lg">
-						<div className="flex items-center gap-2 mb-2">
-							<Zap className="w-4 h-4 text-orange-600" />
-							<span className="text-xs font-medium text-muted-foreground">Version</span>
-						</div>
-						<p className="text-sm font-semibold text-foreground">v2.1.0</p>
-					</div>
-				</div>
-
-				<div className="mt-4 pt-4 border-t border-border">
-					<div className="flex items-center justify-between text-sm">
-						<span className="text-muted-foreground">Last backup:</span>
-						<span className="font-medium text-foreground">Jan 16, 2025 02:00 AM</span>
-					</div>
-					<div className="flex items-center justify-between text-sm mt-2">
-						<span className="text-muted-foreground">Last deployment:</span>
-						<span className="font-medium text-foreground">Jan 15, 2025 10:30 PM</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+        {/* Maintenance */}
+        <div className="ds-card" style={{ padding: 20 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--c-text)", marginBottom: 16 }}>Maintenance</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {MAINTENANCE_TOGGLES.map((k) => {
+              const on = !!toggles[k];
+              return (
+                <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: 13, color: "var(--c-text)" }}>{k}</span>
+                  <button
+                    onClick={() => handleToggle(k)}
+                    style={{
+                      width: 42, height: 24, borderRadius: 999, position: "relative", border: "none", cursor: "pointer", transition: "background 0.2s",
+                      background: on ? "var(--c-lime-500)" : "var(--c-surface-3)",
+                    }}
+                  >
+                    <div style={{
+                      position: "absolute", top: 2, left: on ? 20 : 2, width: 20, height: 20,
+                      background: "#fff", borderRadius: "50%", transition: "left 0.2s",
+                    }} />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

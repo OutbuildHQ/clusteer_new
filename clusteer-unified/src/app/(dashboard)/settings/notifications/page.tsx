@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Bell, Mail, MessageSquare, Smartphone } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Toast } from "@/components/toast";
@@ -29,6 +27,41 @@ interface NotificationPreferences {
 		security: boolean;
 		priceAlerts: boolean;
 	};
+}
+
+function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange?: () => void; disabled?: boolean }) {
+	return (
+		<div
+			role="switch"
+			aria-checked={checked}
+			onClick={disabled ? undefined : onChange}
+			style={{
+				width: "44px",
+				height: "24px",
+				borderRadius: "9999px",
+				background: checked ? "var(--c-accent, #9FE870)" : "var(--c-border, #d1d5db)",
+				cursor: disabled ? "not-allowed" : "pointer",
+				opacity: disabled ? 0.5 : 1,
+				position: "relative",
+				transition: "background 0.2s",
+				flexShrink: 0,
+			}}
+		>
+			<div
+				style={{
+					position: "absolute",
+					top: "2px",
+					left: checked ? "22px" : "2px",
+					width: "20px",
+					height: "20px",
+					borderRadius: "9999px",
+					background: "#fff",
+					transition: "left 0.2s",
+					boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+				}}
+			/>
+		</div>
+	);
 }
 
 export default function Page() {
@@ -181,9 +214,9 @@ export default function Page() {
 									Get notified when transactions are completed
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.email.transactions}
-								onCheckedChange={() => handleToggle("email", "transactions")}
+								onChange={() => handleToggle("email", "transactions")}
 							/>
 						</div>
 
@@ -194,9 +227,9 @@ export default function Page() {
 									Important security updates and login alerts
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.email.security}
-								onCheckedChange={() => handleToggle("email", "security")}
+								onChange={() => handleToggle("email", "security")}
 							/>
 						</div>
 
@@ -207,9 +240,9 @@ export default function Page() {
 									Status changes for your buy and sell orders
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.email.orderUpdates}
-								onCheckedChange={() => handleToggle("email", "orderUpdates")}
+								onChange={() => handleToggle("email", "orderUpdates")}
 							/>
 						</div>
 
@@ -222,9 +255,9 @@ export default function Page() {
 									News, offers, and product updates
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.email.marketing}
-								onCheckedChange={() => handleToggle("email", "marketing")}
+								onChange={() => handleToggle("email", "marketing")}
 							/>
 						</div>
 					</div>
@@ -256,9 +289,9 @@ export default function Page() {
 									SMS alerts for completed transactions
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.sms.transactions}
-								onCheckedChange={() => handleToggle("sms", "transactions")}
+								onChange={() => handleToggle("sms", "transactions")}
 							/>
 						</div>
 
@@ -269,9 +302,9 @@ export default function Page() {
 									Critical security notifications via SMS
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.sms.security}
-								onCheckedChange={() => handleToggle("sms", "security")}
+								onChange={() => handleToggle("sms", "security")}
 							/>
 						</div>
 
@@ -282,9 +315,9 @@ export default function Page() {
 									SMS for important order status changes
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.sms.orderUpdates}
-								onCheckedChange={() => handleToggle("sms", "orderUpdates")}
+								onChange={() => handleToggle("sms", "orderUpdates")}
 							/>
 						</div>
 					</div>
@@ -316,7 +349,7 @@ export default function Page() {
 									Push alerts for transactions
 								</p>
 							</div>
-							<Switch disabled checked={preferences.push.transactions} />
+							<Toggle disabled checked={preferences.push.transactions} />
 						</div>
 
 						<div className="flex items-center justify-between py-3 border-b border-border">
@@ -326,7 +359,7 @@ export default function Page() {
 									Important security push notifications
 								</p>
 							</div>
-							<Switch disabled checked={preferences.push.security} />
+							<Toggle disabled checked={preferences.push.security} />
 						</div>
 
 						<div className="flex items-center justify-between py-3">
@@ -336,20 +369,31 @@ export default function Page() {
 									Notifications when prices hit your targets
 								</p>
 							</div>
-							<Switch disabled checked={preferences.push.priceAlerts} />
+							<Toggle disabled checked={preferences.push.priceAlerts} />
 						</div>
 					</div>
 				</div>
 			</div>
 
 			<div className="flex justify-end mt-8">
-				<Button
+				<button
 					onClick={handleSave}
 					disabled={isSaving}
-					className="bg-primary border-custom-black/5 text-white h-10 px-6 rounded-full font-semibold"
+					style={{
+						background: "var(--c-accent, #9FE870)",
+						color: "#fff",
+						border: "1px solid rgba(0,0,0,0.05)",
+						height: "40px",
+						padding: "0 24px",
+						borderRadius: "9999px",
+						fontWeight: 600,
+						fontSize: "14px",
+						cursor: isSaving ? "not-allowed" : "pointer",
+						opacity: isSaving ? 0.5 : 1,
+					}}
 				>
 					{isSaving ? "Saving..." : "Save Preferences"}
-				</Button>
+				</button>
 			</div>
 		</section>
 	);

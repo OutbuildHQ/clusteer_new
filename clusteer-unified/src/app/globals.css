@@ -4,14 +4,12 @@
 @custom-variant dark (&:is(.dark *));
 
 /* =========================================================
-   Clusteer Design Tokens
-   Source: original Clusteer brand (lime green + warm neutrals)
-   Neutral base → shadcn new-york; overlaid with brand green
-   + chain accents + mono numeric type.
+   Clusteer Dashboard Design Tokens (from dashboards/tokens.css)
+   These power all var(--c-*) references across dashboard pages.
    ========================================================= */
 
 :root {
-	/* ── Design System v2 — Onyx + Lime palette ─────────────── */
+	/* Brand — onyx + lime */
 	--c-onyx-900: #0B0E0C;
 	--c-onyx-800: #131815;
 	--c-onyx-700: #1B201D;
@@ -19,44 +17,53 @@
 	--c-lime-400: #DBFF6B;
 	--c-lime-500: #C9F542;
 	--c-lime-600: #A8D820;
-	--c-cream:    #F4F1EA;
+	--c-cream: #F4F1EA;
 
-	/* Signal colours */
-	--c-up:        #00A86B;
-	--c-up-soft:   #E6F6EF;
-	--c-down:      #E5484D;
+	/* Signals */
+	--c-up: #00A86B;
+	--c-up-soft: #E6F6EF;
+	--c-down: #E5484D;
 	--c-down-soft: #FDECEC;
-	--c-warn:      #E8A53A;
+	--c-warn: #E8A53A;
 	--c-warn-soft: #FCF3E1;
-	--c-info:      #1B7EC2;
+	--c-info: #1B7EC2;
 	--c-info-soft: #E6F2FA;
 
-	/* Neutral surfaces (warm cream system) */
-	--c-bg:          #F4F1EA;
-	--c-surface:     #FFFFFF;
-	--c-surface-2:   #F8F6F1;
-	--c-surface-3:   #EDE9DF;
-	--c-line:        #E2DDD0;
+	/* Chain accents */
+	--c-tron: #EF0027; --c-bsc: #F0B90B; --c-sol: #9945FF;
+	--c-eth: #627EEA; --c-usdt: #26A17B; --c-btc: #F7931A;
+
+	/* Light neutrals */
+	--c-bg: #F4F1EA;
+	--c-surface: #FFFFFF;
+	--c-surface-2: #F8F6F1;
+	--c-surface-3: #EDE9DF;
+	--c-line: #E2DDD0;
 	--c-line-strong: #C8C2B1;
-	--c-text:        #0B0E0C;
-	--c-text-2:      #4A5048;
-	--c-text-3:      #7C8278;
+	--c-text: #0B0E0C;
+	--c-text-2: #4A5048;
+	--c-text-3: #7C8278;
+	--c-text-inv: #FFFFFF;
 
 	/* Shadows */
 	--sh-1: 0 1px 2px rgba(11,14,12,0.05);
 	--sh-2: 0 4px 12px rgba(11,14,12,0.06), 0 1px 2px rgba(11,14,12,0.04);
 	--sh-3: 0 12px 32px rgba(11,14,12,0.10), 0 2px 4px rgba(11,14,12,0.05);
-	--focus: 0 0 0 3px rgba(201,245,66,0.45);
 
-	/* Chain accents */
-	--c-tron: #EF0027; --c-bsc: #F0B90B; --c-sol-hex: #9945FF;
-	--c-eth-hex: #627EEA; --c-usdt-hex: #26A17B; --c-btc-hex: #F7931A;
+	/* Radius */
+	--r-xs: 4px; --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px; --r-pill: 999px;
 
-	/* Density */
-	--row-h: 44px;
+	/* Spacing */
 	--pad: 24px;
+	--row-h: 44px;
 
-	/* Brand — Clusteer Green (derived from hsl(78, 100%, 48%)) */
+	/* Type */
+	--f-sans: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	--f-mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+	--f-display: "Sora", "Geist", "Inter", sans-serif;
+
+	--focus: 0 0 0 3px rgba(201,245,66,0.45);
+	--c-eth-hex: #627EEA; --c-usdt-hex: #26A17B; --c-btc-hex: #F7931A;
 	--clusteer-green-50: oklch(0.975 0.04 120);
 	--clusteer-green-100: oklch(0.945 0.08 118);
 	--clusteer-green-200: oklch(0.895 0.14 116);
@@ -67,32 +74,41 @@
 	--clusteer-green-700: oklch(0.52 0.16 134);
 	--clusteer-green-800: oklch(0.42 0.13 136);
 	--clusteer-green-900: oklch(0.32 0.09 138);
-
-	/* Warm amber accent scale */
 	--clusteer-amber-50: oklch(0.987 0.022 80);
 	--clusteer-amber-100: oklch(0.962 0.042 80);
 	--clusteer-amber-200: oklch(0.925 0.084 80);
 	--clusteer-amber-300: oklch(0.865 0.14 75);
 	--clusteer-amber-400: oklch(0.795 0.175 70);
 	--clusteer-amber-500: oklch(0.735 0.158 75);
-
-	/* Gradient tokens */
 	--gradient-brand: linear-gradient(135deg, oklch(0.82 0.17 120), oklch(0.62 0.2 120));
 	--gradient-dark: linear-gradient(135deg, #21241D, #2E3228);
 	--gradient-warm: linear-gradient(135deg, #F0EBE6, oklch(0.97 0.02 120));
 	--gradient-surface: linear-gradient(180deg, oklch(0.993 0.006 120), oklch(0.985 0.003 120));
-
-	/* Tinted surfaces */
 	--card-tinted: oklch(0.993 0.006 120);
 	--surface-warm: oklch(0.98 0.008 80);
 
-	/* Old Clusteer palette — exact colors */
+	/* Landing page palette */
 	--light-green: hsl(78, 100%, 48%);
 	--medium-green: hsl(78, 100%, 48%);
 	--dark-green: hsl(120, 100%, 25%);
 	--button-bg: hsl(76, 96%, 91%);
 	--warm-beige: #F0EBE6;
 	--custom-black: hsl(86, 11%, 13%);
+	--pale-green: hsl(78, 60%, 85%);
+
+	/* ---- Shadcn / Tailwind theme tokens ---- */
+
+	/* Brand */
+	--clusteer-blue-50: oklch(0.972 0.014 254);
+	--clusteer-blue-100: oklch(0.935 0.033 254);
+	--clusteer-blue-200: oklch(0.867 0.075 254);
+	--clusteer-blue-300: oklch(0.772 0.13 254);
+	--clusteer-blue-400: oklch(0.668 0.182 254);
+	--clusteer-blue-500: oklch(0.562 0.215 254);
+	--clusteer-blue-600: oklch(0.48 0.2 254);
+	--clusteer-blue-700: oklch(0.398 0.168 254);
+	--clusteer-blue-800: oklch(0.324 0.13 254);
+	--clusteer-blue-900: oklch(0.255 0.093 254);
 
 	/* Chain accents */
 	--chain-btc: oklch(0.742 0.163 64);
@@ -111,8 +127,8 @@
 	--warning-bg: oklch(0.972 0.04 85);
 	--danger: oklch(0.588 0.218 27);
 	--danger-bg: oklch(0.965 0.035 22);
-	--info: var(--clusteer-green-500);
-	--info-bg: var(--clusteer-green-50);
+	--info: #9FE870;
+	--info-bg: rgba(159,232,112,0.12);
 
 	/* shadcn surfaces — light */
 	--radius: 0.625rem;
@@ -122,26 +138,25 @@
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
-	--primary: var(--clusteer-green-600);
-	--primary-foreground: oklch(0.13 0.02 120);
+	--primary: #9FE870;
+	--primary-foreground: #21241D;
 	--secondary: oklch(0.97 0 0);
 	--secondary-foreground: oklch(0.205 0 0);
 	--muted: oklch(0.97 0 0);
 	--muted-foreground: oklch(0.45 0 0);
-	--accent: var(--clusteer-green-50);
-	--accent-foreground: var(--clusteer-green-700);
+	--accent: #F4F1EA;
+	--accent-foreground: #21241D;
 	--destructive: var(--danger);
 	--border: oklch(0.918 0.005 254);
 	--input: oklch(0.918 0.005 254);
-	--ring: var(--clusteer-green-500);
+	--ring: #9FE870;
 
-	--chart-1: var(--clusteer-green-500);
+	--chart-1: #9FE870;
 	--chart-2: var(--success);
 	--chart-3: var(--warning);
 	--chart-4: var(--chain-eth);
 	--chart-5: var(--chain-sol);
 
-	/* Sidebar — client: white light / onyx-800 dark; active items invert */
 	--sidebar: #FFFFFF;
 	--sidebar-foreground: #0B0E0C;
 	--sidebar-primary: #0B0E0C;
@@ -151,8 +166,45 @@
 	--sidebar-border: #E2DDD0;
 	--sidebar-ring: #C9F542;
 
-	--toast-width: min(380px, 90vw);
+	--toast-width: 380px;
 }
+
+/* Drawer animation */
+@keyframes drawerIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+/* Modal animation */
+@keyframes modalIn { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }
+
+/* ---- Dashboard form focus states ---- */
+/* Only bordered form fields get the lime focus ring — not bare inputs inside wrappers */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[inputmode]:focus,
+select:focus,
+textarea:focus {
+	outline: none;
+}
+/* Fields that have their own visible border */
+input.input:focus,
+select.input:focus,
+textarea.input:focus,
+input[style*="border"]:focus,
+select[style*="border"]:focus,
+textarea[style*="border"]:focus {
+	box-shadow: var(--focus);
+}
+/* Buttons: active press state */
+button:active:not(:disabled) {
+	transform: translateY(1px);
+}
+
+/* ---- Dashboard primitives ---- */
+.ds-card { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg); }
+.ds-card-hd { padding: 16px var(--pad); border-bottom: 1px solid var(--c-line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ds-card-hd h3 { font-size: 15px; font-weight: 600; }
 
 @theme inline {
 	/* Tailwind theme mappings */
@@ -190,59 +242,16 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 
-	/* Design system v2 Tailwind mappings */
-	--color-onyx-900: var(--c-onyx-900);
-	--color-onyx-800: var(--c-onyx-800);
-	--color-onyx-700: var(--c-onyx-700);
-	--color-onyx-600: var(--c-onyx-600);
-	--color-lime-400: var(--c-lime-400);
-	--color-lime-500: var(--c-lime-500);
-	--color-lime-600: var(--c-lime-600);
-	--color-cream: var(--c-cream);
-	--color-up: var(--c-up);
-	--color-up-soft: var(--c-up-soft);
-	--color-down: var(--c-down);
-	--color-down-soft: var(--c-down-soft);
-	--color-warn: var(--c-warn);
-	--color-warn-soft: var(--c-warn-soft);
-	--color-info: var(--c-info);
-	--color-info-soft: var(--c-info-soft);
-	--color-ds-bg: var(--c-bg);
-	--color-ds-surface: var(--c-surface);
-	--color-ds-surface-2: var(--c-surface-2);
-	--color-ds-surface-3: var(--c-surface-3);
-	--color-ds-line: var(--c-line);
-	--color-ds-text: var(--c-text);
-	--color-ds-text-2: var(--c-text-2);
-	--color-ds-text-3: var(--c-text-3);
-
-	--color-brand-50: var(--clusteer-green-50);
-	--color-brand-100: var(--clusteer-green-100);
-	--color-brand-200: var(--clusteer-green-200);
-	--color-brand-300: var(--clusteer-green-300);
-	--color-brand-400: var(--clusteer-green-400);
-	--color-brand-500: var(--clusteer-green-500);
-	--color-brand-600: var(--clusteer-green-600);
-	--color-brand-700: var(--clusteer-green-700);
-	--color-brand-800: var(--clusteer-green-800);
-	--color-brand-900: var(--clusteer-green-900);
-
-	--color-warm-50: var(--clusteer-amber-50);
-	--color-warm-100: var(--clusteer-amber-100);
-	--color-warm-200: var(--clusteer-amber-200);
-	--color-warm-300: var(--clusteer-amber-300);
-	--color-warm-400: var(--clusteer-amber-400);
-	--color-warm-500: var(--clusteer-amber-500);
-	--color-card-tinted: var(--card-tinted);
-	--color-surface-warm: var(--surface-warm);
-
-	/* Old Clusteer palette utilities */
-	--color-light-green: var(--light-green);
-	--color-medium-green: var(--medium-green);
-	--color-dark-green: var(--dark-green);
-	--color-warm-beige: var(--warm-beige);
-	--color-button-bg: var(--button-bg);
-	--color-custom-black: var(--custom-black);
+	--color-brand-50: var(--clusteer-blue-50);
+	--color-brand-100: var(--clusteer-blue-100);
+	--color-brand-200: var(--clusteer-blue-200);
+	--color-brand-300: var(--clusteer-blue-300);
+	--color-brand-400: var(--clusteer-blue-400);
+	--color-brand-500: var(--clusteer-blue-500);
+	--color-brand-600: var(--clusteer-blue-600);
+	--color-brand-700: var(--clusteer-blue-700);
+	--color-brand-800: var(--clusteer-blue-800);
+	--color-brand-900: var(--clusteer-blue-900);
 
 	--color-chain-btc: var(--chain-btc);
 	--color-chain-eth: var(--chain-eth);
@@ -262,6 +271,46 @@
 	--color-info: var(--info);
 	--color-info-bg: var(--info-bg);
 
+	--color-light-green: var(--light-green);
+	--color-medium-green: var(--medium-green);
+	--color-dark-green: var(--dark-green);
+	--color-warm-beige: var(--warm-beige);
+	--color-pale-green: var(--pale-green);
+	--color-custom-black: var(--custom-black);
+	--color-button-bg: var(--button-bg);
+
+	--color-onyx-900: var(--c-onyx-900);
+	--color-onyx-800: var(--c-onyx-800);
+	--color-onyx-700: var(--c-onyx-700);
+	--color-onyx-600: var(--c-onyx-600);
+	--color-lime-400: var(--c-lime-400);
+	--color-lime-500: var(--c-lime-500);
+	--color-lime-600: var(--c-lime-600);
+	--color-cream: var(--c-cream);
+	--color-up: var(--c-up);
+	--color-up-soft: var(--c-up-soft);
+	--color-down: var(--c-down);
+	--color-down-soft: var(--c-down-soft);
+	--color-warn: var(--c-warn);
+	--color-warn-soft: var(--c-warn-soft);
+	--color-info-soft: var(--c-info-soft);
+	--color-ds-bg: var(--c-bg);
+	--color-ds-surface: var(--c-surface);
+	--color-ds-surface-2: var(--c-surface-2);
+	--color-ds-surface-3: var(--c-surface-3);
+	--color-ds-line: var(--c-line);
+	--color-ds-text: var(--c-text);
+	--color-ds-text-2: var(--c-text-2);
+	--color-ds-text-3: var(--c-text-3);
+	--color-warm-50: var(--clusteer-amber-50);
+	--color-warm-100: var(--clusteer-amber-100);
+	--color-warm-200: var(--clusteer-amber-200);
+	--color-warm-300: var(--clusteer-amber-300);
+	--color-warm-400: var(--clusteer-amber-400);
+	--color-warm-500: var(--clusteer-amber-500);
+	--color-card-tinted: var(--card-tinted);
+	--color-surface-warm: var(--surface-warm);
+
 	--font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 	--font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
 	--font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -274,13 +323,33 @@
 }
 
 .dark {
+	/* Dashboard design tokens — dark */
+	--c-bg: #0B0E0C;
+	--c-surface: #131815;
+	--c-surface-2: #1B201D;
+	--c-surface-3: #262C28;
+	--c-line: #2A302C;
+	--c-line-strong: #3A413C;
+	--c-text: #F4F1EA;
+	--c-text-2: #A8AFA6;
+	--c-text-3: #6E756B;
+	--c-text-inv: #0B0E0C;
+	--c-up-soft: rgba(0,168,107,0.14);
+	--c-down-soft: rgba(229,72,77,0.14);
+	--c-warn-soft: rgba(232,165,58,0.14);
+	--c-info-soft: rgba(27,126,194,0.15);
+	--sh-1: 0 1px 2px rgba(0,0,0,0.5);
+	--sh-2: 0 4px 14px rgba(0,0,0,0.45);
+	--sh-3: 0 14px 40px rgba(0,0,0,0.55);
+
+	/* Shadcn tokens — dark */
 	--background: oklch(0.14 0.015 254);
 	--foreground: oklch(0.985 0 0);
 	--card: oklch(0.185 0.015 254);
 	--card-foreground: oklch(0.985 0 0);
 	--popover: oklch(0.185 0.015 254);
 	--popover-foreground: oklch(0.985 0 0);
-	--primary: var(--clusteer-green-400);
+	--primary: #9FE870;
 	--primary-foreground: oklch(0.145 0.015 254);
 	--secondary: oklch(0.235 0.015 254);
 	--secondary-foreground: oklch(0.985 0 0);
@@ -291,54 +360,21 @@
 	--destructive: oklch(0.68 0.19 27);
 	--border: oklch(1 0 0 / 0.1);
 	--input: oklch(1 0 0 / 0.12);
-	--ring: var(--clusteer-green-400);
+	--ring: #9FE870;
 
-	--card-tinted: oklch(0.2 0.01 120);
-	--surface-warm: oklch(0.22 0.008 80);
-
-	--clusteer-amber-50: oklch(0.22 0.02 80);
-	--clusteer-amber-100: oklch(0.28 0.035 80);
-	--clusteer-amber-200: oklch(0.35 0.06 80);
-	--clusteer-amber-300: oklch(0.45 0.09 75);
-	--clusteer-amber-400: oklch(0.58 0.12 70);
-	--clusteer-amber-500: oklch(0.68 0.14 75);
-
-	/* Dark sidebar: onyx-800 bg, lime active */
 	--sidebar: #131815;
-	--sidebar-foreground: #F4F1EA;
+	--sidebar-foreground: oklch(0.985 0 0);
 	--sidebar-primary: #C9F542;
 	--sidebar-primary-foreground: #0B0E0C;
 	--sidebar-accent: #1B201D;
-	--sidebar-accent-foreground: #F4F1EA;
+	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: #2A302C;
 	--sidebar-ring: #C9F542;
-
-	/* Dark mode signal softs */
-	--c-up-soft:   rgba(0,168,107,0.14);
-	--c-down-soft: rgba(229,72,77,0.14);
-	--c-warn-soft: rgba(232,165,58,0.14);
-	--c-info-soft: rgba(27,126,194,0.15);
-
-	/* Dark mode surfaces */
-	--c-bg:          #0B0E0C;
-	--c-surface:     #131815;
-	--c-surface-2:   #1B201D;
-	--c-surface-3:   #262C28;
-	--c-line:        #2A302C;
-	--c-line-strong: #3A413C;
-	--c-text:        #F4F1EA;
-	--c-text-2:      #A8AFA6;
-	--c-text-3:      #6E756B;
-
-	/* Dark shadows */
-	--sh-1: 0 1px 2px rgba(0,0,0,0.5);
-	--sh-2: 0 4px 14px rgba(0,0,0,0.45);
-	--sh-3: 0 14px 40px rgba(0,0,0,0.55);
 }
 
 @layer base {
 	* {
-		@apply border-border outline-ring/50;
+		@apply border-border outline-none;
 	}
 	body {
 		@apply bg-background text-foreground font-sans;
@@ -382,7 +418,7 @@
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .marquee-track { animation: marquee 35s linear infinite; }
 
-/* Button shine sweep — light white gradient visible on both light and dark buttons */
+/* Button shine sweep */
 .btn-shine { position: relative; overflow: hidden; }
 .btn-shine::after {
 	content: ''; position: absolute; inset: 0; z-index: 1;
@@ -434,88 +470,138 @@ button {
 	cursor: pointer;
 }
 
-/* Gradient & surface utilities */
-.bg-gradient-brand { background: var(--gradient-brand); }
-.bg-gradient-dark { background: var(--gradient-dark); }
-.bg-gradient-warm { background: var(--gradient-warm); }
-.bg-gradient-surface { background: var(--gradient-surface); }
-.bg-card-tinted { background: var(--card-tinted); }
-.bg-surface-warm { background: var(--surface-warm); }
+/* ===== Command Palette (Cmd+K) ===== */
 
-/* ── Design system v2 utilities ─────────────────────────── */
+.cmdk-back {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding-top: min(20vh, 160px);
+	background: rgba(11, 14, 12, 0.45);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	animation: cmdk-fade-in 0.15s ease-out;
+}
 
-/* Signal colours */
-.text-up   { color: var(--c-up); }
-.text-down { color: var(--c-down); }
-.text-warn { color: var(--c-warn); }
-.text-info { color: var(--c-info); }
-.text-muted-ds { color: var(--c-text-2); }
-.text-dim  { color: var(--c-text-3); }
+@keyframes cmdk-fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
 
-.bg-up-soft   { background: var(--c-up-soft); }
-.bg-down-soft { background: var(--c-down-soft); }
-.bg-warn-soft { background: var(--c-warn-soft); }
-.bg-info-soft { background: var(--c-info-soft); }
+@keyframes cmdk-slide-in {
+	from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}
 
-/* Onyx surfaces */
-.bg-onyx-900 { background: var(--c-onyx-900); }
-.bg-onyx-800 { background: var(--c-onyx-800); }
-.bg-onyx-700 { background: var(--c-onyx-700); }
-.bg-onyx-600 { background: var(--c-onyx-600); }
-
-/* Lime accents */
-.bg-lime-500 { background: var(--c-lime-500); }
-.text-lime-500 { color: var(--c-lime-500); }
-.text-onyx-900 { color: var(--c-onyx-900); }
-.text-cream { color: var(--c-cream); }
-
-/* Cream/neutral */
-.bg-cream { background: var(--c-cream); }
-
-/* Shadow utilities */
-.shadow-ds-1 { box-shadow: var(--sh-1); }
-.shadow-ds-2 { box-shadow: var(--sh-2); }
-.shadow-ds-3 { box-shadow: var(--sh-3); }
-
-/* DS card primitive — white surface, border, rounded-lg */
-.ds-card {
+.cmdk {
+	width: 560px;
+	max-width: calc(100vw - 32px);
+	max-height: min(70vh, 480px);
+	display: flex;
+	flex-direction: column;
 	background: var(--c-surface);
 	border: 1px solid var(--c-line);
-	border-radius: 14px;
-	box-shadow: var(--sh-1);
+	border-radius: var(--r-lg);
+	box-shadow: var(--sh-3);
+	overflow: hidden;
+	animation: cmdk-slide-in 0.18s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.ds-card-hd {
-	padding: 16px var(--pad);
+
+.cmdk-input {
+	width: 100%;
+	padding: 14px 16px;
+	border: none;
 	border-bottom: 1px solid var(--c-line);
+	background: transparent;
+	color: var(--c-text);
+	font-family: var(--f-sans);
+	font-size: 14px;
+	outline: none;
+}
+
+.cmdk-input::placeholder {
+	color: var(--c-text-3);
+}
+
+.cmdk-list {
+	flex: 1;
+	overflow-y: auto;
+	padding: 6px 0;
+}
+
+.cmdk-group {
+	padding: 8px 16px 4px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--c-text-3);
+}
+
+.cmdk-item {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
+	gap: 10px;
+	padding: 8px 16px;
+	cursor: pointer;
+	transition: background 0.1s;
 }
 
-/* DS badge primitives */
-.ds-badge {
-	display: inline-flex; align-items: center; gap: 6px;
-	height: 22px; padding: 0 8px; border-radius: 999px;
-	font-size: 11.5px; font-weight: 500;
-	background: var(--c-surface-2); color: var(--c-text-2);
+.cmdk-item:hover,
+.cmdk-item.active {
+	background: var(--c-surface-2);
+}
+
+.cmdk-foot {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 8px 16px;
+	border-top: 1px solid var(--c-line);
+	font-size: 11px;
+	color: var(--c-text-2);
+}
+
+.cmdk-foot kbd {
+	display: inline-block;
+	padding: 1px 5px;
+	border-radius: 4px;
 	border: 1px solid var(--c-line);
+	background: var(--c-surface-2);
+	font-family: var(--f-mono);
+	font-size: 10px;
+	color: var(--c-text-3);
 }
-.ds-badge-up   { background: var(--c-up-soft);   color: var(--c-up);   border-color: transparent; }
-.ds-badge-down { background: var(--c-down-soft); color: var(--c-down); border-color: transparent; }
-.ds-badge-warn { background: var(--c-warn-soft); color: var(--c-warn); border-color: transparent; }
-.ds-badge-lime { background: var(--c-lime-500);  color: var(--c-onyx-900); border-color: transparent; }
 
-/* DS dot */
-.ds-dot { width: 6px; height: 6px; border-radius: 999px; display: inline-block; flex-shrink: 0; }
-.ds-dot-up   { background: var(--c-up); }
-.ds-dot-down { background: var(--c-down); }
-.ds-dot-warn { background: var(--c-warn); }
+/* ===== Send Confirm Modal ===== */
 
-/* DS progress bar */
-.ds-bar { height: 6px; border-radius: 999px; background: var(--c-surface-3); overflow: hidden; }
-.ds-bar > span { display: block; height: 100%; background: var(--c-lime-500); border-radius: 999px; }
+.send-modal-back {
+	position: fixed;
+	inset: 0;
+	z-index: 9998;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(11, 14, 12, 0.5);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	animation: cmdk-fade-in 0.15s ease-out;
+}
 
-/* Density toggle support */
-[data-density="dense"]   { --row-h: 36px; --pad: 16px; }
-[data-density="spacious"] { --row-h: 52px; --pad: 32px; }
+.send-modal {
+	width: 420px;
+	max-width: calc(100vw - 32px);
+	background: var(--c-surface);
+	border: 1px solid var(--c-line);
+	border-radius: var(--r-lg);
+	box-shadow: var(--sh-3);
+	overflow: hidden;
+	animation: cmdk-slide-in 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes send-spin {
+	to { transform: rotate(360deg); }
+}

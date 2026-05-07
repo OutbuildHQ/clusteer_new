@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Download, Eye, Shield, Cookie, Link2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Toast } from "@/components/toast";
@@ -11,6 +9,41 @@ import {
 	updatePrivacySettings,
 	createDataExportRequest,
 } from "@/lib/api/settings";
+
+function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange?: () => void; disabled?: boolean }) {
+	return (
+		<div
+			role="switch"
+			aria-checked={checked}
+			onClick={disabled ? undefined : onChange}
+			style={{
+				width: "44px",
+				height: "24px",
+				borderRadius: "9999px",
+				background: checked ? "var(--c-accent, #9FE870)" : "var(--c-border, #d1d5db)",
+				cursor: disabled ? "not-allowed" : "pointer",
+				opacity: disabled ? 0.5 : 1,
+				position: "relative",
+				transition: "background 0.2s",
+				flexShrink: 0,
+			}}
+		>
+			<div
+				style={{
+					position: "absolute",
+					top: "2px",
+					left: checked ? "22px" : "2px",
+					width: "20px",
+					height: "20px",
+					borderRadius: "9999px",
+					background: "#fff",
+					transition: "left 0.2s",
+					boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+				}}
+			/>
+		</div>
+	);
+}
 
 export default function Page() {
 	const user = useUser();
@@ -152,9 +185,9 @@ export default function Page() {
 									Allow others to view your public profile
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.profileVisibility}
-								onCheckedChange={() => handleToggle("profileVisibility")}
+								onChange={() => handleToggle("profileVisibility")}
 							/>
 						</div>
 
@@ -167,9 +200,9 @@ export default function Page() {
 									Show transaction history on your profile
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.transactionHistory}
-								onCheckedChange={() => handleToggle("transactionHistory")}
+								onChange={() => handleToggle("transactionHistory")}
 							/>
 						</div>
 					</div>
@@ -202,7 +235,7 @@ export default function Page() {
 									Necessary for the platform to function properly
 								</p>
 							</div>
-							<Switch checked={true} disabled />
+							<Toggle checked={true} disabled />
 						</div>
 
 						<div className="flex items-center justify-between py-3 border-b border-border">
@@ -214,9 +247,9 @@ export default function Page() {
 									Help us improve by analyzing usage patterns
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.analyticalCookies}
-								onCheckedChange={() => handleToggle("analyticalCookies")}
+								onChange={() => handleToggle("analyticalCookies")}
 							/>
 						</div>
 
@@ -227,9 +260,9 @@ export default function Page() {
 									Personalize ads and content
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.marketingCookies}
-								onCheckedChange={() => handleToggle("marketingCookies")}
+								onChange={() => handleToggle("marketingCookies")}
 							/>
 						</div>
 					</div>
@@ -261,9 +294,9 @@ export default function Page() {
 									Share anonymized data with trusted partners
 								</p>
 							</div>
-							<Switch
+							<Toggle
 								checked={preferences.thirdPartySharing}
-								onCheckedChange={() => handleToggle("thirdPartySharing")}
+								onChange={() => handleToggle("thirdPartySharing")}
 							/>
 						</div>
 					</div>
@@ -294,15 +327,28 @@ export default function Page() {
 						</p>
 					</div>
 
-					<Button
+					<button
 						onClick={handleDownloadData}
 						disabled={isDownloading}
-						variant="outline"
-						className="w-full lg:w-auto border-border h-10 px-6 rounded-full font-semibold"
+						style={{
+							background: "transparent",
+							color: "var(--c-fg, inherit)",
+							border: "1px solid var(--c-border, #e5e5e5)",
+							height: "40px",
+							padding: "0 24px",
+							borderRadius: "9999px",
+							fontWeight: 600,
+							fontSize: "14px",
+							cursor: isDownloading ? "not-allowed" : "pointer",
+							opacity: isDownloading ? 0.5 : 1,
+							display: "inline-flex",
+							alignItems: "center",
+							gap: "8px",
+						}}
 					>
-						<Download className="w-4 h-4 mr-2" />
+						<Download className="w-4 h-4" />
 						{isDownloading ? "Processing..." : "Request Data Download"}
-					</Button>
+					</button>
 				</div>
 
 				{/* Privacy Policy Link */}

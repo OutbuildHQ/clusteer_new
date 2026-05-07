@@ -1,179 +1,229 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { motion } from "motion/react";
-import { getAllTransactions } from "@/lib/api/user/queries";
-import { formatMoney, relativeTime } from "@/lib/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { formatMoney } from "@/lib/utils";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Num } from "@/components/primitives/num";
-import { TableSkeleton } from "@/components/primitives/table-skeleton";
-import { Search, Download, ArrowUpDown, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Download, Filter, ArrowUp, ArrowDown, X } from "lucide-react";
 
-const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.03 } } };
-const fadeIn = { hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0, transition: { duration: 0.2 } } };
+/* ── Mock transactions (matches dashboards/data.js shape) ── */
+const TYPES = ["Buy", "Sell", "Send", "Receive", "Swap", "Withdraw", "Deposit"] as const;
+const ASSETS_LIST = ["USDT", "USDC", "NGN"] as const;
+const STATUSES = ["Completed", "Pending", "Failed"] as const;
+
+function seed(s: number) { return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
+
+const TXNS = Array.from({ length: 40 }, (_, i) => {
+	const r = seed(i + 100);
+	const type = TYPES[Math.floor(r() * TYPES.length)];
+	const asset = ASSETS_LIST[Math.floor(r() * ASSETS_LIST.length)];
+	const status = STATUSES[Math.floor(r() * STATUSES.length)];
+	const amount = +(0.01 + r() * 500).toFixed(4);
+	const prices: Record<string, number> = { USDT: 1610, USDC: 1608, BTC: 114_000_000, ETH: 5_740_000, SOL: 293_000, BNB: 985_000, NGN: 1 };
+	return {
+		id: `TX-${838201 - i * 7}`,
+		type, asset,
+		chain: asset === "USDT" ? "Tron" : asset === "USDC" ? "BSC" : asset,
+		amount,
+		ngn: Math.floor(amount * (prices[asset] ?? 1610)),
+		status,
+		counterparty: type === "Send" ? "TQrZ...x9k2" : type === "Receive" ? "TF8m...3pQa" : "—",
+		fee: +((amount * (prices[asset] ?? 1610) * 0.001) + 0.5).toFixed(2),
+		when: `${Math.floor(r() * 23)}:${String(Math.floor(r() * 59)).padStart(2, "0")}`,
+		date: ["Today", "Today", "Yesterday", "Mar 14", "Mar 13", "Mar 12", "Mar 10"][Math.floor(r() * 7)],
+		hash: type === "Send" || type === "Receive" || type === "Swap" ? `0x${Math.floor(r() * 1e16).toString(16).padStart(16, "0")}...${Math.floor(r() * 1e8).toString(16).padStart(8, "0")}` : null,
+	};
+});
+
+function StatusBadge({ s }: { s: string }) {
+	const map: Record<string, { bg: string; color: string; icon: string }> = {
+		Completed: { bg: "var(--c-up-soft)", color: "var(--c-up)", icon: "✓" },
+		Pending: { bg: "var(--c-warn-soft)", color: "var(--c-warn)", icon: "◐" },
+		Failed: { bg: "var(--c-down-soft)", color: "var(--c-down)", icon: "✕" },
+	};
+	const m = map[s] ?? map.Pending;
+	return (
+		<span className="inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium" style={{ background: m.bg, color: m.color }}>
+			<span className="text-[9px]">{m.icon}</span>{s}
+		</span>
+	);
+}
+
+type TxnType = (typeof TYPES)[number] | "All";
 
 export default function TransactionsPage() {
+	const [type, setType] = useState<TxnType>("All");
 	const [q, setQ] = useState("");
-	const [kind, setKind] = useState("all");
-	const [status, setStatus] = useState("all");
-	const [page, setPage] = useState(1);
-	const pageSize = 10;
+	const [open, setOpen] = useState<(typeof TXNS)[number] | null>(null);
 
-	const { data: transactionsData, isLoading, error } = useQuery({
-		queryKey: ["transactions", page, pageSize],
-		queryFn: () => getAllTransactions({ page, size: pageSize }),
-	});
-
-	const allRows = transactionsData?.data ?? [];
-	const metadata = transactionsData?.metadata;
-	const totalPages = metadata?.totalPages ?? 1;
-
-	// Client-side filtering on the current page of results
-	const rows = allRows.filter((o) =>
-		(kind === "all" || o.type === kind) &&
-		(status === "all" || o.status === status) &&
-		(!q || (o.orderNumber ?? o.id)?.toLowerCase().includes(q.toLowerCase()) || (o.currency ?? "").toLowerCase().includes(q.toLowerCase()))
+	const list = TXNS.filter(
+		(t) =>
+			(type === "All" || t.type === type) &&
+			(!q || t.id.toUpperCase().includes(q.toUpperCase()) || t.asset.toUpperCase().includes(q.toUpperCase())),
 	);
 
 	return (
-		<div className="space-y-4 sm:space-y-6">
-			<div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center justify-between gap-3 sm:gap-4">
-				<div>
-					<p className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; History</p>
-					<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">Transactions</h1>
+		<div className="space-y-6">
+			{/* Header */}
+			<div className="flex items-center justify-between flex-wrap gap-4">
+				<h1 className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>Transactions</h1>
+				<div className="flex items-center gap-3">
+					<button className="inline-flex items-center gap-2 h-9 px-3.5 rounded-[10px] text-[13.5px] font-medium" style={{ color: "var(--c-text)", border: "1px solid var(--c-line)" }}>
+						<Download className="size-4" />Export CSV
+					</button>
+					<button className="inline-flex items-center gap-2 h-9 px-3.5 rounded-[10px] text-[13.5px] font-medium" style={{ color: "var(--c-text)", border: "1px solid var(--c-line)" }}>
+						<Filter className="size-4" />Filters
+					</button>
 				</div>
-				<Button variant="outline" size="sm" className="w-full sm:w-auto border-2 border-custom-black rounded-full"><Download className="size-4" />Export CSV</Button>
 			</div>
-			<Card className="border-2 border-custom-black rounded-[16px] sm:rounded-[20px]">
-				<CardHeader className="space-y-3 p-4 sm:p-6 lg:p-8">
-					<div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto_auto]">
-						<div className="relative">
-							<Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-							<Input className="pl-9" placeholder="Search by ID or asset..." value={q} onChange={(e) => setQ(e.target.value)} />
-						</div>
-						<Select value={kind} onValueChange={setKind}>
-							<SelectTrigger className="md:w-40"><SelectValue /></SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All types</SelectItem>
-								<SelectItem value="buy">Buy</SelectItem>
-								<SelectItem value="sell">Sell</SelectItem>
-								<SelectItem value="swap">Swap</SelectItem>
-								<SelectItem value="send">Send</SelectItem>
-								<SelectItem value="receive">Receive</SelectItem>
-							</SelectContent>
-						</Select>
-						<Select value={status} onValueChange={setStatus}>
-							<SelectTrigger className="md:w-40"><SelectValue /></SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All statuses</SelectItem>
-								<SelectItem value="completed">Completed</SelectItem>
-								<SelectItem value="pending">Pending</SelectItem>
-								<SelectItem value="failed">Failed</SelectItem>
-							</SelectContent>
-						</Select>
+
+			{/* Search + Tabs */}
+			<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+				<div className="flex items-center w-full sm:flex-1 sm:max-w-[320px] h-9 px-3 rounded-[10px]" style={{ border: "1px solid var(--c-line)", background: "var(--c-surface)" }}>
+					<Search className="size-4 shrink-0" style={{ color: "var(--c-text-3)" }} />
+					<input className="flex-1 bg-transparent outline-none text-[13.5px] ml-2" style={{ color: "var(--c-text)" }} placeholder="Search by ID, asset…" value={q} onChange={(e) => setQ(e.target.value)} />
+				</div>
+				<div className="overflow-x-auto -mx-1 px-1">
+					<div className="inline-flex p-1 rounded-[10px] gap-0.5" style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>
+						{(["All", ...TYPES] as TxnType[]).map((t) => (
+							<button key={t} onClick={() => setType(t)}
+								className="px-3 py-1.5 rounded-[6px] text-[12.5px] font-medium transition-colors whitespace-nowrap"
+								style={type === t ? { background: "var(--c-surface)", color: "var(--c-text)", boxShadow: "var(--sh-1)" } : { color: "var(--c-text-2)" }}>
+								{t}
+							</button>
+						))}
 					</div>
-				</CardHeader>
-				<CardContent className="p-0">
-					{isLoading ? (
-						<TableSkeleton columns={6} rows={5} />
-					) : error ? (
-						<div className="py-12 text-center px-4">
-							<AlertCircle className="size-10 text-destructive/40 mx-auto mb-3" />
-							<p className="font-display font-bold">Failed to load transactions</p>
-							<p className="text-sm text-muted-foreground mt-1">Please try refreshing the page.</p>
-						</div>
-					) : (
-						<>
-							<Table>
-								<TableHeader>
-									<TableRow className="bg-warm-beige/40">
-										<TableHead className="hidden md:table-cell">ID</TableHead>
-										<TableHead className="px-3 sm:px-4">Type</TableHead>
-										<TableHead className="hidden sm:table-cell">Asset</TableHead>
-										<TableHead className="px-3 sm:px-4">Amount</TableHead>
-										<TableHead className="px-3 sm:px-4">Status</TableHead>
-										<TableHead className="hidden md:table-cell text-right">When</TableHead>
-									</TableRow>
-								</TableHeader>
-								<motion.tbody variants={stagger} initial="hidden" animate="visible">
-									{rows.map((o) => (
-										<motion.tr key={o.id} variants={fadeIn} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-											<TableCell className="hidden md:table-cell"><code className="font-mono text-xs text-muted-foreground tabular-nums">{o.orderNumber ?? o.id}</code></TableCell>
-											<TableCell className="px-3 sm:px-4"><span className="capitalize font-medium text-sm">{o.type}</span></TableCell>
-											<TableCell className="hidden sm:table-cell">
-												<div className="flex items-center gap-2">
-													{o.currency && <AssetLogo symbol={o.currency} size="sm" />}
-													<span className="text-sm">{o.currency ?? "\u2014"}</span>
-												</div>
-											</TableCell>
-											<TableCell className="px-3 sm:px-4">
-												<Num as="div" className="font-mono tabular-nums text-sm" value={(o.amount ?? 0) + " " + (o.currency ?? "")} />
-											</TableCell>
-											<TableCell className="px-3 sm:px-4">
-												<Badge variant={o.status === "completed" ? "success" : o.status === "failed" ? "danger" : "warning"} className="capitalize">{o.status}</Badge>
-											</TableCell>
-											<TableCell className="hidden md:table-cell text-right text-sm text-muted-foreground">{relativeTime(o.dateCreated ?? o.date)}</TableCell>
-										</motion.tr>
-									))}
-								</motion.tbody>
-							</Table>
-							{rows.length === 0 && (
-								<div className="py-12 text-center px-4">
-									<ArrowUpDown className="size-10 text-muted-foreground/40 mx-auto mb-3" />
-									<p className="font-display font-bold">No transactions found</p>
-									<p className="text-sm text-muted-foreground mt-1">
-										{q || kind !== "all" || status !== "all"
-											? "No transactions match your current filters. Try adjusting your search."
-											: "Your transaction history will appear here once you start trading."}
-									</p>
-									<Button asChild size="sm" className="mt-4 w-full sm:w-auto btn-shine shadow-brutal-sm">
-										<Link href="/trade">Make your first trade</Link>
-									</Button>
-								</div>
-							)}
-							{/* Pagination */}
-							{totalPages > 1 && (
-								<div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-custom-black/10 px-4 sm:px-6 py-3 sm:py-4">
-									<p className="text-xs sm:text-sm text-muted-foreground font-mono tabular-nums">
-										Page {page} of {totalPages}
-										{metadata?.totalItems != null && <> &middot; {metadata.totalItems} total</>}
-									</p>
-									<div className="flex gap-2 w-full sm:w-auto">
-										<Button
-											variant="outline"
-											size="sm"
-											className="flex-1 sm:flex-initial rounded-full border-2 border-custom-black"
-											disabled={page <= 1}
-											onClick={() => setPage((p) => Math.max(1, p - 1))}
-										>
-											<ChevronLeft className="size-4" />
-											<span className="hidden sm:inline">Previous</span>
-										</Button>
-										<Button
-											variant="outline"
-											size="sm"
-											className="flex-1 sm:flex-initial rounded-full border-2 border-custom-black"
-											disabled={page >= totalPages}
-											onClick={() => setPage((p) => p + 1)}
-										>
-											<span className="hidden sm:inline">Next</span>
-											<ChevronRight className="size-4" />
-										</Button>
+				</div>
+			</div>
+
+			{/* Table (desktop) */}
+			<div className="hidden lg:block rounded-[14px] overflow-hidden" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
+				<table className="w-full border-collapse text-[13px]">
+					<thead>
+						<tr>
+							{["Type", "Asset", "Amount", "Value (NGN)", "Status", "Counterparty", "Fee", "Date"].map((h, i) => (
+								<th key={h} className={`font-medium text-[11.5px] uppercase tracking-[0.05em] px-3.5 py-2.5 ${i === 7 ? "text-right" : "text-left"}`}
+									style={{ color: "var(--c-text-3)", borderBottom: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>{h}</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{list.slice(0, 20).map((t) => {
+							const isIn = ["Buy", "Receive", "Deposit"].includes(t.type);
+							return (
+								<tr key={t.id} className="cursor-pointer transition-colors hover:bg-[var(--c-surface-2)]" onClick={() => setOpen(t)}>
+									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
+										<div className="flex items-center gap-2">
+											{isIn ? <span style={{ color: "var(--c-up)" }}><ArrowDown className="size-4" /></span> : <span style={{ color: "var(--c-down)" }}><ArrowUp className="size-4" /></span>}
+											{t.type}
+										</div>
+									</td>
+									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
+										<div className="flex items-center gap-2">
+											<AssetLogo symbol={t.asset} size="sm" />{t.asset}
+										</div>
+									</td>
+									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+										{t.amount.toFixed(4)}
+									</td>
+									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+										<Num value={formatMoney(t.ngn, "NGN", { decimals: 0 })} />
+									</td>
+									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
+										<StatusBadge s={t.status} />
+									</td>
+									<td className="px-3.5 py-3 tabular-nums text-[11px]" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>
+										{t.counterparty}
+									</td>
+									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>
+										₦{t.fee.toFixed(2)}
+									</td>
+									<td className="px-3.5 py-3 text-right tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+										{t.date} {t.when}
+									</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</table>
+			</div>
+
+			{/* Card list (mobile) */}
+			<div className="lg:hidden space-y-2">
+				{list.slice(0, 20).map((t) => {
+					const isIn = ["Buy", "Receive", "Deposit"].includes(t.type);
+					return (
+						<div key={t.id} className="rounded-[12px] p-3 cursor-pointer active:scale-[0.99] transition-transform" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }} onClick={() => setOpen(t)}>
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-2.5">
+									{isIn ? <span style={{ color: "var(--c-up)" }}><ArrowDown className="size-4" /></span> : <span style={{ color: "var(--c-down)" }}><ArrowUp className="size-4" /></span>}
+									<AssetLogo symbol={t.asset} size="sm" />
+									<div>
+										<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>{t.type} {t.asset}</div>
+										<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>{t.date} {t.when}</div>
 									</div>
 								</div>
-							)}
-						</>
-					)}
-				</CardContent>
-			</Card>
+								<div className="text-right">
+									<div className="tabular-nums text-[13px] font-semibold" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>{t.amount.toFixed(4)}</div>
+									<div className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}><Num value={formatMoney(t.ngn, "NGN", { decimals: 0 })} /></div>
+								</div>
+							</div>
+							<div className="flex items-center justify-between mt-2 pt-2" style={{ borderTop: "1px solid var(--c-line)" }}>
+								<StatusBadge s={t.status} />
+								<span className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>Fee: ₦{t.fee.toFixed(2)}</span>
+							</div>
+						</div>
+					);
+				})}
+			</div>
+
+			{/* Transaction detail modal */}
+			{open && (
+				<div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: "rgba(0,0,0,0.5)", padding: 20 }} onClick={() => setOpen(null)}>
+					<div
+						className="w-full overflow-auto"
+						style={{ background: "var(--c-surface)", borderRadius: 20, border: "1px solid var(--c-line)", maxWidth: 480, maxHeight: "90vh", boxShadow: "var(--sh-3)", animation: "modalIn .22s cubic-bezier(.2,.7,.2,1)" }}
+						onClick={(e) => e.stopPropagation()}
+					>
+						{/* Header */}
+						<div className="flex items-center justify-between px-4 sm:px-5 py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
+							<span className="text-[15px] font-semibold" style={{ color: "var(--c-text)" }}>Transaction {open.id}</span>
+							<button onClick={() => setOpen(null)} className="inline-flex items-center justify-center size-9 rounded-[10px]" style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}>
+								<X className="size-4" />
+							</button>
+						</div>
+						{/* Body */}
+						<div className="p-4 sm:p-5 space-y-3">
+							<div className="flex items-center justify-between">
+								<AssetLogo symbol={open.asset} size="md" />
+								<StatusBadge s={open.status} />
+							</div>
+							<div className="tabular-nums text-[32px] font-semibold" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+								{open.amount.toFixed(4)} {open.asset}
+							</div>
+							<div className="tabular-nums text-[13px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>
+								{formatMoney(open.ngn, "NGN", { decimals: 0 })}
+							</div>
+							<div style={{ height: 1, background: "var(--c-line)" }} />
+							{[
+								["Type", open.type],
+								["Network", open.chain],
+								["Counterparty", open.counterparty],
+								["Fee", `₦${open.fee.toFixed(2)}`],
+								["Date", `${open.date} ${open.when}`],
+								["Hash", open.hash ?? "—"],
+							].map(([k, v]) => (
+								<div key={k} className="flex items-center justify-between text-[13px]">
+									<span style={{ color: "var(--c-text-3)" }}>{k}</span>
+									<span className="tabular-nums" style={{ fontFamily: "var(--f-mono)", maxWidth: 240, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--c-text)" }}>{v}</span>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			)}
+
+			<style jsx global>{`@keyframes modalIn { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }`}</style>
 		</div>
 	);
 }

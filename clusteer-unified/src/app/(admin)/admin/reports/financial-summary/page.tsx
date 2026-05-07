@@ -59,7 +59,7 @@ export default function FinancialSummaryReportPage() {
 			change: 12.1,
 			trend: "up",
 			icon: <Percent className="w-6 h-6" />,
-			color: "bg-primary/10 text-primary",
+			color: "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]",
 		},
 		{
 			title: "Processing Volume",
@@ -81,7 +81,7 @@ export default function FinancialSummaryReportPage() {
 
 	const revenueBreakdown: RevenueBreakdown[] = [
 		{ category: "Buy Transaction Fees", amount: 25430, percentage: 56.3, color: "bg-success/100" },
-		{ category: "Sell Transaction Fees", amount: 15680, percentage: 34.7, color: "bg-primary/100" },
+		{ category: "Sell Transaction Fees", amount: 15680, percentage: 34.7, color: "bg-[var(--c-lime-500)]/100" },
 		{ category: "Withdrawal Fees", amount: 4120, percentage: 9.0, color: "bg-purple-500" },
 	];
 
@@ -121,16 +121,16 @@ export default function FinancialSummaryReportPage() {
 	return (
 		<div className="space-y-6">
 			{/* Breadcrumb */}
-			<nav className="flex items-center gap-2 text-sm text-muted-foreground">
-				<button onClick={() => router.push("/admin")} className="hover:text-foreground">
+			<nav className="flex items-center gap-2 text-sm text-[var(--c-text-3)]">
+				<button onClick={() => router.push("/admin")} className="hover:text-[var(--c-text)]">
 					Dashboard
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<button onClick={() => router.push("/admin/reports")} className="hover:text-foreground">
+				<button onClick={() => router.push("/admin/reports")} className="hover:text-[var(--c-text)]">
 					Reports
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<span className="font-medium text-foreground">Financial Summary</span>
+				<span className="font-medium text-[var(--c-text)]">Financial Summary</span>
 			</nav>
 
 			{/* Header */}
@@ -140,11 +140,11 @@ export default function FinancialSummaryReportPage() {
 						onClick={() => router.push("/admin/reports")}
 						className="p-2 hover:bg-background rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-muted-foreground" />
+						<ArrowLeft className="w-5 h-5 text-[var(--c-text-3)]" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-foreground">Financial Summary Report</h1>
-						<p className="text-sm text-muted-foreground mt-1">
+						<h1 className="text-2xl font-bold text-[var(--c-text)]">Financial Summary Report</h1>
+						<p className="text-sm text-[var(--c-text-3)] mt-1">
 							Complete overview of revenue, fees, and financial metrics
 						</p>
 					</div>
@@ -152,7 +152,7 @@ export default function FinancialSummaryReportPage() {
 				<div className="flex items-center gap-3">
 					<button
 						onClick={handleExport}
-						className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[var(--c-lime-500)]/90 transition-colors shadow-sm"
 					>
 						<Download className="w-4 h-4" />
 						Export CSV
@@ -161,17 +161,17 @@ export default function FinancialSummaryReportPage() {
 			</div>
 
 			{/* Period Selector */}
-			<div className="bg-card rounded-lg border border-border p-4">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-4">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
-						<Calendar className="w-5 h-5 text-muted-foreground" />
-						<span className="text-sm font-medium text-muted-foreground">Report Period:</span>
+						<Calendar className="w-5 h-5 text-[var(--c-text-3)]" />
+						<span className="text-sm font-medium text-[var(--c-text-3)]">Report Period:</span>
 					</div>
 					<div className="flex gap-2">
 						{["Today", "Week", "Month", "Quarter", "Year"].map((period) => (
 							<button
 								key={period}
-								className="px-4 py-2 text-sm font-medium bg-muted text-muted-foreground hover:bg-muted rounded-lg transition-colors"
+								className="px-4 py-2 text-sm font-medium bg-[var(--c-surface-2)] text-[var(--c-text-3)] hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 							>
 								{period}
 							</button>
@@ -183,7 +183,7 @@ export default function FinancialSummaryReportPage() {
 			{/* Key Metrics */}
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 				{metrics.map((metric, index) => (
-					<div key={index} className="bg-card rounded-lg border border-border p-6">
+					<div key={index} className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
 						<div className="flex items-center justify-between mb-4">
 							<div className={`p-3 rounded-lg ${metric.color}`}>
 								{metric.icon}
@@ -199,33 +199,33 @@ export default function FinancialSummaryReportPage() {
 								{Math.abs(metric.change)}%
 							</div>
 						</div>
-						<h3 className="text-sm text-muted-foreground font-medium mb-1">{metric.title}</h3>
-						<p className="text-2xl font-bold text-foreground">{metric.value}</p>
-						<p className="text-xs text-muted-foreground mt-2">vs. previous period</p>
+						<h3 className="text-sm text-[var(--c-text-3)] font-medium mb-1">{metric.title}</h3>
+						<p className="text-2xl font-bold text-[var(--c-text)]">{metric.value}</p>
+						<p className="text-xs text-[var(--c-text-3)] mt-2">vs. previous period</p>
 					</div>
 				))}
 			</div>
 
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 				{/* Daily Revenue Chart */}
-				<div className="lg:col-span-2 bg-card rounded-lg border border-border p-6">
-					<h2 className="text-lg font-semibold text-foreground mb-6">Daily Revenue Trend</h2>
+				<div className="lg:col-span-2 bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+					<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">Daily Revenue Trend</h2>
 
 					<div className="space-y-4">
 						{dailyRevenue.map((data, index) => (
 							<div key={index}>
 								<div className="flex items-center justify-between mb-2">
-									<span className="text-sm font-medium text-muted-foreground">{data.date}</span>
+									<span className="text-sm font-medium text-[var(--c-text-3)]">{data.date}</span>
 									<div className="flex items-center gap-4">
-										<span className="text-xs text-muted-foreground">{data.transactions} txns</span>
-										<span className="text-sm font-semibold text-foreground">
+										<span className="text-xs text-[var(--c-text-3)]">{data.transactions} txns</span>
+										<span className="text-sm font-semibold text-[var(--c-text)]">
 											${data.revenue.toLocaleString()}
 										</span>
 									</div>
 								</div>
-								<div className="w-full bg-muted rounded-full h-10 relative overflow-hidden">
+								<div className="w-full bg-[var(--c-surface-2)] rounded-full h-10 relative overflow-hidden">
 									<div
-										className="bg-primary h-full rounded-full transition-all duration-500 flex items-center justify-between px-4"
+										className="bg-[var(--c-lime-500)] h-full rounded-full transition-all duration-500 flex items-center justify-between px-4"
 										style={{ width: `${(data.revenue / maxRevenue) * 100}%` }}
 									>
 										<span className="text-xs font-medium text-white">
@@ -240,10 +240,10 @@ export default function FinancialSummaryReportPage() {
 						))}
 					</div>
 
-					<div className="mt-6 pt-6 border-t border-border">
+					<div className="mt-6 pt-6 border-t border-[var(--c-line)]">
 						<div className="flex items-center justify-between">
-							<span className="text-sm font-medium text-muted-foreground">Total Revenue</span>
-							<span className="text-xl font-bold text-foreground">
+							<span className="text-sm font-medium text-[var(--c-text-3)]">Total Revenue</span>
+							<span className="text-xl font-bold text-[var(--c-text)]">
 								${dailyRevenue.reduce((sum, d) => sum + d.revenue, 0).toLocaleString()}
 							</span>
 						</div>
@@ -251,8 +251,8 @@ export default function FinancialSummaryReportPage() {
 				</div>
 
 				{/* Revenue Breakdown */}
-				<div className="bg-card rounded-lg border border-border p-6">
-					<h2 className="text-lg font-semibold text-foreground mb-6">Revenue Breakdown</h2>
+				<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+					<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">Revenue Breakdown</h2>
 
 					<div className="space-y-4">
 						{revenueBreakdown.map((item, index) => (
@@ -260,29 +260,29 @@ export default function FinancialSummaryReportPage() {
 								<div className="flex items-center justify-between mb-2">
 									<div className="flex items-center gap-2">
 										<div className={`w-3 h-3 rounded-full ${item.color}`}></div>
-										<span className="text-sm font-medium text-muted-foreground">{item.category}</span>
+										<span className="text-sm font-medium text-[var(--c-text-3)]">{item.category}</span>
 									</div>
-									<span className="text-sm font-semibold text-foreground">
+									<span className="text-sm font-semibold text-[var(--c-text)]">
 										{item.percentage}%
 									</span>
 								</div>
-								<div className="w-full bg-muted rounded-full h-2">
+								<div className="w-full bg-[var(--c-surface-2)] rounded-full h-2">
 									<div
 										className={`${item.color} h-full rounded-full transition-all duration-500`}
 										style={{ width: `${item.percentage}%` }}
 									></div>
 								</div>
 								<div className="flex items-center justify-between mt-1">
-									<span className="text-xs text-muted-foreground">${item.amount.toLocaleString()}</span>
+									<span className="text-xs text-[var(--c-text-3)]">${item.amount.toLocaleString()}</span>
 								</div>
 							</div>
 						))}
 					</div>
 
-					<div className="mt-6 pt-6 border-t border-border">
+					<div className="mt-6 pt-6 border-t border-[var(--c-line)]">
 						<div className="flex items-center justify-between">
-							<span className="text-sm font-medium text-muted-foreground">Total Fees</span>
-							<span className="text-lg font-bold text-foreground">
+							<span className="text-sm font-medium text-[var(--c-text-3)]">Total Fees</span>
+							<span className="text-lg font-bold text-[var(--c-text)]">
 								${revenueBreakdown.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}
 							</span>
 						</div>
@@ -291,35 +291,35 @@ export default function FinancialSummaryReportPage() {
 			</div>
 
 			{/* Financial Details Table */}
-			<div className="bg-card rounded-lg border border-border p-6">
-				<h2 className="text-lg font-semibold text-foreground mb-6">Detailed Breakdown</h2>
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+				<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">Detailed Breakdown</h2>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 					{/* Income */}
 					<div>
-						<h3 className="text-sm font-semibold text-muted-foreground mb-4 flex items-center gap-2">
+						<h3 className="text-sm font-semibold text-[var(--c-text-3)] mb-4 flex items-center gap-2">
 							<TrendingUp className="w-4 h-4 text-success" />
 							Income
 						</h3>
 						<div className="space-y-3">
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-sm text-muted-foreground">Buy Fees</span>
-								<span className="text-sm font-semibold text-foreground">$25,430</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-sm text-[var(--c-text-3)]">Buy Fees</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">$25,430</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-sm text-muted-foreground">Sell Fees</span>
-								<span className="text-sm font-semibold text-foreground">$15,680</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-sm text-[var(--c-text-3)]">Sell Fees</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">$15,680</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-sm text-muted-foreground">Withdrawal Fees</span>
-								<span className="text-sm font-semibold text-foreground">$4,120</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-sm text-[var(--c-text-3)]">Withdrawal Fees</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">$4,120</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-sm text-muted-foreground">Interest Income</span>
-								<span className="text-sm font-semibold text-foreground">$660</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-sm text-[var(--c-text-3)]">Interest Income</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">$660</span>
 							</div>
 							<div className="flex items-center justify-between py-2 pt-4">
-								<span className="text-sm font-semibold text-foreground">Total Income</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">Total Income</span>
 								<span className="text-lg font-bold text-success">$45,890</span>
 							</div>
 						</div>
@@ -327,41 +327,41 @@ export default function FinancialSummaryReportPage() {
 
 					{/* Expenses */}
 					<div>
-						<h3 className="text-sm font-semibold text-muted-foreground mb-4 flex items-center gap-2">
+						<h3 className="text-sm font-semibold text-[var(--c-text-3)] mb-4 flex items-center gap-2">
 							<TrendingDown className="w-4 h-4 text-danger" />
 							Expenses
 						</h3>
 						<div className="space-y-3">
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-sm text-muted-foreground">Payment Gateway</span>
-								<span className="text-sm font-semibold text-foreground">$12,340</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-sm text-[var(--c-text-3)]">Payment Gateway</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">$12,340</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-sm text-muted-foreground">Infrastructure</span>
-								<span className="text-sm font-semibold text-foreground">$8,500</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-sm text-[var(--c-text-3)]">Infrastructure</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">$8,500</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-sm text-muted-foreground">Operations</span>
-								<span className="text-sm font-semibold text-foreground">$15,200</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-sm text-[var(--c-text-3)]">Operations</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">$15,200</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-sm text-muted-foreground">Other Expenses</span>
-								<span className="text-sm font-semibold text-foreground">$11,400</span>
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-sm text-[var(--c-text-3)]">Other Expenses</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">$11,400</span>
 							</div>
 							<div className="flex items-center justify-between py-2 pt-4">
-								<span className="text-sm font-semibold text-foreground">Total Expenses</span>
+								<span className="text-sm font-semibold text-[var(--c-text)]">Total Expenses</span>
 								<span className="text-lg font-bold text-danger">$47,440</span>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div className="mt-8 pt-6 border-t-2 border-border">
+				<div className="mt-8 pt-6 border-t-2 border-[var(--c-line)]">
 					<div className="flex items-center justify-between">
-						<span className="text-lg font-semibold text-foreground">Net Profit/Loss</span>
+						<span className="text-lg font-semibold text-[var(--c-text)]">Net Profit/Loss</span>
 						<span className="text-2xl font-bold text-danger">-$1,550</span>
 					</div>
-					<p className="text-xs text-muted-foreground mt-2">This period</p>
+					<p className="text-xs text-[var(--c-text-3)] mt-2">This period</p>
 				</div>
 			</div>
 		</div>

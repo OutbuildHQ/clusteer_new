@@ -1,18 +1,16 @@
 import { cn } from "@/lib/utils";
 
-/** Only stablecoins + NGN fiat. Chain tokens kept for network display only. */
 const ASSETS: Record<string, { bg: string; fg: string; label: string }> = {
-	// Tradeable stablecoins
+	BTC: { bg: "var(--chain-btc)", fg: "white", label: "₿" },
+	ETH: { bg: "var(--chain-eth)", fg: "white", label: "Ξ" },
 	USDT: { bg: "var(--chain-usdt)", fg: "white", label: "₮" },
 	USDC: { bg: "var(--chain-usdc)", fg: "white", label: "$" },
-	// Fiat on/off-ramp
-	NGN: { bg: "var(--success)", fg: "white", label: "₦" },
-	// Chain icons (for network badges, not tradeable assets)
-	TRX: { bg: "var(--chain-trx)", fg: "white", label: "T" },
-	ETH: { bg: "var(--chain-eth)", fg: "white", label: "Ξ" },
-	BNB: { bg: "var(--chain-bnb)", fg: "#3b2900", label: "B" },
 	SOL: { bg: "var(--chain-sol)", fg: "white", label: "◎" },
+	BNB: { bg: "var(--chain-bnb)", fg: "#3b2900", label: "B" },
 	MATIC: { bg: "var(--chain-polygon)", fg: "white", label: "M" },
+	POL: { bg: "var(--chain-polygon)", fg: "white", label: "P" },
+	TRX: { bg: "var(--chain-trx)", fg: "white", label: "T" },
+	NGN: { bg: "var(--success)", fg: "white", label: "₦" },
 };
 
 const SIZES: Record<string, string> = {

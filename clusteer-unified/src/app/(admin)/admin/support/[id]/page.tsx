@@ -110,24 +110,24 @@ export default function TicketDetailPage() {
 			case "Medium":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 			case "Low":
-				return "bg-primary/10 text-primary border-primary/30";
+				return "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] border-primary/30";
 			default:
-				return "bg-background text-muted-foreground border-border";
+				return "bg-background text-[var(--c-text-3)] border-[var(--c-line)]";
 		}
 	};
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case "Open":
-				return "bg-primary/10 text-primary";
+				return "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]";
 			case "In Progress":
 				return "bg-orange-50 text-orange-700";
 			case "Resolved":
 				return "bg-success/10 text-success";
 			case "Closed":
-				return "bg-background text-muted-foreground";
+				return "bg-background text-[var(--c-text-3)]";
 			default:
-				return "bg-background text-muted-foreground";
+				return "bg-background text-[var(--c-text-3)]";
 		}
 	};
 
@@ -154,27 +154,27 @@ export default function TicketDetailPage() {
 				<div className="flex items-center gap-4">
 					<button
 						onClick={() => router.push("/admin/support")}
-						className="p-2 hover:bg-muted rounded-lg transition-colors"
+						className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-muted-foreground" />
+						<ArrowLeft className="w-5 h-5 text-[var(--c-text-3)]" />
 					</button>
 					<div>
 						<div className="flex items-center gap-3">
-							<h1 className="text-2xl font-bold text-foreground">{ticket.subject}</h1>
-							<span className="text-sm font-medium text-muted-foreground">#{ticket.id}</span>
+							<h1 className="text-2xl font-bold text-[var(--c-text)]">{ticket.subject}</h1>
+							<span className="text-sm font-medium text-[var(--c-text-3)]">#{ticket.id}</span>
 						</div>
-						<p className="text-sm text-muted-foreground mt-1">Created {ticket.created}</p>
+						<p className="text-sm text-[var(--c-text-3)] mt-1">Created {ticket.created}</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
-					<button className="p-2 hover:bg-muted rounded-lg transition-colors">
-						<Archive className="w-5 h-5 text-muted-foreground" />
+					<button className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors">
+						<Archive className="w-5 h-5 text-[var(--c-text-3)]" />
 					</button>
-					<button className="p-2 hover:bg-muted rounded-lg transition-colors">
+					<button className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors">
 						<Trash2 className="w-5 h-5 text-danger" />
 					</button>
-					<button className="p-2 hover:bg-muted rounded-lg transition-colors">
-						<MoreHorizontal className="w-5 h-5 text-muted-foreground" />
+					<button className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors">
+						<MoreHorizontal className="w-5 h-5 text-[var(--c-text-3)]" />
 					</button>
 				</div>
 			</div>
@@ -183,11 +183,11 @@ export default function TicketDetailPage() {
 				{/* Main Content - Messages */}
 				<div className="lg:col-span-2 space-y-6">
 					{/* Ticket Info Bar */}
-					<div className="bg-card rounded-lg border border-border p-4">
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-4">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-4">
 								<div>
-									<label className="block text-xs text-muted-foreground mb-1">Status</label>
+									<label className="block text-xs text-[var(--c-text-3)] mb-1">Status</label>
 									<select
 										value={selectedStatus}
 										onChange={(e) => handleStatusChange(e.target.value)}
@@ -200,7 +200,7 @@ export default function TicketDetailPage() {
 									</select>
 								</div>
 								<div>
-									<label className="block text-xs text-muted-foreground mb-1">Priority</label>
+									<label className="block text-xs text-[var(--c-text-3)] mb-1">Priority</label>
 									<select
 										value={selectedPriority}
 										onChange={(e) => handlePriorityChange(e.target.value)}
@@ -212,42 +212,42 @@ export default function TicketDetailPage() {
 									</select>
 								</div>
 								<div>
-									<label className="block text-xs text-muted-foreground mb-1">Category</label>
-									<span className="inline-flex items-center px-3 py-1.5 bg-muted text-muted-foreground text-sm font-medium rounded-lg">
+									<label className="block text-xs text-[var(--c-text-3)] mb-1">Category</label>
+									<span className="inline-flex items-center px-3 py-1.5 bg-[var(--c-surface-2)] text-[var(--c-text-3)] text-sm font-medium rounded-lg">
 										{ticket.category}
 									</span>
 								</div>
 							</div>
 							<div className="text-right">
-								<p className="text-xs text-muted-foreground">Last updated</p>
-								<p className="text-sm font-medium text-foreground">{ticket.updated}</p>
+								<p className="text-xs text-[var(--c-text-3)]">Last updated</p>
+								<p className="text-sm font-medium text-[var(--c-text)]">{ticket.updated}</p>
 							</div>
 						</div>
 					</div>
 
 					{/* Messages */}
-					<div className="bg-card rounded-lg border border-border p-6 space-y-6">
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6 space-y-6">
 						{ticket.messages.map((message) => (
 							<div
 								key={message.id}
 								className={`flex gap-4 ${message.sender === "admin" ? "flex-row-reverse" : ""}`}
 							>
-								<div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-									<User className="w-5 h-5 text-muted-foreground" />
+								<div className="w-10 h-10 rounded-full bg-[var(--c-surface-2)] flex items-center justify-center flex-shrink-0">
+									<User className="w-5 h-5 text-[var(--c-text-3)]" />
 								</div>
 								<div className={`flex-1 ${message.sender === "admin" ? "items-end" : ""}`}>
 									<div className="flex items-center gap-2 mb-2">
-										<span className="text-sm font-semibold text-foreground">{message.senderName}</span>
-										<span className="text-xs text-muted-foreground">{message.timestamp}</span>
+										<span className="text-sm font-semibold text-[var(--c-text)]">{message.senderName}</span>
+										<span className="text-xs text-[var(--c-text-3)]">{message.timestamp}</span>
 										{message.sender === "admin" && (
-											<span className="px-2 py-0.5 bg-primary text-white text-xs font-medium rounded">Admin</span>
+											<span className="px-2 py-0.5 bg-[var(--c-lime-500)] text-white text-xs font-medium rounded">Admin</span>
 										)}
 									</div>
 									<div
 										className={`p-4 rounded-lg ${
 											message.sender === "admin"
-												? "bg-primary text-white"
-												: "bg-background text-foreground"
+												? "bg-[var(--c-lime-500)] text-white"
+												: "bg-background text-[var(--c-text)]"
 										}`}
 									>
 										<p className="text-sm leading-relaxed">{message.content}</p>
@@ -258,12 +258,12 @@ export default function TicketDetailPage() {
 												<a
 													key={idx}
 													href={attachment.url}
-													className="flex items-center gap-2 p-2 bg-background border border-border rounded-lg hover:bg-muted transition-colors"
+													className="flex items-center gap-2 p-2 bg-background border border-[var(--c-line)] rounded-lg hover:bg-[var(--c-surface-2)] transition-colors"
 												>
-													<Paperclip className="w-4 h-4 text-muted-foreground" />
+													<Paperclip className="w-4 h-4 text-[var(--c-text-3)]" />
 													<div className="flex-1">
-														<p className="text-sm font-medium text-foreground">{attachment.name}</p>
-														<p className="text-xs text-muted-foreground">{attachment.size}</p>
+														<p className="text-sm font-medium text-[var(--c-text)]">{attachment.name}</p>
+														<p className="text-xs text-[var(--c-text-3)]">{attachment.size}</p>
 													</div>
 												</a>
 											))}
@@ -275,26 +275,26 @@ export default function TicketDetailPage() {
 					</div>
 
 					{/* Reply Box */}
-					<div className="bg-card rounded-lg border border-border p-4">
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-4">
 						<div className="mb-3">
-							<label className="block text-sm font-medium text-muted-foreground mb-2">Reply to {ticket.user.name}</label>
+							<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">Reply to {ticket.user.name}</label>
 							<textarea
 								value={newMessage}
 								onChange={(e) => setNewMessage(e.target.value)}
 								placeholder="Type your message here..."
 								rows={6}
-								className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+								className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 							/>
 						</div>
 						<div className="flex items-center justify-between">
-							<button className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-lg transition-colors">
+							<button className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--c-text-3)] hover:bg-[var(--c-surface-2)] rounded-lg transition-colors">
 								<Paperclip className="w-4 h-4" />
 								Attach files
 							</button>
 							<div className="flex items-center gap-2">
 								<button
 									onClick={handleSendMessage}
-									className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+									className="flex items-center gap-2 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[var(--c-lime-500)]/90 transition-colors"
 								>
 									<Send className="w-4 h-4" />
 									Send Reply
@@ -307,31 +307,31 @@ export default function TicketDetailPage() {
 				{/* Sidebar - User Info & Actions */}
 				<div className="space-y-6">
 					{/* User Information */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4">User Information</h3>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">User Information</h3>
 						<div className="space-y-4">
 							<div className="flex items-center gap-3">
-								<div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-									<User className="w-6 h-6 text-muted-foreground" />
+								<div className="w-12 h-12 rounded-full bg-[var(--c-surface-2)] flex items-center justify-center">
+									<User className="w-6 h-6 text-[var(--c-text-3)]" />
 								</div>
 								<div>
-									<p className="text-sm font-semibold text-foreground">{ticket.user.name}</p>
-									<p className="text-xs text-muted-foreground">User ID: USR-12345</p>
+									<p className="text-sm font-semibold text-[var(--c-text)]">{ticket.user.name}</p>
+									<p className="text-xs text-[var(--c-text-3)]">User ID: USR-12345</p>
 								</div>
 							</div>
-							<div className="pt-4 border-t border-border space-y-3">
+							<div className="pt-4 border-t border-[var(--c-line)] space-y-3">
 								<div className="flex items-center gap-2">
-									<Mail className="w-4 h-4 text-muted-foreground" />
-									<span className="text-sm text-foreground">{ticket.user.email}</span>
+									<Mail className="w-4 h-4 text-[var(--c-text-3)]" />
+									<span className="text-sm text-[var(--c-text)]">{ticket.user.email}</span>
 								</div>
 								<div className="flex items-center gap-2">
-									<Phone className="w-4 h-4 text-muted-foreground" />
-									<span className="text-sm text-foreground">{ticket.user.phone}</span>
+									<Phone className="w-4 h-4 text-[var(--c-text-3)]" />
+									<span className="text-sm text-[var(--c-text)]">{ticket.user.phone}</span>
 								</div>
 							</div>
 							<button
 								onClick={() => router.push("/admin/users/USR-12345")}
-								className="w-full py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
+								className="w-full py-2 text-sm text-[var(--c-lime-500)] hover:bg-[var(--c-lime-500)]/10 rounded-lg transition-colors"
 							>
 								View User Profile
 							</button>
@@ -339,23 +339,23 @@ export default function TicketDetailPage() {
 					</div>
 
 					{/* Assignment */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4">Assignment</h3>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">Assignment</h3>
 						<div className="space-y-3">
 							{ticket.assignee ? (
 								<div className="flex items-center justify-between">
 									<div className="flex items-center gap-2">
-										<div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+										<div className="w-8 h-8 rounded-full bg-[var(--c-lime-500)] flex items-center justify-center">
 											<span className="text-xs font-semibold text-white">AS</span>
 										</div>
 										<div>
-											<p className="text-sm font-medium text-foreground">{ticket.assignee}</p>
-											<p className="text-xs text-muted-foreground">Assigned</p>
+											<p className="text-sm font-medium text-[var(--c-text)]">{ticket.assignee}</p>
+											<p className="text-xs text-[var(--c-text-3)]">Assigned</p>
 										</div>
 									</div>
 									<button
 										onClick={() => setShowAssignModal(true)}
-										className="text-sm text-primary hover:underline"
+										className="text-sm text-[var(--c-lime-500)] hover:underline"
 									>
 										Change
 									</button>
@@ -363,7 +363,7 @@ export default function TicketDetailPage() {
 							) : (
 								<button
 									onClick={() => setShowAssignModal(true)}
-									className="w-full flex items-center justify-center gap-2 py-2 border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+									className="w-full flex items-center justify-center gap-2 py-2 border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 								>
 									<UserPlus className="w-4 h-4" />
 									Assign to me
@@ -373,8 +373,8 @@ export default function TicketDetailPage() {
 					</div>
 
 					{/* Tags */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4 flex items-center gap-2">
 							<Tag className="w-4 h-4" />
 							Tags
 						</h3>
@@ -382,7 +382,7 @@ export default function TicketDetailPage() {
 							{ticket.tags.map((tag, idx) => (
 								<span
 									key={idx}
-									className="inline-flex items-center gap-1 px-2 py-1 bg-muted text-muted-foreground text-xs font-medium rounded"
+									className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--c-surface-2)] text-[var(--c-text-3)] text-xs font-medium rounded"
 								>
 									{tag}
 									<button className="hover:text-danger transition-colors">
@@ -390,21 +390,21 @@ export default function TicketDetailPage() {
 									</button>
 								</span>
 							))}
-							<button className="inline-flex items-center gap-1 px-2 py-1 border border-dashed border-border text-muted-foreground text-xs font-medium rounded hover:bg-background transition-colors">
+							<button className="inline-flex items-center gap-1 px-2 py-1 border border-dashed border-[var(--c-line)] text-[var(--c-text-3)] text-xs font-medium rounded hover:bg-background transition-colors">
 								+ Add tag
 							</button>
 						</div>
 					</div>
 
 					{/* Ticket Actions */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4">Quick Actions</h3>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">Quick Actions</h3>
 						<div className="space-y-2">
-							<button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-background rounded-lg transition-colors">
+							<button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[var(--c-text-3)] hover:bg-background rounded-lg transition-colors">
 								<CheckCircle className="w-4 h-4" />
 								Mark as Resolved
 							</button>
-							<button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-background rounded-lg transition-colors">
+							<button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[var(--c-text-3)] hover:bg-background rounded-lg transition-colors">
 								<Archive className="w-4 h-4" />
 								Archive Ticket
 							</button>
@@ -416,28 +416,28 @@ export default function TicketDetailPage() {
 					</div>
 
 					{/* Activity Log */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4">Activity Log</h3>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">Activity Log</h3>
 						<div className="space-y-3">
 							<div className="flex items-start gap-2">
-								<div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></div>
+								<div className="w-1.5 h-1.5 rounded-full bg-[var(--c-lime-500)] mt-1.5"></div>
 								<div>
-									<p className="text-sm text-foreground">Ticket opened</p>
-									<p className="text-xs text-muted-foreground">Jan 16, 2025 10:30 AM</p>
+									<p className="text-sm text-[var(--c-text)]">Ticket opened</p>
+									<p className="text-xs text-[var(--c-text-3)]">Jan 16, 2025 10:30 AM</p>
 								</div>
 							</div>
 							<div className="flex items-start gap-2">
 								<div className="w-1.5 h-1.5 rounded-full bg-success mt-1.5"></div>
 								<div>
-									<p className="text-sm text-foreground">Assigned to Admin Sarah</p>
-									<p className="text-xs text-muted-foreground">Jan 16, 2025 11:00 AM</p>
+									<p className="text-sm text-[var(--c-text)]">Assigned to Admin Sarah</p>
+									<p className="text-xs text-[var(--c-text-3)]">Jan 16, 2025 11:00 AM</p>
 								</div>
 							</div>
 							<div className="flex items-start gap-2">
 								<div className="w-1.5 h-1.5 rounded-full bg-orange-600 mt-1.5"></div>
 								<div>
-									<p className="text-sm text-foreground">Status changed to In Progress</p>
-									<p className="text-xs text-muted-foreground">Jan 16, 2025 11:15 AM</p>
+									<p className="text-sm text-[var(--c-text)]">Status changed to In Progress</p>
+									<p className="text-xs text-[var(--c-text-3)]">Jan 16, 2025 11:15 AM</p>
 								</div>
 							</div>
 						</div>

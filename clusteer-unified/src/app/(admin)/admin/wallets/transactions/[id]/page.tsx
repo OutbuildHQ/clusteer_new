@@ -155,23 +155,23 @@ export default function TransactionDetailPage() {
 				<div className="flex items-center gap-4">
 					<button
 						onClick={() => router.back()}
-						className="p-2 hover:bg-muted rounded-lg transition-all hover:scale-110 active:scale-95"
+						className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-all hover:scale-110 active:scale-95"
 					>
-						<ArrowLeft className="w-5 h-5 text-muted-foreground" />
+						<ArrowLeft className="w-5 h-5 text-[var(--c-text-3)]" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-foreground">Transaction Details</h1>
-						<p className="text-sm text-muted-foreground mt-1">
+						<h1 className="text-2xl font-bold text-[var(--c-text)]">Transaction Details</h1>
+						<p className="text-sm text-[var(--c-text-3)] mt-1">
 							Transaction ID: {transaction.id}
 						</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-3">
-					<button className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95">
+					<button className="flex items-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95">
 						<Download className="w-4 h-4" />
 						Export
 					</button>
-					<button className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95">
+					<button className="flex items-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95">
 						<RefreshCw className="w-4 h-4" />
 						Refresh
 					</button>
@@ -182,7 +182,7 @@ export default function TransactionDetailPage() {
 			<div className={`p-6 rounded-lg border-2 ${getStatusColor()} transition-all hover:shadow-md`}>
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-4">
-						<div className="p-3 bg-card rounded-full shadow-sm">
+						<div className="p-3 bg-[var(--c-surface)] rounded-full shadow-sm">
 							{getStatusIcon()}
 						</div>
 						<div>
@@ -207,57 +207,57 @@ export default function TransactionDetailPage() {
 				{/* Main Details */}
 				<div className="lg:col-span-2 space-y-6">
 					{/* Transaction Information */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h2 className="text-lg font-semibold text-foreground mb-6">
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">
 							Transaction Information
 						</h2>
 						<div className="grid grid-cols-2 gap-6">
 							<div>
-								<label className="text-sm text-muted-foreground font-medium">Transaction Type</label>
+								<label className="text-sm text-[var(--c-text-3)] font-medium">Transaction Type</label>
 								<div className="flex items-center gap-2 mt-2">
 									{transaction.type === "Deposit" ? (
 										<TrendingUp className="w-5 h-5 text-success" />
 									) : (
 										<TrendingDown className="w-5 h-5 text-danger" />
 									)}
-									<p className="text-base font-semibold text-foreground">{transaction.type}</p>
+									<p className="text-base font-semibold text-[var(--c-text)]">{transaction.type}</p>
 								</div>
 							</div>
 							<div>
-								<label className="text-sm text-muted-foreground font-medium">Currency</label>
+								<label className="text-sm text-[var(--c-text-3)] font-medium">Currency</label>
 								<div className="flex items-center gap-2 mt-2">
-									<DollarSign className="w-5 h-5 text-muted-foreground" />
-									<p className="text-base font-semibold text-foreground">
+									<DollarSign className="w-5 h-5 text-[var(--c-text-3)]" />
+									<p className="text-base font-semibold text-[var(--c-text)]">
 										{transaction.currency}
 										{transaction.network && ` (${transaction.network})`}
 									</p>
 								</div>
 							</div>
 							<div>
-								<label className="text-sm text-muted-foreground font-medium">Amount</label>
-								<p className="text-base font-semibold text-foreground mt-2">
+								<label className="text-sm text-[var(--c-text-3)] font-medium">Amount</label>
+								<p className="text-base font-semibold text-[var(--c-text)] mt-2">
 									{transaction.currency === "Naira" ? "₦" : "$"}
 									{transaction.amount.toLocaleString()}
 								</p>
 							</div>
 							<div>
-								<label className="text-sm text-muted-foreground font-medium">Fees</label>
-								<p className="text-base font-semibold text-foreground mt-2">
+								<label className="text-sm text-[var(--c-text-3)] font-medium">Fees</label>
+								<p className="text-base font-semibold text-[var(--c-text)] mt-2">
 									{transaction.currency === "Naira" ? "₦" : "$"}
 									{transaction.fees.toLocaleString()}
 								</p>
 							</div>
 							<div>
-								<label className="text-sm text-muted-foreground font-medium">Net Amount</label>
-								<p className="text-base font-bold text-primary mt-2">
+								<label className="text-sm text-[var(--c-text-3)] font-medium">Net Amount</label>
+								<p className="text-base font-bold text-[var(--c-lime-500)] mt-2">
 									{transaction.currency === "Naira" ? "₦" : "$"}
 									{transaction.netAmount.toLocaleString()}
 								</p>
 							</div>
 							{transaction.paymentMethod && (
 								<div>
-									<label className="text-sm text-muted-foreground font-medium">Payment Method</label>
-									<p className="text-base font-semibold text-foreground mt-2">
+									<label className="text-sm text-[var(--c-text-3)] font-medium">Payment Method</label>
+									<p className="text-base font-semibold text-[var(--c-text)] mt-2">
 										{transaction.paymentMethod}
 									</p>
 								</div>
@@ -266,34 +266,34 @@ export default function TransactionDetailPage() {
 
 						{/* Bank Account Details (if applicable) */}
 						{transaction.bankAccount && (
-							<div className="mt-6 pt-6 border-t border-border">
-								<h3 className="text-sm font-semibold text-foreground mb-4">Bank Account</h3>
+							<div className="mt-6 pt-6 border-t border-[var(--c-line)]">
+								<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">Bank Account</h3>
 								<div className="grid grid-cols-2 gap-4">
 									<div>
-										<label className="text-sm text-muted-foreground">Bank</label>
-										<p className="text-base font-semibold text-foreground mt-1">
+										<label className="text-sm text-[var(--c-text-3)]">Bank</label>
+										<p className="text-base font-semibold text-[var(--c-text)] mt-1">
 											{transaction.bankAccount.bank}
 										</p>
 									</div>
 									<div>
-										<label className="text-sm text-muted-foreground">Account Number</label>
+										<label className="text-sm text-[var(--c-text-3)]">Account Number</label>
 										<div className="flex items-center gap-2 mt-1">
-											<p className="text-base font-semibold text-foreground">
+											<p className="text-base font-semibold text-[var(--c-text)]">
 												{transaction.bankAccount.accountNumber}
 											</p>
 											<button
 												onClick={() =>
 													handleCopy(transaction.bankAccount!.accountNumber, "account")
 												}
-												className="p-1 hover:bg-muted rounded transition-colors"
+												className="p-1 hover:bg-[var(--c-surface-2)] rounded transition-colors"
 											>
-												<Copy className="w-4 h-4 text-muted-foreground" />
+												<Copy className="w-4 h-4 text-[var(--c-text-3)]" />
 											</button>
 										</div>
 									</div>
 									<div className="col-span-2">
-										<label className="text-sm text-muted-foreground">Account Name</label>
-										<p className="text-base font-semibold text-foreground mt-1">
+										<label className="text-sm text-[var(--c-text-3)]">Account Name</label>
+										<p className="text-base font-semibold text-[var(--c-text)] mt-1">
 											{transaction.bankAccount.accountName}
 										</p>
 									</div>
@@ -304,32 +304,32 @@ export default function TransactionDetailPage() {
 
 					{/* Blockchain Details */}
 					{transaction.blockchain && (
-						<div className="bg-card rounded-lg border border-border p-6">
-							<h2 className="text-lg font-semibold text-foreground mb-6">
+						<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+							<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">
 								Blockchain Information
 							</h2>
 							<div className="space-y-4">
 								<div>
-									<label className="text-sm text-muted-foreground font-medium">Transaction Hash</label>
+									<label className="text-sm text-[var(--c-text-3)] font-medium">Transaction Hash</label>
 									<div className="flex items-center gap-2 mt-2 p-3 bg-background rounded-lg">
-										<p className="text-sm font-mono text-foreground flex-1 truncate">
+										<p className="text-sm font-mono text-[var(--c-text)] flex-1 truncate">
 											{transaction.blockchain.hash}
 										</p>
 										<button
 											onClick={() => handleCopy(transaction.blockchain!.hash, "hash")}
-											className="p-1.5 hover:bg-muted rounded transition-all hover:scale-110"
+											className="p-1.5 hover:bg-[var(--c-surface-2)] rounded transition-all hover:scale-110"
 											title="Copy hash"
 										>
-											<Copy className="w-4 h-4 text-muted-foreground" />
+											<Copy className="w-4 h-4 text-[var(--c-text-3)]" />
 										</button>
 										<a
 											href={transaction.blockchain.explorerUrl}
 											target="_blank"
 											rel="noopener noreferrer"
-											className="p-1.5 hover:bg-muted rounded transition-all hover:scale-110"
+											className="p-1.5 hover:bg-[var(--c-surface-2)] rounded transition-all hover:scale-110"
 											title="View on explorer"
 										>
-											<ExternalLink className="w-4 h-4 text-muted-foreground" />
+											<ExternalLink className="w-4 h-4 text-[var(--c-text-3)]" />
 										</a>
 									</div>
 									{copied === "hash" && (
@@ -341,18 +341,18 @@ export default function TransactionDetailPage() {
 
 								<div className="grid grid-cols-2 gap-4">
 									<div>
-										<label className="text-sm text-muted-foreground font-medium">Confirmations</label>
+										<label className="text-sm text-[var(--c-text-3)] font-medium">Confirmations</label>
 										<div className="flex items-center gap-2 mt-2">
 											<CheckCircle2 className="w-5 h-5 text-success" />
-											<p className="text-base font-semibold text-foreground">
+											<p className="text-base font-semibold text-[var(--c-text)]">
 												{transaction.blockchain.confirmations}
 											</p>
 										</div>
 									</div>
 									{transaction.blockchain.gasUsed && (
 										<div>
-											<label className="text-sm text-muted-foreground font-medium">Gas Used</label>
-											<p className="text-base font-semibold text-foreground mt-2">
+											<label className="text-sm text-[var(--c-text-3)] font-medium">Gas Used</label>
+											<p className="text-base font-semibold text-[var(--c-text)] mt-2">
 												{transaction.blockchain.gasUsed}
 											</p>
 										</div>
@@ -361,18 +361,18 @@ export default function TransactionDetailPage() {
 
 								{transaction.blockchain.fromAddress && (
 									<div>
-										<label className="text-sm text-muted-foreground font-medium">From Address</label>
+										<label className="text-sm text-[var(--c-text-3)] font-medium">From Address</label>
 										<div className="flex items-center gap-2 mt-2 p-3 bg-background rounded-lg">
-											<p className="text-sm font-mono text-foreground">
+											<p className="text-sm font-mono text-[var(--c-text)]">
 												{transaction.blockchain.fromAddress}
 											</p>
 											<button
 												onClick={() =>
 													handleCopy(transaction.blockchain!.fromAddress!, "from")
 												}
-												className="p-1.5 hover:bg-muted rounded transition-colors"
+												className="p-1.5 hover:bg-[var(--c-surface-2)] rounded transition-colors"
 											>
-												<Copy className="w-4 h-4 text-muted-foreground" />
+												<Copy className="w-4 h-4 text-[var(--c-text-3)]" />
 											</button>
 										</div>
 									</div>
@@ -380,16 +380,16 @@ export default function TransactionDetailPage() {
 
 								{transaction.blockchain.toAddress && (
 									<div>
-										<label className="text-sm text-muted-foreground font-medium">To Address</label>
+										<label className="text-sm text-[var(--c-text-3)] font-medium">To Address</label>
 										<div className="flex items-center gap-2 mt-2 p-3 bg-background rounded-lg">
-											<p className="text-sm font-mono text-foreground">
+											<p className="text-sm font-mono text-[var(--c-text)]">
 												{transaction.blockchain.toAddress}
 											</p>
 											<button
 												onClick={() => handleCopy(transaction.blockchain!.toAddress!, "to")}
-												className="p-1.5 hover:bg-muted rounded transition-colors"
+												className="p-1.5 hover:bg-[var(--c-surface-2)] rounded transition-colors"
 											>
-												<Copy className="w-4 h-4 text-muted-foreground" />
+												<Copy className="w-4 h-4 text-[var(--c-text-3)]" />
 											</button>
 										</div>
 									</div>
@@ -399,16 +399,16 @@ export default function TransactionDetailPage() {
 					)}
 
 					{/* Timeline */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h2 className="text-lg font-semibold text-foreground mb-6">Timeline</h2>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">Timeline</h2>
 						<div className="space-y-4">
 							<div className="flex items-start gap-4">
-								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-									<Clock className="w-5 h-5 text-primary" />
+								<div className="w-10 h-10 bg-[var(--c-lime-500)]/10 rounded-full flex items-center justify-center flex-shrink-0">
+									<Clock className="w-5 h-5 text-[var(--c-lime-500)]" />
 								</div>
 								<div className="flex-1">
-									<p className="text-sm font-semibold text-foreground">Transaction Initiated</p>
-									<p className="text-sm text-muted-foreground mt-1">{transaction.timestamps.initiated}</p>
+									<p className="text-sm font-semibold text-[var(--c-text)]">Transaction Initiated</p>
+									<p className="text-sm text-[var(--c-text-3)] mt-1">{transaction.timestamps.initiated}</p>
 								</div>
 							</div>
 							{transaction.timestamps.completed && (
@@ -417,8 +417,8 @@ export default function TransactionDetailPage() {
 										<CheckCircle2 className="w-5 h-5 text-success" />
 									</div>
 									<div className="flex-1">
-										<p className="text-sm font-semibold text-foreground">Transaction Completed</p>
-										<p className="text-sm text-muted-foreground mt-1">
+										<p className="text-sm font-semibold text-[var(--c-text)]">Transaction Completed</p>
+										<p className="text-sm text-[var(--c-text-3)] mt-1">
 											{transaction.timestamps.completed}
 										</p>
 									</div>
@@ -430,8 +430,8 @@ export default function TransactionDetailPage() {
 										<XCircle className="w-5 h-5 text-danger" />
 									</div>
 									<div className="flex-1">
-										<p className="text-sm font-semibold text-foreground">Transaction Failed</p>
-										<p className="text-sm text-muted-foreground mt-1">{transaction.timestamps.failed}</p>
+										<p className="text-sm font-semibold text-[var(--c-text)]">Transaction Failed</p>
+										<p className="text-sm text-[var(--c-text-3)] mt-1">{transaction.timestamps.failed}</p>
 									</div>
 								</div>
 							)}
@@ -439,12 +439,12 @@ export default function TransactionDetailPage() {
 					</div>
 
 					{/* Admin Notes */}
-					<div className="bg-card rounded-lg border border-border p-6">
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
 						<div className="flex items-center justify-between mb-6">
-							<h2 className="text-lg font-semibold text-foreground">Admin Notes</h2>
+							<h2 className="text-lg font-semibold text-[var(--c-text)]">Admin Notes</h2>
 							<button
 								onClick={() => setShowNoteModal(true)}
-								className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all hover:scale-105 active:scale-95"
+								className="flex items-center gap-2 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[var(--c-lime-500)]/90 transition-all hover:scale-105 active:scale-95"
 							>
 								<Plus className="w-4 h-4" />
 								Add Note
@@ -455,27 +455,27 @@ export default function TransactionDetailPage() {
 								transaction.adminNotes.map((note, index) => (
 									<div
 										key={index}
-										className="p-4 bg-background rounded-lg border border-border hover:shadow-sm transition-all"
+										className="p-4 bg-background rounded-lg border border-[var(--c-line)] hover:shadow-sm transition-all"
 									>
 										<div className="flex items-start justify-between">
 											<div className="flex-1">
-												<p className="text-sm text-foreground">{note.note}</p>
-												<div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+												<p className="text-sm text-[var(--c-text)]">{note.note}</p>
+												<div className="flex items-center gap-2 mt-2 text-xs text-[var(--c-text-3)]">
 													<span className="font-medium">{note.addedBy}</span>
 													<span>•</span>
 													<span>{note.addedAt}</span>
 												</div>
 											</div>
-											<button className="p-1 hover:bg-muted rounded transition-colors">
-												<Trash2 className="w-4 h-4 text-muted-foreground" />
+											<button className="p-1 hover:bg-[var(--c-surface-2)] rounded transition-colors">
+												<Trash2 className="w-4 h-4 text-[var(--c-text-3)]" />
 											</button>
 										</div>
 									</div>
 								))
 							) : (
 								<div className="text-center py-8">
-									<FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-									<p className="text-sm text-muted-foreground">No admin notes yet</p>
+									<FileText className="w-12 h-12 text-[var(--c-text-3)] mx-auto mb-3" />
+									<p className="text-sm text-[var(--c-text-3)]">No admin notes yet</p>
 								</div>
 							)}
 						</div>
@@ -485,30 +485,30 @@ export default function TransactionDetailPage() {
 				{/* Sidebar */}
 				<div className="space-y-6">
 					{/* User Information */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h2 className="text-lg font-semibold text-foreground mb-6">User Information</h2>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">User Information</h2>
 						<div className="space-y-4">
 							<div className="flex items-center gap-3">
 								<div className="w-12 h-12 bg-gradient-to-br from-brand-800 to-light-green rounded-full flex items-center justify-center text-white font-bold text-lg">
 									{transaction.user.name.charAt(0)}
 								</div>
 								<div>
-									<p className="text-base font-semibold text-foreground">{transaction.user.name}</p>
-									<p className="text-sm text-muted-foreground">{transaction.user.email}</p>
+									<p className="text-base font-semibold text-[var(--c-text)]">{transaction.user.name}</p>
+									<p className="text-sm text-[var(--c-text-3)]">{transaction.user.email}</p>
 								</div>
 							</div>
 
-							<div className="pt-4 border-t border-border space-y-3">
+							<div className="pt-4 border-t border-[var(--c-line)] space-y-3">
 								<div className="flex items-center gap-3">
-									<Mail className="w-4 h-4 text-muted-foreground" />
-									<span className="text-sm text-foreground">{transaction.user.email}</span>
+									<Mail className="w-4 h-4 text-[var(--c-text-3)]" />
+									<span className="text-sm text-[var(--c-text)]">{transaction.user.email}</span>
 								</div>
 								<div className="flex items-center gap-3">
-									<Phone className="w-4 h-4 text-muted-foreground" />
-									<span className="text-sm text-foreground">{transaction.user.phone}</span>
+									<Phone className="w-4 h-4 text-[var(--c-text-3)]" />
+									<span className="text-sm text-[var(--c-text)]">{transaction.user.phone}</span>
 								</div>
 								<div className="flex items-center gap-3">
-									<Shield className="w-4 h-4 text-muted-foreground" />
+									<Shield className="w-4 h-4 text-[var(--c-text-3)]" />
 									<span
 										className={`text-sm font-medium ${
 											transaction.user.kycStatus === "Approved"
@@ -525,7 +525,7 @@ export default function TransactionDetailPage() {
 
 							<button
 								onClick={() => router.push(`/admin/users/${transaction.user.id}`)}
-								className="w-full mt-4 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-[#d4f0dd] transition-all hover:scale-105 active:scale-95 font-medium"
+								className="w-full mt-4 px-4 py-2 bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] rounded-lg hover:bg-[#d4f0dd] transition-all hover:scale-105 active:scale-95 font-medium"
 							>
 								View User Profile
 							</button>
@@ -533,25 +533,25 @@ export default function TransactionDetailPage() {
 					</div>
 
 					{/* Admin Actions */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h2 className="text-lg font-semibold text-foreground mb-6">Admin Actions</h2>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">Admin Actions</h2>
 						<div className="space-y-3">
 							<button
 								onClick={() => setShowRefundModal(true)}
-								className="w-full flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95 text-left"
+								className="w-full flex items-center gap-3 px-4 py-3 bg-[var(--c-surface)] border border-[var(--c-line)] rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95 text-left"
 							>
-								<RefreshCw className="w-5 h-5 text-muted-foreground" />
-								<span className="text-sm font-medium text-muted-foreground">Refund Transaction</span>
+								<RefreshCw className="w-5 h-5 text-[var(--c-text-3)]" />
+								<span className="text-sm font-medium text-[var(--c-text-3)]">Refund Transaction</span>
 							</button>
-							<button className="w-full flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95 text-left">
-								<Flag className="w-5 h-5 text-muted-foreground" />
-								<span className="text-sm font-medium text-muted-foreground">Flag for Review</span>
+							<button className="w-full flex items-center gap-3 px-4 py-3 bg-[var(--c-surface)] border border-[var(--c-line)] rounded-lg hover:bg-background transition-all hover:scale-105 active:scale-95 text-left">
+								<Flag className="w-5 h-5 text-[var(--c-text-3)]" />
+								<span className="text-sm font-medium text-[var(--c-text-3)]">Flag for Review</span>
 							</button>
-							<button className="w-full flex items-center gap-3 px-4 py-3 bg-card border border-orange-200 text-orange-700 rounded-lg hover:bg-orange-50 transition-all hover:scale-105 active:scale-95 text-left">
+							<button className="w-full flex items-center gap-3 px-4 py-3 bg-[var(--c-surface)] border border-orange-200 text-orange-700 rounded-lg hover:bg-orange-50 transition-all hover:scale-105 active:scale-95 text-left">
 								<Ban className="w-5 h-5" />
 								<span className="text-sm font-medium">Freeze User Wallet</span>
 							</button>
-							<button className="w-full flex items-center gap-3 px-4 py-3 bg-card border border-primary/30 text-primary rounded-lg hover:bg-primary/10 transition-all hover:scale-105 active:scale-95 text-left">
+							<button className="w-full flex items-center gap-3 px-4 py-3 bg-[var(--c-surface)] border border-primary/30 text-[var(--c-lime-500)] rounded-lg hover:bg-[var(--c-lime-500)]/10 transition-all hover:scale-105 active:scale-95 text-left">
 								<Mail className="w-5 h-5" />
 								<span className="text-sm font-medium">Contact User</span>
 							</button>
@@ -563,23 +563,23 @@ export default function TransactionDetailPage() {
 			{/* Add Note Modal */}
 			{showNoteModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-					<div className="bg-card rounded-lg max-w-md w-full p-6 animate-in slide-in-from-bottom duration-300">
+					<div className="bg-[var(--c-surface)] rounded-lg max-w-md w-full p-6 animate-in slide-in-from-bottom duration-300">
 						<div className="flex items-center justify-between mb-6">
-							<h3 className="text-lg font-semibold text-foreground">Add Admin Note</h3>
+							<h3 className="text-lg font-semibold text-[var(--c-text)]">Add Admin Note</h3>
 							<button
 								onClick={() => setShowNoteModal(false)}
-								className="p-2 hover:bg-muted rounded-lg transition-all hover:scale-110 active:scale-90"
+								className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-all hover:scale-110 active:scale-90"
 							>
-								<X className="w-5 h-5 text-muted-foreground" />
+								<X className="w-5 h-5 text-[var(--c-text-3)]" />
 							</button>
 						</div>
 						<div className="space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">Note</label>
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">Note</label>
 								<textarea
 									value={newNote}
 									onChange={(e) => setNewNote(e.target.value)}
-									className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+									className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 									rows={4}
 									placeholder="Enter admin note..."
 								/>
@@ -588,7 +588,7 @@ export default function TransactionDetailPage() {
 						<div className="flex items-center gap-3 mt-6">
 							<button
 								onClick={() => setShowNoteModal(false)}
-								className="flex-1 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+								className="flex-1 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 							>
 								Cancel
 							</button>
@@ -598,7 +598,7 @@ export default function TransactionDetailPage() {
 									setShowNoteModal(false);
 									setNewNote("");
 								}}
-								className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all hover:scale-105 active:scale-95"
+								className="flex-1 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[var(--c-lime-500)]/90 transition-all hover:scale-105 active:scale-95"
 							>
 								Add Note
 							</button>
@@ -610,40 +610,40 @@ export default function TransactionDetailPage() {
 			{/* Refund Modal */}
 			{showRefundModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-					<div className="bg-card rounded-lg max-w-md w-full p-6 animate-in slide-in-from-bottom duration-300">
+					<div className="bg-[var(--c-surface)] rounded-lg max-w-md w-full p-6 animate-in slide-in-from-bottom duration-300">
 						<div className="flex items-center gap-3 mb-6">
 							<div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
 								<AlertTriangle className="w-6 h-6 text-orange-600" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-foreground">Confirm Refund</h3>
-								<p className="text-sm text-muted-foreground">This action cannot be undone</p>
+								<h3 className="text-lg font-semibold text-[var(--c-text)]">Confirm Refund</h3>
+								<p className="text-sm text-[var(--c-text-3)]">This action cannot be undone</p>
 							</div>
 						</div>
 						<div className="space-y-4">
 							<div className="p-4 bg-background rounded-lg">
 								<div className="flex justify-between text-sm mb-2">
-									<span className="text-muted-foreground">Transaction ID</span>
-									<span className="font-semibold text-foreground">{transaction.id}</span>
+									<span className="text-[var(--c-text-3)]">Transaction ID</span>
+									<span className="font-semibold text-[var(--c-text)]">{transaction.id}</span>
 								</div>
 								<div className="flex justify-between text-sm mb-2">
-									<span className="text-muted-foreground">Amount</span>
-									<span className="font-semibold text-foreground">
+									<span className="text-[var(--c-text-3)]">Amount</span>
+									<span className="font-semibold text-[var(--c-text)]">
 										{transaction.currency === "Naira" ? "₦" : "$"}
 										{transaction.amount.toLocaleString()}
 									</span>
 								</div>
 								<div className="flex justify-between text-sm">
-									<span className="text-muted-foreground">User</span>
-									<span className="font-semibold text-foreground">{transaction.user.name}</span>
+									<span className="text-[var(--c-text-3)]">User</span>
+									<span className="font-semibold text-[var(--c-text)]">{transaction.user.name}</span>
 								</div>
 							</div>
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									Reason for Refund
 								</label>
 								<textarea
-									className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+									className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 									rows={3}
 									placeholder="Enter reason for refund..."
 								/>
@@ -652,7 +652,7 @@ export default function TransactionDetailPage() {
 						<div className="flex items-center gap-3 mt-6">
 							<button
 								onClick={() => setShowRefundModal(false)}
-								className="flex-1 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+								className="flex-1 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 							>
 								Cancel
 							</button>

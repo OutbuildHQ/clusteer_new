@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/store/user";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTicketDetail, addTicketMessage, type SupportTicket, type TicketMessage } from "@/lib/api/support";
@@ -75,10 +73,24 @@ export default function TicketDetailPage() {
 	if (isLoading) {
 		return (
 			<div className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8 max-w-[820px]">
-				<Button onClick={() => router.push("/support")} variant="ghost" className="mb-6">
-					<ArrowLeft className="w-4 h-4 mr-2" />
+				<button
+					onClick={() => router.push("/support")}
+					style={{
+						background: "transparent",
+						border: "none",
+						padding: "8px 12px",
+						cursor: "pointer",
+						display: "inline-flex",
+						alignItems: "center",
+						gap: "8px",
+						fontSize: "14px",
+						color: "var(--c-fg, inherit)",
+						marginBottom: "24px",
+					}}
+				>
+					<ArrowLeft className="w-4 h-4" />
 					Back to Support
-				</Button>
+				</button>
 				<div className="bg-card border border-border rounded-xl p-8 text-center">
 					<p className="text-muted-foreground">Loading ticket...</p>
 				</div>
@@ -89,10 +101,24 @@ export default function TicketDetailPage() {
 	if (!ticket) {
 		return (
 			<div className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8 max-w-[820px]">
-				<Button onClick={() => router.push("/support")} variant="ghost" className="mb-6">
-					<ArrowLeft className="w-4 h-4 mr-2" />
+				<button
+					onClick={() => router.push("/support")}
+					style={{
+						background: "transparent",
+						border: "none",
+						padding: "8px 12px",
+						cursor: "pointer",
+						display: "inline-flex",
+						alignItems: "center",
+						gap: "8px",
+						fontSize: "14px",
+						color: "var(--c-fg, inherit)",
+						marginBottom: "24px",
+					}}
+				>
+					<ArrowLeft className="w-4 h-4" />
 					Back to Support
-				</Button>
+				</button>
 				<div className="bg-card border border-border rounded-xl p-8 text-center">
 					<p className="text-muted-foreground">Ticket not found</p>
 				</div>
@@ -102,10 +128,24 @@ export default function TicketDetailPage() {
 
 	return (
 		<div className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8 max-w-[820px]">
-			<Button onClick={() => router.push("/support")} variant="ghost" className="mb-6">
-				<ArrowLeft className="w-4 h-4 mr-2" />
+			<button
+				onClick={() => router.push("/support")}
+				style={{
+					background: "transparent",
+					border: "none",
+					padding: "8px 12px",
+					cursor: "pointer",
+					display: "inline-flex",
+					alignItems: "center",
+					gap: "8px",
+					fontSize: "14px",
+					color: "var(--c-fg, inherit)",
+					marginBottom: "24px",
+				}}
+			>
+				<ArrowLeft className="w-4 h-4" />
 				Back to Support
-			</Button>
+			</button>
 
 			{/* Ticket Header */}
 			<div className="bg-card border border-border rounded-xl p-6 mb-6">
@@ -113,12 +153,12 @@ export default function TicketDetailPage() {
 					<div className="flex-1">
 						<div className="flex items-center gap-2 mb-2">
 							<span className="text-sm font-medium text-muted-foreground">#{ticket.ticket_number}</span>
-							<Badge className={`${getStatusColor(ticket.status)} text-xs`}>
+							<span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(ticket.status)}`}>
 								{ticket.status.replace("_", " ")}
-							</Badge>
-							<Badge className={`${getPriorityColor(ticket.priority)} text-xs`}>
+							</span>
+							<span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getPriorityColor(ticket.priority)}`}>
 								{ticket.priority}
-							</Badge>
+							</span>
 						</div>
 						<h1 className="text-2xl font-semibold text-foreground mb-2">{ticket.subject}</h1>
 						<p className="text-sm text-muted-foreground capitalize">Category: {ticket.category.replace("_", " ")}</p>
@@ -201,14 +241,28 @@ export default function TicketDetailPage() {
 								className="flex-1 px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent resize-none"
 								disabled={addMessageMutation.isPending}
 							/>
-							<Button
+							<button
 								type="submit"
 								disabled={addMessageMutation.isPending || !newMessage.trim()}
-								className="bg-primary text-primary-foreground h-auto px-6 rounded-lg font-semibold self-end"
+								style={{
+									background: "var(--c-accent, #9FE870)",
+									color: "#fff",
+									border: "none",
+									padding: "0 24px",
+									borderRadius: "8px",
+									fontWeight: 600,
+									fontSize: "14px",
+									cursor: (addMessageMutation.isPending || !newMessage.trim()) ? "not-allowed" : "pointer",
+									opacity: (addMessageMutation.isPending || !newMessage.trim()) ? 0.5 : 1,
+									display: "inline-flex",
+									alignItems: "center",
+									gap: "8px",
+									alignSelf: "flex-end",
+								}}
 							>
-								<Send className="w-4 h-4 mr-2" />
+								<Send className="w-4 h-4" />
 								{addMessageMutation.isPending ? "Sending..." : "Send"}
-							</Button>
+							</button>
 						</div>
 					</form>
 				) : (
@@ -224,15 +278,15 @@ export default function TicketDetailPage() {
 				<div className="space-y-3">
 					<div>
 						<p className="text-xs text-muted-foreground mb-1">Status</p>
-						<Badge className={`${getStatusColor(ticket.status)}`}>
+						<span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(ticket.status)}`}>
 							{ticket.status.replace("_", " ")}
-						</Badge>
+						</span>
 					</div>
 					<div>
 						<p className="text-xs text-muted-foreground mb-1">Priority</p>
-						<Badge className={`${getPriorityColor(ticket.priority)}`}>
+						<span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getPriorityColor(ticket.priority)}`}>
 							{ticket.priority}
-						</Badge>
+						</span>
 					</div>
 					<div>
 						<p className="text-xs text-muted-foreground mb-1">Category</p>

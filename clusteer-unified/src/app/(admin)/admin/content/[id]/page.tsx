@@ -132,29 +132,29 @@ export default function ContentDetailPage() {
 			case "Published":
 				return "bg-success/10 text-success border-success";
 			case "Draft":
-				return "bg-background text-muted-foreground border-border";
+				return "bg-background text-[var(--c-text-3)] border-[var(--c-line)]";
 			case "Scheduled":
-				return "bg-primary/10 text-primary border-primary/30";
+				return "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] border-primary/30";
 			case "Archived":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 			default:
-				return "bg-background text-muted-foreground border-border";
+				return "bg-background text-[var(--c-text-3)] border-[var(--c-line)]";
 		}
 	};
 
 	return (
 		<div className="space-y-6">
 			{/* Breadcrumb */}
-			<nav className="flex items-center gap-2 text-sm text-muted-foreground">
-				<button onClick={() => router.push("/admin")} className="hover:text-foreground">
+			<nav className="flex items-center gap-2 text-sm text-[var(--c-text-3)]">
+				<button onClick={() => router.push("/admin")} className="hover:text-[var(--c-text)]">
 					Dashboard
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<button onClick={() => router.push("/admin/content")} className="hover:text-foreground">
+				<button onClick={() => router.push("/admin/content")} className="hover:text-[var(--c-text)]">
 					Content
 				</button>
 				<ChevronRight className="w-4 h-4" />
-				<span className="font-medium text-foreground">
+				<span className="font-medium text-[var(--c-text)]">
 					{contentId === "new" ? "New Content" : content.title}
 				</span>
 			</nav>
@@ -166,10 +166,10 @@ export default function ContentDetailPage() {
 						onClick={() => router.push("/admin/content")}
 						className="p-2 hover:bg-background rounded-lg transition-colors"
 					>
-						<ArrowLeft className="w-5 h-5 text-muted-foreground" />
+						<ArrowLeft className="w-5 h-5 text-[var(--c-text-3)]" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-semibold text-foreground">
+						<h1 className="text-2xl font-semibold text-[var(--c-text)]">
 							{contentId === "new" ? "Create New Content" : content.title}
 						</h1>
 						<div className="flex items-center gap-3 mt-1">
@@ -177,7 +177,7 @@ export default function ContentDetailPage() {
 								{content.status}
 							</span>
 							{content.featured && (
-								<span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-primary/10 text-primary border border-primary">
+								<span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] border border-primary">
 									Featured
 								</span>
 							)}
@@ -194,7 +194,7 @@ export default function ContentDetailPage() {
 					)}
 					<button
 						onClick={() => setShowPreview(true)}
-						className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 					>
 						<Eye className="w-4 h-4" />
 						Preview
@@ -202,7 +202,7 @@ export default function ContentDetailPage() {
 					{content.status !== "Published" && (
 						<button
 							onClick={handlePublish}
-							className="flex items-center gap-2 px-4 py-2 bg-[#B8E632] text-foreground rounded-lg hover:bg-[#a8d622] transition-colors shadow-sm"
+							className="flex items-center gap-2 px-4 py-2 bg-[#B8E632] text-[var(--c-text)] rounded-lg hover:bg-[#a8d622] transition-colors shadow-sm"
 						>
 							<Globe className="w-4 h-4" />
 							Publish
@@ -211,7 +211,7 @@ export default function ContentDetailPage() {
 					{isEditing ? (
 						<button
 							onClick={handleSave}
-							className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+							className="flex items-center gap-2 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[var(--c-lime-500)]/90 transition-colors shadow-sm"
 						>
 							<Save className="w-4 h-4" />
 							Save
@@ -219,7 +219,7 @@ export default function ContentDetailPage() {
 					) : (
 						<button
 							onClick={() => setIsEditing(true)}
-							className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+							className="flex items-center gap-2 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[var(--c-lime-500)]/90 transition-colors shadow-sm"
 						>
 							Edit
 						</button>
@@ -231,13 +231,13 @@ export default function ContentDetailPage() {
 				{/* Main Content Area */}
 				<div className="lg:col-span-2 space-y-6">
 					{/* Basic Information */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h2 className="text-lg font-semibold text-foreground mb-6">Content Details</h2>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">Content Details</h2>
 
 						<div className="space-y-4">
 							{/* Title */}
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									Title <span className="text-danger">*</span>
 								</label>
 								<input
@@ -248,14 +248,14 @@ export default function ContentDetailPage() {
 										setHasUnsavedChanges(true);
 									}}
 									disabled={!isEditing}
-									className="w-full px-4 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-muted-foreground"
+									className="w-full px-4 py-2.5 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-[var(--c-text-3)]"
 									placeholder="Enter content title"
 								/>
 							</div>
 
 							{/* Excerpt */}
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									Excerpt <span className="text-danger">*</span>
 								</label>
 								<textarea
@@ -266,14 +266,14 @@ export default function ContentDetailPage() {
 									}}
 									disabled={!isEditing}
 									rows={3}
-									className="w-full px-4 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-muted-foreground"
+									className="w-full px-4 py-2.5 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-[var(--c-text-3)]"
 									placeholder="Brief summary of the content"
 								/>
 							</div>
 
 							{/* Content Body */}
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									Content <span className="text-danger">*</span>
 								</label>
 								<textarea
@@ -284,21 +284,21 @@ export default function ContentDetailPage() {
 									}}
 									disabled={!isEditing}
 									rows={20}
-									className="w-full px-4 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-muted-foreground font-mono"
+									className="w-full px-4 py-2.5 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-[var(--c-text-3)] font-mono"
 									placeholder="Enter content in Markdown format"
 								/>
-								<p className="text-xs text-muted-foreground mt-2">Supports Markdown formatting</p>
+								<p className="text-xs text-[var(--c-text-3)] mt-2">Supports Markdown formatting</p>
 							</div>
 						</div>
 					</div>
 
 					{/* SEO Settings */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h2 className="text-lg font-semibold text-foreground mb-6">SEO Settings</h2>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h2 className="text-lg font-semibold text-[var(--c-text)] mb-6">SEO Settings</h2>
 
 						<div className="space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									SEO Title
 								</label>
 								<input
@@ -309,16 +309,16 @@ export default function ContentDetailPage() {
 										setHasUnsavedChanges(true);
 									}}
 									disabled={!isEditing}
-									className="w-full px-4 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-muted-foreground"
+									className="w-full px-4 py-2.5 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-[var(--c-text-3)]"
 									placeholder="SEO optimized title"
 								/>
-								<p className="text-xs text-muted-foreground mt-1">
+								<p className="text-xs text-[var(--c-text-3)] mt-1">
 									{content.seoTitle.length}/60 characters
 								</p>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									Meta Description
 								</label>
 								<textarea
@@ -329,10 +329,10 @@ export default function ContentDetailPage() {
 									}}
 									disabled={!isEditing}
 									rows={3}
-									className="w-full px-4 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-muted-foreground"
+									className="w-full px-4 py-2.5 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-[var(--c-text-3)]"
 									placeholder="SEO meta description"
 								/>
-								<p className="text-xs text-muted-foreground mt-1">
+								<p className="text-xs text-[var(--c-text-3)] mt-1">
 									{content.seoDescription.length}/160 characters
 								</p>
 							</div>
@@ -343,13 +343,13 @@ export default function ContentDetailPage() {
 				{/* Sidebar */}
 				<div className="space-y-6">
 					{/* Publishing Options */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4">Publishing</h3>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">Publishing</h3>
 
 						<div className="space-y-4">
 							{/* Status */}
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									Status
 								</label>
 								<select
@@ -359,7 +359,7 @@ export default function ContentDetailPage() {
 										setHasUnsavedChanges(true);
 									}}
 									disabled={!isEditing}
-									className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-muted-foreground"
+									className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-[var(--c-text-3)]"
 								>
 									<option value="Draft">Draft</option>
 									<option value="Published">Published</option>
@@ -370,7 +370,7 @@ export default function ContentDetailPage() {
 
 							{/* Publish Date */}
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									<Calendar className="w-4 h-4 inline mr-1" />
 									Publish Date
 								</label>
@@ -382,17 +382,17 @@ export default function ContentDetailPage() {
 										setHasUnsavedChanges(true);
 									}}
 									disabled={!isEditing}
-									className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-muted-foreground"
+									className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-[var(--c-text-3)]"
 								/>
 							</div>
 
 							{/* Featured Toggle */}
 							<div className="flex items-center justify-between p-3 bg-background rounded-lg">
 								<div>
-									<label className="text-sm font-medium text-foreground block">
+									<label className="text-sm font-medium text-[var(--c-text)] block">
 										Featured Content
 									</label>
-									<p className="text-xs text-muted-foreground">Show on homepage</p>
+									<p className="text-xs text-[var(--c-text-3)]">Show on homepage</p>
 								</div>
 								<input
 									type="checkbox"
@@ -402,20 +402,20 @@ export default function ContentDetailPage() {
 										setHasUnsavedChanges(true);
 									}}
 									disabled={!isEditing}
-									className="w-4 h-4 rounded border-border text-primary focus:ring-ring"
+									className="w-4 h-4 rounded border-[var(--c-line)] text-[var(--c-lime-500)] focus:ring-ring"
 								/>
 							</div>
 						</div>
 					</div>
 
 					{/* Content Type & Category */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4">Classification</h3>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">Classification</h3>
 
 						<div className="space-y-4">
 							{/* Type */}
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									Content Type
 								</label>
 								<select
@@ -425,7 +425,7 @@ export default function ContentDetailPage() {
 										setHasUnsavedChanges(true);
 									}}
 									disabled={!isEditing}
-									className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-muted-foreground"
+									className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-[var(--c-text-3)]"
 								>
 									<option value="Blog Post">Blog Post</option>
 									<option value="Announcement">Announcement</option>
@@ -437,7 +437,7 @@ export default function ContentDetailPage() {
 
 							{/* Category */}
 							<div>
-								<label className="block text-sm font-medium text-muted-foreground mb-2">
+								<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 									Category
 								</label>
 								<input
@@ -448,7 +448,7 @@ export default function ContentDetailPage() {
 										setHasUnsavedChanges(true);
 									}}
 									disabled={!isEditing}
-									className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-muted-foreground"
+									className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-background disabled:text-[var(--c-text-3)]"
 									placeholder="e.g., Tutorials, News"
 								/>
 							</div>
@@ -456,8 +456,8 @@ export default function ContentDetailPage() {
 					</div>
 
 					{/* Tags */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4">
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">
 							<Tag className="w-4 h-4 inline mr-1" />
 							Tags
 						</h3>
@@ -468,7 +468,7 @@ export default function ContentDetailPage() {
 								{content.tags.map((tag, index) => (
 									<span
 										key={index}
-										className="inline-flex items-center gap-1 px-2.5 py-1 bg-muted text-muted-foreground rounded-full text-xs font-medium"
+										className="inline-flex items-center gap-1 px-2.5 py-1 bg-[var(--c-surface-2)] text-[var(--c-text-3)] rounded-full text-xs font-medium"
 									>
 										{tag}
 										{isEditing && (
@@ -491,12 +491,12 @@ export default function ContentDetailPage() {
 										value={newTag}
 										onChange={(e) => setNewTag(e.target.value)}
 										onKeyPress={(e) => e.key === "Enter" && addTag()}
-										className="flex-1 px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+										className="flex-1 px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 										placeholder="Add tag..."
 									/>
 									<button
 										onClick={addTag}
-										className="p-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+										className="p-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[var(--c-lime-500)]/90 transition-colors"
 									>
 										<Plus className="w-4 h-4" />
 									</button>
@@ -506,16 +506,16 @@ export default function ContentDetailPage() {
 					</div>
 
 					{/* Featured Image */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4">
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">
 							<ImageIcon className="w-4 h-4 inline mr-1" />
 							Featured Image
 						</h3>
 
 						{content.featuredImage ? (
 							<div className="space-y-3">
-								<div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-									<FileText className="w-12 h-12 text-muted-foreground" />
+								<div className="aspect-video bg-[var(--c-surface-2)] rounded-lg flex items-center justify-center">
+									<FileText className="w-12 h-12 text-[var(--c-text-3)]" />
 								</div>
 								{isEditing && (
 									<button
@@ -533,40 +533,40 @@ export default function ContentDetailPage() {
 						) : (
 							<button
 								disabled={!isEditing}
-								className="w-full p-6 border-2 border-dashed border-border rounded-lg hover:border-primary hover:bg-background transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+								className="w-full p-6 border-2 border-dashed border-[var(--c-line)] rounded-lg hover:border-primary hover:bg-background transition-all disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								<ImageIcon className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-								<p className="text-sm text-muted-foreground">Upload Image</p>
-								<p className="text-xs text-muted-foreground mt-1">Max 2MB</p>
+								<ImageIcon className="w-8 h-8 text-[var(--c-text-3)] mx-auto mb-2" />
+								<p className="text-sm text-[var(--c-text-3)]">Upload Image</p>
+								<p className="text-xs text-[var(--c-text-3)] mt-1">Max 2MB</p>
 							</button>
 						)}
 					</div>
 
 					{/* Metadata */}
-					<div className="bg-card rounded-lg border border-border p-6">
-						<h3 className="text-sm font-semibold text-foreground mb-4">Metadata</h3>
+					<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
+						<h3 className="text-sm font-semibold text-[var(--c-text)] mb-4">Metadata</h3>
 
 						<div className="space-y-3 text-sm">
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-muted-foreground flex items-center gap-2">
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-[var(--c-text-3)] flex items-center gap-2">
 									<User className="w-4 h-4" />
 									Author
 								</span>
-								<span className="font-medium text-foreground">{content.author}</span>
+								<span className="font-medium text-[var(--c-text)]">{content.author}</span>
 							</div>
-							<div className="flex items-center justify-between py-2 border-b border-border">
-								<span className="text-muted-foreground flex items-center gap-2">
+							<div className="flex items-center justify-between py-2 border-b border-[var(--c-line)]">
+								<span className="text-[var(--c-text-3)] flex items-center gap-2">
 									<Clock className="w-4 h-4" />
 									Created
 								</span>
-								<span className="font-medium text-foreground">{content.createdDate}</span>
+								<span className="font-medium text-[var(--c-text)]">{content.createdDate}</span>
 							</div>
 							<div className="flex items-center justify-between py-2">
-								<span className="text-muted-foreground flex items-center gap-2">
+								<span className="text-[var(--c-text-3)] flex items-center gap-2">
 									<Eye className="w-4 h-4" />
 									Views
 								</span>
-								<span className="font-medium text-foreground">{content.views.toLocaleString()}</span>
+								<span className="font-medium text-[var(--c-text)]">{content.views.toLocaleString()}</span>
 							</div>
 						</div>
 					</div>
@@ -593,21 +593,21 @@ export default function ContentDetailPage() {
 			{/* Preview Modal */}
 			{showPreview && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-card rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-						<div className="sticky top-0 bg-card border-b border-border p-6">
+					<div className="bg-[var(--c-surface)] rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+						<div className="sticky top-0 bg-[var(--c-surface)] border-b border-[var(--c-line)] p-6">
 							<div className="flex items-center justify-between">
-								<h2 className="text-xl font-semibold text-foreground">Content Preview</h2>
+								<h2 className="text-xl font-semibold text-[var(--c-text)]">Content Preview</h2>
 								<button
 									onClick={() => setShowPreview(false)}
-									className="p-2 hover:bg-muted rounded-lg transition-colors"
+									className="p-2 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 								>
-									<X className="w-5 h-5 text-muted-foreground" />
+									<X className="w-5 h-5 text-[var(--c-text-3)]" />
 								</button>
 							</div>
 						</div>
 						<div className="p-6">
-							<h1 className="text-3xl font-bold text-foreground mb-4">{content.title}</h1>
-							<div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
+							<h1 className="text-3xl font-bold text-[var(--c-text)] mb-4">{content.title}</h1>
+							<div className="flex items-center gap-4 text-sm text-[var(--c-text-3)] mb-6">
 								<span>{content.author}</span>
 								<span>•</span>
 								<span>{content.publishDate}</span>
@@ -615,7 +615,7 @@ export default function ContentDetailPage() {
 								<span>{content.views} views</span>
 							</div>
 							<div className="prose max-w-none">
-								<pre className="whitespace-pre-wrap font-sans text-foreground">
+								<pre className="whitespace-pre-wrap font-sans text-[var(--c-text)]">
 									{content.content}
 								</pre>
 							</div>
@@ -627,18 +627,18 @@ export default function ContentDetailPage() {
 			{/* Delete Confirmation Modal */}
 			{showDeleteModal && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-					<div className="bg-card rounded-lg max-w-md w-full p-6">
+					<div className="bg-[var(--c-surface)] rounded-lg max-w-md w-full p-6">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-12 h-12 bg-danger/10 rounded-full flex items-center justify-center">
 								<AlertCircle className="w-6 h-6 text-danger" />
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold text-foreground">Delete Content</h3>
-								<p className="text-sm text-muted-foreground">This action cannot be undone</p>
+								<h3 className="text-lg font-semibold text-[var(--c-text)]">Delete Content</h3>
+								<p className="text-sm text-[var(--c-text-3)]">This action cannot be undone</p>
 							</div>
 						</div>
 
-						<p className="text-sm text-muted-foreground mb-6">
+						<p className="text-sm text-[var(--c-text-3)] mb-6">
 							Are you sure you want to delete "<strong>{content.title}</strong>"? This will
 							permanently remove the content and all associated data.
 						</p>
@@ -646,7 +646,7 @@ export default function ContentDetailPage() {
 						<div className="flex items-center gap-3">
 							<button
 								onClick={() => setShowDeleteModal(false)}
-								className="flex-1 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+								className="flex-1 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 							>
 								Cancel
 							</button>

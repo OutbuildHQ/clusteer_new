@@ -3,9 +3,6 @@
 import { use, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getUserWallet } from "@/lib/api/wallet/queries";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { QR } from "@/components/primitives/qr";
 import { CopyButton } from "@/components/primitives/copy-button";
@@ -41,33 +38,41 @@ export default function ReceivePage({ params }: { params: Promise<{ asset: strin
 			<div className="max-w-xl mx-auto py-12 text-center">
 				<p className="font-medium">Asset not found</p>
 				<p className="text-sm text-muted-foreground mt-1">{asset.toUpperCase()} is not in your wallet.</p>
-				<Button asChild size="sm" className="mt-4"><Link href="/assets">Back to assets</Link></Button>
+				<Link href="/assets">
+					<button
+						style={{ height: 36, padding: "0 14px", borderRadius: 10, fontSize: 13.5, fontWeight: 500, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: "pointer" }}
+						className="mt-4"
+					>
+						Back to assets
+					</button>
+				</Link>
 			</div>
 		);
 	}
 
 	return (
 		<div className="max-w-xl mx-auto">
-			<Card>
-				<CardHeader>
+			<div className="ds-card">
+				<div className="ds-card-hd">
 					<div className="flex items-center gap-3">
 						<AssetLogo symbol={a.currency} size="lg" />
 						<div>
-							<CardTitle>Receive {a.name}</CardTitle>
+							<h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--c-text)" }}>Receive {a.name}</h3>
 							<p className="text-sm text-muted-foreground">Scan the QR or copy your address</p>
 						</div>
 					</div>
-				</CardHeader>
-				<CardContent className="space-y-4">
+				</div>
+				<div className="space-y-4 p-4 sm:p-6">
 					{networks.length > 0 && (
 						<div>
-							<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Network</label>
-							<Select value={network} onValueChange={setNetwork}>
-								<SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-								<SelectContent>
-									{networks.map((n) => <SelectItem key={n} value={n}>{n}</SelectItem>)}
-								</SelectContent>
-							</Select>
+							<label style={{ fontSize: 12, color: "var(--c-text-3)" }} className="uppercase tracking-wide font-medium">Network</label>
+							<select
+								value={network}
+								onChange={(e) => setNetwork(e.target.value)}
+								style={{ height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5, width: "100%", marginTop: 4 }}
+							>
+								{networks.map((n) => <option key={n} value={n}>{n}</option>)}
+							</select>
 						</div>
 					)}
 
@@ -76,7 +81,7 @@ export default function ReceivePage({ params }: { params: Promise<{ asset: strin
 							<>
 								<QR value={address} size={192} />
 								<div className="w-full">
-									<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Deposit address</label>
+									<label style={{ fontSize: 12, color: "var(--c-text-3)" }} className="uppercase tracking-wide font-medium">Deposit address</label>
 									<div className="mt-1 flex items-center gap-2 rounded-lg border border-border bg-muted/40 p-3">
 										<code className="mono flex-1 break-all text-xs">{address}</code>
 										<CopyButton value={address} label="Address" />
@@ -100,9 +105,13 @@ export default function ReceivePage({ params }: { params: Promise<{ asset: strin
 						</div>
 					)}
 
-					<Button variant="outline" className="w-full">Share address</Button>
-				</CardContent>
-			</Card>
+					<button
+						style={{ height: 36, padding: "0 14px", borderRadius: 10, fontSize: 13.5, fontWeight: 500, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: "pointer", width: "100%" }}
+					>
+						Share address
+					</button>
+				</div>
+			</div>
 		</div>
 	);
 }

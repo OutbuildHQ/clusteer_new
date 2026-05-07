@@ -8,8 +8,7 @@ import { ASSETS, FIAT_BALANCE } from "@/lib/mock-data";
 import { formatMoney, formatPct } from "@/lib/utils";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Sparkline } from "@/components/primitives/sparkline";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Download, ChevronRight, TrendingUp, Wallet, Banknote } from "lucide-react";
+import { Plus, Download, ChevronRight, TrendingUp, Wallet } from "lucide-react";
 const TABS = ["All", "Holdings", "Watchlist"] as const;
 type Tab = typeof TABS[number];
 
@@ -28,14 +27,15 @@ export default function AssetsPage() {
 		? liveAssets.reduce((s: number, a: { balance?: number }) => s + (a.balance ?? 0), 0)
 		: ASSETS.reduce((s, a) => s + a.balanceNgn, 0) + FIAT_BALANCE.balance;
 
-	// Show mock assets in all tabs since live is empty
-	const displayAssets = ASSETS;
+	const displayAssets = tab === "Holdings"
+		? ASSETS.filter(a => a.balance > 0)
+		: ASSETS;
 
 	return (
 		<div className="space-y-5">
 			{/* Header */}
 			<div className="flex items-center justify-between gap-4 flex-wrap">
-				<h1 className="text-[22px] font-semibold tracking-tight text-[var(--c-text)]">Wallet</h1>
+				<h1 style={{ fontSize: 32, fontWeight: 600, letterSpacing: "-0.03em", color: "var(--c-text)" }}>Wallet</h1>
 				<div className="flex items-center gap-2">
 					<button className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors">
 						<Download className="size-3.5 text-[var(--c-text-3)]" />
@@ -58,13 +58,12 @@ export default function AssetsPage() {
 					className="relative overflow-hidden rounded-[18px] p-6"
 					style={{ background: "var(--c-onyx-900)", color: "var(--c-cream)" }}
 				>
-					<div aria-hidden className="pointer-events-none absolute -right-6 -top-6 h-[180px] w-[180px] rounded-full" style={{ background: "var(--c-lime-500)", opacity: 0.1 }} />
-					<div className="relative z-10">
+					<div>
 						<div className="text-[11px] font-medium uppercase tracking-[0.06em] opacity-60">Total wallet value</div>
 						{isLoading ? (
-							<Skeleton className="mt-2 h-10 w-48 bg-white/10" />
+							<div className="animate-pulse rounded-[10px] mt-2 w-48" style={{ background: "rgba(255,255,255,0.1)", height: 40 }} />
 						) : (
-							<div className="mt-2 font-display tabular-nums text-[40px] font-semibold leading-none">
+							<div className="mt-2 font-display tabular-nums text-[30px] lg:text-[42px] font-semibold leading-none">
 								₦{totalNgn.toLocaleString("en-NG")}
 							</div>
 						)}
@@ -80,8 +79,7 @@ export default function AssetsPage() {
 
 				{/* NGN fiat balance */}
 				<div className="ds-card p-5">
-					<div className="flex items-center gap-2 mb-1">
-						<Banknote className="size-4 text-[var(--c-text-3)]" />
+					<div className="mb-1">
 						<span className="text-[11px] font-medium uppercase tracking-[0.06em] text-[var(--c-text-3)]">NGN Balance</span>
 					</div>
 					<div className="font-display tabular-nums text-[30px] font-semibold leading-none text-[var(--c-text)]">
@@ -122,7 +120,7 @@ export default function AssetsPage() {
 
 				{isLoading ? (
 					<div className="p-6 space-y-3">
-						{[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full" />)}
+						{[1, 2, 3].map(i => <div key={i} className="animate-pulse rounded-[10px]" style={{ background: "var(--c-surface-3)", height: 44 }} />)}
 					</div>
 				) : displayAssets.length === 0 ? (
 					<div className="py-16 text-center px-4 bg-grid">
@@ -136,7 +134,9 @@ export default function AssetsPage() {
 						</Link>
 					</div>
 				) : (
-					<div className="overflow-x-auto">
+					<>
+					{/* Desktop table */}
+					<div className="hidden lg:block overflow-x-auto">
 						<table className="w-full text-[13px] border-collapse">
 							<thead>
 								<tr className="border-b border-[var(--c-line)] bg-[var(--c-surface-2)]">
@@ -181,7 +181,7 @@ export default function AssetsPage() {
 												data={a.sparkline}
 												width={80}
 												height={24}
-												color={a.change24h >= 0 ? "var(--c-up)" : "var(--c-down)"}
+												tone={a.change24h >= 0 ? "positive" : "negative"}
 											/>
 										</td>
 										<td className="px-4 py-3 text-right tabular-nums font-semibold text-[var(--c-text)]">
@@ -192,31 +192,37 @@ export default function AssetsPage() {
 										</td>
 									</tr>
 								))}
-								{/* NGN row */}
-								<tr className="border-b border-[var(--c-line)] hover:bg-[var(--c-surface-2)] transition-colors">
-									<td className="px-4 py-3">
-										<div className="flex items-center gap-2.5">
-											<div className="size-8 rounded-full bg-[var(--c-surface-2)] border border-[var(--c-line)] flex items-center justify-center text-[11px] font-bold text-[var(--c-text)]">₦</div>
-											<div>
-												<div className="font-semibold text-[13px] text-[var(--c-text)]">Naira</div>
-												<div className="text-[11px] text-[var(--c-text-3)]">Fiat balance</div>
-											</div>
-										</div>
-									</td>
-									<td className="px-4 py-3 tabular-nums text-[var(--c-text)]">
-										{FIAT_BALANCE.balance.toLocaleString("en-NG")} NGN
-									</td>
-									<td className="px-4 py-3 text-[var(--c-text-3)]">—</td>
-									<td className="px-4 py-3 text-[var(--c-text-3)]">—</td>
-									<td className="px-4 py-3">—</td>
-									<td className="px-4 py-3 text-right tabular-nums font-semibold text-[var(--c-text)]">
-										{formatMoney(FIAT_BALANCE.balance, "NGN", { decimals: 0 })}
-									</td>
-									<td className="px-4 py-3" />
-								</tr>
-							</tbody>
+								</tbody>
 						</table>
 					</div>
+					{/* Mobile stacked cards */}
+					<div className="lg:hidden">
+						{displayAssets.map((a, i) => (
+							<Link
+								key={a.symbol}
+								href={`/assets/${a.symbol}`}
+								className="flex items-center justify-between px-4 py-3.5 transition-colors hover:bg-[var(--c-surface-2)]"
+								style={{ borderBottom: i < displayAssets.length - 1 ? "1px solid var(--c-line)" : "none" }}
+							>
+								<div className="flex items-center gap-2.5">
+									<AssetLogo symbol={a.symbol} />
+									<div>
+										<div className="font-semibold text-[13.5px] text-[var(--c-text)]">{a.name}</div>
+										<div className="text-[11px] text-[var(--c-text-3)]">{a.chains?.[0]}</div>
+									</div>
+								</div>
+								<div className="text-right">
+									<div className="text-[13.5px] font-semibold tabular-nums text-[var(--c-text)]">
+										{formatMoney(a.balanceNgn, "NGN", { decimals: 0 })}
+									</div>
+									<div className="text-[11px] tabular-nums text-[var(--c-text-3)]">
+										{a.balance.toFixed(a.balance > 1 ? 4 : 6)} {a.symbol}
+									</div>
+								</div>
+							</Link>
+						))}
+					</div>
+				</>
 				)}
 			</div>
 		</div>

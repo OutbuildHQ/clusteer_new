@@ -214,7 +214,7 @@ export default function ReconciliationDashboardPage() {
       case "Under Review":
         return "text-danger bg-danger/10 border-danger";
       default:
-        return "text-muted-foreground bg-background border-border";
+        return "text-[var(--c-text-3)] bg-background border-[var(--c-line)]";
     }
   };
 
@@ -262,7 +262,7 @@ export default function ReconciliationDashboardPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading reconciliation data...</p>
+          <p className="mt-4 text-[var(--c-text-3)]">Loading reconciliation data...</p>
         </div>
       </div>
     );
@@ -273,22 +273,22 @@ export default function ReconciliationDashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Reconciliation Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Compare system balances with bank statements</p>
+          <h1 className="text-2xl font-bold text-[var(--c-text)]">Reconciliation Dashboard</h1>
+          <p className="text-[var(--c-text-3)] mt-1">Compare system balances with bank statements</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setAutoRefresh(!autoRefresh)}
             className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors ${
               autoRefresh
-                ? "border-primary bg-success/10 text-primary"
-                : "border-border hover:bg-background"
+                ? "border-primary bg-success/10 text-[var(--c-lime-500)]"
+                : "border-[var(--c-line)] hover:bg-background"
             }`}
           >
             <RefreshCw className={`h-4 w-4 ${autoRefresh ? "animate-spin" : ""}`} />
             {autoRefresh ? "Auto-Refresh ON" : "Auto-Refresh OFF"}
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 border border-[var(--c-line)] rounded-lg hover:bg-background transition-colors">
             <Download className="h-4 w-4" />
             Export Report
           </button>
@@ -297,55 +297,55 @@ export default function ReconciliationDashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-card rounded-lg border border-border p-6">
+        <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
           <div className="flex items-center justify-between mb-2">
             <CheckCircle className="h-5 w-5 text-success" />
-            <span className="text-xs text-muted-foreground">Today</span>
+            <span className="text-xs text-[var(--c-text-3)]">Today</span>
           </div>
-          <p className="text-2xl font-bold text-foreground">{matchedCount}</p>
-          <p className="text-sm text-muted-foreground mt-1">Matched Records</p>
+          <p className="text-2xl font-bold text-[var(--c-text)]">{matchedCount}</p>
+          <p className="text-sm text-[var(--c-text-3)] mt-1">Matched Records</p>
         </div>
 
-        <div className="bg-card rounded-lg border border-border p-6">
+        <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
           <div className="flex items-center justify-between mb-2">
             <AlertTriangle className="h-5 w-5 text-danger" />
-            <span className="text-xs text-muted-foreground">Unresolved</span>
+            <span className="text-xs text-[var(--c-text-3)]">Unresolved</span>
           </div>
-          <p className="text-2xl font-bold text-foreground">{unresolvedCount}</p>
-          <p className="text-sm text-muted-foreground mt-1">Discrepancies</p>
+          <p className="text-2xl font-bold text-[var(--c-text)]">{unresolvedCount}</p>
+          <p className="text-sm text-[var(--c-text-3)] mt-1">Discrepancies</p>
         </div>
 
-        <div className="bg-card rounded-lg border border-border p-6">
+        <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
           <div className="flex items-center justify-between mb-2">
             <DollarSign className="h-5 w-5 text-orange-600" />
-            <span className="text-xs text-muted-foreground">Total Variance</span>
+            <span className="text-xs text-[var(--c-text-3)]">Total Variance</span>
           </div>
-          <p className="text-2xl font-bold text-foreground">{formatCurrency(totalDiscrepancies)}</p>
-          <p className="text-sm text-muted-foreground mt-1">Amount Off</p>
+          <p className="text-2xl font-bold text-[var(--c-text)]">{formatCurrency(totalDiscrepancies)}</p>
+          <p className="text-sm text-[var(--c-text-3)] mt-1">Amount Off</p>
         </div>
 
-        <div className="bg-card rounded-lg border border-border p-6">
+        <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <Building2 className="h-5 w-5 text-primary" />
-            <span className="text-xs text-muted-foreground">Coverage</span>
+            <Building2 className="h-5 w-5 text-[var(--c-lime-500)]" />
+            <span className="text-xs text-[var(--c-text-3)]">Coverage</span>
           </div>
-          <p className="text-2xl font-bold text-foreground">{uniqueBanks.length}</p>
-          <p className="text-sm text-muted-foreground mt-1">Bank Accounts</p>
+          <p className="text-2xl font-bold text-[var(--c-text)]">{uniqueBanks.length}</p>
+          <p className="text-sm text-[var(--c-text-3)] mt-1">Bank Accounts</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-card rounded-lg border border-border p-4 mb-6">
+      <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-4 mb-6">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex-1 min-w-[300px]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--c-text-3)]" />
               <input
                 type="text"
                 placeholder="Search by bank, account, or ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full pl-10 pr-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>
@@ -353,7 +353,7 @@ export default function ReconciliationDashboardPage() {
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+            className="px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="today">Today</option>
             <option value="yesterday">Yesterday</option>
@@ -365,7 +365,7 @@ export default function ReconciliationDashboardPage() {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+            className="px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="all">All Status</option>
             <option value="Matched">Matched</option>
@@ -377,7 +377,7 @@ export default function ReconciliationDashboardPage() {
           <select
             value={filterBank}
             onChange={(e) => setFilterBank(e.target.value)}
-            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+            className="px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="all">All Banks</option>
             {uniqueBanks.map((bank) => (
@@ -394,7 +394,7 @@ export default function ReconciliationDashboardPage() {
         {filteredRecords.map((record) => (
           <div
             key={record.id}
-            className="bg-card rounded-lg border border-border p-6 hover:shadow-lg transition-shadow"
+            className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-4">
@@ -402,11 +402,11 @@ export default function ReconciliationDashboardPage() {
                   <Building2 className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground text-lg">
+                  <h3 className="font-semibold text-[var(--c-text)] text-lg">
                     {record.bankAccount.bankName}
                   </h3>
-                  <p className="text-sm text-muted-foreground">{record.bankAccount.accountNumber}</p>
-                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                  <p className="text-sm text-[var(--c-text-3)]">{record.bankAccount.accountNumber}</p>
+                  <p className="text-xs text-[var(--c-text-3)] mt-1 flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
                     {new Date(record.date).toLocaleDateString("en-NG", {
                       weekday: "long",
@@ -422,7 +422,7 @@ export default function ReconciliationDashboardPage() {
                   {record.status}
                 </span>
                 {record.adjustmentMade && (
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/30">
+                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] border border-primary/30">
                     Adjusted
                   </span>
                 )}
@@ -432,12 +432,12 @@ export default function ReconciliationDashboardPage() {
             {/* Balance Comparison */}
             <div className="grid grid-cols-3 gap-6 mb-4">
               <div className="bg-background rounded-lg p-4">
-                <p className="text-sm text-muted-foreground mb-1">System Balance</p>
-                <p className="text-xl font-bold text-foreground">{formatCurrency(record.systemBalance)}</p>
+                <p className="text-sm text-[var(--c-text-3)] mb-1">System Balance</p>
+                <p className="text-xl font-bold text-[var(--c-text)]">{formatCurrency(record.systemBalance)}</p>
               </div>
               <div className="bg-background rounded-lg p-4">
-                <p className="text-sm text-muted-foreground mb-1">Bank Balance</p>
-                <p className="text-xl font-bold text-foreground">{formatCurrency(record.bankBalance)}</p>
+                <p className="text-sm text-[var(--c-text-3)] mb-1">Bank Balance</p>
+                <p className="text-xl font-bold text-[var(--c-text)]">{formatCurrency(record.bankBalance)}</p>
               </div>
               <div
                 className={`rounded-lg p-4 ${
@@ -448,7 +448,7 @@ export default function ReconciliationDashboardPage() {
                     : "bg-danger/10"
                 }`}
               >
-                <p className="text-sm text-muted-foreground mb-1">Discrepancy</p>
+                <p className="text-sm text-[var(--c-text-3)] mb-1">Discrepancy</p>
                 <p
                   className={`text-xl font-bold ${
                     record.discrepancy === 0
@@ -471,20 +471,20 @@ export default function ReconciliationDashboardPage() {
             </div>
 
             {/* Transaction Summary */}
-            <div className="grid grid-cols-3 gap-4 mb-4 pt-4 border-t border-border">
+            <div className="grid grid-cols-3 gap-4 mb-4 pt-4 border-t border-[var(--c-line)]">
               <div>
-                <p className="text-sm text-muted-foreground">Total Transactions</p>
-                <p className="text-lg font-semibold text-foreground">{record.transactionCount}</p>
+                <p className="text-sm text-[var(--c-text-3)]">Total Transactions</p>
+                <p className="text-lg font-semibold text-[var(--c-text)]">{record.transactionCount}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <p className="text-sm text-[var(--c-text-3)] flex items-center gap-1">
                   <TrendingUp className="h-4 w-4 text-success" />
                   Deposits ({record.deposits.count})
                 </p>
                 <p className="text-lg font-semibold text-success">{formatCurrency(record.deposits.amount)}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <p className="text-sm text-[var(--c-text-3)] flex items-center gap-1">
                   <TrendingDown className="h-4 w-4 text-danger" />
                   Withdrawals ({record.withdrawals.count})
                 </p>
@@ -493,12 +493,12 @@ export default function ReconciliationDashboardPage() {
             </div>
 
             {/* Notes */}
-            <div className="pt-4 border-t border-border">
+            <div className="pt-4 border-t border-[var(--c-line)]">
               {editingNote === record.id ? (
                 <div>
                   <textarea
                     defaultValue={record.notes || ""}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring mb-2"
+                    className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring mb-2"
                     rows={2}
                     placeholder="Add reconciliation notes..."
                   />
@@ -508,14 +508,14 @@ export default function ReconciliationDashboardPage() {
                         const textarea = e.currentTarget.parentElement?.previousSibling as HTMLTextAreaElement;
                         handleSaveNote(record.id, textarea.value);
                       }}
-                      className="flex items-center gap-1 px-3 py-1 bg-primary text-white rounded text-sm hover:bg-[#013800]"
+                      className="flex items-center gap-1 px-3 py-1 bg-[var(--c-lime-500)] text-white rounded text-sm hover:bg-[#013800]"
                     >
                       <Save className="h-3 w-3" />
                       Save
                     </button>
                     <button
                       onClick={() => setEditingNote(null)}
-                      className="flex items-center gap-1 px-3 py-1 border border-border rounded text-sm hover:bg-background"
+                      className="flex items-center gap-1 px-3 py-1 border border-[var(--c-line)] rounded text-sm hover:bg-background"
                     >
                       <X className="h-3 w-3" />
                       Cancel
@@ -525,14 +525,14 @@ export default function ReconciliationDashboardPage() {
               ) : (
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="text-sm text-muted-foreground mb-1">Notes</p>
-                    <p className="text-sm text-foreground">
+                    <p className="text-sm text-[var(--c-text-3)] mb-1">Notes</p>
+                    <p className="text-sm text-[var(--c-text)]">
                       {record.notes || "No notes added"}
                     </p>
                   </div>
                   <button
                     onClick={() => setEditingNote(record.id)}
-                    className="flex items-center gap-1 px-3 py-1 border border-border rounded text-sm hover:bg-background"
+                    className="flex items-center gap-1 px-3 py-1 border border-[var(--c-line)] rounded text-sm hover:bg-background"
                   >
                     <Edit2 className="h-3 w-3" />
                     Edit
@@ -542,8 +542,8 @@ export default function ReconciliationDashboardPage() {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-4 border-t border-border mt-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center justify-between pt-4 border-t border-[var(--c-line)] mt-4">
+              <div className="flex items-center gap-2 text-sm text-[var(--c-text-3)]">
                 <Clock className="h-4 w-4" />
                 Last reconciled: {formatDateTime(record.lastReconciled)} by {record.reconciledBy}
               </div>
@@ -562,18 +562,18 @@ export default function ReconciliationDashboardPage() {
       </div>
 
       {filteredRecords.length === 0 && (
-        <div className="text-center py-12 bg-card rounded-lg border border-border">
-          <CheckCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">No reconciliation records found</p>
-          <p className="text-sm text-muted-foreground mt-2">Try adjusting your filters</p>
+        <div className="text-center py-12 bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)]">
+          <CheckCircle className="h-12 w-12 text-[var(--c-text-3)] mx-auto mb-4" />
+          <p className="text-[var(--c-text-3)]">No reconciliation records found</p>
+          <p className="text-sm text-[var(--c-text-3)] mt-2">Try adjusting your filters</p>
         </div>
       )}
 
       {/* Adjustment Modal */}
       {showAdjustmentModal && selectedRecord && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-card rounded-lg max-w-2xl w-full p-6 animate-in slide-in-from-bottom duration-300">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Manual Adjustment</h3>
+          <div className="bg-[var(--c-surface)] rounded-lg max-w-2xl w-full p-6 animate-in slide-in-from-bottom duration-300">
+            <h3 className="text-lg font-semibold text-[var(--c-text)] mb-4">Manual Adjustment</h3>
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle className="h-5 w-5 text-orange-600" />
@@ -589,38 +589,38 @@ export default function ReconciliationDashboardPage() {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">
+                <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">
                   Adjustment Type
                 </label>
-                <select className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring">
+                <select className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring">
                   <option value="System">Adjust System Balance</option>
                   <option value="Bank">Contact Bank to Adjust</option>
                   <option value="Both">Adjust Both</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">
+                <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">
                   Adjustment Amount
                 </label>
                 <input
                   type="number"
                   defaultValue={Math.abs(selectedRecord.discrepancy)}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">
+                <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">
                   Reason for Adjustment
                 </label>
                 <textarea
                   rows={4}
                   placeholder="Explain why this adjustment is necessary..."
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 ></textarea>
               </div>
               <div className="bg-background rounded-lg p-4">
-                <p className="text-sm font-medium text-foreground mb-2">Approval Required</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm font-medium text-[var(--c-text)] mb-2">Approval Required</p>
+                <p className="text-xs text-[var(--c-text-3)]">
                   This adjustment requires approval from a senior admin. The request will be logged and
                   notified to authorized personnel.
                 </p>
@@ -632,7 +632,7 @@ export default function ReconciliationDashboardPage() {
                   setShowAdjustmentModal(false);
                   setSelectedRecord(null);
                 }}
-                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
+                className="flex-1 px-4 py-2 border border-[var(--c-line)] rounded-lg hover:bg-background transition-colors"
               >
                 Cancel
               </button>

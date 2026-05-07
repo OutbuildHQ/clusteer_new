@@ -1,259 +1,417 @@
-import Link from "next/link";
-import { ADMIN_TXNS, KYC_QUEUE, USERS, WALLETS, generateAreaSeries } from "@/lib/mock-data";
-import { formatMoney, relativeTime } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { AssetLogo } from "@/components/primitives/asset-logo";
+"use client";
+
+import { useState } from "react";
 import { Num } from "@/components/primitives/num";
-import { PriceAreaChart } from "@/components/primitives/price-area-chart";
-import { AlertTriangle, TrendingUp, TrendingDown, Users as UsersIcon, ShieldCheck, Wallet, Download } from "lucide-react";
+import { Download, ArrowUp } from "lucide-react";
 
-const SYSTEM_HEALTH = [
-	{ service: "API gateway",      uptime: "99.99%", status: "operational" },
-	{ service: "BVN/NIN service",  uptime: "99.94%", status: "operational" },
-	{ service: "Paystack",         uptime: "99.81%", status: "operational" },
-	{ service: "Tron RPC",         uptime: "98.40%", status: "degraded" },
-	{ service: "BTC node",         uptime: "99.99%", status: "operational" },
+/* ── inline mock data ─────────────────────────────────── */
+
+const WALLETS = [
+	{ sym: "BTC", chain: "Bitcoin", hot: 4.821, cold: 38.42, hotNgn: 343_500_000, coldNgn: 2_740_000_000 },
+	{ sym: "ETH", chain: "Ethereum", hot: 124.5, cold: 980.2, hotNgn: 711_000_000, coldNgn: 5_598_000_000 },
+	{ sym: "USDT", chain: "Tron", hot: 482_000, cold: 3_200_000, hotNgn: 776_020_000, coldNgn: 5_152_000_000 },
+	{ sym: "USDT", chain: "BSC", hot: 218_000, cold: 1_100_000, hotNgn: 351_000_000, coldNgn: 1_771_000_000 },
+	{ sym: "SOL", chain: "Solana", hot: 1_840, cold: 12_400, hotNgn: 535_000_000, coldNgn: 3_614_000_000 },
+	{ sym: "BNB", chain: "BSC", hot: 312, cold: 1_850, hotNgn: 305_000_000, coldNgn: 1_809_000_000 },
 ];
 
-const ACTION_QUEUE = [
-	{ label: "KYC reviews",          count: KYC_QUEUE.filter(k => k.status === "pending").length, href: "/admin/kyc" },
-	{ label: "Flagged transactions",  count: ADMIN_TXNS.filter(t => t.flagged).length, href: "/admin/transactions" },
-	{ label: "Withdrawals > ₦5M",    count: 7, href: "/admin/transactions" },
-	{ label: "Manual approvals",     count: 2, href: "/admin/transactions" },
+const SERVICES: [string, string, "operational" | "degraded"][] = [
+	["API gateway", "99.99%", "operational"],
+	["BVN/NIN service", "99.94%", "operational"],
+	["Paystack", "99.81%", "operational"],
+	["Tron RPC", "98.40%", "degraded"],
+	["BTC node", "99.99%", "operational"],
 ];
 
-function SectionCard({ title, subtitle, action, children }: { title: string; subtitle?: string; action?: React.ReactNode; children: React.ReactNode }) {
+const ACTION_QUEUE: [string, number][] = [
+	["KYC reviews", 5],
+	["Flagged transactions", 4],
+	["Withdrawals > \u20A65M", 7],
+	["Manual approvals", 2],
+];
+
+const VOLUME_BARS = Array.from({ length: 24 }, (_, i) => 40 + Math.random() * 180 + Math.sin(i / 3) * 40);
+
+/* ── helpers ───────────────────────────────────────────── */
+
+function fmtShort(n: number): string {
+	if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+	if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+	if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+	return n.toLocaleString("en-NG");
+}
+
+function fmtNgn(n: number): string {
+	return "\u20A6" + n.toLocaleString("en-NG");
+}
+
+/* ── period selector ──────────────────────────────────── */
+
+const PERIODS = ["Today", "7D", "30D", "90D"] as const;
+
+function PeriodSelector({ value, onChange }: { value: string; onChange: (v: string) => void }) {
 	return (
-		<div className="ds-card overflow-hidden">
-			<div className="ds-card-hd">
-				<div>
-					<h3 className="text-[15px] font-semibold text-[var(--c-text)]">{title}</h3>
-					{subtitle && <p className="text-[12px] text-[var(--c-text-3)] mt-0.5">{subtitle}</p>}
-				</div>
-				{action}
-			</div>
-			{children}
+		<div
+			className="inline-flex rounded-lg p-0.5"
+			style={{ border: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}
+		>
+			{PERIODS.map((p) => (
+				<button
+					key={p}
+					onClick={() => onChange(p)}
+					className="rounded-md px-3 py-1.5 text-xs font-medium transition-colors"
+					style={{
+						background: value === p ? "var(--c-surface)" : "transparent",
+						color: value === p ? "var(--c-text)" : "var(--c-text-3)",
+						boxShadow: value === p ? "var(--sh-1)" : "none",
+						border: "none",
+						cursor: "pointer",
+					}}
+				>
+					{p}
+				</button>
+			))}
 		</div>
 	);
 }
 
-export default function AdminOverview() {
-	const volumeSeries = generateAreaSeries(30, 180_000_000);
-	const totalUsers = USERS.length * 2418;
-	const totalAum = WALLETS.reduce((s, w) => s + w.balanceUsd, 0) * 1580;
-	const volume24h = 1_482_300_000;
-	const pendingKyc = KYC_QUEUE.filter(k => k.status === "pending").length;
-	const flaggedTxns = ADMIN_TXNS.filter((t) => t.flagged).length;
+/* ── bar chart (div-based) ────────────────────────────── */
 
-	const kpiCards = [
-		{ label: "Total AUM",        value: formatMoney(totalAum, "NGN", { decimals: 0, compact: true }), sub: "+₦284M (24h)", up: true,  icon: <Wallet className="size-4" /> },
-		{ label: "24h volume",       value: formatMoney(volume24h, "NGN", { decimals: 0, compact: true }),  sub: `${ADMIN_TXNS.length} transactions`, up: null, icon: <TrendingUp className="size-4" /> },
-		{ label: "Active users (24h)", value: "8,421",                                                     sub: "+12.4% WoW", up: true,  icon: <UsersIcon className="size-4" /> },
-		{ label: "Revenue (24h)",    value: formatMoney(volume24h * 0.005, "NGN", { decimals: 0, compact: true }), sub: "0.5% fee", up: null, icon: <TrendingUp className="size-4" /> },
+function BarChart({ data, height = 220 }: { data: number[]; height?: number }) {
+	const max = Math.max(...data);
+	return (
+		<div className="flex items-end gap-[3px]" style={{ height }}>
+			{data.map((v, i) => (
+				<div
+					key={i}
+					className="flex-1 rounded-t transition-all"
+					style={{
+						height: `${(v / max) * 100}%`,
+						background: "var(--c-text)",
+						opacity: 0.85,
+					}}
+					title={`${String(i).padStart(2, "0")}:00 — \u20A6${fmtShort(v * 8_200_000)}`}
+				/>
+			))}
+		</div>
+	);
+}
+
+/* ── currency selector inside cards ───────────────────── */
+
+function CurrencySeg({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+	return (
+		<div
+			className="inline-flex rounded-md p-0.5"
+			style={{ border: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}
+		>
+			{["NGN", "USD"].map((c) => (
+				<button
+					key={c}
+					onClick={() => onChange(c)}
+					className="rounded px-2 py-1 text-[11px] font-medium transition-colors"
+					style={{
+						background: value === c ? "var(--c-surface)" : "transparent",
+						color: value === c ? "var(--c-text)" : "var(--c-text-3)",
+						boxShadow: value === c ? "var(--sh-1)" : "none",
+						border: "none",
+						cursor: "pointer",
+					}}
+				>
+					{c}
+				</button>
+			))}
+		</div>
+	);
+}
+
+/* ── main component ───────────────────────────────────── */
+
+export default function AdminOpsOverview() {
+	const [period, setPeriod] = useState("Today");
+	const [chartCurrency, setChartCurrency] = useState("NGN");
+
+	const totalAum = WALLETS.reduce((a, b) => a + b.hotNgn + b.coldNgn, 0);
+	const last24hVol = 1_482_300_000;
+	const txnCount = 60;
+	const revenue = last24hVol * 0.005;
+
+	const kpis: { label: string; val: string; sub: string; up: boolean | null }[] = [
+		{ label: "Total AUM", val: "\u20A6" + fmtShort(totalAum), sub: "+\u20A6284M (24h)", up: true },
+		{ label: "24h Volume", val: "\u20A6" + fmtShort(last24hVol), sub: `${txnCount} transactions`, up: null },
+		{ label: "Active users (24h)", val: "8,421", sub: "+12.4% WoW", up: true },
+		{ label: "Revenue (24h)", val: "\u20A6" + fmtShort(revenue), sub: "0.5% effective fee", up: null },
 	];
 
 	return (
-		<div className="space-y-5">
-			{/* Header */}
-			<div className="flex items-center justify-between gap-4 flex-wrap">
+		<div className="space-y-6">
+			{/* ── header ─────────────────────────────────── */}
+			<header className="flex flex-wrap items-end justify-between gap-4">
 				<div>
-					<h1 className="text-[22px] font-semibold tracking-tight text-[var(--c-text)]">Operations</h1>
-					<p className="text-[13px] text-[var(--c-text-3)] mt-0.5">
-						Live snapshot · {new Date().toLocaleDateString("en-GB", { dateStyle: "long" })}
+					<h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: "var(--c-text)" }}>Operations</h1>
+					<p className="mt-1.5 text-sm" style={{ color: "var(--c-text-3)" }}>
+						Live snapshot &middot; last refresh just now
 					</p>
 				</div>
-				<div className="flex items-center gap-2">
-					{/* Period tabs */}
-					<div className="flex items-center gap-1 p-1 rounded-lg bg-[var(--c-surface-2)] border border-[var(--c-line)]">
-						{["Today", "7D", "30D", "90D"].map((p, i) => (
-							<button key={p} className={`px-3 py-1 rounded-md text-[12.5px] font-medium transition-colors ${i === 0 ? "bg-[var(--c-surface)] text-[var(--c-text)] shadow-[var(--sh-1)]" : "text-[var(--c-text-2)]"}`}>
-								{p}
-							</button>
-						))}
-					</div>
-					<button className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-[var(--c-line)] text-[13px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors">
-						<Download className="size-3.5 text-[var(--c-text-3)]" />
+				<div className="flex items-center gap-3">
+					<PeriodSelector value={period} onChange={setPeriod} />
+					<button
+						className="flex items-center gap-1.5"
+						style={{
+							height: 32,
+							padding: "0 12px",
+							borderRadius: 8,
+							border: "1px solid var(--c-line)",
+							background: "transparent",
+							color: "var(--c-text)",
+							fontSize: 13,
+							fontWeight: 500,
+							cursor: "pointer",
+						}}
+					>
+						<Download className="size-3.5" />
 						Export
 					</button>
 				</div>
-			</div>
+			</header>
 
-			{/* 4-col KPI grid */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-				{kpiCards.map((k) => (
-					<div key={k.label} className="ds-card p-5">
-						<div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.06em] text-[var(--c-text-3)]">
-							{k.icon}{k.label}
-						</div>
-						<div className="mt-2 font-display tabular-nums text-[26px] font-semibold leading-none text-[var(--c-text)]">{k.value}</div>
-						<div className={`mt-1.5 flex items-center gap-1 text-[12px] ${k.up === true ? "text-[var(--c-up)]" : k.up === false ? "text-[var(--c-down)]" : "text-[var(--c-text-3)]"}`}>
-							{k.up === true && <TrendingUp className="size-3 shrink-0" />}
-							{k.up === false && <TrendingDown className="size-3 shrink-0" />}
-							{k.sub}
+			{/* ── 4 KPI cards ────────────────────────────── */}
+			<div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+				{kpis.map((k, i) => (
+					<div className="ds-card" key={i}>
+						<div style={{ padding: "20px" }}>
+							<div
+								className="text-[11px] font-medium uppercase tracking-[0.06em]"
+								style={{ color: "var(--c-text-3)" }}
+							>
+								{k.label}
+							</div>
+							<Num
+								as="div"
+								className="mt-1.5 font-display text-[30px] font-semibold leading-tight tracking-tight"
+								value={k.val}
+							/>
+							<div className="mt-1 flex items-center gap-1 text-xs">
+								{k.up === true && <ArrowUp className="size-3" style={{ color: "var(--c-up)" }} />}
+								<span style={{ color: k.up === true ? "var(--c-up)" : "var(--c-text-3)" }}>
+									{k.sub}
+								</span>
+							</div>
 						</div>
 					</div>
 				))}
 			</div>
 
-			{/* Volume chart + health/actions */}
-			<div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
-				<SectionCard
-					title="Platform volume"
-					subtitle="30-day trailing · NGN equivalent"
-					action={
-						<Link href="/admin/reports" className="text-[13px] text-[var(--c-text-3)] hover:text-[var(--c-text)] transition-colors">
-							Full reports →
-						</Link>
-					}
-				>
-					<div className="p-5 pt-3">
-						<PriceAreaChart data={volumeSeries} currency="NGN" height={220} />
+			{/* ── volume chart + health / queue ───────────── */}
+			<div className="flex flex-wrap gap-4">
+				{/* volume chart */}
+				<div className="ds-card min-w-0 flex-[2_1_480px]">
+					<div
+						className="ds-card-hd"
+						style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
+					>
+						<h3 style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>Volume by hour</h3>
+						<CurrencySeg value={chartCurrency} onChange={setChartCurrency} />
 					</div>
-				</SectionCard>
+					<div style={{ padding: "0 16px 16px" }}>
+						<BarChart data={VOLUME_BARS} height={220} />
+					</div>
+				</div>
 
-				<div className="space-y-3">
-					{/* System health */}
-					<SectionCard title="System health">
-						<div className="p-4 space-y-3">
-							{SYSTEM_HEALTH.map((s) => (
-								<div key={s.service} className="flex items-center justify-between text-[13px]">
+				{/* right column: health + queue */}
+				<div className="flex min-w-[320px] flex-1 flex-col gap-4">
+					{/* system health */}
+					<div className="ds-card">
+						<div className="ds-card-hd">
+							<h3 style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>System health</h3>
+						</div>
+						<div style={{ padding: "0 16px 16px" }} className="space-y-3">
+							{SERVICES.map(([name, uptime, status]) => (
+								<div key={name} className="flex items-center justify-between text-[13px]">
 									<div className="flex items-center gap-2">
 										<span
-											className="size-[6px] rounded-full shrink-0"
-											style={{ background: s.status === "operational" ? "var(--c-up)" : "var(--c-warn)" }}
+											className="inline-block size-2 rounded-full"
+											style={{
+												background:
+													status === "operational"
+														? "var(--c-up)"
+														: "var(--c-warn)",
+											}}
 										/>
-										<span className="text-[var(--c-text)]">{s.service}</span>
+										<span style={{ color: "var(--c-text)" }}>{name}</span>
 									</div>
-									<span className="tabular-nums text-[var(--c-text-3)]">{s.uptime}</span>
+									<Num className="text-[var(--c-text-3)]" value={uptime} />
 								</div>
 							))}
 						</div>
-					</SectionCard>
+					</div>
 
-					{/* Action queue */}
-					<SectionCard title="Action queue">
-						<div className="p-3 space-y-2">
-							{ACTION_QUEUE.map((a) => (
-								<div key={a.label} className="flex items-center justify-between px-3 py-2.5 rounded-lg bg-[var(--c-surface-2)]">
-									<span className="text-[13px] text-[var(--c-text)]">{a.label}</span>
+					{/* action queue */}
+					<div className="ds-card">
+						<div className="ds-card-hd">
+							<h3 style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>Action queue</h3>
+						</div>
+						<div style={{ padding: "0 16px 16px" }} className="space-y-3">
+							{ACTION_QUEUE.map(([label, count]) => (
+								<div
+									key={label}
+									className="flex items-center justify-between rounded-lg px-3 py-2.5"
+									style={{ background: "var(--c-surface-2)" }}
+								>
+									<span className="text-[13px]" style={{ color: "var(--c-text)" }}>{label}</span>
 									<div className="flex items-center gap-2">
-										<span className="ds-badge ds-badge-warn text-[11px]">{a.count}</span>
-										<Link href={a.href} className="text-[12px] font-medium text-[var(--c-text-3)] hover:text-[var(--c-text)] transition-colors">
-											Review →
-										</Link>
+										<span
+											style={{
+												display: "inline-flex",
+												alignItems: "center",
+												justifyContent: "center",
+												height: 22,
+												minWidth: 22,
+												padding: "0 6px",
+												borderRadius: 9999,
+												background: "var(--c-warn-soft)",
+												color: "var(--c-warn)",
+												fontSize: 11,
+												fontWeight: 600,
+											}}
+										>
+											{count}
+										</span>
+										<button
+											style={{
+												height: 28,
+												padding: "0 8px",
+												borderRadius: 6,
+												border: "none",
+												background: "transparent",
+												color: "var(--c-text-2)",
+												fontSize: 12,
+												fontWeight: 500,
+												cursor: "pointer",
+											}}
+										>
+											Review
+										</button>
 									</div>
 								</div>
 							))}
 						</div>
-					</SectionCard>
+					</div>
 				</div>
 			</div>
 
-			{/* KYC queue + flagged txns */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-				<SectionCard
-					title="KYC queue"
-					subtitle={`${pendingKyc} pending submissions`}
-					action={<Link href="/admin/kyc" className="text-[13px] text-[var(--c-text-3)] hover:text-[var(--c-text)] transition-colors">Review all →</Link>}
-				>
-					<table className="w-full text-[13px] border-collapse">
-						<tbody>
-							{KYC_QUEUE.slice(0, 4).map((k) => (
-								<tr key={k.id} className="border-b border-[var(--c-line)] hover:bg-[var(--c-surface-2)] transition-colors">
-									<td className="px-4 py-3">
-										<div className="font-semibold text-[var(--c-text)]">{k.userName}</div>
-										<div className="text-[11px] text-[var(--c-text-3)]">{k.userEmail}</div>
-									</td>
-									<td className="px-4 py-3">
-										<Badge variant="info" className="text-[11px]">Tier {k.tier}</Badge>
-									</td>
-									<td className="px-4 py-3 text-right text-[12px] text-[var(--c-text-3)]">
-										{relativeTime(k.submittedAt)}
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</SectionCard>
-
-				<SectionCard
-					title="Flagged transactions"
-					subtitle="Require manual review"
-					action={<Link href="/admin/transactions" className="text-[13px] text-[var(--c-text-3)] hover:text-[var(--c-text)] transition-colors">See all →</Link>}
-				>
-					<table className="w-full text-[13px] border-collapse">
-						<tbody>
-							{ADMIN_TXNS.filter((t) => t.flagged).slice(0, 4).map((t) => (
-								<tr key={t.id} className="border-b border-[var(--c-line)] hover:bg-[var(--c-surface-2)] transition-colors">
-									<td className="px-4 py-3">
-										<div className="flex items-center gap-2">
-											<AssetLogo symbol={t.asset} size="sm" />
-											<code className="font-mono text-[11px] text-[var(--c-text-3)]">{t.id}</code>
-										</div>
-										<div className="text-[11px] text-[var(--c-text-3)] mt-0.5">{t.userName}</div>
-									</td>
-									<td className="px-4 py-3 tabular-nums text-[var(--c-text)] font-medium">
-										{formatMoney(t.amountNgn, "NGN", { decimals: 0 })}
-									</td>
-									<td className="px-4 py-3">
-										<div className="flex items-center gap-1.5 text-[12px] text-[var(--c-warn)]">
-											<AlertTriangle className="size-3 shrink-0" />
-											{t.reason}
-										</div>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</SectionCard>
-			</div>
-
-			{/* Wallet pool health */}
-			<SectionCard
-				title="Wallet pool health"
-				subtitle="Hot, warm, cold & multi-sig pools"
-				action={<Link href="/admin/wallets" className="text-[13px] text-[var(--c-text-3)] hover:text-[var(--c-text)] transition-colors">See all →</Link>}
-			>
-				<div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-					{WALLETS.map((w) => {
-						const inRange = !w.threshold || (w.balance >= w.threshold.min && w.balance <= w.threshold.max);
-						const pct = w.threshold ? Math.min(100, (w.balance / w.threshold.max) * 100) : 60;
-						return (
-							<div key={w.id} className="rounded-[12px] border border-[var(--c-line)] bg-[var(--c-surface-2)] p-4">
-								<div className="flex items-center justify-between">
-									<div className="flex items-center gap-2">
-										<AssetLogo symbol={w.asset} size="sm" />
-										<span className="font-semibold text-[13px] text-[var(--c-text)]">{w.asset}</span>
-										<Badge variant={w.type === "cold" ? "info" : w.type === "hot" ? "warning" : "success"} className="capitalize text-[10px]">{w.type}</Badge>
-									</div>
-									<span className="text-[11px] text-[var(--c-text-3)]">{w.chain}</span>
-								</div>
-								<div className="mt-2 font-display tabular-nums text-[18px] font-semibold text-[var(--c-text)]">
-									{w.balance.toLocaleString()} {w.asset}
-								</div>
-								<div className="text-[11px] text-[var(--c-text-3)] tabular-nums">${w.balanceUsd.toLocaleString()}</div>
-								{w.threshold && (
-									<>
-										<div className="mt-3 ds-bar">
-											<span
-												style={{
-													width: `${pct}%`,
-													background: inRange ? "var(--c-up)" : "var(--c-warn)"
-												}}
-											/>
-										</div>
-										<div className="mt-1 flex justify-between text-[11px] text-[var(--c-text-3)]">
-											<span>min {w.threshold.min.toLocaleString()}</span>
-											<span>max {w.threshold.max.toLocaleString()}</span>
-										</div>
-									</>
-								)}
-								{w.signers && <div className="mt-2 text-[11px] text-[var(--c-text-3)]">{w.required}-of-{w.signers} multi-sig</div>}
-							</div>
-						);
-					})}
+			{/* ── wallet pool table ──────────────────────── */}
+			<div className="ds-card">
+				<div className="ds-card-hd">
+					<h3 style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>Wallet pool &middot; NGN value</h3>
 				</div>
-			</SectionCard>
+				<div style={{ padding: 0 }}>
+					<table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse" }}>
+						<thead>
+							<tr style={{ borderBottom: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>
+								{[
+									{ label: "Asset", align: "left" as const },
+									{ label: "Hot", align: "right" as const },
+									{ label: "Cold", align: "right" as const },
+									{ label: "Total", align: "right" as const },
+									{ label: "Hot ratio", align: "left" as const },
+								].map((h, i) => (
+									<th
+										key={i}
+										style={{
+											padding: "10px 16px",
+											textAlign: h.align,
+											fontSize: 11.5,
+											fontWeight: 500,
+											textTransform: "uppercase",
+											letterSpacing: "0.05em",
+											color: "var(--c-text-3)",
+										}}
+									>
+										{h.label}
+									</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{WALLETS.map((w) => {
+								const total = w.hotNgn + w.coldNgn;
+								const ratio = w.hotNgn / total;
+								const pct = ratio * 100;
+								return (
+									<tr
+										key={w.sym + w.chain}
+										style={{ borderBottom: "1px solid var(--c-line)" }}
+									>
+										<td style={{ padding: "10px 16px" }}>
+											<div className="flex items-center gap-2">
+												<div
+													className="flex items-center justify-center rounded-full text-[10px] font-bold text-white"
+													style={{
+														width: 28,
+														height: 28,
+														background:
+															w.sym === "BTC"
+																? "#f7931a"
+																: w.sym === "ETH"
+																	? "#627eea"
+																	: w.sym === "USDT"
+																		? "#26a17b"
+																		: w.sym === "SOL"
+																			? "#9945ff"
+																			: w.sym === "BNB"
+																				? "#f0b90b"
+																				: "#888",
+													}}
+												>
+													{w.sym.slice(0, 1)}
+												</div>
+												<div>
+													<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>{w.sym}</div>
+													<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>{w.chain}</div>
+												</div>
+											</div>
+										</td>
+										<td style={{ padding: "10px 16px", textAlign: "right" }}>
+											<Num value={fmtNgn(w.hotNgn)} />
+										</td>
+										<td style={{ padding: "10px 16px", textAlign: "right" }}>
+											<Num value={fmtNgn(w.coldNgn)} />
+										</td>
+										<td style={{ padding: "10px 16px", textAlign: "right" }}>
+											<Num className="font-semibold" value={fmtNgn(total)} />
+										</td>
+										<td style={{ padding: "10px 16px" }}>
+											<div className="flex items-center gap-2">
+												<div
+													className="flex-1 max-w-[80px] rounded-full"
+													style={{ height: 6, background: "var(--c-surface-3)" }}
+												>
+													<div
+														className="rounded-full transition-all"
+														style={{
+															height: "100%",
+															width: `${pct}%`,
+															background:
+																ratio > 0.2
+																	? "var(--c-warn)"
+																	: "var(--c-up)",
+														}}
+													/>
+												</div>
+												<Num
+													className="text-[11px] text-[var(--c-text-3)]"
+													value={pct.toFixed(1) + "%"}
+												/>
+											</div>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	);
 }

@@ -1,11 +1,8 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Search, Loader2, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Toast } from "@/components/toast";
 
 interface Market {
@@ -103,12 +100,10 @@ export default function Page() {
 							</p>
 						)}
 					</div>
-					<Button
+					<button
 						onClick={fetchMarkets}
 						disabled={loading}
-						variant="outline"
-						size="sm"
-						className="gap-2"
+						style={{ height: 36, padding: "0 14px", borderRadius: 10, fontSize: 13.5, fontWeight: 500, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: loading ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: 8, opacity: loading ? 0.5 : 1 }}
 					>
 						{loading ? (
 							<Loader2 className="h-4 w-4 animate-spin" />
@@ -116,19 +111,19 @@ export default function Page() {
 							<RefreshCw className="h-4 w-4" />
 						)}
 						Refresh
-					</Button>
+					</button>
 				</div>
 			</header>
 
 			<div className="mb-6">
 				<div className="relative max-w-md">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-					<Input
+					<input
 						type="text"
 						placeholder="Search stablecoins..."
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
-						className="pl-10 h-11 rounded-[12px] border-border"
+						style={{ display: "flex", alignItems: "center", height: 44, padding: "0 12px 0 40px", border: "1px solid var(--c-line)", borderRadius: 12, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5, width: "100%", outline: "none" }}
 					/>
 				</div>
 			</div>
@@ -139,7 +134,7 @@ export default function Page() {
 				</div>
 			)}
 
-			<Card className="rounded-[20px] border-border overflow-hidden">
+			<div className="ds-card" style={{ borderRadius: 20, overflow: "hidden" }}>
 				{loading && markets.length === 0 ? (
 					<div className="flex items-center justify-center py-12">
 						<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -234,7 +229,7 @@ export default function Page() {
 						)}
 					</div>
 				)}
-			</Card>
+			</div>
 		</div>
 	);
 }

@@ -242,7 +242,7 @@ export default function NetworkManagementPage() {
       case "Inactive":
         return "text-danger bg-danger/10 border-danger";
       default:
-        return "text-muted-foreground bg-background border-border";
+        return "text-[var(--c-text-3)] bg-background border-[var(--c-line)]";
     }
   };
 
@@ -266,7 +266,7 @@ export default function NetworkManagementPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading network configurations...</p>
+          <p className="mt-4 text-[var(--c-text-3)]">Loading network configurations...</p>
         </div>
       </div>
     );
@@ -277,12 +277,12 @@ export default function NetworkManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Network Management</h1>
-          <p className="text-muted-foreground mt-1">Configure blockchain networks and transaction settings</p>
+          <h1 className="text-2xl font-bold text-[var(--c-text)]">Network Management</h1>
+          <p className="text-[var(--c-text-3)] mt-1">Configure blockchain networks and transaction settings</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#013800] transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[#013800] transition-colors"
         >
           <Plus className="h-4 w-4" />
           Add Network
@@ -291,42 +291,42 @@ export default function NetworkManagementPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-card rounded-lg border border-border p-6">
+        <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <Network className="h-5 w-5 text-primary" />
-            <span className="text-xs text-muted-foreground">Total</span>
+            <Network className="h-5 w-5 text-[var(--c-lime-500)]" />
+            <span className="text-xs text-[var(--c-text-3)]">Total</span>
           </div>
-          <p className="text-2xl font-bold text-foreground">{activeNetworks}/{networks.length}</p>
-          <p className="text-sm text-muted-foreground mt-1">Active Networks</p>
+          <p className="text-2xl font-bold text-[var(--c-text)]">{activeNetworks}/{networks.length}</p>
+          <p className="text-sm text-[var(--c-text-3)] mt-1">Active Networks</p>
         </div>
 
-        <div className="bg-card rounded-lg border border-border p-6">
+        <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
           <div className="flex items-center justify-between mb-2">
             <TrendingUp className="h-5 w-5 text-success" />
-            <span className="text-xs text-muted-foreground">All Networks</span>
+            <span className="text-xs text-[var(--c-text-3)]">All Networks</span>
           </div>
-          <p className="text-2xl font-bold text-foreground">${totalVolume.toLocaleString()}</p>
-          <p className="text-sm text-muted-foreground mt-1">Total Volume</p>
+          <p className="text-2xl font-bold text-[var(--c-text)]">${totalVolume.toLocaleString()}</p>
+          <p className="text-sm text-[var(--c-text-3)] mt-1">Total Volume</p>
         </div>
 
-        <div className="bg-card rounded-lg border border-border p-6">
+        <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
           <div className="flex items-center justify-between mb-2">
             <CheckCircle className="h-5 w-5 text-success" />
-            <span className="text-xs text-muted-foreground">Average</span>
+            <span className="text-xs text-[var(--c-text-3)]">Average</span>
           </div>
-          <p className="text-2xl font-bold text-foreground">{avgSuccessRate.toFixed(1)}%</p>
-          <p className="text-sm text-muted-foreground mt-1">Success Rate</p>
+          <p className="text-2xl font-bold text-[var(--c-text)]">{avgSuccessRate.toFixed(1)}%</p>
+          <p className="text-sm text-[var(--c-text-3)] mt-1">Success Rate</p>
         </div>
 
-        <div className="bg-card rounded-lg border border-border p-6">
+        <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
           <div className="flex items-center justify-between mb-2">
             <Zap className="h-5 w-5 text-orange-600" />
-            <span className="text-xs text-muted-foreground">Fastest</span>
+            <span className="text-xs text-[var(--c-text-3)]">Fastest</span>
           </div>
-          <p className="text-2xl font-bold text-foreground">
+          <p className="text-2xl font-bold text-[var(--c-text)]">
             {Math.min(...networks.map((n) => n.stats.avgConfirmationTime)).toFixed(1)}m
           </p>
-          <p className="text-sm text-muted-foreground mt-1">Confirmation Time</p>
+          <p className="text-sm text-[var(--c-text-3)] mt-1">Confirmation Time</p>
         </div>
       </div>
 
@@ -335,7 +335,7 @@ export default function NetworkManagementPage() {
         {networks.map((network) => (
           <div
             key={network.id}
-            className="bg-card rounded-lg border border-border p-6 hover:shadow-lg transition-shadow"
+            className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -343,8 +343,8 @@ export default function NetworkManagementPage() {
                   <Network className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">{network.name}</h3>
-                  <p className="text-sm text-muted-foreground">{network.blockchain} • {network.code}</p>
+                  <h3 className="font-semibold text-[var(--c-text)]">{network.name}</h3>
+                  <p className="text-sm text-[var(--c-text-3)]">{network.blockchain} • {network.code}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -353,13 +353,13 @@ export default function NetworkManagementPage() {
                 </span>
                 <button
                   onClick={() => handleToggleNetwork(network.id)}
-                  className="p-1 hover:bg-muted rounded transition-colors"
+                  className="p-1 hover:bg-[var(--c-surface-2)] rounded transition-colors"
                   title={network.isEnabled ? "Disable Network" : "Enable Network"}
                 >
                   {network.isEnabled ? (
                     <ToggleRight className="h-6 w-6 text-success" />
                   ) : (
-                    <ToggleLeft className="h-6 w-6 text-muted-foreground" />
+                    <ToggleLeft className="h-6 w-6 text-[var(--c-text-3)]" />
                   )}
                 </button>
               </div>
@@ -368,99 +368,99 @@ export default function NetworkManagementPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="bg-success/10 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                <p className="text-xs text-[var(--c-text-3)] mb-1 flex items-center gap-1">
                   <TrendingUp className="h-3 w-3" />
                   Deposits
                 </p>
                 <p className="text-lg font-semibold text-success">
                   ${network.stats.totalDeposits.toLocaleString()}
                 </p>
-                <p className="text-xs text-muted-foreground">{network.stats.depositCount} transactions</p>
+                <p className="text-xs text-[var(--c-text-3)]">{network.stats.depositCount} transactions</p>
               </div>
               <div className="bg-danger/10 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                <p className="text-xs text-[var(--c-text-3)] mb-1 flex items-center gap-1">
                   <TrendingUp className="h-3 w-3 rotate-180" />
                   Withdrawals
                 </p>
                 <p className="text-lg font-semibold text-danger">
                   ${network.stats.totalWithdrawals.toLocaleString()}
                 </p>
-                <p className="text-xs text-muted-foreground">{network.stats.withdrawalCount} transactions</p>
+                <p className="text-xs text-[var(--c-text-3)]">{network.stats.withdrawalCount} transactions</p>
               </div>
             </div>
 
             {/* Performance Metrics */}
-            <div className="grid grid-cols-3 gap-3 mb-4 pt-4 border-t border-border">
+            <div className="grid grid-cols-3 gap-3 mb-4 pt-4 border-t border-[var(--c-line)]">
               <div>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <p className="text-xs text-[var(--c-text-3)] flex items-center gap-1">
                   <Clock className="h-3 w-3" />
                   Confirmation
                 </p>
-                <p className="text-sm font-semibold text-foreground">{network.stats.avgConfirmationTime}m</p>
+                <p className="text-sm font-semibold text-[var(--c-text)]">{network.stats.avgConfirmationTime}m</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <p className="text-xs text-[var(--c-text-3)] flex items-center gap-1">
                   <CheckCircle className="h-3 w-3" />
                   Success Rate
                 </p>
                 <p className="text-sm font-semibold text-success">{network.stats.successRate}%</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <p className="text-xs text-[var(--c-text-3)] flex items-center gap-1">
                   <Shield className="h-3 w-3" />
                   Confirmations
                 </p>
-                <p className="text-sm font-semibold text-foreground">{network.confirmations.required}</p>
+                <p className="text-sm font-semibold text-[var(--c-text)]">{network.confirmations.required}</p>
               </div>
             </div>
 
             {/* Fees */}
             <div className="bg-background rounded-lg p-3 mb-4">
-              <p className="text-xs font-medium text-muted-foreground mb-2">Fee Structure</p>
+              <p className="text-xs font-medium text-[var(--c-text-3)] mb-2">Fee Structure</p>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 <div>
-                  <p className="text-muted-foreground">Withdrawal</p>
-                  <p className="font-semibold text-foreground">${network.fees.withdrawal}</p>
+                  <p className="text-[var(--c-text-3)]">Withdrawal</p>
+                  <p className="font-semibold text-[var(--c-text)]">${network.fees.withdrawal}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Deposit</p>
-                  <p className="font-semibold text-foreground">${network.fees.deposit}</p>
+                  <p className="text-[var(--c-text-3)]">Deposit</p>
+                  <p className="font-semibold text-[var(--c-text)]">${network.fees.deposit}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Gas</p>
-                  <p className="font-semibold text-foreground">${network.fees.gas}</p>
+                  <p className="text-[var(--c-text-3)]">Gas</p>
+                  <p className="font-semibold text-[var(--c-text)]">${network.fees.gas}</p>
                 </div>
               </div>
             </div>
 
             {/* Limits */}
-            <div className="bg-primary/10 rounded-lg p-3 mb-4">
-              <p className="text-xs font-medium text-muted-foreground mb-2">Transaction Limits</p>
+            <div className="bg-[var(--c-lime-500)]/10 rounded-lg p-3 mb-4">
+              <p className="text-xs font-medium text-[var(--c-text-3)] mb-2">Transaction Limits</p>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div>
-                  <p className="text-muted-foreground">Min Withdrawal</p>
-                  <p className="font-semibold text-foreground">${network.limits.minWithdrawal}</p>
+                  <p className="text-[var(--c-text-3)]">Min Withdrawal</p>
+                  <p className="font-semibold text-[var(--c-text)]">${network.limits.minWithdrawal}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Max Withdrawal</p>
-                  <p className="font-semibold text-foreground">${network.limits.maxWithdrawal.toLocaleString()}</p>
+                  <p className="text-[var(--c-text-3)]">Max Withdrawal</p>
+                  <p className="font-semibold text-[var(--c-text)]">${network.limits.maxWithdrawal.toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Daily Limit</p>
-                  <p className="font-semibold text-foreground">${network.limits.dailyLimit.toLocaleString()}</p>
+                  <p className="text-[var(--c-text-3)]">Daily Limit</p>
+                  <p className="font-semibold text-[var(--c-text)]">${network.limits.dailyLimit.toLocaleString()}</p>
                 </div>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-4 border-t border-border">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center justify-between pt-4 border-t border-[var(--c-line)]">
+              <div className="flex items-center gap-2 text-xs text-[var(--c-text-3)]">
                 <Activity className="h-3 w-3" />
                 Last activity: {new Date(network.lastActivity).toLocaleString()}
               </div>
               <button
                 onClick={() => handleEdit(network)}
-                className="flex items-center gap-1 px-3 py-1 border border-border rounded-lg hover:bg-background transition-colors text-sm"
+                className="flex items-center gap-1 px-3 py-1 border border-[var(--c-line)] rounded-lg hover:bg-background transition-colors text-sm"
               >
                 <Edit2 className="h-3 w-3" />
                 Edit
@@ -473,21 +473,21 @@ export default function NetworkManagementPage() {
       {/* Edit Modal */}
       {showEditModal && selectedNetwork && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-card rounded-lg max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Edit Network Configuration</h3>
+          <div className="bg-[var(--c-surface)] rounded-lg max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+            <h3 className="text-lg font-semibold text-[var(--c-text)] mb-4">Edit Network Configuration</h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Network Name</label>
+                  <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">Network Name</label>
                   <input
                     type="text"
                     defaultValue={selectedNetwork.name}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Status</label>
-                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring">
+                  <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">Status</label>
+                  <select className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring">
                     <option>Active</option>
                     <option>Maintenance</option>
                     <option>Inactive</option>
@@ -495,69 +495,69 @@ export default function NetworkManagementPage() {
                 </div>
               </div>
 
-              <div className="border-t border-border pt-4">
-                <h4 className="font-medium text-foreground mb-3">Fee Configuration</h4>
+              <div className="border-t border-[var(--c-line)] pt-4">
+                <h4 className="font-medium text-[var(--c-text)] mb-3">Fee Configuration</h4>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-1">Withdrawal Fee</label>
+                    <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">Withdrawal Fee</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.fees.withdrawal}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-1">Deposit Fee</label>
+                    <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">Deposit Fee</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.fees.deposit}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-1">Gas Fee</label>
+                    <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">Gas Fee</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.fees.gas}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="border-t border-border pt-4">
-                <h4 className="font-medium text-foreground mb-3">Transaction Limits</h4>
+              <div className="border-t border-[var(--c-line)] pt-4">
+                <h4 className="font-medium text-[var(--c-text)] mb-3">Transaction Limits</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-1">Min Withdrawal</label>
+                    <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">Min Withdrawal</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.limits.minWithdrawal}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-1">Max Withdrawal</label>
+                    <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">Max Withdrawal</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.limits.maxWithdrawal}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-1">Daily Limit</label>
+                    <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">Daily Limit</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.limits.dailyLimit}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-1">Required Confirmations</label>
+                    <label className="block text-sm font-medium text-[var(--c-text-3)] mb-1">Required Confirmations</label>
                     <input
                       type="number"
                       defaultValue={selectedNetwork.confirmations.required}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                 </div>
@@ -569,11 +569,11 @@ export default function NetworkManagementPage() {
                   setShowEditModal(false);
                   setSelectedNetwork(null);
                 }}
-                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background transition-colors"
+                className="flex-1 px-4 py-2 border border-[var(--c-line)] rounded-lg hover:bg-background transition-colors"
               >
                 Cancel
               </button>
-              <button className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#013800] transition-colors">
+              <button className="flex-1 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[#013800] transition-colors">
                 Save Changes
               </button>
             </div>

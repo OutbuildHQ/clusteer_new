@@ -1,17 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { CreditCard, Plus, Trash2, CheckCircle2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -45,7 +33,7 @@ export default function Page() {
 		accountName: "",
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [accountToDelete, setAccountToDelete] = useState<number | null>(null);
 
 	useEffect(() => {
@@ -145,7 +133,7 @@ export default function Page() {
 			return;
 		}
 		setAccountToDelete(id);
-		setDeleteDialogOpen(true);
+		setShowDeleteModal(true);
 	};
 
 	const handleDelete = async () => {
@@ -154,7 +142,7 @@ export default function Page() {
 		try {
 			await deleteBankAccount(user.id, accountToDelete);
 			setAccounts((prev) => prev.filter((account) => account.id !== accountToDelete));
-			setDeleteDialogOpen(false);
+			setShowDeleteModal(false);
 			setAccountToDelete(null);
 			Toast.success("Bank account deleted successfully");
 		} catch (error) {
@@ -191,15 +179,28 @@ export default function Page() {
 			<div className="space-y-6">
 				{/* Add New Account Button/Form */}
 				{!showAddForm ? (
-					<Button
-						variant="outline"
+					<button
 						onClick={() => setShowAddForm(true)}
-						className="w-full lg:w-auto border-dashed border-2 border-border hover:border-[#9FE870] h-auto py-4 px-6 rounded-xl"
 						disabled={accounts.length >= 5}
+						style={{
+							background: "transparent",
+							color: "var(--c-fg, inherit)",
+							border: "2px dashed var(--c-border, #e5e5e5)",
+							height: "auto",
+							padding: "16px 24px",
+							borderRadius: "12px",
+							fontWeight: 500,
+							fontSize: "14px",
+							cursor: accounts.length >= 5 ? "not-allowed" : "pointer",
+							opacity: accounts.length >= 5 ? 0.5 : 1,
+							display: "inline-flex",
+							alignItems: "center",
+							gap: "8px",
+						}}
 					>
-						<Plus className="w-5 h-5 mr-2" />
+						<Plus className="w-5 h-5" />
 						Add Bank Account {accounts.length >= 5 && "(Maximum reached)"}
-					</Button>
+					</button>
 				) : (
 					<div className="bg-card rounded-2xl border border-border p-6">
 						<h3 className="font-semibold text-lg text-foreground mb-4">
@@ -256,15 +257,25 @@ export default function Page() {
 								/>
 							</div>
 							<div className="flex gap-3">
-								<Button
+								<button
 									onClick={handleAddAccount}
 									disabled={isSubmitting}
-									className="bg-primary border-custom-black/5 text-white h-10 px-6 rounded-full font-semibold"
+									style={{
+										background: "var(--c-accent, #9FE870)",
+										color: "#fff",
+										border: "1px solid rgba(0,0,0,0.05)",
+										height: "40px",
+										padding: "0 24px",
+										borderRadius: "9999px",
+										fontWeight: 600,
+										fontSize: "14px",
+										cursor: isSubmitting ? "not-allowed" : "pointer",
+										opacity: isSubmitting ? 0.5 : 1,
+									}}
 								>
 									{isSubmitting ? "Adding..." : "Add Account"}
-								</Button>
-								<Button
-									variant="outline"
+								</button>
+								<button
 									onClick={() => {
 										setShowAddForm(false);
 										setNewAccount({
@@ -273,10 +284,20 @@ export default function Page() {
 											accountName: "",
 										});
 									}}
-									className="h-10 px-6 rounded-full"
+									style={{
+										background: "transparent",
+										color: "var(--c-fg, inherit)",
+										border: "1px solid var(--c-border, #e5e5e5)",
+										height: "40px",
+										padding: "0 24px",
+										borderRadius: "9999px",
+										fontWeight: 500,
+										fontSize: "14px",
+										cursor: "pointer",
+									}}
 								>
 									Cancel
-								</Button>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -300,12 +321,21 @@ export default function Page() {
 												{account.bankName}
 											</h3>
 											{account.isDefault && (
-												<Badge
-													variant="secondary"
-													className="rounded-full h-6 py-1 text-primary bg-primary/10"
+												<span
+													style={{
+														display: "inline-flex",
+														alignItems: "center",
+														borderRadius: "9999px",
+														height: "24px",
+														padding: "0 10px",
+														fontSize: "12px",
+														fontWeight: 500,
+														color: "var(--c-accent, #9FE870)",
+														background: "rgba(159,232,112,0.1)",
+													}}
 												>
 													Default
-												</Badge>
+												</span>
 											)}
 											{account.isVerified && (
 												<CheckCircle2 className="w-4 h-4 text-success" />
@@ -322,24 +352,43 @@ export default function Page() {
 
 								<div className="flex items-center gap-2">
 									{!account.isDefault && (
-										<Button
-											variant="outline"
-											size="sm"
+										<button
 											onClick={() => handleSetDefault(account.id)}
-											className="text-sm font-medium h-9 px-4 rounded-full"
+											style={{
+												background: "transparent",
+												color: "var(--c-fg, inherit)",
+												border: "1px solid var(--c-border, #e5e5e5)",
+												height: "36px",
+												padding: "0 16px",
+												borderRadius: "9999px",
+												fontWeight: 500,
+												fontSize: "14px",
+												cursor: "pointer",
+											}}
 										>
 											Set as default
-										</Button>
+										</button>
 									)}
-									<Button
-										variant="ghost"
-										size="sm"
+									<button
 										onClick={() => openDeleteDialog(account.id)}
-										className="text-destructive hover:text-destructive hover:bg-danger/10 h-9 w-9 p-0 rounded-full"
 										disabled={account.isDefault}
+										style={{
+											background: "transparent",
+											color: "var(--c-danger, #ef4444)",
+											border: "none",
+											height: "36px",
+											width: "36px",
+											padding: 0,
+											borderRadius: "9999px",
+											cursor: account.isDefault ? "not-allowed" : "pointer",
+											opacity: account.isDefault ? 0.5 : 1,
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+										}}
 									>
 										<Trash2 className="w-4 h-4" />
-									</Button>
+									</button>
 								</div>
 							</div>
 						</div>
@@ -358,10 +407,25 @@ export default function Page() {
 						<p className="text-sm text-muted-foreground mb-6">
 							Add a bank account to start making deposits and withdrawals
 						</p>
-						<Button className="bg-primary border-custom-black/5 text-white h-10 px-6 rounded-full font-semibold">
-							<Plus className="w-4 h-4 mr-2" />
+						<button
+							style={{
+								background: "var(--c-accent, #9FE870)",
+								color: "#fff",
+								border: "1px solid rgba(0,0,0,0.05)",
+								height: "40px",
+								padding: "0 24px",
+								borderRadius: "9999px",
+								fontWeight: 600,
+								fontSize: "14px",
+								cursor: "pointer",
+								display: "inline-flex",
+								alignItems: "center",
+								gap: "8px",
+							}}
+						>
+							<Plus className="w-4 h-4" />
 							Add Your First Bank Account
-						</Button>
+						</button>
 					</div>
 				)}
 
@@ -401,31 +465,80 @@ export default function Page() {
 				</div>
 			</div>
 
-			{/* Delete Confirmation Dialog */}
-			<AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete Bank Account</AlertDialogTitle>
-						<AlertDialogDescription>
+			{/* Delete Confirmation Modal */}
+			{showDeleteModal && (
+				<div
+					style={{
+						position: "fixed",
+						inset: 0,
+						zIndex: 50,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						background: "rgba(0,0,0,0.5)",
+					}}
+					onClick={() => {
+						setShowDeleteModal(false);
+						setAccountToDelete(null);
+					}}
+				>
+					<div
+						style={{
+							background: "var(--c-surface, #fff)",
+							borderRadius: "16px",
+							padding: "24px",
+							maxWidth: "480px",
+							width: "90%",
+							boxShadow: "0 25px 50px rgba(0,0,0,0.25)",
+						}}
+						onClick={(e) => e.stopPropagation()}
+					>
+						<h3 style={{ fontSize: "18px", fontWeight: 600, marginBottom: "8px" }}>
+							Delete Bank Account
+						</h3>
+						<p style={{ fontSize: "14px", color: "var(--c-muted, #6b7280)", marginBottom: "24px" }}>
 							Are you sure you want to delete this bank account? This action cannot be undone.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel onClick={() => {
-							setDeleteDialogOpen(false);
-							setAccountToDelete(null);
-						}}>
-							Cancel
-						</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleDelete}
-							className="bg-danger hover:bg-danger/90 focus:ring-danger"
-						>
-							Delete
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+						</p>
+						<div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+							<button
+								onClick={() => {
+									setShowDeleteModal(false);
+									setAccountToDelete(null);
+								}}
+								style={{
+									background: "transparent",
+									color: "var(--c-fg, inherit)",
+									border: "1px solid var(--c-border, #e5e5e5)",
+									height: "40px",
+									padding: "0 16px",
+									borderRadius: "8px",
+									fontWeight: 500,
+									fontSize: "14px",
+									cursor: "pointer",
+								}}
+							>
+								Cancel
+							</button>
+							<button
+								onClick={handleDelete}
+								style={{
+									background: "var(--c-danger, #ef4444)",
+									color: "#fff",
+									border: "none",
+									height: "40px",
+									padding: "0 16px",
+									borderRadius: "8px",
+									fontWeight: 500,
+									fontSize: "14px",
+									cursor: "pointer",
+								}}
+							>
+								Delete
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</section>
 	);
 }

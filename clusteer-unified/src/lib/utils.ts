@@ -5,46 +5,6 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export function parseNumber(str: string): number | null {
-	const cleaned = str.replace(/,/g, "");
-	const num = parseFloat(cleaned);
-	return isNaN(num) ? null : num;
-}
-
-export function formatNumber(
-	num: number = 0,
-	allowDec: boolean = true
-): string {
-	if (isNaN(num)) return "";
-	let formatted = allowDec ? num.toString() : Math.floor(num).toString();
-	const parts = formatted.split(".");
-	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	formatted = parts.join(".");
-	return formatted;
-}
-
-export function getFormattedDate(date: Date): string {
-	if (isNaN(date.getTime())) return ""; // handle invalid dates safely
-
-	const options: Intl.DateTimeFormatOptions = {
-		day: "numeric",
-		month: "long",
-		year: "numeric",
-	};
-
-	const parts = date.toLocaleDateString("en-GB", options).split(" ");
-	return `${parts[0]} ${parts[1]}, ${parts[2]}`;
-}
-
-export function getInitials(name: string): string {
-	return name
-		.split(" ")
-		.map((part) => part.charAt(0).toUpperCase())
-		.join("");
-}
-
-// --- Design system utilities (from Claude Design handoff) ---
-
 export function formatMoney(
 	amount: number,
 	currency: string = "NGN",
@@ -90,6 +50,28 @@ export function formatDateTime(d: Date | string | number) {
 	}).format(date);
 }
 
+/** Format a number with commas (legacy compat) */
+export function formatNumber(n: number = 0, decimals: number | boolean = 2) {
+	const d = typeof decimals === "boolean" ? 2 : decimals;
+	return Number(n).toLocaleString("en-NG", { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+
+/** Parse a formatted number string back to a number (legacy compat) */
+export function parseNumber(s: string): number {
+	return parseFloat(s.replace(/[^0-9.-]/g, "")) || 0;
+}
+
+/** Format a date to "12 Mar 2026" (legacy compat) */
+export function getFormattedDate(d: Date | string | number) {
+	const date = typeof d === "string" || typeof d === "number" ? new Date(d) : d;
+	return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(date);
+}
+
+/** Get initials from a name (legacy compat) */
+export function getInitials(name: string) {
+	return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+}
+
 export function relativeTime(d: Date | string | number) {
 	const date = typeof d === "string" || typeof d === "number" ? new Date(d) : d;
 	const diff = (Date.now() - date.getTime()) / 1000;
@@ -99,12 +81,4 @@ export function relativeTime(d: Date | string | number) {
 	if (diff < 86400) return rtf.format(-Math.round(diff / 3600), "hour");
 	if (diff < 2592000) return rtf.format(-Math.round(diff / 86400), "day");
 	return formatDateTime(date);
-}
-
-/** Format stablecoin amounts consistently: USDT/USDC get 2 decimals, NGN gets 0 */
-export function formatCryptoAmount(amount: number, symbol: string): string {
-	if (symbol === "NGN") return new Intl.NumberFormat("en-NG", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
-	// Stablecoins: 2 decimals for amounts >= 1, 4 decimals for small amounts
-	const decimals = amount >= 1 ? 2 : 4;
-	return new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: decimals }).format(amount);
 }

@@ -23,7 +23,7 @@ export function Logo({
 				alt="Clusteer"
 				width={32}
 				height={34}
-				className={cn("size-8 shrink-0", inverted && "brightness-0 invert")}
+				className={cn("size-8 shrink-0 dark:brightness-0 dark:invert", inverted && "brightness-0 invert")}
 			/>
 			{!monogramOnly && (
 				<span className="text-lg tracking-tight">Clusteer</span>

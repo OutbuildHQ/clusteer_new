@@ -1,12 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Save, RefreshCw, AlertTriangle } from "lucide-react";
 
@@ -27,6 +21,51 @@ const INITIAL = {
 	kycRequired: true,
 };
 
+function Toggle({
+	checked,
+	onChange,
+}: {
+	checked: boolean;
+	onChange: (v: boolean) => void;
+}) {
+	return (
+		<button
+			role="switch"
+			aria-checked={checked}
+			onClick={() => onChange(!checked)}
+			className="relative inline-flex w-[42px] h-6 rounded-full transition-colors duration-200 shrink-0"
+			style={{ background: checked ? "var(--c-lime-500)" : "var(--c-surface-3)" }}
+		>
+			<span
+				className="absolute top-[3px] left-[3px] size-[18px] rounded-full bg-white shadow-sm transition-transform duration-200"
+				style={{ transform: checked ? "translateX(18px)" : "translateX(0)" }}
+			/>
+		</button>
+	);
+}
+
+function FieldGroup({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+	return (
+		<div className="space-y-1.5">
+			<div className="text-[11px] font-medium text-[var(--c-text-3)]">{label}</div>
+			{children}
+			{hint && <p className="text-[11px] text-[var(--c-text-3)]">{hint}</p>}
+		</div>
+	);
+}
+
+function NumInput({ value, onChange, step = "0.01" }: { value: string; onChange: (v: string) => void; step?: string }) {
+	return (
+		<input
+			type="number"
+			step={step}
+			value={value}
+			onChange={(e) => onChange(e.target.value)}
+			className="w-full h-9 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[var(--c-lime-500)] focus:border-transparent"
+		/>
+	);
+}
+
 export default function SystemPreferencesPage() {
 	const [config, setConfig] = useState(INITIAL);
 	const [saving, setSaving] = useState(false);
@@ -42,129 +81,139 @@ export default function SystemPreferencesPage() {
 	}
 
 	return (
-		<div className="space-y-6">
-			<div className="flex items-center justify-between">
+		<div className="space-y-5">
+			{/* Header */}
+			<div className="flex items-center justify-between gap-4 flex-wrap">
 				<div>
-					<h1 className="text-2xl font-bold tracking-tight">System Preferences</h1>
-					<p className="text-sm text-muted-foreground mt-1">
+					<h1 className="text-[22px] font-semibold tracking-tight text-[var(--c-text)]">System preferences</h1>
+					<p className="text-[13px] text-[var(--c-text-3)] mt-0.5">
 						Configure fees, limits, and platform behaviour. Changes take effect immediately.
 					</p>
 				</div>
-				<Button onClick={handleSave} disabled={saving}>
-					{saving ? <RefreshCw className="size-4 animate-spin mr-2" /> : <Save className="size-4 mr-2" />}
+				<button
+					onClick={handleSave}
+					disabled={saving}
+					className="flex items-center gap-1.5 h-9 px-4 rounded-lg text-[13px] font-semibold disabled:opacity-60 transition-colors"
+					style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}
+				>
+					{saving ? <RefreshCw className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
 					{saving ? "Saving..." : "Save changes"}
-				</Button>
+				</button>
 			</div>
 
 			{/* Fee Structure */}
-			<Card>
-				<CardHeader>
-					<CardTitle>Fee Structure</CardTitle>
-					<CardDescription>Trading fees applied to buy/sell stablecoin orders. Displayed to users before confirmation.</CardDescription>
-				</CardHeader>
-				<CardContent className="grid gap-4 sm:grid-cols-2">
-					<div className="space-y-2">
-						<Label>Buy markup (%)</Label>
-						<Input type="number" step="0.01" value={config.buyMarkup} onChange={(e) => update("buyMarkup", e.target.value)} />
-						<p className="text-xs text-muted-foreground">Added to mid-market rate when user buys USDT/USDC</p>
+			<div className="ds-card overflow-hidden">
+				<div className="px-5 py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
+					<div className="text-[15px] font-semibold text-[var(--c-text)]">Fee structure</div>
+					<div className="text-[12px] text-[var(--c-text-3)] mt-0.5">
+						Trading fees applied to buy/sell stablecoin orders. Displayed to users before confirmation.
 					</div>
-					<div className="space-y-2">
-						<Label>Sell markdown (%)</Label>
-						<Input type="number" step="0.01" value={config.sellMarkdown} onChange={(e) => update("sellMarkdown", e.target.value)} />
-						<p className="text-xs text-muted-foreground">Deducted from mid-market rate when user sells</p>
-					</div>
-					<div className="space-y-2">
-						<Label>USDT withdrawal fee</Label>
-						<Input type="number" step="0.1" value={config.withdrawalFeeUsdt} onChange={(e) => update("withdrawalFeeUsdt", e.target.value)} />
-						<p className="text-xs text-muted-foreground">Flat fee in USDT for external withdrawals</p>
-					</div>
-					<div className="space-y-2">
-						<Label>USDC withdrawal fee</Label>
-						<Input type="number" step="0.1" value={config.withdrawalFeeUsdc} onChange={(e) => update("withdrawalFeeUsdc", e.target.value)} />
-						<p className="text-xs text-muted-foreground">Flat fee in USDC for external withdrawals</p>
-					</div>
-					<div className="space-y-2">
-						<Label>Internal send fee</Label>
+				</div>
+				<div className="p-5 grid gap-5 sm:grid-cols-2">
+					<FieldGroup label="Buy markup (%)" hint="Added to mid-market rate when user buys USDT/USDC">
+						<NumInput value={config.buyMarkup} onChange={(v) => update("buyMarkup", v)} />
+					</FieldGroup>
+					<FieldGroup label="Sell markdown (%)" hint="Deducted from mid-market rate when user sells">
+						<NumInput value={config.sellMarkdown} onChange={(v) => update("sellMarkdown", v)} />
+					</FieldGroup>
+					<FieldGroup label="USDT withdrawal fee" hint="Flat fee in USDT for external withdrawals">
+						<NumInput value={config.withdrawalFeeUsdt} step="0.1" onChange={(v) => update("withdrawalFeeUsdt", v)} />
+					</FieldGroup>
+					<FieldGroup label="USDC withdrawal fee" hint="Flat fee in USDC for external withdrawals">
+						<NumInput value={config.withdrawalFeeUsdc} step="0.1" onChange={(v) => update("withdrawalFeeUsdc", v)} />
+					</FieldGroup>
+					<FieldGroup label="Internal send fee" hint="Fee for Clusteer-to-Clusteer transfers (0 = free)">
 						<div className="flex items-center gap-2">
-							<Input type="number" step="0.01" value={config.internalSendFee} onChange={(e) => update("internalSendFee", e.target.value)} />
-							{config.internalSendFee === "0" && <Badge variant="secondary" className="shrink-0">Free</Badge>}
+							<NumInput value={config.internalSendFee} onChange={(v) => update("internalSendFee", v)} />
+							{config.internalSendFee === "0" && (
+								<span
+									className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold shrink-0"
+									style={{ background: "var(--c-up-soft)", color: "var(--c-up)" }}
+								>
+									Free
+								</span>
+							)}
 						</div>
-						<p className="text-xs text-muted-foreground">Fee for Clusteer-to-Clusteer transfers (0 = free)</p>
-					</div>
-					<div className="space-y-2">
-						<Label>VAT rate (%)</Label>
-						<Input type="number" step="0.1" value={config.vatRate} onChange={(e) => update("vatRate", e.target.value)} />
-						<p className="text-xs text-muted-foreground">Value Added Tax applied to fees (Nigerian FIRS requirement)</p>
-					</div>
-				</CardContent>
-			</Card>
+					</FieldGroup>
+					<FieldGroup label="VAT rate (%)" hint="Value Added Tax applied to fees (Nigerian FIRS requirement)">
+						<NumInput value={config.vatRate} step="0.1" onChange={(v) => update("vatRate", v)} />
+					</FieldGroup>
+				</div>
+			</div>
 
 			{/* Transaction Limits */}
-			<Card>
-				<CardHeader>
-					<CardTitle>Transaction Limits</CardTitle>
-					<CardDescription>Min/max per transaction. KYC tier-specific limits are managed separately per user.</CardDescription>
-				</CardHeader>
-				<CardContent className="grid gap-4 sm:grid-cols-2">
-					<div className="space-y-2">
-						<Label>Min buy amount (NGN)</Label>
-						<Input type="number" value={config.minBuyNgn} onChange={(e) => update("minBuyNgn", e.target.value)} />
+			<div className="ds-card overflow-hidden">
+				<div className="px-5 py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
+					<div className="text-[15px] font-semibold text-[var(--c-text)]">Transaction limits</div>
+					<div className="text-[12px] text-[var(--c-text-3)] mt-0.5">
+						Min/max per transaction. KYC tier-specific limits are managed separately per user.
 					</div>
-					<div className="space-y-2">
-						<Label>Max buy amount (NGN)</Label>
-						<Input type="number" value={config.maxBuyNgn} onChange={(e) => update("maxBuyNgn", e.target.value)} />
-					</div>
-					<div className="space-y-2">
-						<Label>Min sell amount (USDT)</Label>
-						<Input type="number" value={config.minSellUsdt} onChange={(e) => update("minSellUsdt", e.target.value)} />
-					</div>
-					<div className="space-y-2">
-						<Label>Max sell amount (USDT)</Label>
-						<Input type="number" value={config.maxSellUsdt} onChange={(e) => update("maxSellUsdt", e.target.value)} />
-					</div>
-				</CardContent>
-			</Card>
+				</div>
+				<div className="p-5 grid gap-5 sm:grid-cols-2">
+					<FieldGroup label="Min buy amount (NGN)">
+						<NumInput value={config.minBuyNgn} step="100" onChange={(v) => update("minBuyNgn", v)} />
+					</FieldGroup>
+					<FieldGroup label="Max buy amount (NGN)">
+						<NumInput value={config.maxBuyNgn} step="1000" onChange={(v) => update("maxBuyNgn", v)} />
+					</FieldGroup>
+					<FieldGroup label="Min sell amount (USDT)">
+						<NumInput value={config.minSellUsdt} step="1" onChange={(v) => update("minSellUsdt", v)} />
+					</FieldGroup>
+					<FieldGroup label="Max sell amount (USDT)">
+						<NumInput value={config.maxSellUsdt} step="100" onChange={(v) => update("maxSellUsdt", v)} />
+					</FieldGroup>
+				</div>
+			</div>
 
 			{/* Platform Behaviour */}
-			<Card>
-				<CardHeader>
-					<CardTitle>Platform Behaviour</CardTitle>
-					<CardDescription>Global toggles that affect all users.</CardDescription>
-				</CardHeader>
-				<CardContent className="divide-y divide-border">
-					<div className="flex items-center justify-between py-4">
+			<div className="ds-card overflow-hidden">
+				<div className="px-5 py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
+					<div className="text-[15px] font-semibold text-[var(--c-text)]">Platform behaviour</div>
+					<div className="text-[12px] text-[var(--c-text-3)] mt-0.5">Global toggles that affect all users.</div>
+				</div>
+				<div>
+					{/* Rate refresh */}
+					<div className="flex items-center justify-between gap-4 px-5 py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
 						<div>
-							<p className="text-sm font-medium">Rate refresh interval</p>
-							<p className="text-xs text-muted-foreground">How often the exchange rate quote refreshes (seconds)</p>
+							<div className="text-[13.5px] font-medium text-[var(--c-text)]">Rate refresh interval</div>
+							<div className="text-[12px] text-[var(--c-text-3)]">How often the exchange rate quote refreshes (seconds)</div>
 						</div>
-						<Input type="number" className="w-20" value={config.rateRefreshSeconds} onChange={(e) => update("rateRefreshSeconds", e.target.value)} />
+						<input
+							type="number"
+							className="w-20 h-9 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[var(--c-lime-500)] focus:border-transparent text-center"
+							value={config.rateRefreshSeconds}
+							onChange={(e) => update("rateRefreshSeconds", e.target.value)}
+						/>
 					</div>
-					<div className="flex items-center justify-between py-4">
+					{/* New user registration */}
+					<div className="flex items-center justify-between gap-4 px-5 py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
 						<div>
-							<p className="text-sm font-medium">New user registration</p>
-							<p className="text-xs text-muted-foreground">Allow new users to create accounts</p>
+							<div className="text-[13.5px] font-medium text-[var(--c-text)]">New user registration</div>
+							<div className="text-[12px] text-[var(--c-text-3)]">Allow new users to create accounts</div>
 						</div>
-						<Switch checked={config.newUserRegistration} onCheckedChange={(v) => update("newUserRegistration", v)} />
+						<Toggle checked={config.newUserRegistration} onChange={(v) => update("newUserRegistration", v)} />
 					</div>
-					<div className="flex items-center justify-between py-4">
+					{/* KYC required */}
+					<div className="flex items-center justify-between gap-4 px-5 py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
 						<div>
-							<p className="text-sm font-medium">KYC required for trading</p>
-							<p className="text-xs text-muted-foreground">Require Tier 1+ KYC before allowing buy/sell</p>
+							<div className="text-[13.5px] font-medium text-[var(--c-text)]">KYC required for trading</div>
+							<div className="text-[12px] text-[var(--c-text-3)]">Require Tier 1+ KYC before allowing buy/sell</div>
 						</div>
-						<Switch checked={config.kycRequired} onCheckedChange={(v) => update("kycRequired", v)} />
+						<Toggle checked={config.kycRequired} onChange={(v) => update("kycRequired", v)} />
 					</div>
-					<div className="flex items-center justify-between py-4">
+					{/* Maintenance mode */}
+					<div className="flex items-center justify-between gap-4 px-5 py-4">
 						<div className="flex items-center gap-2">
-							<AlertTriangle className="size-4 text-warning" />
+							<AlertTriangle className="size-4 text-[var(--c-warn)] shrink-0" />
 							<div>
-								<p className="text-sm font-medium text-warning">Maintenance mode</p>
-								<p className="text-xs text-muted-foreground">Disables all trading. Users see a maintenance banner.</p>
+								<div className="text-[13.5px] font-medium text-[var(--c-warn)]">Maintenance mode</div>
+								<div className="text-[12px] text-[var(--c-text-3)]">Disables all trading. Users see a maintenance banner.</div>
 							</div>
 						</div>
-						<Switch checked={config.maintenanceMode} onCheckedChange={(v) => update("maintenanceMode", v)} />
+						<Toggle checked={config.maintenanceMode} onChange={(v) => update("maintenanceMode", v)} />
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</div>
 		</div>
 	);
 }

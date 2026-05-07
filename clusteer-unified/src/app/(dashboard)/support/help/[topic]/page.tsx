@@ -2,8 +2,6 @@
 
 import { use } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ArrowLeft, Clock, Shield, XCircle, Scale, AlertCircle, DollarSign, Wallet, ArrowLeftRight, BookOpen, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
@@ -56,15 +54,46 @@ export default function HelpTopicPage({ params }: { params: Promise<{ topic: str
 	if (!content) {
 		return (
 			<div className="max-w-3xl mx-auto space-y-6">
-				<Button onClick={() => router.push("/support")} variant="ghost" size="sm">
+				<button
+					onClick={() => router.push("/support")}
+					style={{
+						background: "transparent",
+						border: "none",
+						padding: "8px 12px",
+						cursor: "pointer",
+						display: "inline-flex",
+						alignItems: "center",
+						gap: "8px",
+						fontSize: "14px",
+						color: "var(--c-fg, inherit)",
+					}}
+				>
 					<ArrowLeft className="size-4" /> Back to Support
-				</Button>
-				<Card>
-					<CardContent className="py-12 text-center">
+				</button>
+				<div className="ds-card" style={{ borderRadius: "var(--c-radius, 12px)", border: "1px solid var(--c-border, #e5e5e5)", background: "var(--c-surface, #fff)" }}>
+					<div style={{ padding: "48px", textAlign: "center" }}>
 						<p className="text-muted-foreground">Help topic not found.</p>
-						<Button asChild size="sm" className="mt-4"><Link href="/support">Browse all topics</Link></Button>
-					</CardContent>
-				</Card>
+						<Link
+							href="/support"
+							style={{
+								display: "inline-block",
+								marginTop: "16px",
+								background: "var(--c-accent, #9FE870)",
+								color: "#fff",
+								border: "none",
+								height: "36px",
+								lineHeight: "36px",
+								padding: "0 16px",
+								borderRadius: "8px",
+								fontWeight: 600,
+								fontSize: "14px",
+								textDecoration: "none",
+							}}
+						>
+							Browse all topics
+						</Link>
+					</div>
+				</div>
 			</div>
 		);
 	}
@@ -73,12 +102,25 @@ export default function HelpTopicPage({ params }: { params: Promise<{ topic: str
 
 	return (
 		<div className="max-w-3xl mx-auto space-y-6">
-			<Button onClick={() => router.push("/support")} variant="ghost" size="sm">
+			<button
+				onClick={() => router.push("/support")}
+				style={{
+					background: "transparent",
+					border: "none",
+					padding: "8px 12px",
+					cursor: "pointer",
+					display: "inline-flex",
+					alignItems: "center",
+					gap: "8px",
+					fontSize: "14px",
+					color: "var(--c-fg, inherit)",
+				}}
+			>
 				<ArrowLeft className="size-4" /> Back to Support
-			</Button>
+			</button>
 
-			<Card>
-				<CardContent className="p-6 sm:p-8">
+			<div className="ds-card" style={{ borderRadius: "var(--c-radius, 12px)", border: "1px solid var(--c-border, #e5e5e5)", background: "var(--c-surface, #fff)" }}>
+				<div style={{ padding: "24px 32px" }}>
 					<div className="flex items-center gap-4 mb-8">
 						<div className="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
 							<Icon className="size-6" />
@@ -100,16 +142,48 @@ export default function HelpTopicPage({ params }: { params: Promise<{ topic: str
 					<div className="mt-10 pt-6 border-t border-border">
 						<p className="text-sm text-muted-foreground mb-4">Didn&apos;t find what you need?</p>
 						<div className="flex flex-col sm:flex-row gap-3">
-							<Button asChild>
-								<Link href="/support">Create a ticket</Link>
-							</Button>
-							<Button variant="outline" asChild>
-								<Link href="/support">Back to Help Center</Link>
-							</Button>
+							<Link
+								href="/support"
+								style={{
+									display: "inline-flex",
+									alignItems: "center",
+									justifyContent: "center",
+									background: "var(--c-accent, #9FE870)",
+									color: "#fff",
+									border: "none",
+									height: "40px",
+									padding: "0 16px",
+									borderRadius: "8px",
+									fontWeight: 600,
+									fontSize: "14px",
+									textDecoration: "none",
+								}}
+							>
+								Create a ticket
+							</Link>
+							<Link
+								href="/support"
+								style={{
+									display: "inline-flex",
+									alignItems: "center",
+									justifyContent: "center",
+									background: "transparent",
+									color: "var(--c-fg, inherit)",
+									border: "1px solid var(--c-border, #e5e5e5)",
+									height: "40px",
+									padding: "0 16px",
+									borderRadius: "8px",
+									fontWeight: 500,
+									fontSize: "14px",
+									textDecoration: "none",
+								}}
+							>
+								Back to Help Center
+							</Link>
 						</div>
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</div>
 
 			{/* Related topics */}
 			<div>
@@ -119,17 +193,28 @@ export default function HelpTopicPage({ params }: { params: Promise<{ topic: str
 						.filter(([slug]) => slug !== topic)
 						.slice(0, 2)
 						.map(([slug, t]) => (
-							<Link key={slug} href={`/support/help/${slug}`}>
-								<Card className="group cursor-pointer transition hover:border-primary/50">
-									<CardContent className="p-4 flex items-center gap-3">
-										<div className="rounded-lg bg-primary/10 p-2 text-primary"><t.icon className="size-4" /></div>
-										<div className="flex-1 min-w-0">
-											<p className="font-medium text-sm">{t.title}</p>
-											<p className="text-xs text-muted-foreground">{t.sections.length} articles</p>
-										</div>
-										<ChevronRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-									</CardContent>
-								</Card>
+							<Link key={slug} href={`/support/help/${slug}`} style={{ textDecoration: "none" }}>
+								<div
+									className="ds-card group"
+									style={{
+										borderRadius: "var(--c-radius, 12px)",
+										border: "1px solid var(--c-border, #e5e5e5)",
+										background: "var(--c-surface, #fff)",
+										padding: "16px",
+										display: "flex",
+										alignItems: "center",
+										gap: "12px",
+										cursor: "pointer",
+										transition: "border-color 0.2s",
+									}}
+								>
+									<div className="rounded-lg bg-primary/10 p-2 text-primary"><t.icon className="size-4" /></div>
+									<div className="flex-1 min-w-0">
+										<p className="font-medium text-sm">{t.title}</p>
+										<p className="text-xs text-muted-foreground">{t.sections.length} articles</p>
+									</div>
+									<ChevronRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+								</div>
 							</Link>
 						))}
 				</div>

@@ -188,9 +188,9 @@ export default function ContentPage() {
 			case "Published":
 				return "bg-success/10 text-success border-success";
 			case "Draft":
-				return "bg-background text-muted-foreground border-border";
+				return "bg-background text-[var(--c-text-3)] border-[var(--c-line)]";
 			case "Scheduled":
-				return "bg-primary/10 text-primary border-primary/30";
+				return "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] border-primary/30";
 			case "Archived":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 		}
@@ -212,7 +212,7 @@ export default function ContentPage() {
 	const getTypeIcon = (type: ContentType) => {
 		switch (type) {
 			case "Blog Post":
-				return <FileText className="w-4 h-4 text-primary" />;
+				return <FileText className="w-4 h-4 text-[var(--c-lime-500)]" />;
 			case "Announcement":
 				return <Bell className="w-4 h-4 text-orange-600" />;
 			case "FAQ":
@@ -320,20 +320,20 @@ export default function ContentPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-bold text-foreground">Content Management</h1>
-					<p className="text-sm text-muted-foreground mt-1">Create and manage platform content</p>
+					<h1 className="text-2xl font-bold text-[var(--c-text)]">Content Management</h1>
+					<p className="text-sm text-[var(--c-text-3)] mt-1">Create and manage platform content</p>
 				</div>
 				<div className="flex items-center gap-3">
 					<button
 						onClick={handleExport}
-						className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 					>
 						<Download className="w-4 h-4" />
 						Export
 					</button>
 					<button
 						onClick={() => router.push("/admin/content/new")}
-						className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[var(--c-lime-500)]/90 transition-colors shadow-sm"
 					>
 						<Plus className="w-4 h-4" />
 						New Content
@@ -349,8 +349,8 @@ export default function ContentPage() {
 							<FileText className="w-6 h-6 text-slate-600" />
 						</div>
 					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Total Content</p>
-					<p className="text-3xl font-bold text-foreground mb-2">{stats.total}</p>
+					<p className="text-sm text-[var(--c-text-3)] font-medium mb-1">Total Content</p>
+					<p className="text-3xl font-bold text-[var(--c-text)] mb-2">{stats.total}</p>
 					<p className="text-xs text-slate-600 font-medium">All content items</p>
 				</div>
 
@@ -360,8 +360,8 @@ export default function ContentPage() {
 							<CheckCircle className="w-6 h-6 text-success" />
 						</div>
 					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Published</p>
-					<p className="text-3xl font-bold text-foreground mb-2">{stats.published}</p>
+					<p className="text-sm text-[var(--c-text-3)] font-medium mb-1">Published</p>
+					<p className="text-3xl font-bold text-[var(--c-text)] mb-2">{stats.published}</p>
 					<p className="text-xs text-success font-medium">Live content</p>
 				</div>
 
@@ -371,25 +371,25 @@ export default function ContentPage() {
 							<Edit className="w-6 h-6 text-warning" />
 						</div>
 					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Drafts</p>
-					<p className="text-3xl font-bold text-foreground mb-2">{stats.drafts}</p>
+					<p className="text-sm text-[var(--c-text-3)] font-medium mb-1">Drafts</p>
+					<p className="text-3xl font-bold text-[var(--c-text)] mb-2">{stats.drafts}</p>
 					<p className="text-xs text-warning font-medium">In progress</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-primary/10 rounded-lg">
-							<Clock className="w-6 h-6 text-primary" />
+						<div className="p-3 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<Clock className="w-6 h-6 text-[var(--c-lime-500)]" />
 						</div>
 					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Scheduled</p>
-					<p className="text-3xl font-bold text-foreground mb-2">{stats.scheduled}</p>
-					<p className="text-xs text-primary font-medium">Future publish</p>
+					<p className="text-sm text-[var(--c-text-3)] font-medium mb-1">Scheduled</p>
+					<p className="text-3xl font-bold text-[var(--c-text)] mb-2">{stats.scheduled}</p>
+					<p className="text-xs text-[var(--c-lime-500)] font-medium">Future publish</p>
 				</div>
 			</div>
 
 			{/* Search and Filters */}
-			<div className="bg-card rounded-lg border border-border p-4 space-y-4">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-4 space-y-4">
 				<div className="flex items-center gap-4">
 					<div className="flex-1">
 						<SearchBar
@@ -400,7 +400,7 @@ export default function ContentPage() {
 					</div>
 					<button
 						onClick={() => setShowFilters(!showFilters)}
-						className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 					>
 						<Filter className="w-4 h-4" />
 						Filters
@@ -408,13 +408,13 @@ export default function ContentPage() {
 				</div>
 
 				{showFilters && (
-					<div className="grid grid-cols-2 gap-4 pt-4 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
+					<div className="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--c-line)] animate-in fade-in slide-in-from-top-2 duration-200">
 						<div>
-							<label className="block text-sm font-medium text-muted-foreground mb-2">Type</label>
+							<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">Type</label>
 							<select
 								value={typeFilter}
 								onChange={(e) => setTypeFilter(e.target.value as any)}
-								className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+								className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 							>
 								<option value="All">All Types</option>
 								<option value="Blog Post">Blog Post</option>
@@ -425,11 +425,11 @@ export default function ContentPage() {
 							</select>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-muted-foreground mb-2">Status</label>
+							<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">Status</label>
 							<select
 								value={statusFilter}
 								onChange={(e) => setStatusFilter(e.target.value as any)}
-								className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+								className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 							>
 								<option value="All">All Statuses</option>
 								<option value="Published">Published</option>
@@ -442,12 +442,12 @@ export default function ContentPage() {
 				)}
 
 				<div className="flex items-center justify-between text-sm">
-					<p className="text-muted-foreground">
+					<p className="text-[var(--c-text-3)]">
 						Showing <span className="font-semibold">{filteredContent.length}</span> content items
 					</p>
 					{selectedContent.size > 0 && (
 						<div className="flex items-center gap-2">
-							<span className="text-muted-foreground">{selectedContent.size} selected</span>
+							<span className="text-[var(--c-text-3)]">{selectedContent.size} selected</span>
 							<button
 								onClick={() => handleBulkAction("publish")}
 								className="px-3 py-1 text-xs font-medium bg-success/10 text-success rounded hover:bg-success/10"
@@ -472,10 +472,10 @@ export default function ContentPage() {
 			</div>
 
 			{/* Content Table */}
-			<div className="bg-card rounded-lg border border-border overflow-hidden">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] overflow-hidden">
 				<div className="overflow-x-auto">
 					<table className="w-full">
-						<thead className="bg-background border-b border-border">
+						<thead className="bg-background border-b border-[var(--c-line)]">
 							<tr>
 								<th className="w-12 py-3 px-4">
 									<input
@@ -488,16 +488,16 @@ export default function ContentPage() {
 												setSelectedContent(new Set());
 											}
 										}}
-										className="w-4 h-4 rounded border-border cursor-pointer"
+										className="w-4 h-4 rounded border-[var(--c-line)] cursor-pointer"
 									/>
 								</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Title</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Type</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Status</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Author</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Publish Date</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Views</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Actions</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Title</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Type</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Status</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Author</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Publish Date</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Views</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Actions</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-border">
@@ -513,7 +513,7 @@ export default function ContentPage() {
 											type="checkbox"
 											checked={selectedContent.has(item.id)}
 											onChange={() => toggleContentSelection(item.id)}
-											className="w-4 h-4 rounded border-border cursor-pointer"
+											className="w-4 h-4 rounded border-[var(--c-line)] cursor-pointer"
 										/>
 									</td>
 									<td className="py-4 px-4">
@@ -522,19 +522,19 @@ export default function ContentPage() {
 												<div className="w-1 h-10 bg-[#B8E632] rounded"></div>
 											)}
 											<div className="flex-1">
-												<p className="text-sm font-medium text-foreground">{item.title}</p>
-												<p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{item.excerpt}</p>
+												<p className="text-sm font-medium text-[var(--c-text)]">{item.title}</p>
+												<p className="text-xs text-[var(--c-text-3)] mt-0.5 line-clamp-1">{item.excerpt}</p>
 												<div className="flex items-center gap-1 mt-1">
 													{item.tags.slice(0, 2).map((tag, idx) => (
 														<span
 															key={idx}
-															className="inline-flex items-center px-2 py-0.5 bg-muted text-muted-foreground text-xs rounded"
+															className="inline-flex items-center px-2 py-0.5 bg-[var(--c-surface-2)] text-[var(--c-text-3)] text-xs rounded"
 														>
 															{tag}
 														</span>
 													))}
 													{item.tags.length > 2 && (
-														<span className="text-xs text-muted-foreground">+{item.tags.length - 2}</span>
+														<span className="text-xs text-[var(--c-text-3)]">+{item.tags.length - 2}</span>
 													)}
 												</div>
 											</div>
@@ -543,7 +543,7 @@ export default function ContentPage() {
 									<td className="py-4 px-4">
 										<div className="flex items-center gap-2">
 											{getTypeIcon(item.type)}
-											<span className="text-sm text-foreground">{item.type}</span>
+											<span className="text-sm text-[var(--c-text)]">{item.type}</span>
 										</div>
 									</td>
 									<td className="py-4 px-4">
@@ -554,22 +554,22 @@ export default function ContentPage() {
 									</td>
 									<td className="py-4 px-4">
 										<div className="flex items-center gap-2">
-											<div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-												<User className="w-4 h-4 text-muted-foreground" />
+											<div className="w-8 h-8 bg-[var(--c-surface-2)] rounded-full flex items-center justify-center">
+												<User className="w-4 h-4 text-[var(--c-text-3)]" />
 											</div>
-											<span className="text-sm text-foreground">{item.author}</span>
+											<span className="text-sm text-[var(--c-text)]">{item.author}</span>
 										</div>
 									</td>
 									<td className="py-4 px-4">
 										<div className="flex items-center gap-2">
-											<Calendar className="w-4 h-4 text-muted-foreground" />
-											<span className="text-sm text-foreground">{item.publishDate}</span>
+											<Calendar className="w-4 h-4 text-[var(--c-text-3)]" />
+											<span className="text-sm text-[var(--c-text)]">{item.publishDate}</span>
 										</div>
 									</td>
 									<td className="py-4 px-4">
 										<div className="flex items-center gap-2">
-											<TrendingUp className="w-4 h-4 text-muted-foreground" />
-											<span className="text-sm font-medium text-foreground">{item.views.toLocaleString()}</span>
+											<TrendingUp className="w-4 h-4 text-[var(--c-text-3)]" />
+											<span className="text-sm font-medium text-[var(--c-text)]">{item.views.toLocaleString()}</span>
 										</div>
 									</td>
 									<td className="py-4 px-4">
@@ -577,28 +577,28 @@ export default function ContentPage() {
 											<div className="flex items-center gap-1 animate-in fade-in slide-in-from-left-2 duration-200">
 												<button
 													onClick={() => router.push(`/admin/content/${item.id}`)}
-													className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+													className="p-1.5 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 													title="View content"
 												>
-													<Eye className="w-4 h-4 text-muted-foreground" />
+													<Eye className="w-4 h-4 text-[var(--c-text-3)]" />
 												</button>
 												<button
 													onClick={() => router.push(`/admin/content/${item.id}`)}
-													className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+													className="p-1.5 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 													title="Edit content"
 												>
-													<Edit className="w-4 h-4 text-muted-foreground" />
+													<Edit className="w-4 h-4 text-[var(--c-text-3)]" />
 												</button>
 												<button
 													onClick={() => setShowDuplicateModal(item.id)}
-													className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+													className="p-1.5 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 													title="Duplicate content"
 												>
-													<Copy className="w-4 h-4 text-muted-foreground" />
+													<Copy className="w-4 h-4 text-[var(--c-text-3)]" />
 												</button>
 												<button
 													onClick={() => setShowDeleteModal(item.id)}
-													className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+													className="p-1.5 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 													title="Delete content"
 												>
 													<Trash2 className="w-4 h-4 text-danger" />
@@ -616,9 +616,9 @@ export default function ContentPage() {
 
 				{filteredContent.length === 0 && (
 					<div className="text-center py-12">
-						<FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-						<h3 className="text-sm font-medium text-foreground mb-1">No content found</h3>
-						<p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
+						<FileText className="w-12 h-12 text-[var(--c-text-3)] mx-auto mb-3" />
+						<h3 className="text-sm font-medium text-[var(--c-text)] mb-1">No content found</h3>
+						<p className="text-sm text-[var(--c-text-3)]">Try adjusting your search or filters</p>
 					</div>
 				)}
 			</div>

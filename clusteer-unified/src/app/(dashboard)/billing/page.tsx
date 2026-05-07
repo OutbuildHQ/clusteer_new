@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/store/user";
 import {
 	CreditCard,
@@ -16,12 +14,6 @@ import {
 	Calendar,
 	XCircle,
 } from "lucide-react";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 // Mock data - Set to empty arrays to show empty states, or use sample data
 // TODO: Replace with actual API calls
@@ -58,6 +50,7 @@ export default function BillingPage() {
 		cvv: "",
 	});
 	const [isProcessing, setIsProcessing] = useState(false);
+	const [menuOpen, setMenuOpen] = useState<number | null>(null);
 
 	const filteredTransactions = TRANSACTIONS.filter((transaction) => {
 		if (filterStatus === "all") return true;
@@ -174,21 +167,21 @@ export default function BillingPage() {
 	const handleSetDefaultCard = (cardId: number) => {
 		// TODO: Implement API call to set default card
 		console.log("Setting card as default:", cardId);
-		// This would update the PAYMENT_METHODS array
+		setMenuOpen(null);
 	};
 
 	const handleEditCard = (cardId: number) => {
 		// TODO: Implement edit card functionality
 		console.log("Editing card:", cardId);
-		// This could open a modal similar to add card
+		setMenuOpen(null);
 	};
 
 	const handleRemoveCard = (cardId: number) => {
 		// TODO: Implement API call to remove card
 		if (confirm("Are you sure you want to remove this payment method?")) {
 			console.log("Removing card:", cardId);
-			// This would call API to remove the card
 		}
+		setMenuOpen(null);
 	};
 
 	return (
@@ -205,13 +198,13 @@ export default function BillingPage() {
 			<div className="mb-8">
 				<div className="flex items-center justify-between mb-4">
 					<h2 className="text-lg font-semibold text-foreground">Payment Methods</h2>
-					<Button
+					<button
 						onClick={() => setShowAddPaymentMethod(true)}
-						className="bg-primary border-custom-black/5 text-white h-10 px-4 rounded-full font-semibold"
+						style={{ height: 40, padding: "0 16px", borderRadius: 9999, fontSize: 13.5, fontWeight: 600, border: "none", background: "var(--c-lime-500)", color: "var(--c-onyx-900)", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8 }}
 					>
-						<Plus className="w-4 h-4 mr-2" />
+						<Plus className="w-4 h-4" />
 						Add Payment Method
-					</Button>
+					</button>
 				</div>
 
 				{PAYMENT_METHODS.length === 0 ? (
@@ -227,13 +220,13 @@ export default function BillingPage() {
 							<p className="text-sm text-muted-foreground mb-6">
 								Add a payment method to fund your wallet and make transactions faster and easier
 							</p>
-							<Button
+							<button
 								onClick={() => setShowAddPaymentMethod(true)}
-								className="bg-primary border-custom-black/5 text-white h-11 px-6 rounded-full font-semibold"
+								style={{ height: 44, padding: "0 24px", borderRadius: 9999, fontSize: 13.5, fontWeight: 600, border: "none", background: "var(--c-lime-500)", color: "var(--c-onyx-900)", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8 }}
 							>
-								<Plus className="w-4 h-4 mr-2" />
+								<Plus className="w-4 h-4" />
 								Add Your First Payment Method
-							</Button>
+							</button>
 							<div className="mt-6 flex items-center justify-center gap-4">
 								<div className="flex items-center gap-2">
 									<div className="w-10 h-6 bg-[#1434CB] rounded flex items-center justify-center text-white text-[10px] font-bold">
@@ -264,9 +257,11 @@ export default function BillingPage() {
 								className="bg-card border border-border rounded-xl p-6 relative"
 							>
 								{method.isDefault && (
-									<Badge className="absolute top-4 right-4 bg-primary/10 text-primary border-[#0D4222]/10">
+									<span
+										style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 22, padding: "0 8px", borderRadius: 999, fontSize: 11.5, fontWeight: 500, background: "var(--c-surface-2)", color: "var(--c-text-2)", border: "1px solid var(--c-line)", position: "absolute", top: 16, right: 16 }}
+									>
 										Default
-									</Badge>
+									</span>
 								)}
 								<div className="flex items-start gap-3 mb-4">
 									<div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
@@ -281,33 +276,40 @@ export default function BillingPage() {
 									<p className="text-xs text-muted-foreground">
 										Expires {method.expiryMonth}/{method.expiryYear}
 									</p>
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button
-												variant="ghost"
-												size="icon"
-												className="h-8 w-8"
+									<div className="relative">
+										<button
+											onClick={() => setMenuOpen(menuOpen === method.id ? null : method.id)}
+											style={{ height: 32, width: 32, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--c-text)" }}
+										>
+											<MoreVertical className="h-4 w-4" />
+										</button>
+										{menuOpen === method.id && (
+											<div
+												style={{ position: "absolute", right: 0, top: "100%", marginTop: 4, background: "var(--c-surface)", border: "1px solid var(--c-line)", borderRadius: 10, padding: 4, minWidth: 140, zIndex: 50 }}
 											>
-												<MoreVertical className="h-4 w-4" />
-											</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end">
-											{!method.isDefault && (
-												<DropdownMenuItem onClick={() => handleSetDefaultCard(method.id)}>
-													Set as Default
-												</DropdownMenuItem>
-											)}
-											<DropdownMenuItem onClick={() => handleEditCard(method.id)}>
-												Edit
-											</DropdownMenuItem>
-											<DropdownMenuItem
-												className="text-danger"
-												onClick={() => handleRemoveCard(method.id)}
-											>
-												Remove
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
+												{!method.isDefault && (
+													<button
+														onClick={() => handleSetDefaultCard(method.id)}
+														style={{ display: "block", width: "100%", textAlign: "left", padding: "6px 10px", borderRadius: 6, border: "none", background: "transparent", fontSize: 13, color: "var(--c-text)", cursor: "pointer" }}
+													>
+														Set as Default
+													</button>
+												)}
+												<button
+													onClick={() => handleEditCard(method.id)}
+													style={{ display: "block", width: "100%", textAlign: "left", padding: "6px 10px", borderRadius: 6, border: "none", background: "transparent", fontSize: 13, color: "var(--c-text)", cursor: "pointer" }}
+												>
+													Edit
+												</button>
+												<button
+													onClick={() => handleRemoveCard(method.id)}
+													style={{ display: "block", width: "100%", textAlign: "left", padding: "6px 10px", borderRadius: 6, border: "none", background: "transparent", fontSize: 13, color: "red", cursor: "pointer" }}
+												>
+													Remove
+												</button>
+											</div>
+										)}
+									</div>
 								</div>
 							</div>
 						))}
@@ -336,20 +338,19 @@ export default function BillingPage() {
 							<select
 								value={filterStatus}
 								onChange={(e) => setFilterStatus(e.target.value as any)}
-								className="px-4 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-ring focus:border-transparent"
+								style={{ height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5 }}
 							>
 								<option value="all">All Transactions</option>
 								<option value="completed">Completed</option>
 								<option value="pending">Pending</option>
 							</select>
-							<Button
+							<button
 								onClick={handleExportTransactions}
-								variant="outline"
-								className="border-border h-10 px-4 rounded-lg font-semibold"
+								style={{ height: 40, padding: "0 16px", borderRadius: 10, fontSize: 13.5, fontWeight: 600, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8 }}
 							>
-								<Download className="w-4 h-4 mr-2" />
+								<Download className="w-4 h-4" />
 								Export
-							</Button>
+							</button>
 						</div>
 					)}
 				</div>
@@ -368,19 +369,18 @@ export default function BillingPage() {
 								Your billing transactions will appear here. Start by funding your wallet or making your first trade.
 							</p>
 							<div className="flex flex-col sm:flex-row gap-3 justify-center">
-								<Button
+								<button
 									onClick={() => router.push('/assets')}
-									className="bg-primary border-custom-black/5 text-white h-11 px-6 rounded-full font-semibold"
+									style={{ height: 44, padding: "0 24px", borderRadius: 9999, fontSize: 13.5, fontWeight: 600, border: "none", background: "var(--c-lime-500)", color: "var(--c-onyx-900)", cursor: "pointer" }}
 								>
 									Fund Wallet
-								</Button>
-								<Button
+								</button>
+								<button
 									onClick={() => router.push('/trade')}
-									variant="outline"
-									className="border-border h-11 px-6 rounded-full font-semibold"
+									style={{ height: 44, padding: "0 24px", borderRadius: 9999, fontSize: 13.5, fontWeight: 600, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: "pointer" }}
 								>
 									Start Trading
-								</Button>
+								</button>
 							</div>
 							<div className="mt-8 grid grid-cols-3 gap-4 pt-6 border-t border-border">
 								<div className="text-center">
@@ -416,13 +416,12 @@ export default function BillingPage() {
 								<p className="text-sm text-muted-foreground mb-4">
 									Try selecting a different filter or check back later
 								</p>
-								<Button
+								<button
 									onClick={() => setFilterStatus("all")}
-									variant="outline"
-									className="border-border h-10 px-6 rounded-full font-semibold"
+									style={{ height: 40, padding: "0 24px", borderRadius: 9999, fontSize: 13.5, fontWeight: 600, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: "pointer" }}
 								>
 									View All Transactions
-								</Button>
+								</button>
 							</div>
 						) : (
 							<div className="overflow-x-auto">
@@ -494,15 +493,11 @@ export default function BillingPage() {
 													</div>
 												</td>
 												<td className="px-6 py-4">
-													<Badge
-														className={`${
-															transaction.status === "completed"
-																? "bg-success/10 text-success border-success"
-																: "bg-orange-100 text-orange-800 border-orange-200"
-														}`}
+													<span
+														style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 22, padding: "0 8px", borderRadius: 999, fontSize: 11.5, fontWeight: 500, background: transaction.status === "completed" ? "rgba(21,128,61,0.1)" : "rgba(234,88,12,0.1)", color: transaction.status === "completed" ? "#15803d" : "#c2410c", border: `1px solid ${transaction.status === "completed" ? "#15803d" : "#f97316"}` }}
 													>
 														{transaction.status}
-													</Badge>
+													</span>
 												</td>
 											</tr>
 										))}
@@ -516,7 +511,7 @@ export default function BillingPage() {
 
 			{/* Add Payment Method Modal */}
 			{showAddPaymentMethod && (
-				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+				<div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50, padding: 16 }}>
 					<div className="bg-card rounded-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
 						<div className="flex items-center justify-between mb-6">
 							<h3 className="font-semibold text-xl text-foreground">Add Payment Method</h3>
@@ -531,6 +526,7 @@ export default function BillingPage() {
 									});
 								}}
 								className="text-muted-foreground hover:text-foreground"
+								style={{ background: "transparent", border: "none", cursor: "pointer" }}
 							>
 								<XCircle className="w-6 h-6" />
 							</button>
@@ -547,7 +543,7 @@ export default function BillingPage() {
 								</div>
 								<div className="mb-6">
 									<p className="text-xl tracking-wider font-mono">
-										{cardDetails.cardNumber || "•••• •••• •••• ••••"}
+										{cardDetails.cardNumber || "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022"}
 									</p>
 								</div>
 								<div className="flex justify-between items-end">
@@ -570,7 +566,7 @@ export default function BillingPage() {
 						{/* Card Form */}
 						<form onSubmit={handleAddCard} className="space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-foreground mb-2">
+								<label style={{ fontSize: 12, color: "var(--c-text-3)" }} className="block font-medium mb-2">
 									Card Number *
 								</label>
 								<input
@@ -578,13 +574,14 @@ export default function BillingPage() {
 									value={cardDetails.cardNumber}
 									onChange={handleCardNumberChange}
 									placeholder="1234 5678 9012 3456"
-									className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent font-mono"
+									style={{ display: "flex", alignItems: "center", height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5, width: "100%", outline: "none" }}
+									className="font-mono"
 									required
 								/>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-foreground mb-2">
+								<label style={{ fontSize: 12, color: "var(--c-text-3)" }} className="block font-medium mb-2">
 									Cardholder Name *
 								</label>
 								<input
@@ -594,14 +591,14 @@ export default function BillingPage() {
 										setCardDetails({ ...cardDetails, cardName: e.target.value.toUpperCase() })
 									}
 									placeholder="JOHN DOE"
-									className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent uppercase"
+									style={{ display: "flex", alignItems: "center", height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5, width: "100%", outline: "none", textTransform: "uppercase" }}
 									required
 								/>
 							</div>
 
 							<div className="grid grid-cols-2 gap-4">
 								<div>
-									<label className="block text-sm font-medium text-foreground mb-2">
+									<label style={{ fontSize: 12, color: "var(--c-text-3)" }} className="block font-medium mb-2">
 										Expiry Date *
 									</label>
 									<input
@@ -609,12 +606,13 @@ export default function BillingPage() {
 										value={cardDetails.expiryDate}
 										onChange={handleExpiryDateChange}
 										placeholder="MM / YY"
-										className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent font-mono"
+										style={{ display: "flex", alignItems: "center", height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5, width: "100%", outline: "none" }}
+										className="font-mono"
 										required
 									/>
 								</div>
 								<div>
-									<label className="block text-sm font-medium text-foreground mb-2">
+									<label style={{ fontSize: 12, color: "var(--c-text-3)" }} className="block font-medium mb-2">
 										CVV *
 									</label>
 									<input
@@ -622,7 +620,8 @@ export default function BillingPage() {
 										value={cardDetails.cvv}
 										onChange={handleCvvChange}
 										placeholder="123"
-										className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent font-mono"
+										style={{ display: "flex", alignItems: "center", height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5, width: "100%", outline: "none" }}
+										className="font-mono"
 										required
 									/>
 								</div>
@@ -630,12 +629,12 @@ export default function BillingPage() {
 
 							<div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
 								<p className="text-xs text-muted-foreground">
-									🔒 Your card information is encrypted and secure. We use industry-standard security measures to protect your data.
+									Your card information is encrypted and secure. We use industry-standard security measures to protect your data.
 								</p>
 							</div>
 
 							<div className="flex gap-3 pt-4">
-								<Button
+								<button
 									type="button"
 									onClick={() => {
 										setShowAddPaymentMethod(false);
@@ -646,19 +645,18 @@ export default function BillingPage() {
 											cvv: "",
 										});
 									}}
-									variant="outline"
-									className="flex-1 border-border h-11 rounded-full font-semibold"
 									disabled={isProcessing}
+									style={{ flex: 1, height: 44, borderRadius: 9999, fontSize: 13.5, fontWeight: 600, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: isProcessing ? "not-allowed" : "pointer", opacity: isProcessing ? 0.5 : 1 }}
 								>
 									Cancel
-								</Button>
-								<Button
+								</button>
+								<button
 									type="submit"
 									disabled={isProcessing}
-									className="flex-1 bg-primary border-custom-black/5 text-white h-11 rounded-full font-semibold"
+									style={{ flex: 1, height: 44, borderRadius: 9999, fontSize: 13.5, fontWeight: 600, border: "none", background: "var(--c-lime-500)", color: "var(--c-onyx-900)", cursor: isProcessing ? "not-allowed" : "pointer", opacity: isProcessing ? 0.5 : 1 }}
 								>
 									{isProcessing ? "Processing..." : "Add Card"}
-								</Button>
+								</button>
 							</div>
 						</form>
 					</div>

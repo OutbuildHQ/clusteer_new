@@ -155,20 +155,20 @@ export default function SupportPage() {
 			case "Medium":
 				return "bg-orange-50 text-orange-700 border-orange-200";
 			case "Low":
-				return "bg-primary/10 text-primary border-primary/30";
+				return "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] border-primary/30";
 		}
 	};
 
 	const getStatusColor = (status: Ticket["status"]) => {
 		switch (status) {
 			case "Open":
-				return "bg-primary/10 text-primary";
+				return "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]";
 			case "In Progress":
 				return "bg-orange-50 text-orange-700";
 			case "Resolved":
 				return "bg-success/10 text-success";
 			case "Closed":
-				return "bg-background text-muted-foreground";
+				return "bg-background text-[var(--c-text-3)]";
 		}
 	};
 
@@ -276,20 +276,20 @@ export default function SupportPage() {
 			{/* Page Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-bold text-foreground">Support Tickets</h1>
-					<p className="text-sm text-muted-foreground mt-1">Manage customer support requests</p>
+					<h1 className="text-2xl font-bold text-[var(--c-text)]">Support Tickets</h1>
+					<p className="text-sm text-[var(--c-text-3)] mt-1">Manage customer support requests</p>
 				</div>
 				<div className="flex items-center gap-3">
 					<button
 						onClick={handleExport}
-						className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 					>
 						<Download className="w-4 h-4" />
 						Export
 					</button>
 					<button
 						onClick={handleRefresh}
-						className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[var(--c-lime-500)]/90 transition-colors shadow-sm"
 					>
 						<RefreshCw className="w-4 h-4" />
 						Refresh
@@ -301,13 +301,13 @@ export default function SupportPage() {
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 				<div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-100 p-6 hover:shadow-lg transition-shadow">
 					<div className="flex items-center justify-between mb-4">
-						<div className="p-3 bg-primary/10 rounded-lg">
-							<AlertCircle className="w-6 h-6 text-primary" />
+						<div className="p-3 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<AlertCircle className="w-6 h-6 text-[var(--c-lime-500)]" />
 						</div>
 					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Open Tickets</p>
-					<p className="text-3xl font-bold text-foreground mb-2">{stats.open}</p>
-					<p className="text-xs text-primary font-medium">Needs attention</p>
+					<p className="text-sm text-[var(--c-text-3)] font-medium mb-1">Open Tickets</p>
+					<p className="text-3xl font-bold text-[var(--c-text)] mb-2">{stats.open}</p>
+					<p className="text-xs text-[var(--c-lime-500)] font-medium">Needs attention</p>
 				</div>
 
 				<div className="bg-gradient-to-br from-orange-50 to-white rounded-xl border border-orange-100 p-6 hover:shadow-lg transition-shadow">
@@ -316,8 +316,8 @@ export default function SupportPage() {
 							<Clock className="w-6 h-6 text-orange-600" />
 						</div>
 					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">In Progress</p>
-					<p className="text-3xl font-bold text-foreground mb-2">{stats.inProgress}</p>
+					<p className="text-sm text-[var(--c-text-3)] font-medium mb-1">In Progress</p>
+					<p className="text-3xl font-bold text-[var(--c-text)] mb-2">{stats.inProgress}</p>
 					<p className="text-xs text-orange-600 font-medium">Being handled</p>
 				</div>
 
@@ -327,8 +327,8 @@ export default function SupportPage() {
 							<CheckCircle className="w-6 h-6 text-success" />
 						</div>
 					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Resolved</p>
-					<p className="text-3xl font-bold text-foreground mb-2">{stats.resolved}</p>
+					<p className="text-sm text-[var(--c-text-3)] font-medium mb-1">Resolved</p>
+					<p className="text-3xl font-bold text-[var(--c-text)] mb-2">{stats.resolved}</p>
 					<p className="text-xs text-success font-medium">Completed today</p>
 				</div>
 
@@ -338,14 +338,14 @@ export default function SupportPage() {
 							<MessageSquare className="w-6 h-6 text-emerald-600" />
 						</div>
 					</div>
-					<p className="text-sm text-muted-foreground font-medium mb-1">Avg Response</p>
-					<p className="text-3xl font-bold text-foreground mb-2">{stats.avgResponseTime}</p>
+					<p className="text-sm text-[var(--c-text-3)] font-medium mb-1">Avg Response</p>
+					<p className="text-3xl font-bold text-[var(--c-text)] mb-2">{stats.avgResponseTime}</p>
 					<p className="text-xs text-emerald-600 font-medium">Response time</p>
 				</div>
 			</div>
 
 			{/* Search and Filters */}
-			<div className="bg-card rounded-lg border border-border p-6">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
 				<div className="flex items-center gap-4 mb-4">
 					<div className="flex-1">
 						<SearchBar
@@ -356,7 +356,7 @@ export default function SupportPage() {
 					</div>
 					<button
 						onClick={() => setShowFilters(!showFilters)}
-						className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+						className="flex items-center gap-2 px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
 					>
 						<Filter className="w-4 h-4" />
 						Filters
@@ -366,13 +366,13 @@ export default function SupportPage() {
 
 				{/* Filter Dropdowns */}
 				{showFilters && (
-					<div className="grid grid-cols-3 gap-4 pt-4 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
+					<div className="grid grid-cols-3 gap-4 pt-4 border-t border-[var(--c-line)] animate-in fade-in slide-in-from-top-2 duration-200">
 						<div>
-							<label className="block text-sm font-medium text-muted-foreground mb-2">Status</label>
+							<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">Status</label>
 							<select
 								value={statusFilter}
 								onChange={(e) => setStatusFilter(e.target.value as any)}
-								className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+								className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 							>
 								<option value="All">All Statuses</option>
 								<option value="Open">Open</option>
@@ -382,11 +382,11 @@ export default function SupportPage() {
 							</select>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-muted-foreground mb-2">Priority</label>
+							<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">Priority</label>
 							<select
 								value={priorityFilter}
 								onChange={(e) => setPriorityFilter(e.target.value as any)}
-								className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+								className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 							>
 								<option value="All">All Priorities</option>
 								<option value="High">High</option>
@@ -395,11 +395,11 @@ export default function SupportPage() {
 							</select>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-muted-foreground mb-2">Category</label>
+							<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">Category</label>
 							<select
 								value={categoryFilter}
 								onChange={(e) => setCategoryFilter(e.target.value as any)}
-								className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+								className="w-full px-3 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
 							>
 								<option value="All">All Categories</option>
 								<option value="Technical">Technical</option>
@@ -415,25 +415,25 @@ export default function SupportPage() {
 
 			{/* Bulk Actions Bar */}
 			{selectedTickets.size > 0 && (
-				<div className="bg-primary text-white rounded-lg p-4 flex items-center justify-between animate-in slide-in-from-bottom duration-300">
+				<div className="bg-[var(--c-lime-500)] text-white rounded-lg p-4 flex items-center justify-between animate-in slide-in-from-bottom duration-300">
 					<div className="flex items-center gap-4">
 						<span className="font-medium">{selectedTickets.size} ticket(s) selected</span>
 						<div className="flex items-center gap-2">
 							<button
 								onClick={() => handleBulkAction("assign")}
-								className="px-3 py-1.5 bg-card/20 hover:bg-card/30 rounded-lg text-sm transition-colors"
+								className="px-3 py-1.5 bg-[var(--c-surface)]/20 hover:bg-[var(--c-surface)]/30 rounded-lg text-sm transition-colors"
 							>
 								Assign
 							</button>
 							<button
 								onClick={() => handleBulkAction("archive")}
-								className="px-3 py-1.5 bg-card/20 hover:bg-card/30 rounded-lg text-sm transition-colors"
+								className="px-3 py-1.5 bg-[var(--c-surface)]/20 hover:bg-[var(--c-surface)]/30 rounded-lg text-sm transition-colors"
 							>
 								Archive
 							</button>
 							<button
 								onClick={() => handleBulkAction("close")}
-								className="px-3 py-1.5 bg-card/20 hover:bg-card/30 rounded-lg text-sm transition-colors"
+								className="px-3 py-1.5 bg-[var(--c-surface)]/20 hover:bg-[var(--c-surface)]/30 rounded-lg text-sm transition-colors"
 							>
 								Close
 							</button>
@@ -441,7 +441,7 @@ export default function SupportPage() {
 					</div>
 					<button
 						onClick={() => setSelectedTickets(new Set())}
-						className="p-2 hover:bg-card/20 rounded-lg transition-colors"
+						className="p-2 hover:bg-[var(--c-surface)]/20 rounded-lg transition-colors"
 					>
 						<X className="w-5 h-5" />
 					</button>
@@ -449,10 +449,10 @@ export default function SupportPage() {
 			)}
 
 			{/* Tickets Table */}
-			<div className="bg-card rounded-lg border border-border overflow-hidden">
+			<div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] overflow-hidden">
 				<div className="overflow-x-auto">
 					<table className="w-full">
-						<thead className="bg-background border-b border-border">
+						<thead className="bg-background border-b border-[var(--c-line)]">
 							<tr>
 								<th className="w-12 py-3 px-4">
 									<input
@@ -465,17 +465,17 @@ export default function SupportPage() {
 												setSelectedTickets(new Set());
 											}
 										}}
-										className="w-4 h-4 rounded border-border cursor-pointer"
+										className="w-4 h-4 rounded border-[var(--c-line)] cursor-pointer"
 									/>
 								</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Ticket ID</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">User</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Subject</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Category</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Priority</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Status</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Updated</th>
-								<th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase">Actions</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Ticket ID</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">User</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Subject</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Category</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Priority</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Status</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Updated</th>
+								<th className="text-left py-3 px-4 text-xs font-medium text-[var(--c-text-3)] uppercase">Actions</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-border">
@@ -494,33 +494,33 @@ export default function SupportPage() {
 												type="checkbox"
 												checked={selectedTickets.has(ticket.id)}
 												onChange={() => toggleTicketSelection(ticket.id)}
-												className="w-4 h-4 rounded border-border cursor-pointer"
+												className="w-4 h-4 rounded border-[var(--c-line)] cursor-pointer"
 											/>
 										</td>
 										<td className="py-4 px-4">
-											<span className="text-sm font-medium text-primary">{ticket.id}</span>
+											<span className="text-sm font-medium text-[var(--c-lime-500)]">{ticket.id}</span>
 										</td>
 										<td className="py-4 px-4">
 											<div className="flex items-center gap-2">
-												<div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-													<User className="w-4 h-4 text-muted-foreground" />
+												<div className="w-8 h-8 bg-[var(--c-surface-2)] rounded-full flex items-center justify-center">
+													<User className="w-4 h-4 text-[var(--c-text-3)]" />
 												</div>
 												<div>
-													<p className="text-sm font-medium text-foreground">{ticket.user}</p>
-													<p className="text-xs text-muted-foreground">{ticket.email}</p>
+													<p className="text-sm font-medium text-[var(--c-text)]">{ticket.user}</p>
+													<p className="text-xs text-[var(--c-text-3)]">{ticket.email}</p>
 												</div>
 											</div>
 										</td>
 										<td className="py-4 px-4 max-w-xs">
-											<p className="text-sm font-medium text-foreground truncate">{ticket.subject}</p>
-											<p className="text-xs text-muted-foreground truncate mt-0.5">{ticket.lastMessage}</p>
+											<p className="text-sm font-medium text-[var(--c-text)] truncate">{ticket.subject}</p>
+											<p className="text-xs text-[var(--c-text-3)] truncate mt-0.5">{ticket.lastMessage}</p>
 											<div className="flex items-center gap-1 mt-1">
-												<MessageSquare className="w-3 h-3 text-muted-foreground" />
-												<span className="text-xs text-muted-foreground">{ticket.messages} messages</span>
+												<MessageSquare className="w-3 h-3 text-[var(--c-text-3)]" />
+												<span className="text-xs text-[var(--c-text-3)]">{ticket.messages} messages</span>
 											</div>
 										</td>
 										<td className="py-4 px-4">
-											<span className="inline-flex items-center px-2 py-1 bg-muted text-muted-foreground text-xs font-medium rounded">
+											<span className="inline-flex items-center px-2 py-1 bg-[var(--c-surface-2)] text-[var(--c-text-3)] text-xs font-medium rounded">
 												{ticket.category}
 											</span>
 										</td>
@@ -536,29 +536,29 @@ export default function SupportPage() {
 											</span>
 										</td>
 										<td className="py-4 px-4">
-											<div className="text-sm text-foreground">{ticket.updated}</div>
-											{ticket.assignee && <div className="text-xs text-muted-foreground mt-0.5">{ticket.assignee}</div>}
+											<div className="text-sm text-[var(--c-text)]">{ticket.updated}</div>
+											{ticket.assignee && <div className="text-xs text-[var(--c-text-3)] mt-0.5">{ticket.assignee}</div>}
 										</td>
 										<td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
 											{hoveredRow === ticket.id ? (
 												<div className="flex items-center gap-1 animate-in fade-in slide-in-from-left-2 duration-200">
 													<button
 														onClick={() => router.push(`/admin/support/${ticket.id}`)}
-														className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+														className="p-1.5 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 														title="View ticket"
 													>
-														<Eye className="w-4 h-4 text-muted-foreground" />
+														<Eye className="w-4 h-4 text-[var(--c-text-3)]" />
 													</button>
 													<button
 														onClick={() => setShowArchiveModal(ticket.id)}
-														className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+														className="p-1.5 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 														title="Archive ticket"
 													>
-														<Archive className="w-4 h-4 text-muted-foreground" />
+														<Archive className="w-4 h-4 text-[var(--c-text-3)]" />
 													</button>
 													<button
 														onClick={() => setShowDeleteModal(ticket.id)}
-														className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+														className="p-1.5 hover:bg-[var(--c-surface-2)] rounded-lg transition-colors"
 														title="Delete ticket"
 													>
 														<Trash2 className="w-4 h-4 text-danger" />
@@ -578,9 +578,9 @@ export default function SupportPage() {
 				{/* Empty State */}
 				{filteredTickets.length === 0 && (
 					<div className="text-center py-12">
-						<LifeBuoy className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-						<h3 className="text-sm font-medium text-foreground mb-1">No tickets found</h3>
-						<p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
+						<LifeBuoy className="w-12 h-12 text-[var(--c-text-3)] mx-auto mb-3" />
+						<h3 className="text-sm font-medium text-[var(--c-text)] mb-1">No tickets found</h3>
+						<p className="text-sm text-[var(--c-text-3)]">Try adjusting your search or filters</p>
 					</div>
 				)}
 			</div>

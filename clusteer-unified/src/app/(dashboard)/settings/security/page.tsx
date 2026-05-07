@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { DotIcon, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,20 +35,26 @@ export default function Page() {
 									width={46}
 									height={46}
 								/>
-								<Badge
-									variant="secondary"
-									className={`rounded-full ml-auto h-6 py-1 ${
-										is2FAEnabled
-											? "text-success bg-success/10"
-											: "text-[#344054] bg-[#E9E9E9]"
-									}`}
+								<span
+									className="ml-auto"
+									style={{
+										display: "inline-flex",
+										alignItems: "center",
+										borderRadius: "9999px",
+										height: "24px",
+										padding: "0 10px",
+										fontSize: "12px",
+										fontWeight: 500,
+										color: is2FAEnabled ? "var(--c-success, #15803d)" : "#344054",
+										background: is2FAEnabled ? "rgba(21,128,61,0.1)" : "#E9E9E9",
+									}}
 								>
 									<DotIcon
 										stroke={is2FAEnabled ? "#15803d" : "#344054"}
 										strokeWidth={8}
 									/>
 									{is2FAEnabled ? "Enabled" : "Disabled"}
-								</Badge>
+								</span>
 							</div>
 							<p className="font-medium text-lg mt-2.5">
 								Google Authenticator (recommended)
@@ -68,20 +73,26 @@ export default function Page() {
 						<li className="bg-[#F2F2F0] rounded-2xl border border-[#21241D1A] p-5 xl:max-w-[435px] w-full shrink-0 md:space-y-2">
 							<div className="flex items-center">
 								<Mail size={46} />
-								<Badge
-									variant="secondary"
-									className={`rounded-full ml-auto h-6 py-1 ${
-										isEmailVerified
-											? "text-success bg-success/10"
-											: "text-[#344054] bg-[#E9E9E9]"
-									}`}
+								<span
+									className="ml-auto"
+									style={{
+										display: "inline-flex",
+										alignItems: "center",
+										borderRadius: "9999px",
+										height: "24px",
+										padding: "0 10px",
+										fontSize: "12px",
+										fontWeight: 500,
+										color: isEmailVerified ? "var(--c-success, #15803d)" : "#344054",
+										background: isEmailVerified ? "rgba(21,128,61,0.1)" : "#E9E9E9",
+									}}
 								>
 									<DotIcon
 										stroke={isEmailVerified ? "#15803d" : "#344054"}
 										strokeWidth={8}
 									/>
 									{isEmailVerified ? "Enabled" : "Disabled"}
-								</Badge>
+								</span>
 							</div>
 							<p className="font-medium text-lg mt-2.5">Email verification</p>
 							<p className="text-sm">
@@ -102,16 +113,26 @@ export default function Page() {
 								width={46}
 								height={46}
 							/>
-							<Badge
-								variant="secondary"
-								className="rounded-full ml-auto h-6 text-[#344054] bg-[#E9E9E9] py-1"
+							<span
+								className="ml-auto"
+								style={{
+									display: "inline-flex",
+									alignItems: "center",
+									borderRadius: "9999px",
+									height: "24px",
+									padding: "0 10px",
+									fontSize: "12px",
+									fontWeight: 500,
+									color: "#344054",
+									background: "#E9E9E9",
+								}}
 							>
 								<DotIcon
 									stroke="#344054"
 									strokeWidth={8}
 								/>
 								Disabled
-							</Badge>
+							</span>
 						</div>
 						<p className="font-medium text-lg mt-2.5">
 							Phone number verification
@@ -139,16 +160,26 @@ export default function Page() {
 									width={46}
 									height={46}
 								/>
-								<Badge
-									variant="secondary"
-									className="rounded-full ml-auto h-6 text-success bg-success/10 py-1"
+								<span
+									className="ml-auto"
+									style={{
+										display: "inline-flex",
+										alignItems: "center",
+										borderRadius: "9999px",
+										height: "24px",
+										padding: "0 10px",
+										fontSize: "12px",
+										fontWeight: 500,
+										color: "var(--c-success, #15803d)",
+										background: "rgba(21,128,61,0.1)",
+									}}
 								>
 									<DotIcon
 										stroke="#15803d"
 										strokeWidth={8}
 									/>
 									Enabled
-								</Badge>
+								</span>
 							</div>
 							<p className="font-medium text-lg mt-2.5">Login password</p>
 							<p className="text-sm">

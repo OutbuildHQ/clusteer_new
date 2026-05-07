@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
 
 export default function DashboardError({
 	error,
@@ -20,9 +19,12 @@ export default function DashboardError({
 			<p className="text-sm text-muted-foreground text-center max-w-md">
 				An unexpected error occurred. Please try again or contact support if the issue persists.
 			</p>
-			<Button onClick={reset} variant="outline">
+			<button
+				onClick={reset}
+				style={{ height: 36, padding: "0 14px", borderRadius: 10, fontSize: 13.5, fontWeight: 500, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: "pointer" }}
+			>
 				Try again
-			</Button>
+			</button>
 		</div>
 	);
 }

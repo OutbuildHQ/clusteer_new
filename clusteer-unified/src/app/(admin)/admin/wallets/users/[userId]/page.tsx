@@ -170,7 +170,7 @@ export default function UserWalletDetailPage() {
       case "Restricted":
         return "text-danger bg-danger/10 border-danger";
       default:
-        return "text-muted-foreground bg-background border-border";
+        return "text-[var(--c-text-3)] bg-background border-[var(--c-line)]";
     }
   };
 
@@ -197,7 +197,7 @@ export default function UserWalletDetailPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading wallet details...</p>
+          <p className="mt-4 text-[var(--c-text-3)]">Loading wallet details...</p>
         </div>
       </div>
     );
@@ -208,11 +208,11 @@ export default function UserWalletDetailPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <AlertTriangle className="h-12 w-12 text-danger mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-foreground">User Not Found</h2>
-          <p className="text-muted-foreground mt-2">Unable to load user wallet details</p>
+          <h2 className="text-xl font-semibold text-[var(--c-text)]">User Not Found</h2>
+          <p className="text-[var(--c-text-3)] mt-2">Unable to load user wallet details</p>
           <button
             onClick={() => router.back()}
-            className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#013800]"
+            className="mt-4 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[#013800]"
           >
             Go Back
           </button>
@@ -227,17 +227,17 @@ export default function UserWalletDetailPage() {
       <div className="mb-6">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-muted-foreground hover:text-primary mb-4 transition-colors"
+          className="flex items-center gap-2 text-[var(--c-text-3)] hover:text-[var(--c-lime-500)] mb-4 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Wallets
         </button>
 
-        <div className="bg-card rounded-lg border border-border p-6">
+        <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">{user.name}</h1>
-              <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+              <h1 className="text-2xl font-bold text-[var(--c-text)]">{user.name}</h1>
+              <div className="flex items-center gap-4 mt-2 text-sm text-[var(--c-text-3)]">
                 <span>{user.email}</span>
                 <span>•</span>
                 <span>{user.phone}</span>
@@ -260,22 +260,22 @@ export default function UserWalletDetailPage() {
           </div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-4 gap-4 mt-6 pt-6 border-t border-border">
+          <div className="grid grid-cols-4 gap-4 mt-6 pt-6 border-t border-[var(--c-line)]">
             <div>
-              <p className="text-sm text-muted-foreground">Total Transactions</p>
-              <p className="text-xl font-bold text-foreground mt-1">{user.totalTransactions.toLocaleString()}</p>
+              <p className="text-sm text-[var(--c-text-3)]">Total Transactions</p>
+              <p className="text-xl font-bold text-[var(--c-text)] mt-1">{user.totalTransactions.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Lifetime Volume</p>
-              <p className="text-xl font-bold text-foreground mt-1">₦{user.lifetimeVolume.toLocaleString()}</p>
+              <p className="text-sm text-[var(--c-text-3)]">Lifetime Volume</p>
+              <p className="text-xl font-bold text-[var(--c-text)] mt-1">₦{user.lifetimeVolume.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Wallets</p>
-              <p className="text-xl font-bold text-foreground mt-1">{wallets.length}</p>
+              <p className="text-sm text-[var(--c-text-3)]">Total Wallets</p>
+              <p className="text-xl font-bold text-[var(--c-text)] mt-1">{wallets.length}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Last Login</p>
-              <p className="text-xl font-bold text-foreground mt-1">{formatDateTime(user.lastLogin)}</p>
+              <p className="text-sm text-[var(--c-text-3)]">Last Login</p>
+              <p className="text-xl font-bold text-[var(--c-text)] mt-1">{formatDateTime(user.lastLogin)}</p>
             </div>
           </div>
         </div>
@@ -286,7 +286,7 @@ export default function UserWalletDetailPage() {
         {wallets.map((wallet) => (
           <div
             key={wallet.currency}
-            className="bg-card rounded-lg border border-border p-6 hover:shadow-lg transition-shadow"
+            className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -294,9 +294,9 @@ export default function UserWalletDetailPage() {
                   <Wallet className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">{wallet.currency}</h3>
+                  <h3 className="font-semibold text-[var(--c-text)]">{wallet.currency}</h3>
                   {wallet.network && (
-                    <p className="text-xs text-muted-foreground">{wallet.network}</p>
+                    <p className="text-xs text-[var(--c-text-3)]">{wallet.network}</p>
                   )}
                 </div>
               </div>
@@ -307,27 +307,27 @@ export default function UserWalletDetailPage() {
 
             <div className="space-y-3">
               <div>
-                <p className="text-sm text-muted-foreground">Available Balance</p>
-                <p className="text-2xl font-bold text-foreground">{formatCurrency(wallet.availableBalance, wallet.currency)}</p>
+                <p className="text-sm text-[var(--c-text-3)]">Available Balance</p>
+                <p className="text-2xl font-bold text-[var(--c-text)]">{formatCurrency(wallet.availableBalance, wallet.currency)}</p>
               </div>
 
               {wallet.lockedBalance > 0 && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Locked</span>
+                  <span className="text-[var(--c-text-3)]">Locked</span>
                   <span className="font-medium text-orange-600">{formatCurrency(wallet.lockedBalance, wallet.currency)}</span>
                 </div>
               )}
 
-              <div className="pt-3 border-t border-border space-y-2 text-sm">
+              <div className="pt-3 border-t border-[var(--c-line)] space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground flex items-center gap-1">
+                  <span className="text-[var(--c-text-3)] flex items-center gap-1">
                     <TrendingUp className="h-4 w-4 text-success" />
                     Total Deposits
                   </span>
                   <span className="font-medium text-success">{formatCurrency(wallet.totalDeposits, wallet.currency)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground flex items-center gap-1">
+                  <span className="text-[var(--c-text-3)] flex items-center gap-1">
                     <TrendingDown className="h-4 w-4 text-danger" />
                     Total Withdrawals
                   </span>
@@ -336,27 +336,27 @@ export default function UserWalletDetailPage() {
               </div>
 
               {wallet.address && (
-                <div className="pt-3 border-t border-border">
-                  <p className="text-xs text-muted-foreground mb-1">Wallet Address</p>
+                <div className="pt-3 border-t border-[var(--c-line)]">
+                  <p className="text-xs text-[var(--c-text-3)] mb-1">Wallet Address</p>
                   <div className="flex items-center gap-2">
                     <code className="text-xs bg-background px-2 py-1 rounded flex-1 truncate">
                       {wallet.address}
                     </code>
                     <button
                       onClick={() => handleCopy(wallet.address!, `${wallet.currency}-address`)}
-                      className="p-1 hover:bg-muted rounded transition-colors"
+                      className="p-1 hover:bg-[var(--c-surface-2)] rounded transition-colors"
                     >
                       {copied === `${wallet.currency}-address` ? (
                         <Check className="h-4 w-4 text-success" />
                       ) : (
-                        <Copy className="h-4 w-4 text-muted-foreground" />
+                        <Copy className="h-4 w-4 text-[var(--c-text-3)]" />
                       )}
                     </button>
                   </div>
                 </div>
               )}
 
-              <div className="pt-3 flex items-center justify-between text-xs text-muted-foreground">
+              <div className="pt-3 flex items-center justify-between text-xs text-[var(--c-text-3)]">
                 <span className="flex items-center gap-1">
                   <Activity className="h-3 w-3" />
                   Last Activity
@@ -369,12 +369,12 @@ export default function UserWalletDetailPage() {
       </div>
 
       {/* Action Buttons */}
-      <div className="bg-card rounded-lg border border-border p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Wallet Actions</h2>
+      <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)] p-6 mb-6">
+        <h2 className="text-lg font-semibold text-[var(--c-text)] mb-4">Wallet Actions</h2>
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setShowCreditModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#013800] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[#013800] transition-colors"
           >
             <Plus className="h-4 w-4" />
             Manual Credit
@@ -388,12 +388,12 @@ export default function UserWalletDetailPage() {
           </button>
           <button
             onClick={() => setShowFreezeModal(true)}
-            className="flex items-center gap-2 px-4 py-2 border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors"
+            className="flex items-center gap-2 px-4 py-2 border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
           >
             <Lock className="h-4 w-4" />
             Freeze Wallet
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 border border-border text-muted-foreground rounded-lg hover:bg-background transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors">
             <Download className="h-4 w-4" />
             Export Transactions
           </button>
@@ -401,15 +401,15 @@ export default function UserWalletDetailPage() {
       </div>
 
       {/* Transaction History */}
-      <div className="bg-card rounded-lg border border-border">
-        <div className="p-6 border-b border-border">
+      <div className="bg-[var(--c-surface)] rounded-lg border border-[var(--c-line)]">
+        <div className="p-6 border-b border-[var(--c-line)]">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground">Transaction History</h2>
+            <h2 className="text-lg font-semibold text-[var(--c-text)]">Transaction History</h2>
             <div className="flex items-center gap-3">
               <select
                 value={selectedWallet}
                 onChange={(e) => setSelectedWallet(e.target.value)}
-                className="px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 <option value="all">All Wallets</option>
                 <option value="Naira">Naira</option>
@@ -419,7 +419,7 @@ export default function UserWalletDetailPage() {
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
-                className="px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="px-3 py-2 border border-[var(--c-line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 <option value="7days">Last 7 Days</option>
                 <option value="30days">Last 30 Days</option>
@@ -432,24 +432,24 @@ export default function UserWalletDetailPage() {
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-background border-b border-border">
+            <thead className="bg-background border-b border-[var(--c-line)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--c-text-3)] uppercase tracking-wider">
                   Transaction
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--c-text-3)] uppercase tracking-wider">
                   Type
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--c-text-3)] uppercase tracking-wider">
                   Amount
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--c-text-3)] uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--c-text-3)] uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--c-text-3)] uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -462,8 +462,8 @@ export default function UserWalletDetailPage() {
                   <tr key={tx.id} className="hover:bg-background transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <p className="font-medium text-foreground">{tx.id}</p>
-                        <p className="text-xs text-muted-foreground">{tx.reference}</p>
+                        <p className="font-medium text-[var(--c-text)]">{tx.id}</p>
+                        <p className="text-xs text-[var(--c-text-3)]">{tx.reference}</p>
                         {tx.note && (
                           <p className="text-xs text-orange-600 mt-1 flex items-center gap-1">
                             <AlertTriangle className="h-3 w-3" />
@@ -491,7 +491,7 @@ export default function UserWalletDetailPage() {
                           {tx.type.includes("Credit") || tx.type === "Deposit" ? "+" : "-"}
                           {formatCurrency(tx.amount, tx.currency)}
                         </p>
-                        <p className="text-xs text-muted-foreground">{tx.currency}</p>
+                        <p className="text-xs text-[var(--c-text-3)]">{tx.currency}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -499,13 +499,13 @@ export default function UserWalletDetailPage() {
                         {tx.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--c-text-3)]">
                       {formatDateTime(tx.timestamp)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => router.push(`/admin/wallets/transactions/${tx.id}`)}
-                        className="text-sm text-primary hover:underline"
+                        className="text-sm text-[var(--c-lime-500)] hover:underline"
                       >
                         View Details
                       </button>
@@ -516,15 +516,15 @@ export default function UserWalletDetailPage() {
           </table>
         </div>
 
-        <div className="p-4 border-t border-border flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
+        <div className="p-4 border-t border-[var(--c-line)] flex items-center justify-between">
+          <p className="text-sm text-[var(--c-text-3)]">
             Showing {Math.min(10, transactions.length)} of {transactions.length} transactions
           </p>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-1 border border-border rounded text-sm hover:bg-background disabled:opacity-50">
+            <button className="px-3 py-1 border border-[var(--c-line)] rounded text-sm hover:bg-background disabled:opacity-50">
               Previous
             </button>
-            <button className="px-3 py-1 border border-border rounded text-sm hover:bg-background">
+            <button className="px-3 py-1 border border-[var(--c-line)] rounded text-sm hover:bg-background">
               Next
             </button>
           </div>
@@ -534,18 +534,18 @@ export default function UserWalletDetailPage() {
       {/* Modals would be rendered here - simplified for brevity */}
       {showCreditModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Manual Credit</h3>
-            <p className="text-sm text-muted-foreground mb-4">Credit funds to user&apos;s wallet</p>
+          <div className="bg-[var(--c-surface)] rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-[var(--c-text)] mb-4">Manual Credit</h3>
+            <p className="text-sm text-[var(--c-text-3)] mb-4">Credit funds to user&apos;s wallet</p>
             {/* Form fields would go here */}
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowCreditModal(false)}
-                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background"
+                className="flex-1 px-4 py-2 border border-[var(--c-line)] rounded-lg hover:bg-background"
               >
                 Cancel
               </button>
-              <button className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#013800]">
+              <button className="flex-1 px-4 py-2 bg-[var(--c-lime-500)] text-white rounded-lg hover:bg-[#013800]">
                 Confirm Credit
               </button>
             </div>
@@ -555,14 +555,14 @@ export default function UserWalletDetailPage() {
 
       {showDebitModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Manual Debit</h3>
-            <p className="text-sm text-muted-foreground mb-4">Debit funds from user&apos;s wallet</p>
+          <div className="bg-[var(--c-surface)] rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-[var(--c-text)] mb-4">Manual Debit</h3>
+            <p className="text-sm text-[var(--c-text-3)] mb-4">Debit funds from user&apos;s wallet</p>
             {/* Form fields would go here */}
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowDebitModal(false)}
-                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background"
+                className="flex-1 px-4 py-2 border border-[var(--c-line)] rounded-lg hover:bg-background"
               >
                 Cancel
               </button>
@@ -576,14 +576,14 @@ export default function UserWalletDetailPage() {
 
       {showFreezeModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Freeze Wallet</h3>
-            <p className="text-sm text-muted-foreground mb-4">Freeze user&apos;s wallet to prevent transactions</p>
+          <div className="bg-[var(--c-surface)] rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-[var(--c-text)] mb-4">Freeze Wallet</h3>
+            <p className="text-sm text-[var(--c-text-3)] mb-4">Freeze user&apos;s wallet to prevent transactions</p>
             {/* Form fields would go here */}
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowFreezeModal(false)}
-                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-background"
+                className="flex-1 px-4 py-2 border border-[var(--c-line)] rounded-lg hover:bg-background"
               >
                 Cancel
               </button>
