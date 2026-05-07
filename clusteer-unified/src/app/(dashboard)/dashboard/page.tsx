@@ -108,8 +108,10 @@ export default function DashboardPage() {
 					<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--c-line)", paddingBottom: 16, marginBottom: 16 }}>
 						<h3 style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>Allocation</h3>
 					</div>
-					<div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+					<div className="flex items-center gap-3 lg:gap-[18px]">
+						<div className="shrink-0">
 						<Donut slices={slices} size={150} />
+						</div>
 						<div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
 							{ASSETS.slice(0, 5).map((a) => (
 								<div key={a.sym} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 12.5 }}>

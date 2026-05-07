@@ -17,12 +17,14 @@ export function MobileTabBar() {
 
 	return (
 		<nav
-			className="lg:hidden flex shrink-0"
+			className="lg:hidden fixed bottom-0 left-0 right-0 z-40 flex"
 			style={{
 				borderTop: "1px solid var(--c-line)",
 				background: "var(--c-surface)",
-				padding: "8px 8px 24px",
-				gap: 4,
+				paddingBottom: "env(safe-area-inset-bottom, 16px)",
+				paddingTop: 8,
+				paddingLeft: 8,
+				paddingRight: 8,
 			}}
 		>
 			{TABS.map((t) => {

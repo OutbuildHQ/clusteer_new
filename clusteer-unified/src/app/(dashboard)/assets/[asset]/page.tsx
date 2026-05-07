@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useMemo } from "react";
 import Link from "next/link";
 import { ASSETS } from "@/lib/mock-data";
 import { formatMoney, formatPct } from "@/lib/utils";
@@ -25,11 +25,11 @@ export default function AssetDetailPage({ params }: { params: Promise<{ asset: s
 	const avgBuyNgn = priceNgn * 0.94;
 	const investedNgn = balanceNgn * 0.94;
 	const pnlNgn = balanceNgn * 0.06;
-	const candles = generateCandles(80, priceNgn, priceNgn * 0.02);
-	const areaSeries = generateAreaSeries(30, priceNgn);
+	const candles = useMemo(() => generateCandles(80, priceNgn, priceNgn * 0.02), [priceNgn]);
+	const areaSeries = useMemo(() => generateAreaSeries(30, priceNgn), [priceNgn]);
 
 	// Seeded random generator for deterministic mock transactions per asset
-	const txns = (() => {
+	const txns = useMemo(() => {
 		const types = ["Buy", "Sell", "Send", "Receive"] as const;
 		const statuses = ["Completed", "Completed", "Completed", "Pending", "Failed"] as const;
 		const dates = ["Today", "Yesterday", "May 5", "May 3", "Apr 28", "Apr 22", "Apr 15", "Apr 10"];
@@ -56,7 +56,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ asset: s
 				when: times[i % times.length],
 			};
 		});
-	})();
+	}, [a.symbol, a.balance]);
 
 	return (
 		<div className="space-y-4 lg:space-y-6 px-4 lg:px-0">
@@ -97,7 +97,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ asset: s
 								{formatPct(a.change24h)} (24h)
 							</div>
 						</div>
-						<div className="flex items-center gap-3">
+						<div className="flex items-center gap-2 lg:gap-3 flex-wrap">
 							{/* Chart type tabs */}
 							<div className="inline-flex p-1 rounded-[10px] gap-0.5" style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>
 								{(["Candle", "Line", "Area"] as ChartType[]).map((t) => (

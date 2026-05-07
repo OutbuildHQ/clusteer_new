@@ -162,13 +162,11 @@ export async function middleware(request: NextRequest) {
 
 	// Protected routes - require user authentication
 	if (!userToken) {
-		console.log(`[middleware] No auth_token cookie for ${pathname}, redirecting to /login`);
 		return NextResponse.redirect(new URL("/login", request.url));
 	}
 
 	// Verify user token validity
 	const isValidUser = await verifyAuthToken(userToken);
-	console.log(`[middleware] Token verify for ${pathname}: ${isValidUser}`);
 	if (!isValidUser) {
 		// User token is invalid or expired - clear cookie and redirect to login
 		const response = NextResponse.redirect(new URL("/login", request.url));
