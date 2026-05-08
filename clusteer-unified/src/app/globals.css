@@ -372,6 +372,10 @@ button:active:not(:disabled) {
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: #2A302C;
 	--sidebar-ring: #C9F542;
+
+	/* Tinted surfaces — dark equivalents */
+	--card-tinted: oklch(0.195 0.010 120);
+	--surface-warm: oklch(0.185 0.008 80);
 }
 
 @layer base {

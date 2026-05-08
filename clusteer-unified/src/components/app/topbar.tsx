@@ -25,7 +25,11 @@ export function TopBar() {
 	const initials = user
 		? `${(user.firstName?.[0] ?? "").toUpperCase()}${(user.lastName?.[0] ?? "").toUpperCase()}` || user.username?.[0]?.toUpperCase() || "U"
 		: "U";
-	const displayName = user?.firstName ? `${user.firstName} ${user.lastName?.[0] ?? ""}`.trim() + "." : "User";
+	const displayName = user
+		? (user.firstName && user.lastName
+			? `${user.firstName} ${user.lastName}`
+			: user.firstName || user.lastName || user.username || "User")
+		: "User";
 	const displayEmail = user?.email
 		? user.email.length > 12
 			? user.email.slice(0, 8) + "…" + user.email.slice(user.email.lastIndexOf("."))
