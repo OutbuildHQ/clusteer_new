@@ -1,30 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getAllOrders } from "@/lib/api/user/queries";
 import { formatMoney } from "@/lib/utils";
-import { X } from "lucide-react";
-
-/* ── Mock orders matching dashboards/data.js ── */
-const ASSETS_SHORT = ["USDT", "USDC"];
-function seed(s: number) { return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
-const ORDERS = Array.from({ length: 30 }, (_, i) => {
-	const r = seed(i + 200);
-	const side = r() > 0.5 ? "Buy" : "Sell";
-	const sym = ASSETS_SHORT[Math.floor(r() * ASSETS_SHORT.length)];
-	const prices: Record<string, number> = { USDT: 1, USDC: 1, BTC: 71240, ETH: 3568, SOL: 182, BNB: 612 };
-	return {
-		id: `ORD-${44820 - i * 3}`,
-		pair: `${sym}/NGN`,
-		side,
-		type: ["Limit", "Market", "Stop"][Math.floor(r() * 3)],
-		price: (prices[sym] ?? 1) * (0.95 + r() * 0.1),
-		amount: +(1 + r() * 200).toFixed(2),
-		filled: Math.floor(r() * 100),
-		status: ["Open", "Filled", "Cancelled", "Partial"][Math.floor(r() * 4)],
-		time: `${Math.floor(r() * 23)}:${String(Math.floor(r() * 59)).padStart(2, "0")}`,
-		placed: `Mar ${Math.floor(r() * 15) + 1}, 2026`,
-	};
-});
+import { X, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import type { IOrder } from "@/types";
 
 function StatusBadge({ s }: { s: string }) {
 	const map: Record<string, { bg: string; color: string; border?: string }> = {
@@ -44,12 +25,51 @@ function StatusBadge({ s }: { s: string }) {
 
 type Tab = "Open" | "Filled" | "Cancelled" | "All";
 
+/** Map API IOrder to the shape the UI rows expect */
+function mapOrder(o: IOrder) {
+	const pair = o.crypto && o.fiat ? `${o.crypto}/${o.fiat}` : `${o.crypto ?? "USDT"}/NGN`;
+	const prices: Record<string, number> = { USDT: 1, USDC: 1, BTC: 71240, ETH: 3568, SOL: 182, BNB: 612 };
+	const price = o.rate ?? (prices[o.crypto] ?? 1);
+	return {
+		id: o.number ?? o.id,
+		pair,
+		side: o.type,
+		type: o.paymentMethod ?? "Market",
+		price,
+		amount: o.amount,
+		filled: o.status === "Filled" ? 100 : o.status === "Partial" ? 62 : o.status === "Cancelled" ? 0 : 0,
+		status: o.status,
+		time: o.dateOrdered ? new Date(o.dateOrdered).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : (o.date ?? ""),
+		placed: o.dateOrdered ? new Date(o.dateOrdered).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" }) : o.date,
+		dateSettled: o.dateSettled,
+		chain: o.chain,
+	};
+}
+
+const PAGE_SIZE = 15;
+
 export default function OrdersPage() {
 	const [tab, setTab] = useState<Tab>("Open");
-	const [open, setOpen] = useState<(typeof ORDERS)[number] | null>(null);
+	const [q, setQ] = useState("");
+	const [page, setPage] = useState(1);
+	const [open, setOpen] = useState<ReturnType<typeof mapOrder> | null>(null);
 
-	const list = ORDERS.filter(
-		(o) => tab === "All" || o.status === tab || (tab === "Open" && ["Open", "Partial"].includes(o.status)),
+	const { data: response, isLoading, isError } = useQuery({
+		queryKey: ["orders", page],
+		queryFn: () => getAllOrders({ page, size: PAGE_SIZE }),
+	});
+
+	const orders = useMemo(() => (response?.data ?? []).map(mapOrder), [response]);
+	const totalPages = response?.metadata?.totalPages ?? 1;
+
+	const list = useMemo(
+		() =>
+			orders.filter(
+				(o) =>
+					(tab === "All" || o.status === tab || (tab === "Open" && ["Open", "Partial"].includes(o.status))) &&
+					(!q || o.id.toUpperCase().includes(q.toUpperCase()) || o.pair.toUpperCase().includes(q.toUpperCase()) || String(o.amount).includes(q)),
+			),
+		[orders, tab, q],
 	);
 
 	return (
@@ -68,84 +88,154 @@ export default function OrdersPage() {
 				</div>
 			</div>
 
+			{/* Search */}
+			<div className="flex items-center w-full sm:max-w-[320px] h-9 px-3 rounded-[10px]" style={{ border: "1px solid var(--c-line)", background: "var(--c-surface)" }}>
+				<Search className="size-4 shrink-0" style={{ color: "var(--c-text-3)" }} />
+				<input className="flex-1 bg-transparent outline-none text-[13.5px] ml-2" style={{ color: "var(--c-text)" }} placeholder="Search by ID, pair, amount…" value={q} onChange={(e) => setQ(e.target.value)} />
+			</div>
+
+			{/* Loading state */}
+			{isLoading && (
+				<div className="space-y-2">
+					{Array.from({ length: 8 }).map((_, i) => (
+						<div key={i} className="rounded-[12px] p-4" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
+							<div className="flex items-center gap-3">
+								<div className="flex-1 space-y-2">
+									<div className="h-3 w-1/3 rounded animate-pulse" style={{ background: "var(--c-surface-2)" }} />
+									<div className="h-3 w-1/4 rounded animate-pulse" style={{ background: "var(--c-surface-2)" }} />
+								</div>
+								<div className="h-4 w-20 rounded animate-pulse" style={{ background: "var(--c-surface-2)" }} />
+							</div>
+						</div>
+					))}
+				</div>
+			)}
+
+			{/* Error state */}
+			{isError && !isLoading && (
+				<div className="rounded-[14px] p-8 text-center" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
+					<div className="text-[15px] font-medium" style={{ color: "var(--c-text)" }}>Unable to load orders</div>
+					<div className="text-[13px] mt-1" style={{ color: "var(--c-text-3)" }}>Please check your connection and try again.</div>
+				</div>
+			)}
+
+			{/* Empty state */}
+			{!isLoading && !isError && list.length === 0 && (
+				<div className="rounded-[14px] p-8 text-center" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
+					<div className="text-[15px] font-medium" style={{ color: "var(--c-text)" }}>No orders found</div>
+					<div className="text-[13px] mt-1" style={{ color: "var(--c-text-3)" }}>
+						{q || tab !== "Open" ? "Try adjusting your search or filter." : "Your orders will appear here."}
+					</div>
+				</div>
+			)}
+
 			{/* Table (desktop) */}
-			<div className="hidden lg:block rounded-[14px] overflow-hidden" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-				<table className="w-full border-collapse text-[13px]">
-					<thead>
-						<tr>
-							{["Pair", "Side", "Type", "Price", "Amount", "Filled", "Status", "Time"].map((h, i) => (
-								<th key={h} className={`font-medium text-[11.5px] uppercase tracking-[0.05em] px-3.5 py-2.5 ${i === 7 ? "text-right" : "text-left"}`}
-									style={{ color: "var(--c-text-3)", borderBottom: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>{h}</th>
+			{!isLoading && !isError && list.length > 0 && (
+				<div className="hidden lg:block rounded-[14px] overflow-hidden" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
+					<table className="w-full border-collapse text-[13px]">
+						<thead>
+							<tr>
+								{["Pair", "Side", "Type", "Price", "Amount", "Filled", "Status", "Time"].map((h, i) => (
+									<th key={h} className={`font-medium text-[11.5px] uppercase tracking-[0.05em] px-3.5 py-2.5 ${i === 7 ? "text-right" : "text-left"}`}
+										style={{ color: "var(--c-text-3)", borderBottom: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>{h}</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{list.map((o) => (
+								<tr key={o.id} className="cursor-pointer transition-colors hover:bg-[var(--c-surface-2)]" onClick={() => setOpen(o)}>
+									<td className="px-3.5 py-3 font-semibold" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", color: "var(--c-text)" }}>{o.pair}</td>
+									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
+										<span className="inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium"
+											style={o.side === "Buy" ? { background: "var(--c-up-soft)", color: "var(--c-up)" } : { background: "var(--c-down-soft)", color: "var(--c-down)" }}>
+											{o.side}
+										</span>
+									</td>
+									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", color: "var(--c-text)" }}>{o.type}</td>
+									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+										{formatMoney(o.price * 1610, "NGN", { decimals: 0 })}
+									</td>
+									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+										{o.amount.toFixed(2)}
+									</td>
+									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
+										<div className="flex items-center gap-2">
+											<div className="flex-1 max-w-[80px] h-[6px] rounded-full overflow-hidden" style={{ background: "var(--c-surface-3)" }}>
+												<div className="h-full rounded-full" style={{ width: `${o.filled}%`, background: "var(--c-lime-500)" }} />
+											</div>
+											<span className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>{o.filled}%</span>
+										</div>
+									</td>
+									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
+										<StatusBadge s={o.status} />
+									</td>
+									<td className="px-3.5 py-3 text-right tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+										{o.time}
+									</td>
+								</tr>
 							))}
-						</tr>
-					</thead>
-					<tbody>
-						{list.slice(0, 15).map((o) => (
-							<tr key={o.id} className="cursor-pointer transition-colors hover:bg-[var(--c-surface-2)]" onClick={() => setOpen(o)}>
-								<td className="px-3.5 py-3 font-semibold" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", color: "var(--c-text)" }}>{o.pair}</td>
-								<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-									<span className="inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium"
+						</tbody>
+					</table>
+				</div>
+			)}
+
+			{/* Card list (mobile) */}
+			{!isLoading && !isError && list.length > 0 && (
+				<div className="lg:hidden space-y-2">
+					{list.map((o) => (
+						<div key={o.id} className="rounded-[12px] p-3 cursor-pointer active:scale-[0.99] transition-transform" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }} onClick={() => setOpen(o)}>
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-2">
+									<span className="font-semibold text-[13px]" style={{ color: "var(--c-text)" }}>{o.pair}</span>
+									<span className="inline-flex items-center gap-1 h-[22px] px-2 rounded-full text-[11.5px] font-medium"
 										style={o.side === "Buy" ? { background: "var(--c-up-soft)", color: "var(--c-up)" } : { background: "var(--c-down-soft)", color: "var(--c-down)" }}>
 										{o.side}
 									</span>
-								</td>
-								<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", color: "var(--c-text)" }}>{o.type}</td>
-								<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-									{formatMoney(o.price * 1610, "NGN", { decimals: 0 })}
-								</td>
-								<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-									{o.amount.toFixed(2)}
-								</td>
-								<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-									<div className="flex items-center gap-2">
-										<div className="flex-1 max-w-[80px] h-[6px] rounded-full overflow-hidden" style={{ background: "var(--c-surface-3)" }}>
-											<div className="h-full rounded-full" style={{ width: `${o.filled}%`, background: "var(--c-lime-500)" }} />
-										</div>
-										<span className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>{o.filled}%</span>
-									</div>
-								</td>
-								<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-									<StatusBadge s={o.status} />
-								</td>
-								<td className="px-3.5 py-3 text-right tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-									{o.time}
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-
-			{/* Card list (mobile) */}
-			<div className="lg:hidden space-y-2">
-				{list.slice(0, 15).map((o) => (
-					<div key={o.id} className="rounded-[12px] p-3 cursor-pointer active:scale-[0.99] transition-transform" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }} onClick={() => setOpen(o)}>
-						<div className="flex items-center justify-between">
-							<div className="flex items-center gap-2">
-								<span className="font-semibold text-[13px]" style={{ color: "var(--c-text)" }}>{o.pair}</span>
-								<span className="inline-flex items-center gap-1 h-[22px] px-2 rounded-full text-[11.5px] font-medium"
-									style={o.side === "Buy" ? { background: "var(--c-up-soft)", color: "var(--c-up)" } : { background: "var(--c-down-soft)", color: "var(--c-down)" }}>
-									{o.side}
-								</span>
-								<span className="text-[12px]" style={{ color: "var(--c-text-2)" }}>{o.type}</span>
-							</div>
-							<StatusBadge s={o.status} />
-						</div>
-						<div className="flex items-center justify-between mt-2">
-							<div>
-								<div className="tabular-nums text-[13px] font-semibold" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>{o.amount.toFixed(2)}</div>
-								<div className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>@ {formatMoney(o.price * 1610, "NGN", { decimals: 0 })}</div>
-							</div>
-							<div className="flex items-center gap-2">
-								<div className="w-[60px] h-[6px] rounded-full overflow-hidden" style={{ background: "var(--c-surface-3)" }}>
-									<div className="h-full rounded-full" style={{ width: `${o.filled}%`, background: "var(--c-lime-500)" }} />
+									<span className="text-[12px]" style={{ color: "var(--c-text-2)" }}>{o.type}</span>
 								</div>
-								<span className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>{o.filled}%</span>
+								<StatusBadge s={o.status} />
+							</div>
+							<div className="flex items-center justify-between mt-2">
+								<div>
+									<div className="tabular-nums text-[13px] font-semibold" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>{o.amount.toFixed(2)}</div>
+									<div className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>@ {formatMoney(o.price * 1610, "NGN", { decimals: 0 })}</div>
+								</div>
+								<div className="flex items-center gap-2">
+									<div className="w-[60px] h-[6px] rounded-full overflow-hidden" style={{ background: "var(--c-surface-3)" }}>
+										<div className="h-full rounded-full" style={{ width: `${o.filled}%`, background: "var(--c-lime-500)" }} />
+									</div>
+									<span className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>{o.filled}%</span>
+								</div>
 							</div>
 						</div>
-					</div>
-				))}
-			</div>
+					))}
+				</div>
+			)}
+
+			{/* Pagination */}
+			{!isLoading && !isError && totalPages > 1 && (
+				<div className="flex items-center justify-center gap-2">
+					<button
+						onClick={() => setPage((p) => Math.max(1, p - 1))}
+						disabled={page <= 1}
+						className="inline-flex items-center justify-center size-9 rounded-[10px] transition-colors disabled:opacity-40"
+						style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}
+					>
+						<ChevronLeft className="size-4" />
+					</button>
+					<span className="text-[13px] tabular-nums px-3" style={{ color: "var(--c-text-2)", fontFamily: "var(--f-mono)" }}>
+						Page {page} of {totalPages}
+					</span>
+					<button
+						onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+						disabled={page >= totalPages}
+						className="inline-flex items-center justify-center size-9 rounded-[10px] transition-colors disabled:opacity-40"
+						style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}
+					>
+						<ChevronRight className="size-4" />
+					</button>
+				</div>
+			)}
 
 			{/* Order detail drawer */}
 			{open && (

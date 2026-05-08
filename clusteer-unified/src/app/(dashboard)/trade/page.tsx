@@ -1,26 +1,68 @@
 "use client";
 
 import { useState } from "react";
-import { ASSETS } from "@/lib/mock-data";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getUserWallet } from "@/lib/api/wallet/queries";
+import { getExchangeRate, submitTrade } from "@/lib/api/trade/queries";
 import { formatMoney } from "@/lib/utils";
 import { AssetLogo } from "@/components/primitives/asset-logo";
-import { ArrowDownUp } from "lucide-react";
+import { ArrowDownUp, Loader2 } from "lucide-react";
+import { Toast } from "@/components/toast";
 
 type Side = "Buy" | "Sell" | "Swap";
+
+const SUPPORTED_ASSETS = [
+	{ symbol: "USDT", name: "Tether", chains: ["Tron", "BSC", "Ethereum"] },
+	{ symbol: "USDC", name: "USD Coin", chains: ["Ethereum", "Solana", "Polygon"] },
+];
 
 export default function TradePage() {
 	const [side, setSide] = useState<Side>("Buy");
 	const [asset, setAsset] = useState("USDT");
 	const [amount, setAmount] = useState("");
 
-	const selected = ASSETS.find((a) => a.symbol === asset) ?? ASSETS[0];
-	const rate = selected.priceNgn;
+	const { data: walletData } = useQuery({
+		queryKey: ["wallet"],
+		queryFn: getUserWallet,
+	});
+
+	const {
+		data: rateData,
+		isLoading: rateLoading,
+		isError: rateError,
+	} = useQuery({
+		queryKey: ["exchange-rate", "NGN"],
+		queryFn: () => getExchangeRate("NGN"),
+		refetchInterval: 30_000, // refresh rate every 30s
+	});
+
+	const tradeMutation = useMutation({
+		mutationFn: submitTrade,
+		onSuccess: () => {
+			Toast.success("Trade submitted successfully");
+			setAmount("");
+		},
+		onError: () => {
+			Toast.error("Trade failed. Please try again.");
+		},
+	});
+
+	const selected = SUPPORTED_ASSETS.find((a) => a.symbol === asset) ?? SUPPORTED_ASSETS[0];
+
+	// Use live rate if available, otherwise show unavailable
+	const rate: number | null = rateData?.rate ?? rateData?.data?.rate ?? null;
 	const amtNum = parseFloat(amount) || 0;
-	const ngnValue = amtNum * rate;
+	const ngnValue = rate !== null ? amtNum * rate : 0;
 	const feePct = 0.015;
 	const feeAmt = ngnValue * feePct;
 
+	// Find user's balance for the selected asset from wallet data
+	const walletBalance = walletData?.walletAssets?.find(
+		(w) => w.currency === asset
+	)?.balance;
+
 	const receiveValue = (() => {
+		if (rate === null) return "Rate unavailable";
 		if (side === "Buy") {
 			return amtNum ? (amtNum / rate).toFixed(6) : "0";
 		}
@@ -32,6 +74,22 @@ export default function TradePage() {
 	})();
 
 	const payLabel = side === "Buy" ? "You pay" : "You sell";
+
+	const handleContinue = () => {
+		if (!amtNum || amtNum <= 0) {
+			Toast.error("Please enter a valid amount");
+			return;
+		}
+		if (rate === null) {
+			Toast.error("Exchange rate unavailable. Please try again later.");
+			return;
+		}
+		tradeMutation.mutate({
+			side: side.toLowerCase(),
+			amount: amtNum,
+			chain: selected.chains[0],
+		});
+	};
 
 	return (
 		<div className="w-full max-w-[520px] mx-auto flex flex-col gap-5 lg:gap-6 px-4 lg:px-0">
@@ -95,17 +153,36 @@ export default function TradePage() {
 				<div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 18 }}>
 					{/* You pay / sell panel */}
 					<div>
-						<label
+						<div
 							style={{
-								display: "block",
-								fontSize: 12,
-								color: "var(--c-text-3)",
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "center",
 								marginBottom: 6,
-								fontWeight: 500,
 							}}
 						>
-							{payLabel}
-						</label>
+							<label
+								style={{
+									fontSize: 12,
+									color: "var(--c-text-3)",
+									fontWeight: 500,
+								}}
+							>
+								{payLabel}
+							</label>
+							{side !== "Buy" && walletBalance !== undefined && (
+								<span
+									style={{
+										fontSize: 11.5,
+										color: "var(--c-text-3)",
+										fontFamily: "var(--f-mono)",
+										fontVariantNumeric: "tabular-nums",
+									}}
+								>
+									Balance: {walletBalance.toLocaleString()} {asset}
+								</span>
+							)}
+						</div>
 						<div
 							className="h-[54px] lg:h-16"
 							style={{
@@ -206,7 +283,7 @@ export default function TradePage() {
 									fontWeight: 600,
 									fontFamily: "var(--f-display)",
 									fontVariantNumeric: "tabular-nums",
-									color: "var(--c-text)",
+									color: rate === null ? "var(--c-text-3)" : "var(--c-text)",
 								}}
 							>
 								{receiveValue}
@@ -237,44 +314,71 @@ export default function TradePage() {
 							padding: 14,
 						}}
 					>
-						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
-							<span style={{ color: "var(--c-text-3)" }}>Rate</span>
-							<span style={{ fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>
-								1 {asset} = {formatMoney(rate, "NGN", { decimals: 0 })}
-							</span>
-						</div>
-						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
-							<span style={{ color: "var(--c-text-3)" }}>Fee (1.5%)</span>
-							<span style={{ fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>
-								{formatMoney(feeAmt, "NGN", { decimals: 0 })}
-							</span>
-						</div>
-						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
-							<span style={{ color: "var(--c-text-3)" }}>Network</span>
-							<span style={{ color: "var(--c-text)" }}>{selected.chains[0]}</span>
-						</div>
+						{rateLoading ? (
+							<div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "center", padding: "8px 0" }}>
+								<Loader2 size={14} className="animate-spin" style={{ color: "var(--c-text-3)" }} />
+								<span style={{ fontSize: 12.5, color: "var(--c-text-3)" }}>Loading rates...</span>
+							</div>
+						) : rateError || rate === null ? (
+							<div style={{ display: "flex", justifyContent: "center", fontSize: 12.5, color: "var(--c-text-3)", padding: "8px 0" }}>
+								Rate unavailable — please try again later
+							</div>
+						) : (
+							<>
+								<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
+									<span style={{ color: "var(--c-text-3)" }}>Rate</span>
+									<span style={{ fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>
+										1 {asset} = {formatMoney(rate, "NGN", { decimals: 0 })}
+									</span>
+								</div>
+								<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
+									<span style={{ color: "var(--c-text-3)" }}>Fee (1.5%)</span>
+									<span style={{ fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>
+										{formatMoney(feeAmt, "NGN", { decimals: 0 })}
+									</span>
+								</div>
+								<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
+									<span style={{ color: "var(--c-text-3)" }}>Network</span>
+									<span style={{ color: "var(--c-text)" }}>{selected.chains[0]}</span>
+								</div>
+							</>
+						)}
 					</div>
 
 					{/* Continue button */}
 					<button
+						onClick={handleContinue}
+						disabled={tradeMutation.isPending || rateLoading || rate === null}
 						className="h-[50px] lg:h-12"
 						style={{
 							width: "100%",
 							borderRadius: 10,
 							border: "none",
-							cursor: "pointer",
+							cursor: tradeMutation.isPending || rateLoading || rate === null ? "not-allowed" : "pointer",
 							fontSize: 15,
 							fontWeight: 500,
 							fontFamily: "var(--f-sans)",
-							background: "var(--c-lime-500)",
-							color: "var(--c-onyx-900)",
+							background: tradeMutation.isPending || rateLoading || rate === null
+								? "var(--c-onyx-700)"
+								: "var(--c-lime-500)",
+							color: tradeMutation.isPending || rateLoading || rate === null
+								? "var(--c-text-3)"
+								: "var(--c-onyx-900)",
 							marginTop: 6,
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
+							gap: 8,
 						}}
 					>
-						Continue → Review
+						{tradeMutation.isPending ? (
+							<>
+								<Loader2 size={16} className="animate-spin" />
+								Processing...
+							</>
+						) : (
+							"Continue \u2192 Review"
+						)}
 					</button>
 				</div>
 			</div>
@@ -312,7 +416,7 @@ function AssetSelector({ value, onChange }: { value: string; onChange: (v: strin
 					height: "100%",
 				}}
 			>
-				{ASSETS.map((a) => (
+				{SUPPORTED_ASSETS.map((a) => (
 					<option key={a.symbol} value={a.symbol}>
 						{a.symbol}
 					</option>

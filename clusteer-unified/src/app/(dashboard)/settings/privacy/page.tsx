@@ -2,13 +2,38 @@
 
 import { Download, Eye, Shield, Cookie, Link2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Toast } from "@/components/toast";
-import { useUser } from "@/store/user";
+import { useUserId } from "@/hooks/use-user-id";
 import {
 	getPrivacySettings,
 	updatePrivacySettings,
 	createDataExportRequest,
 } from "@/lib/api/settings";
+
+interface LocalPrivacySettings {
+	profileVisibility: boolean;
+	transactionHistory: boolean;
+	analyticalCookies: boolean;
+	marketingCookies: boolean;
+	thirdPartySharing: boolean;
+}
+
+const DEFAULT_SETTINGS: LocalPrivacySettings = {
+	profileVisibility: false,
+	transactionHistory: false,
+	analyticalCookies: true,
+	marketingCookies: false,
+	thirdPartySharing: false,
+};
+
+const KEY_MAP: Record<keyof LocalPrivacySettings, string> = {
+	profileVisibility: "profile_visibility",
+	transactionHistory: "transaction_history_visibility",
+	analyticalCookies: "analytical_cookies",
+	marketingCookies: "marketing_cookies",
+	thirdPartySharing: "third_party_sharing",
+};
 
 function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange?: () => void; disabled?: boolean }) {
 	return (
@@ -46,92 +71,70 @@ function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange?: 
 }
 
 export default function Page() {
-	const user = useUser();
-	const [preferences, setPreferences] = useState({
-		profileVisibility: false,
-		transactionHistory: false,
-		analyticalCookies: true,
-		marketingCookies: false,
-		thirdPartySharing: false,
+	const userId = useUserId();
+
+	const { data: apiSettings, isLoading, isError } = useQuery({
+		queryKey: ["privacy-settings", userId],
+		queryFn: () => getPrivacySettings(userId!),
+		enabled: !!userId,
 	});
 
-	const [isDownloading, setIsDownloading] = useState(false);
-	const [isLoading, setIsLoading] = useState(true);
-	const [isSaving, setIsSaving] = useState(false);
+	const [preferences, setPreferences] = useState<LocalPrivacySettings>(DEFAULT_SETTINGS);
 
 	useEffect(() => {
-		const fetchSettings = async () => {
-			if (!user?.id) return;
-
-			try {
-				const data = await getPrivacySettings(user.id);
-				setPreferences({
-					profileVisibility: data.profile_visibility,
-					transactionHistory: data.transaction_history_visibility,
-					analyticalCookies: data.analytical_cookies,
-					marketingCookies: data.marketing_cookies,
-					thirdPartySharing: data.third_party_sharing,
-				});
-			} catch (error) {
-				Toast.error("Failed to load privacy settings");
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchSettings();
-	}, [user?.id]);
-
-	const handleToggle = async (key: keyof typeof preferences) => {
-		if (!user?.id) return;
-
-		const newValue = !preferences[key];
-		setPreferences((prev) => ({
-			...prev,
-			[key]: newValue,
-		}));
-
-		setIsSaving(true);
-		try {
-			const updateData: Record<string, boolean> = {};
-			if (key === "profileVisibility")
-				updateData.profile_visibility = newValue;
-			if (key === "transactionHistory")
-				updateData.transaction_history_visibility = newValue;
-			if (key === "analyticalCookies")
-				updateData.analytical_cookies = newValue;
-			if (key === "marketingCookies") updateData.marketing_cookies = newValue;
-			if (key === "thirdPartySharing")
-				updateData.third_party_sharing = newValue;
-
-			await updatePrivacySettings(user.id, updateData);
-			Toast.success("Privacy settings updated");
-		} catch (error) {
-			Toast.error("Failed to update privacy settings");
-			// Revert on error
-			setPreferences((prev) => ({
-				...prev,
-				[key]: !newValue,
-			}));
-		} finally {
-			setIsSaving(false);
+		if (apiSettings) {
+			setPreferences({
+				profileVisibility: apiSettings.profile_visibility,
+				transactionHistory: apiSettings.transaction_history_visibility,
+				analyticalCookies: apiSettings.analytical_cookies,
+				marketingCookies: apiSettings.marketing_cookies,
+				thirdPartySharing: apiSettings.third_party_sharing,
+			});
 		}
-	};
+	}, [apiSettings]);
 
-	const handleDownloadData = async () => {
-		if (!user?.id) return;
+	const toggleMutation = useMutation({
+		mutationFn: (update: Record<string, boolean>) =>
+			updatePrivacySettings(userId!, update),
+		onSuccess: () => {
+			Toast.success("Privacy settings updated");
+		},
+		onError: (_err, variables) => {
+			Toast.error("Failed to update privacy settings");
+			// Revert the optimistic update
+			if (apiSettings) {
+				setPreferences({
+					profileVisibility: apiSettings.profile_visibility,
+					transactionHistory: apiSettings.transaction_history_visibility,
+					analyticalCookies: apiSettings.analytical_cookies,
+					marketingCookies: apiSettings.marketing_cookies,
+					thirdPartySharing: apiSettings.third_party_sharing,
+				});
+			}
+		},
+	});
 
-		setIsDownloading(true);
-		try {
-			await createDataExportRequest(user.id, "full_data");
+	const exportMutation = useMutation({
+		mutationFn: () => createDataExportRequest(userId!, "full_data"),
+		onSuccess: () => {
 			Toast.success(
 				"Your data export has been initiated. You'll receive an email when it's ready."
 			);
-		} catch (error) {
+		},
+		onError: () => {
 			Toast.error("Failed to initiate data export");
-		} finally {
-			setIsDownloading(false);
-		}
+		},
+	});
+
+	const handleToggle = (key: keyof LocalPrivacySettings) => {
+		if (!userId) return;
+
+		const newValue = !preferences[key];
+		// Optimistic update
+		setPreferences((prev) => ({ ...prev, [key]: newValue }));
+
+		const apiKey = KEY_MAP[key];
+		toggleMutation.mutate({ [apiKey]: newValue });
 	};
 
 	if (isLoading) {
@@ -143,6 +146,21 @@ export default function Page() {
 					</h1>
 					<p className="text-sm lg:text-base text-muted-foreground mt-2">
 						Loading your privacy settings...
+					</p>
+				</header>
+			</section>
+		);
+	}
+
+	if (isError) {
+		return (
+			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
+				<header className="mb-6">
+					<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
+						Privacy & Data
+					</h1>
+					<p className="text-sm lg:text-base text-muted-foreground mt-2">
+						Failed to load privacy settings. Please refresh the page.
 					</p>
 				</header>
 			</section>
@@ -188,6 +206,7 @@ export default function Page() {
 							<Toggle
 								checked={preferences.profileVisibility}
 								onChange={() => handleToggle("profileVisibility")}
+								disabled={toggleMutation.isPending}
 							/>
 						</div>
 
@@ -203,6 +222,7 @@ export default function Page() {
 							<Toggle
 								checked={preferences.transactionHistory}
 								onChange={() => handleToggle("transactionHistory")}
+								disabled={toggleMutation.isPending}
 							/>
 						</div>
 					</div>
@@ -250,6 +270,7 @@ export default function Page() {
 							<Toggle
 								checked={preferences.analyticalCookies}
 								onChange={() => handleToggle("analyticalCookies")}
+								disabled={toggleMutation.isPending}
 							/>
 						</div>
 
@@ -263,6 +284,7 @@ export default function Page() {
 							<Toggle
 								checked={preferences.marketingCookies}
 								onChange={() => handleToggle("marketingCookies")}
+								disabled={toggleMutation.isPending}
 							/>
 						</div>
 					</div>
@@ -297,6 +319,7 @@ export default function Page() {
 							<Toggle
 								checked={preferences.thirdPartySharing}
 								onChange={() => handleToggle("thirdPartySharing")}
+								disabled={toggleMutation.isPending}
 							/>
 						</div>
 					</div>
@@ -328,8 +351,8 @@ export default function Page() {
 					</div>
 
 					<button
-						onClick={handleDownloadData}
-						disabled={isDownloading}
+						onClick={() => exportMutation.mutate()}
+						disabled={exportMutation.isPending}
 						style={{
 							background: "transparent",
 							color: "var(--c-fg, inherit)",
@@ -339,15 +362,15 @@ export default function Page() {
 							borderRadius: "9999px",
 							fontWeight: 600,
 							fontSize: "14px",
-							cursor: isDownloading ? "not-allowed" : "pointer",
-							opacity: isDownloading ? 0.5 : 1,
+							cursor: exportMutation.isPending ? "not-allowed" : "pointer",
+							opacity: exportMutation.isPending ? 0.5 : 1,
 							display: "inline-flex",
 							alignItems: "center",
 							gap: "8px",
 						}}
 					>
 						<Download className="w-4 h-4" />
-						{isDownloading ? "Processing..." : "Request Data Download"}
+						{exportMutation.isPending ? "Processing..." : "Request Data Download"}
 					</button>
 				</div>
 

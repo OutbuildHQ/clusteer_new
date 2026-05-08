@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@/store/user";
 import {
 	TrendingUp,
 	Download,
@@ -8,13 +7,14 @@ import {
 	CheckCircle2,
 	XCircle,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Toast } from "@/components/toast";
+import { useUserId } from "@/hooks/use-user-id";
 import {
 	getAccountLimits,
 	createDataExportRequest,
 	getKYCVerification,
-	type AccountLimits as APIAccountLimits,
 	type KYCVerification,
 } from "@/lib/api/settings";
 
@@ -25,98 +25,40 @@ interface LimitData {
 }
 
 export default function Page() {
-	const user = useUser();
-	const [isExporting, setIsExporting] = useState(false);
-	const [isLoading, setIsLoading] = useState(true);
-	const [kycStatus, setKycStatus] = useState<KYCVerification | null>(null);
+	const userId = useUserId();
 	const [showCloseModal, setShowCloseModal] = useState(false);
-	const [accountLimits, setAccountLimits] = useState<{
-		dailyWithdrawal: LimitData;
-		monthlyWithdrawal: LimitData;
-		dailyDeposit: LimitData;
-		monthlyDeposit: LimitData;
-	}>({
-		dailyWithdrawal: {
-			used: 0,
-			limit: 50000,
-			currency: "NGN",
-		},
-		monthlyWithdrawal: {
-			used: 0,
-			limit: 500000,
-			currency: "NGN",
-		},
-		dailyDeposit: {
-			used: 0,
-			limit: 100000,
-			currency: "NGN",
-		},
-		monthlyDeposit: {
-			used: 0,
-			limit: 1000000,
-			currency: "NGN",
-		},
+
+	const {
+		data: limitsData,
+		isLoading: limitsLoading,
+		isError: limitsError,
+	} = useQuery({
+		queryKey: ["account-limits", userId],
+		queryFn: () => getAccountLimits(userId!),
+		enabled: !!userId,
 	});
 
-	useEffect(() => {
-		const fetchData = async () => {
-			if (!user?.id) return;
+	const {
+		data: kycStatus,
+		isLoading: kycLoading,
+		isError: kycError,
+	} = useQuery({
+		queryKey: ["kyc-status", userId],
+		queryFn: () => getKYCVerification(userId!),
+		enabled: !!userId,
+	});
 
-			try {
-				const [limitsData, kycData] = await Promise.all([
-					getAccountLimits(user.id),
-					getKYCVerification(user.id),
-				]);
-
-				setAccountLimits({
-					dailyWithdrawal: {
-						used: limitsData.daily_withdrawal_used,
-						limit: limitsData.daily_withdrawal_limit,
-						currency: limitsData.limit_currency,
-					},
-					monthlyWithdrawal: {
-						used: limitsData.monthly_withdrawal_used,
-						limit: limitsData.monthly_withdrawal_limit,
-						currency: limitsData.limit_currency,
-					},
-					dailyDeposit: {
-						used: limitsData.daily_deposit_used,
-						limit: limitsData.daily_deposit_limit,
-						currency: limitsData.limit_currency,
-					},
-					monthlyDeposit: {
-						used: limitsData.monthly_deposit_used,
-						limit: limitsData.monthly_deposit_limit,
-						currency: limitsData.limit_currency,
-					},
-				});
-
-				setKycStatus(kycData);
-			} catch (error) {
-				Toast.error("Failed to load account data");
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchData();
-	}, [user?.id]);
-
-	const handleExportHistory = async () => {
-		if (!user?.id) return;
-
-		setIsExporting(true);
-		try {
-			await createDataExportRequest(user.id, "transaction_history");
+	const exportMutation = useMutation({
+		mutationFn: () => createDataExportRequest(userId!, "transaction_history"),
+		onSuccess: () => {
 			Toast.success(
 				"Transaction history export initiated. Check your email shortly."
 			);
-		} catch (error) {
+		},
+		onError: () => {
 			Toast.error("Failed to initiate export");
-		} finally {
-			setIsExporting(false);
-		}
-	};
+		},
+	});
 
 	const handleCloseAccount = async () => {
 		setShowCloseModal(false);
@@ -124,6 +66,38 @@ export default function Page() {
 			"Account closure feature is currently under maintenance. Please contact support."
 		);
 	};
+
+	const isLoading = limitsLoading || kycLoading;
+
+	const accountLimits = limitsData
+		? {
+				dailyWithdrawal: {
+					used: limitsData.daily_withdrawal_used,
+					limit: limitsData.daily_withdrawal_limit,
+					currency: limitsData.limit_currency,
+				} as LimitData,
+				monthlyWithdrawal: {
+					used: limitsData.monthly_withdrawal_used,
+					limit: limitsData.monthly_withdrawal_limit,
+					currency: limitsData.limit_currency,
+				} as LimitData,
+				dailyDeposit: {
+					used: limitsData.daily_deposit_used,
+					limit: limitsData.daily_deposit_limit,
+					currency: limitsData.limit_currency,
+				} as LimitData,
+				monthlyDeposit: {
+					used: limitsData.monthly_deposit_used,
+					limit: limitsData.monthly_deposit_limit,
+					currency: limitsData.limit_currency,
+				} as LimitData,
+		  }
+		: {
+				dailyWithdrawal: { used: 0, limit: 50000, currency: "NGN" },
+				monthlyWithdrawal: { used: 0, limit: 500000, currency: "NGN" },
+				dailyDeposit: { used: 0, limit: 100000, currency: "NGN" },
+				monthlyDeposit: { used: 0, limit: 1000000, currency: "NGN" },
+		  };
 
 	const calculatePercentage = (used: number, limit: number) => {
 		return Math.min((used / limit) * 100, 100);
@@ -138,6 +112,21 @@ export default function Page() {
 					</h1>
 					<p className="text-sm lg:text-base text-muted-foreground mt-2">
 						Loading your account information...
+					</p>
+				</header>
+			</section>
+		);
+	}
+
+	if (limitsError && kycError) {
+		return (
+			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
+				<header className="mb-6">
+					<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
+						Account Management
+					</h1>
+					<p className="text-sm lg:text-base text-muted-foreground mt-2">
+						Failed to load account data. Please refresh the page.
 					</p>
 				</header>
 			</section>
@@ -210,14 +199,9 @@ export default function Page() {
 							</p>
 						</div>
 						<div className="bg-muted rounded-xl p-4">
-							<p className="text-sm text-muted-foreground mb-1">Member Since</p>
-							<p className="font-semibold text-lg text-foreground">
-								{user?.dateJoined
-									? new Date(user.dateJoined).toLocaleDateString("en-US", {
-											month: "long",
-											year: "numeric",
-									  })
-									: "N/A"}
+							<p className="text-sm text-muted-foreground mb-1">Verification Status</p>
+							<p className="font-semibold text-lg text-foreground capitalize">
+								{kycStatus?.status?.replace("_", " ") ?? "Unknown"}
 							</p>
 						</div>
 					</div>
@@ -442,8 +426,8 @@ export default function Page() {
 					</div>
 
 					<button
-						onClick={handleExportHistory}
-						disabled={isExporting}
+						onClick={() => exportMutation.mutate()}
+						disabled={exportMutation.isPending}
 						style={{
 							background: "transparent",
 							color: "var(--c-fg, inherit)",
@@ -453,15 +437,15 @@ export default function Page() {
 							borderRadius: "9999px",
 							fontWeight: 600,
 							fontSize: "14px",
-							cursor: isExporting ? "not-allowed" : "pointer",
-							opacity: isExporting ? 0.5 : 1,
+							cursor: exportMutation.isPending ? "not-allowed" : "pointer",
+							opacity: exportMutation.isPending ? 0.5 : 1,
 							display: "inline-flex",
 							alignItems: "center",
 							gap: "8px",
 						}}
 					>
 						<Download className="w-4 h-4" />
-						{isExporting ? "Processing..." : "Export as CSV"}
+						{exportMutation.isPending ? "Processing..." : "Export as CSV"}
 					</button>
 				</div>
 

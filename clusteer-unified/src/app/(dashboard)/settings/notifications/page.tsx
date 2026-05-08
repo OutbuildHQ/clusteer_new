@@ -1,9 +1,10 @@
 "use client";
 
-import { Bell, Mail, MessageSquare, Smartphone } from "lucide-react";
+import { Mail, MessageSquare, Smartphone } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Toast } from "@/components/toast";
-import { useUser } from "@/store/user";
+import { useUserId } from "@/hooks/use-user-id";
 import {
 	getNotificationPreferences,
 	updateNotificationPreferences,
@@ -28,6 +29,48 @@ interface NotificationPreferences {
 		priceAlerts: boolean;
 	};
 }
+
+function mapApiToLocal(data: APINotificationPreferences): NotificationPreferences {
+	return {
+		email: {
+			transactions: data.email_transactions,
+			security: data.email_security,
+			marketing: data.email_marketing,
+			orderUpdates: data.email_order_updates,
+		},
+		sms: {
+			transactions: data.sms_transactions,
+			security: data.sms_security,
+			orderUpdates: data.sms_order_updates,
+		},
+		push: {
+			transactions: data.push_transactions,
+			security: data.push_security,
+			priceAlerts: data.push_price_alerts,
+		},
+	};
+}
+
+function mapLocalToApi(prefs: NotificationPreferences): APINotificationPreferences {
+	return {
+		email_transactions: prefs.email.transactions,
+		email_security: prefs.email.security,
+		email_marketing: prefs.email.marketing,
+		email_order_updates: prefs.email.orderUpdates,
+		sms_transactions: prefs.sms.transactions,
+		sms_security: prefs.sms.security,
+		sms_order_updates: prefs.sms.orderUpdates,
+		push_transactions: prefs.push.transactions,
+		push_security: prefs.push.security,
+		push_price_alerts: prefs.push.priceAlerts,
+	};
+}
+
+const DEFAULT_PREFS: NotificationPreferences = {
+	email: { transactions: true, security: true, marketing: false, orderUpdates: true },
+	sms: { transactions: false, security: true, orderUpdates: false },
+	push: { transactions: true, security: true, priceAlerts: false },
+};
 
 function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange?: () => void; disabled?: boolean }) {
 	return (
@@ -65,62 +108,34 @@ function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange?: 
 }
 
 export default function Page() {
-	const user = useUser();
-	const [preferences, setPreferences] = useState<NotificationPreferences>({
-		email: {
-			transactions: true,
-			security: true,
-			marketing: false,
-			orderUpdates: true,
-		},
-		sms: {
-			transactions: false,
-			security: true,
-			orderUpdates: false,
-		},
-		push: {
-			transactions: true,
-			security: true,
-			priceAlerts: false,
-		},
+	const userId = useUserId();
+	const queryClient = useQueryClient();
+
+	const { data: apiPrefs, isLoading, isError } = useQuery({
+		queryKey: ["notification-prefs", userId],
+		queryFn: () => getNotificationPreferences(userId!),
+		enabled: !!userId,
 	});
 
-	const [isSaving, setIsSaving] = useState(false);
-	const [isLoading, setIsLoading] = useState(true);
+	const [preferences, setPreferences] = useState<NotificationPreferences>(DEFAULT_PREFS);
 
 	useEffect(() => {
-		const fetchPreferences = async () => {
-			if (!user?.id) return;
+		if (apiPrefs) {
+			setPreferences(mapApiToLocal(apiPrefs));
+		}
+	}, [apiPrefs]);
 
-			try {
-				const data = await getNotificationPreferences(user.id);
-				setPreferences({
-					email: {
-						transactions: data.email_transactions,
-						security: data.email_security,
-						marketing: data.email_marketing,
-						orderUpdates: data.email_order_updates,
-					},
-					sms: {
-						transactions: data.sms_transactions,
-						security: data.sms_security,
-						orderUpdates: data.sms_order_updates,
-					},
-					push: {
-						transactions: data.push_transactions,
-						security: data.push_security,
-						priceAlerts: data.push_price_alerts,
-					},
-				});
-			} catch (error) {
-				Toast.error("Failed to load notification preferences");
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchPreferences();
-	}, [user?.id]);
+	const saveMutation = useMutation({
+		mutationFn: (prefs: NotificationPreferences) =>
+			updateNotificationPreferences(userId!, mapLocalToApi(prefs)),
+		onSuccess: () => {
+			Toast.success("Notification preferences updated successfully");
+			queryClient.invalidateQueries({ queryKey: ["notification-prefs", userId] });
+		},
+		onError: () => {
+			Toast.error("Failed to update notification preferences");
+		},
+	});
 
 	const handleToggle = (
 		category: keyof NotificationPreferences,
@@ -135,29 +150,9 @@ export default function Page() {
 		}));
 	};
 
-	const handleSave = async () => {
-		if (!user?.id) return;
-
-		setIsSaving(true);
-		try {
-			await updateNotificationPreferences(user.id, {
-				email_transactions: preferences.email.transactions,
-				email_security: preferences.email.security,
-				email_marketing: preferences.email.marketing,
-				email_order_updates: preferences.email.orderUpdates,
-				sms_transactions: preferences.sms.transactions,
-				sms_security: preferences.sms.security,
-				sms_order_updates: preferences.sms.orderUpdates,
-				push_transactions: preferences.push.transactions,
-				push_security: preferences.push.security,
-				push_price_alerts: preferences.push.priceAlerts,
-			});
-			Toast.success("Notification preferences updated successfully");
-		} catch (error) {
-			Toast.error("Failed to update notification preferences");
-		} finally {
-			setIsSaving(false);
-		}
+	const handleSave = () => {
+		if (!userId) return;
+		saveMutation.mutate(preferences);
 	};
 
 	if (isLoading) {
@@ -169,6 +164,21 @@ export default function Page() {
 					</h1>
 					<p className="text-sm lg:text-base text-muted-foreground mt-2">
 						Loading your preferences...
+					</p>
+				</header>
+			</section>
+		);
+	}
+
+	if (isError) {
+		return (
+			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
+				<header className="mb-6">
+					<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
+						Notification Preferences
+					</h1>
+					<p className="text-sm lg:text-base text-muted-foreground mt-2">
+						Failed to load preferences. Please refresh the page.
 					</p>
 				</header>
 			</section>
@@ -378,7 +388,7 @@ export default function Page() {
 			<div className="flex justify-end mt-8">
 				<button
 					onClick={handleSave}
-					disabled={isSaving}
+					disabled={saveMutation.isPending}
 					style={{
 						background: "var(--c-accent, #9FE870)",
 						color: "#fff",
@@ -388,11 +398,11 @@ export default function Page() {
 						borderRadius: "9999px",
 						fontWeight: 600,
 						fontSize: "14px",
-						cursor: isSaving ? "not-allowed" : "pointer",
-						opacity: isSaving ? 0.5 : 1,
+						cursor: saveMutation.isPending ? "not-allowed" : "pointer",
+						opacity: saveMutation.isPending ? 0.5 : 1,
 					}}
 				>
-					{isSaving ? "Saving..." : "Save Preferences"}
+					{saveMutation.isPending ? "Saving..." : "Save Preferences"}
 				</button>
 			</div>
 		</section>

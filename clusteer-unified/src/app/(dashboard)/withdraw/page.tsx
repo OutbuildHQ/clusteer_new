@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { formatMoney } from "@/lib/utils";
 import { Num } from "@/components/primitives/num";
-import { CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
+import { CheckCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { FIAT_BALANCE } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { getUserWallet } from "@/lib/api/wallet/queries";
 
 /* ── Nigerian banks (inline) ── */
 const NG_BANKS = [
@@ -46,7 +47,9 @@ export default function WithdrawPage() {
 	const [amount, setAmount] = useState("");
 	const [submitting, setSubmitting] = useState(false);
 
-	const available = FIAT_BALANCE.balance;
+	const { data: walletData } = useQuery({ queryKey: ["wallet"], queryFn: getUserWallet });
+	const ngnAsset = walletData?.walletAssets?.find((a) => a.currency === "NGN");
+	const available = ngnAsset?.balance ?? 0;
 	const amtNum = parseFloat(amount) || 0;
 	const receive = Math.max(0, amtNum - FEE);
 	const isValid = acctNo.length === 10 && amtNum > FEE && amtNum <= available;

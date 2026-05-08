@@ -1,10 +1,10 @@
 "use client";
 
 import { CreditCard, Plus, Trash2, CheckCircle2 } from "lucide-react";
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { useUser } from "@/store/user";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Toast } from "@/components/toast";
+import { useUserId } from "@/hooks/use-user-id";
 import {
 	getBankAccounts,
 	createBankAccount,
@@ -22,48 +22,79 @@ interface BankAccount {
 	isVerified: boolean;
 }
 
+function mapApiToLocal(acc: APIBankAccount): BankAccount {
+	return {
+		id: acc.id,
+		bankName: acc.bank_name,
+		accountNumber: acc.account_number,
+		accountName: acc.account_name,
+		isDefault: acc.is_default,
+		isVerified: acc.is_verified,
+	};
+}
+
 export default function Page() {
-	const user = useUser();
-	const [accounts, setAccounts] = useState<BankAccount[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
+	const userId = useUserId();
+	const queryClient = useQueryClient();
+
+	const { data: accounts = [], isLoading, isError } = useQuery({
+		queryKey: ["bank-accounts", userId],
+		queryFn: async () => {
+			const data = await getBankAccounts(userId!);
+			return data.map(mapApiToLocal);
+		},
+		enabled: !!userId,
+	});
+
 	const [showAddForm, setShowAddForm] = useState(false);
 	const [newAccount, setNewAccount] = useState({
 		bankName: "",
 		accountNumber: "",
 		accountName: "",
 	});
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [accountToDelete, setAccountToDelete] = useState<number | null>(null);
 
-	useEffect(() => {
-		const fetchAccounts = async () => {
-			if (!user?.id) return;
+	const addMutation = useMutation({
+		mutationFn: (data: { bank_name: string; account_number: string; account_name: string }) =>
+			createBankAccount(userId!, data),
+		onSuccess: () => {
+			Toast.success("Bank account added successfully");
+			setNewAccount({ bankName: "", accountNumber: "", accountName: "" });
+			setShowAddForm(false);
+			queryClient.invalidateQueries({ queryKey: ["bank-accounts", userId] });
+		},
+		onError: () => {
+			Toast.error("Failed to add bank account");
+		},
+	});
 
-			try {
-				const data = await getBankAccounts(user.id);
-				setAccounts(
-					data.map((acc: APIBankAccount) => ({
-						id: acc.id,
-						bankName: acc.bank_name,
-						accountNumber: acc.account_number,
-						accountName: acc.account_name,
-						isDefault: acc.is_default,
-						isVerified: acc.is_verified,
-					}))
-				);
-			} catch (error) {
-				Toast.error("Failed to load bank accounts");
-			} finally {
-				setIsLoading(false);
-			}
-		};
+	const setDefaultMutation = useMutation({
+		mutationFn: (accountId: number) => updateBankAccount(userId!, accountId, { is_default: true }),
+		onSuccess: () => {
+			Toast.success("Default account updated");
+			queryClient.invalidateQueries({ queryKey: ["bank-accounts", userId] });
+		},
+		onError: () => {
+			Toast.error("Failed to update default account");
+		},
+	});
 
-		fetchAccounts();
-	}, [user?.id]);
+	const deleteMutation = useMutation({
+		mutationFn: (accountId: number) => deleteBankAccount(userId!, accountId),
+		onSuccess: () => {
+			Toast.success("Bank account deleted successfully");
+			setShowDeleteModal(false);
+			setAccountToDelete(null);
+			queryClient.invalidateQueries({ queryKey: ["bank-accounts", userId] });
+		},
+		onError: () => {
+			Toast.error("Failed to delete bank account");
+		},
+	});
 
-	const handleAddAccount = async () => {
-		if (!user?.id) return;
+	const handleAddAccount = () => {
+		if (!userId) return;
 
 		if (
 			!newAccount.bankName ||
@@ -79,51 +110,11 @@ export default function Page() {
 			return;
 		}
 
-		setIsSubmitting(true);
-		try {
-			const created = await createBankAccount(user.id, {
-				bank_name: newAccount.bankName,
-				account_number: newAccount.accountNumber,
-				account_name: newAccount.accountName,
-			});
-
-			setAccounts([
-				...accounts,
-				{
-					id: created.data.id,
-					bankName: created.data.bank_name,
-					accountNumber: created.data.account_number,
-					accountName: created.data.account_name,
-					isDefault: created.data.is_default,
-					isVerified: created.data.is_verified,
-				},
-			]);
-
-			setNewAccount({ bankName: "", accountNumber: "", accountName: "" });
-			setShowAddForm(false);
-			Toast.success("Bank account added successfully");
-		} catch (error) {
-			Toast.error("Failed to add bank account");
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
-
-	const handleSetDefault = async (id: number) => {
-		if (!user?.id) return;
-
-		try {
-			await updateBankAccount(user.id, id, { is_default: true });
-			setAccounts((prev) =>
-				prev.map((account) => ({
-					...account,
-					isDefault: account.id === id,
-				}))
-			);
-			Toast.success("Default account updated");
-		} catch (error) {
-			Toast.error("Failed to update default account");
-		}
+		addMutation.mutate({
+			bank_name: newAccount.bankName,
+			account_number: newAccount.accountNumber,
+			account_name: newAccount.accountName,
+		});
 	};
 
 	const openDeleteDialog = (id: number) => {
@@ -136,18 +127,9 @@ export default function Page() {
 		setShowDeleteModal(true);
 	};
 
-	const handleDelete = async () => {
-		if (!user?.id || accountToDelete === null) return;
-
-		try {
-			await deleteBankAccount(user.id, accountToDelete);
-			setAccounts((prev) => prev.filter((account) => account.id !== accountToDelete));
-			setShowDeleteModal(false);
-			setAccountToDelete(null);
-			Toast.success("Bank account deleted successfully");
-		} catch (error) {
-			Toast.error("Failed to delete bank account");
-		}
+	const handleDelete = () => {
+		if (accountToDelete === null) return;
+		deleteMutation.mutate(accountToDelete);
 	};
 
 	if (isLoading) {
@@ -159,6 +141,21 @@ export default function Page() {
 					</h1>
 					<p className="text-sm lg:text-base text-muted-foreground mt-2">
 						Loading your payment methods...
+					</p>
+				</header>
+			</section>
+		);
+	}
+
+	if (isError) {
+		return (
+			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
+				<header className="mb-6">
+					<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
+						Payment Methods
+					</h1>
+					<p className="text-sm lg:text-base text-muted-foreground mt-2">
+						Failed to load payment methods. Please refresh the page.
 					</p>
 				</header>
 			</section>
@@ -259,7 +256,7 @@ export default function Page() {
 							<div className="flex gap-3">
 								<button
 									onClick={handleAddAccount}
-									disabled={isSubmitting}
+									disabled={addMutation.isPending}
 									style={{
 										background: "var(--c-accent, #9FE870)",
 										color: "#fff",
@@ -269,11 +266,11 @@ export default function Page() {
 										borderRadius: "9999px",
 										fontWeight: 600,
 										fontSize: "14px",
-										cursor: isSubmitting ? "not-allowed" : "pointer",
-										opacity: isSubmitting ? 0.5 : 1,
+										cursor: addMutation.isPending ? "not-allowed" : "pointer",
+										opacity: addMutation.isPending ? 0.5 : 1,
 									}}
 								>
-									{isSubmitting ? "Adding..." : "Add Account"}
+									{addMutation.isPending ? "Adding..." : "Add Account"}
 								</button>
 								<button
 									onClick={() => {
@@ -353,7 +350,8 @@ export default function Page() {
 								<div className="flex items-center gap-2">
 									{!account.isDefault && (
 										<button
-											onClick={() => handleSetDefault(account.id)}
+											onClick={() => setDefaultMutation.mutate(account.id)}
+											disabled={setDefaultMutation.isPending}
 											style={{
 												background: "transparent",
 												color: "var(--c-fg, inherit)",
@@ -363,7 +361,7 @@ export default function Page() {
 												borderRadius: "9999px",
 												fontWeight: 500,
 												fontSize: "14px",
-												cursor: "pointer",
+												cursor: setDefaultMutation.isPending ? "not-allowed" : "pointer",
 											}}
 										>
 											Set as default
@@ -408,6 +406,7 @@ export default function Page() {
 							Add a bank account to start making deposits and withdrawals
 						</p>
 						<button
+							onClick={() => setShowAddForm(true)}
 							style={{
 								background: "var(--c-accent, #9FE870)",
 								color: "#fff",
@@ -521,6 +520,7 @@ export default function Page() {
 							</button>
 							<button
 								onClick={handleDelete}
+								disabled={deleteMutation.isPending}
 								style={{
 									background: "var(--c-danger, #ef4444)",
 									color: "#fff",
@@ -530,10 +530,11 @@ export default function Page() {
 									borderRadius: "8px",
 									fontWeight: 500,
 									fontSize: "14px",
-									cursor: "pointer",
+									cursor: deleteMutation.isPending ? "not-allowed" : "pointer",
+									opacity: deleteMutation.isPending ? 0.5 : 1,
 								}}
 							>
-								Delete
+								{deleteMutation.isPending ? "Deleting..." : "Delete"}
 							</button>
 						</div>
 					</div>

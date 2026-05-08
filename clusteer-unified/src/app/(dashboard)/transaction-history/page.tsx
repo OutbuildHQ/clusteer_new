@@ -1,39 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getAllTransactions } from "@/lib/api/user/queries";
 import { formatMoney } from "@/lib/utils";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Num } from "@/components/primitives/num";
-import { Search, Download, Filter, ArrowUp, ArrowDown, X } from "lucide-react";
+import { Search, Download, Filter, ArrowUp, ArrowDown, X, ChevronLeft, ChevronRight } from "lucide-react";
+import type { ITransaction } from "@/types";
 
-/* ── Mock transactions (matches dashboards/data.js shape) ── */
 const TYPES = ["Buy", "Sell", "Send", "Receive", "Swap", "Withdraw", "Deposit"] as const;
-const ASSETS_LIST = ["USDT", "USDC", "NGN"] as const;
-const STATUSES = ["Completed", "Pending", "Failed"] as const;
-
-function seed(s: number) { return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
-
-const TXNS = Array.from({ length: 40 }, (_, i) => {
-	const r = seed(i + 100);
-	const type = TYPES[Math.floor(r() * TYPES.length)];
-	const asset = ASSETS_LIST[Math.floor(r() * ASSETS_LIST.length)];
-	const status = STATUSES[Math.floor(r() * STATUSES.length)];
-	const amount = +(0.01 + r() * 500).toFixed(4);
-	const prices: Record<string, number> = { USDT: 1610, USDC: 1608, BTC: 114_000_000, ETH: 5_740_000, SOL: 293_000, BNB: 985_000, NGN: 1 };
-	return {
-		id: `TX-${838201 - i * 7}`,
-		type, asset,
-		chain: asset === "USDT" ? "Tron" : asset === "USDC" ? "BSC" : asset,
-		amount,
-		ngn: Math.floor(amount * (prices[asset] ?? 1610)),
-		status,
-		counterparty: type === "Send" ? "TQrZ...x9k2" : type === "Receive" ? "TF8m...3pQa" : "—",
-		fee: +((amount * (prices[asset] ?? 1610) * 0.001) + 0.5).toFixed(2),
-		when: `${Math.floor(r() * 23)}:${String(Math.floor(r() * 59)).padStart(2, "0")}`,
-		date: ["Today", "Today", "Yesterday", "Mar 14", "Mar 13", "Mar 12", "Mar 10"][Math.floor(r() * 7)],
-		hash: type === "Send" || type === "Receive" || type === "Swap" ? `0x${Math.floor(r() * 1e16).toString(16).padStart(16, "0")}...${Math.floor(r() * 1e8).toString(16).padStart(8, "0")}` : null,
-	};
-});
 
 function StatusBadge({ s }: { s: string }) {
 	const map: Record<string, { bg: string; color: string; icon: string }> = {
@@ -51,15 +27,53 @@ function StatusBadge({ s }: { s: string }) {
 
 type TxnType = (typeof TYPES)[number] | "All";
 
+/** Map API ITransaction to the shape the UI rows expect */
+function mapTxn(t: ITransaction) {
+	const asset = t.currency ?? "USDT";
+	const prices: Record<string, number> = { USDT: 1610, USDC: 1608, BTC: 114_000_000, ETH: 5_740_000, SOL: 293_000, BNB: 985_000, NGN: 1 };
+	const ngn = Math.floor(t.amount * (prices[asset] ?? 1610));
+	return {
+		id: t.orderNumber ?? t.id,
+		type: t.type,
+		asset,
+		chain: asset === "USDT" ? "Tron" : asset === "USDC" ? "BSC" : asset,
+		amount: t.amount,
+		ngn,
+		status: t.status,
+		counterparty: t.flow ?? "—",
+		fee: +((t.amount * (prices[asset] ?? 1610) * 0.001) + 0.5).toFixed(2),
+		when: t.dateCreated ? new Date(t.dateCreated).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "",
+		date: t.date ?? (t.dateCreated ? new Date(t.dateCreated).toLocaleDateString([], { month: "short", day: "numeric" }) : "—"),
+		hash: null as string | null,
+		description: t.description,
+		rate: t.rate,
+	};
+}
+
+const PAGE_SIZE = 15;
+
 export default function TransactionsPage() {
 	const [type, setType] = useState<TxnType>("All");
 	const [q, setQ] = useState("");
-	const [open, setOpen] = useState<(typeof TXNS)[number] | null>(null);
+	const [page, setPage] = useState(1);
+	const [open, setOpen] = useState<ReturnType<typeof mapTxn> | null>(null);
 
-	const list = TXNS.filter(
-		(t) =>
-			(type === "All" || t.type === type) &&
-			(!q || t.id.toUpperCase().includes(q.toUpperCase()) || t.asset.toUpperCase().includes(q.toUpperCase())),
+	const { data: response, isLoading, isError } = useQuery({
+		queryKey: ["transactions", page],
+		queryFn: () => getAllTransactions({ page, size: PAGE_SIZE }),
+	});
+
+	const transactions = useMemo(() => (response?.data ?? []).map(mapTxn), [response]);
+	const totalPages = response?.metadata?.totalPages ?? 1;
+
+	const list = useMemo(
+		() =>
+			transactions.filter(
+				(t) =>
+					(type === "All" || t.type === type) &&
+					(!q || t.id.toUpperCase().includes(q.toUpperCase()) || t.asset.toUpperCase().includes(q.toUpperCase()) || String(t.amount).includes(q)),
+			),
+		[transactions, type, q],
 	);
 
 	return (
@@ -81,7 +95,7 @@ export default function TransactionsPage() {
 			<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
 				<div className="flex items-center w-full sm:flex-1 sm:max-w-[320px] h-9 px-3 rounded-[10px]" style={{ border: "1px solid var(--c-line)", background: "var(--c-surface)" }}>
 					<Search className="size-4 shrink-0" style={{ color: "var(--c-text-3)" }} />
-					<input className="flex-1 bg-transparent outline-none text-[13.5px] ml-2" style={{ color: "var(--c-text)" }} placeholder="Search by ID, asset…" value={q} onChange={(e) => setQ(e.target.value)} />
+					<input className="flex-1 bg-transparent outline-none text-[13.5px] ml-2" style={{ color: "var(--c-text)" }} placeholder="Search by ID, asset, amount…" value={q} onChange={(e) => setQ(e.target.value)} />
 				</div>
 				<div className="overflow-x-auto -mx-1 px-1">
 					<div className="inline-flex p-1 rounded-[10px] gap-0.5" style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>
@@ -96,86 +110,151 @@ export default function TransactionsPage() {
 				</div>
 			</div>
 
-			{/* Table (desktop) */}
-			<div className="hidden lg:block rounded-[14px] overflow-hidden" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-				<table className="w-full border-collapse text-[13px]">
-					<thead>
-						<tr>
-							{["Type", "Asset", "Amount", "Value (NGN)", "Status", "Counterparty", "Fee", "Date"].map((h, i) => (
-								<th key={h} className={`font-medium text-[11.5px] uppercase tracking-[0.05em] px-3.5 py-2.5 ${i === 7 ? "text-right" : "text-left"}`}
-									style={{ color: "var(--c-text-3)", borderBottom: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>{h}</th>
-							))}
-						</tr>
-					</thead>
-					<tbody>
-						{list.slice(0, 20).map((t) => {
-							const isIn = ["Buy", "Receive", "Deposit"].includes(t.type);
-							return (
-								<tr key={t.id} className="cursor-pointer transition-colors hover:bg-[var(--c-surface-2)]" onClick={() => setOpen(t)}>
-									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-										<div className="flex items-center gap-2">
-											{isIn ? <span style={{ color: "var(--c-up)" }}><ArrowDown className="size-4" /></span> : <span style={{ color: "var(--c-down)" }}><ArrowUp className="size-4" /></span>}
-											{t.type}
-										</div>
-									</td>
-									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-										<div className="flex items-center gap-2">
-											<AssetLogo symbol={t.asset} size="sm" />{t.asset}
-										</div>
-									</td>
-									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-										{t.amount.toFixed(4)}
-									</td>
-									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-										<Num value={formatMoney(t.ngn, "NGN", { decimals: 0 })} />
-									</td>
-									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-										<StatusBadge s={t.status} />
-									</td>
-									<td className="px-3.5 py-3 tabular-nums text-[11px]" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>
-										{t.counterparty}
-									</td>
-									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>
-										₦{t.fee.toFixed(2)}
-									</td>
-									<td className="px-3.5 py-3 text-right tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-										{t.date} {t.when}
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</table>
-			</div>
-
-			{/* Card list (mobile) */}
-			<div className="lg:hidden space-y-2">
-				{list.slice(0, 20).map((t) => {
-					const isIn = ["Buy", "Receive", "Deposit"].includes(t.type);
-					return (
-						<div key={t.id} className="rounded-[12px] p-3 cursor-pointer active:scale-[0.99] transition-transform" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }} onClick={() => setOpen(t)}>
-							<div className="flex items-center justify-between">
-								<div className="flex items-center gap-2.5">
-									{isIn ? <span style={{ color: "var(--c-up)" }}><ArrowDown className="size-4" /></span> : <span style={{ color: "var(--c-down)" }}><ArrowUp className="size-4" /></span>}
-									<AssetLogo symbol={t.asset} size="sm" />
-									<div>
-										<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>{t.type} {t.asset}</div>
-										<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>{t.date} {t.when}</div>
-									</div>
+			{/* Loading state */}
+			{isLoading && (
+				<div className="space-y-2">
+					{Array.from({ length: 8 }).map((_, i) => (
+						<div key={i} className="rounded-[12px] p-4" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
+							<div className="flex items-center gap-3">
+								<div className="size-8 rounded-full animate-pulse" style={{ background: "var(--c-surface-2)" }} />
+								<div className="flex-1 space-y-2">
+									<div className="h-3 w-1/3 rounded animate-pulse" style={{ background: "var(--c-surface-2)" }} />
+									<div className="h-3 w-1/4 rounded animate-pulse" style={{ background: "var(--c-surface-2)" }} />
 								</div>
-								<div className="text-right">
-									<div className="tabular-nums text-[13px] font-semibold" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>{t.amount.toFixed(4)}</div>
-									<div className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}><Num value={formatMoney(t.ngn, "NGN", { decimals: 0 })} /></div>
-								</div>
-							</div>
-							<div className="flex items-center justify-between mt-2 pt-2" style={{ borderTop: "1px solid var(--c-line)" }}>
-								<StatusBadge s={t.status} />
-								<span className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>Fee: ₦{t.fee.toFixed(2)}</span>
+								<div className="h-4 w-20 rounded animate-pulse" style={{ background: "var(--c-surface-2)" }} />
 							</div>
 						</div>
-					);
-				})}
-			</div>
+					))}
+				</div>
+			)}
+
+			{/* Error state */}
+			{isError && !isLoading && (
+				<div className="rounded-[14px] p-8 text-center" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
+					<div className="text-[15px] font-medium" style={{ color: "var(--c-text)" }}>Unable to load transactions</div>
+					<div className="text-[13px] mt-1" style={{ color: "var(--c-text-3)" }}>Please check your connection and try again.</div>
+				</div>
+			)}
+
+			{/* Empty state */}
+			{!isLoading && !isError && list.length === 0 && (
+				<div className="rounded-[14px] p-8 text-center" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
+					<div className="text-[15px] font-medium" style={{ color: "var(--c-text)" }}>No transactions found</div>
+					<div className="text-[13px] mt-1" style={{ color: "var(--c-text-3)" }}>
+						{q || type !== "All" ? "Try adjusting your search or filter." : "Your transaction history will appear here."}
+					</div>
+				</div>
+			)}
+
+			{/* Table (desktop) */}
+			{!isLoading && !isError && list.length > 0 && (
+				<div className="hidden lg:block rounded-[14px] overflow-hidden" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
+					<table className="w-full border-collapse text-[13px]">
+						<thead>
+							<tr>
+								{["Type", "Asset", "Amount", "Value (NGN)", "Status", "Counterparty", "Fee", "Date"].map((h, i) => (
+									<th key={h} className={`font-medium text-[11.5px] uppercase tracking-[0.05em] px-3.5 py-2.5 ${i === 7 ? "text-right" : "text-left"}`}
+										style={{ color: "var(--c-text-3)", borderBottom: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>{h}</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{list.map((t) => {
+								const isIn = ["Buy", "Receive", "Deposit"].includes(t.type);
+								return (
+									<tr key={t.id} className="cursor-pointer transition-colors hover:bg-[var(--c-surface-2)]" onClick={() => setOpen(t)}>
+										<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
+											<div className="flex items-center gap-2">
+												{isIn ? <span style={{ color: "var(--c-up)" }}><ArrowDown className="size-4" /></span> : <span style={{ color: "var(--c-down)" }}><ArrowUp className="size-4" /></span>}
+												{t.type}
+											</div>
+										</td>
+										<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
+											<div className="flex items-center gap-2">
+												<AssetLogo symbol={t.asset} size="sm" />{t.asset}
+											</div>
+										</td>
+										<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+											{t.amount.toFixed(4)}
+										</td>
+										<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+											<Num value={formatMoney(t.ngn, "NGN", { decimals: 0 })} />
+										</td>
+										<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
+											<StatusBadge s={t.status} />
+										</td>
+										<td className="px-3.5 py-3 tabular-nums text-[11px]" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>
+											{t.counterparty}
+										</td>
+										<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>
+											₦{t.fee.toFixed(2)}
+										</td>
+										<td className="px-3.5 py-3 text-right tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+											{t.date} {t.when}
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+				</div>
+			)}
+
+			{/* Card list (mobile) */}
+			{!isLoading && !isError && list.length > 0 && (
+				<div className="lg:hidden space-y-2">
+					{list.map((t) => {
+						const isIn = ["Buy", "Receive", "Deposit"].includes(t.type);
+						return (
+							<div key={t.id} className="rounded-[12px] p-3 cursor-pointer active:scale-[0.99] transition-transform" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }} onClick={() => setOpen(t)}>
+								<div className="flex items-center justify-between">
+									<div className="flex items-center gap-2.5">
+										{isIn ? <span style={{ color: "var(--c-up)" }}><ArrowDown className="size-4" /></span> : <span style={{ color: "var(--c-down)" }}><ArrowUp className="size-4" /></span>}
+										<AssetLogo symbol={t.asset} size="sm" />
+										<div>
+											<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>{t.type} {t.asset}</div>
+											<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>{t.date} {t.when}</div>
+										</div>
+									</div>
+									<div className="text-right">
+										<div className="tabular-nums text-[13px] font-semibold" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>{t.amount.toFixed(4)}</div>
+										<div className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}><Num value={formatMoney(t.ngn, "NGN", { decimals: 0 })} /></div>
+									</div>
+								</div>
+								<div className="flex items-center justify-between mt-2 pt-2" style={{ borderTop: "1px solid var(--c-line)" }}>
+									<StatusBadge s={t.status} />
+									<span className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>Fee: ₦{t.fee.toFixed(2)}</span>
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			)}
+
+			{/* Pagination */}
+			{!isLoading && !isError && totalPages > 1 && (
+				<div className="flex items-center justify-center gap-2">
+					<button
+						onClick={() => setPage((p) => Math.max(1, p - 1))}
+						disabled={page <= 1}
+						className="inline-flex items-center justify-center size-9 rounded-[10px] transition-colors disabled:opacity-40"
+						style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}
+					>
+						<ChevronLeft className="size-4" />
+					</button>
+					<span className="text-[13px] tabular-nums px-3" style={{ color: "var(--c-text-2)", fontFamily: "var(--f-mono)" }}>
+						Page {page} of {totalPages}
+					</span>
+					<button
+						onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+						disabled={page >= totalPages}
+						className="inline-flex items-center justify-center size-9 rounded-[10px] transition-colors disabled:opacity-40"
+						style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}
+					>
+						<ChevronRight className="size-4" />
+					</button>
+				</div>
+			)}
 
 			{/* Transaction detail modal */}
 			{open && (
