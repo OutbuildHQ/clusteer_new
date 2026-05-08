@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 
 const NAV = [
-	{ id: "dashboard",               href: "/dashboard",               label: "Overview",      icon: LayoutDashboard },
-	{ id: "assets",                   href: "/assets",                  label: "Wallet",        icon: Wallet },
-	{ id: "trade",                    href: "/trade",                   label: "Buy / Sell",    icon: ArrowLeftRight },
-	{ id: "send",                     href: "/send",                    label: "Send",          icon: Send },
+	{ id: "dashboard",               href: "/dashboard",               label: "Overview",      icon: LayoutDashboard, tab: true },
+	{ id: "assets",                   href: "/assets",                  label: "Wallet",        icon: Wallet, tab: true },
+	{ id: "trade",                    href: "/trade",                   label: "Buy / Sell",    icon: ArrowLeftRight, tab: true },
+	{ id: "send",                     href: "/send",                    label: "Send",          icon: Send, tab: true },
 	{ id: "receive",                  href: "/receive",                 label: "Receive",       icon: ArrowDownToLine },
 	{ id: "withdraw",                 href: "/withdraw",                label: "Withdraw NGN",  icon: Banknote },
 	{ id: "orders",                   href: "/orders",                  label: "Orders",        icon: BookOpen },
@@ -21,7 +21,7 @@ const NAV = [
 	{ id: "identity-verification",    href: "/identity-verification",   label: "Identity",      icon: ShieldCheck },
 	{ id: "notifications",           href: "/notifications",           label: "Notifications", icon: Bell, badge: 3 },
 	{ id: "referrals",               href: "/referrals",               label: "Referrals",     icon: Gift },
-	{ id: "settings",                href: "/settings",                label: "Settings",      icon: Settings },
+	{ id: "settings",                href: "/settings",                label: "Settings",      icon: Settings, tab: true },
 	{ id: "support",                 href: "/support",                 label: "Support",       icon: HelpCircle },
 ];
 
@@ -50,9 +50,9 @@ export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 				</span>
 			</div>
 
-			{/* Nav items */}
+			{/* Nav items — hide bottom-tab items on mobile */}
 			<nav className="flex-1 flex flex-col gap-0.5">
-				{NAV.map((n) => {
+				{NAV.filter(n => !mobile || !n.tab).map((n) => {
 					const active = pathname === n.href || pathname.startsWith(n.href + "/");
 					const Icon = n.icon;
 					return (
