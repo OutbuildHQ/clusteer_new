@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { Logo } from "@/components/brand/logo";
+import { getUserWallet } from "@/lib/api/wallet/queries";
 import {
 	LayoutDashboard, Wallet, ArrowLeftRight, Send, ArrowDownToLine,
 	Banknote, BookOpen, List, ShieldCheck, Bell, Gift, Settings, HelpCircle,
@@ -31,6 +33,18 @@ interface SidebarProps {
 
 export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 	const pathname = usePathname();
+	const { data: walletData, isLoading } = useQuery({
+		queryKey: ["wallet"],
+		queryFn: getUserWallet,
+		staleTime: 30_000,
+	});
+
+	const assets = walletData?.walletAssets ?? [];
+	const total = assets.reduce((s, a) => s + (a.balance ?? 0), 0);
+	// TODO: Replace with real 24h change from API when available
+	const change24h = total > 0 ? 2.84 : 0;
+	const isUp = change24h >= 0;
+	const isEmpty = total === 0 && !isLoading;
 
 	return (
 		<aside
@@ -83,15 +97,53 @@ export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 			{/* Portfolio summary card */}
 			<div style={{ marginTop: "auto", padding: 20, background: "var(--c-onyx-900)", color: "var(--c-cream)", borderRadius: 14 }}>
 				<div style={{ fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.06em" }}>Portfolio</div>
-				<div style={{ fontSize: 22, fontWeight: 600, marginTop: 2, fontFamily: "var(--f-display)", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.025em" }}>
-					₦--
-				</div>
-				<div style={{ display: "flex", alignItems: "flex-end", gap: 10, marginTop: 10 }}>
-					<svg viewBox="0 0 24 24" fill="none" stroke="var(--c-lime-500)" strokeWidth="2" width="100" height="100" style={{ flexShrink: 0 }}><path d="M12 19V5M5 12l7-7 7 7" /></svg>
-					<div style={{ fontSize: 13, color: "var(--c-lime-500)", fontWeight: 600, lineHeight: 1.3 }}>
-						+2.84%<br />today
-					</div>
-				</div>
+
+				{isLoading ? (
+					<>
+						<div className="animate-pulse rounded-md mt-1" style={{ background: "rgba(255,255,255,0.1)", height: 28, width: 140 }} />
+						<div className="animate-pulse rounded-md mt-3" style={{ background: "rgba(255,255,255,0.1)", height: 60, width: 80 }} />
+					</>
+				) : isEmpty ? (
+					<>
+						<div style={{ fontSize: 22, fontWeight: 600, marginTop: 2, fontFamily: "var(--f-display)", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.025em", opacity: 0.5 }}>
+							₦0.00
+						</div>
+						<div style={{ fontSize: 12, opacity: 0.4, marginTop: 10, lineHeight: 1.4 }}>
+							No assets yet.<br />Buy or deposit to get started.
+						</div>
+					</>
+				) : (
+					<>
+						<div style={{ fontSize: 22, fontWeight: 600, marginTop: 2, fontFamily: "var(--f-display)", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.025em" }}>
+							₦{total.toLocaleString("en-NG")}
+						</div>
+						<div style={{ display: "flex", alignItems: "flex-end", gap: 10, marginTop: 10 }}>
+							{/* Arrow: up (lime) when positive, down (red) when negative */}
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke={isUp ? "var(--c-lime-500)" : "var(--c-down)"}
+								strokeWidth="2"
+								width="100"
+								height="100"
+								style={{
+									flexShrink: 0,
+									transform: isUp ? "none" : "rotate(180deg)",
+								}}
+							>
+								<path d="M12 19V5M5 12l7-7 7 7" />
+							</svg>
+							<div style={{
+								fontSize: 13,
+								color: isUp ? "var(--c-lime-500)" : "var(--c-down)",
+								fontWeight: 600,
+								lineHeight: 1.3,
+							}}>
+								{isUp ? "+" : ""}{change24h.toFixed(2)}%<br />today
+							</div>
+						</div>
+					</>
+				)}
 			</div>
 		</aside>
 	);
