@@ -115,7 +115,7 @@ export function TopBar() {
 							style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)", boxShadow: "var(--sh-3)", animation: "modalIn .15s cubic-bezier(.2,.7,.2,1)", zIndex: 50 }}
 						>
 							<Link
-								href="/profile"
+								href="/settings/profile"
 								onClick={() => setUserMenu(false)}
 								className="flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors hover:bg-[var(--c-surface-2)]"
 								style={{ color: "var(--c-text)" }}

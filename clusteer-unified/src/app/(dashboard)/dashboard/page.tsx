@@ -192,7 +192,7 @@ export default function DashboardPage() {
 					{ label: "Pending", value: String(recent.filter(t => t.status === "Pending").length) },
 					{ label: "Avg Rate", value: "₦1,570/USDT" },
 				].map((s) => (
-					<div key={s.label} style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 34, padding: "0 14px", borderRadius: 999, border: "1px solid var(--c-line)", background: "var(--card-tinted)", fontSize: 12.5 }}>
+					<div key={s.label} style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 34, padding: "0 14px", borderRadius: 999, border: "1px solid var(--c-line)", background: "var(--c-surface-2)", fontSize: 12.5, whiteSpace: "nowrap" }}>
 						<span style={{ color: "var(--c-text-3)" }}>{s.label}</span>
 						<span style={{ fontWeight: 600, color: "var(--c-text)", fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums" }}>{s.value}</span>
 					</div>
