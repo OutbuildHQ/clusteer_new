@@ -9,19 +9,21 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserWallet } from "@/lib/api/wallet/queries";
 import type { Wallet } from "@/store/wallet";
 
-/* ── asset/chain catalogue (pill buttons) ── */
-const RECEIVE_ASSETS = [
-	{ sym: "USDT", chain: "Tron" },
-	{ sym: "USDC", chain: "Ethereum" },
-	{ sym: "NGN", chain: "NIBSS" },
-] as const;
+/* ── asset/chain catalogue ── */
+const ASSET_NETWORKS: Record<string, string[]> = {
+	USDT: ["Tron", "BSC", "Ethereum", "Solana"],
+	USDC: ["BSC", "Ethereum", "Solana"],
+	NGN: ["NIBSS"],
+};
+
+const RECEIVE_ASSETS = ["USDT", "USDC", "NGN"] as const;
 
 /** Derive a placeholder address per chain when wallet data is unavailable */
 function placeholderAddr(chain: string) {
 	if (chain === "Tron") return "TQrZ8xY9k2PpVm5Lq6Wc3FjN1Hm4Bg7Aa";
-	if (chain === "BSC") return "0x742d35Cc6634C0532925a3b8D8c4f5e88aB12345";
-	if (chain === "Bitcoin") return "bc1qxy7j8k2vh9m6qz3ld4p5wn8r2bf9k";
-	return "0x742d35Cc6634C0532925a3b8D8c4f5e88aB12345";
+	if (chain === "Solana") return "7xKXy2pPq8mLnVcRfTbKjW3sN1Hm4Bg7Aa9KdEsXrYz";
+	if (chain === "NIBSS") return "NGN Bank Transfer — no on-chain address";
+	return "0x742d35Cc6634C0532925a3b8D8c4f5e88aB12345"; // BSC / Ethereum (EVM)
 }
 
 function walletAddress(wallets: Wallet[], symbol: string): string {
@@ -30,9 +32,10 @@ function walletAddress(wallets: Wallet[], symbol: string): string {
 }
 
 export default function ReceivePage() {
-	const [asset, setAsset] = useState("USDT");
+	const [asset, setAsset] = useState<string>("USDT");
+	const [network, setNetwork] = useState<string>("Tron");
 
-	const selected = RECEIVE_ASSETS.find((a) => a.sym === asset) ?? RECEIVE_ASSETS[0];
+	const networks = ASSET_NETWORKS[asset] ?? ["Tron"];
 
 	/* wallet query — real address when available */
 	const { data: walletData, isLoading } = useQuery({
@@ -41,10 +44,17 @@ export default function ReceivePage() {
 		retry: false,
 	});
 
+	// Reset network to first valid option when asset changes
+	useMemo(() => {
+		if (!networks.includes(network)) setNetwork(networks[0]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [asset]);
+
 	const address = useMemo(() => {
+		if (asset === "NGN") return "Use the bank account listed in your profile";
 		const real = walletAddress(walletData?.walletAssets ?? [], asset);
-		return real || placeholderAddr(selected.chain);
-	}, [walletData, asset, selected.chain]);
+		return real || placeholderAddr(network);
+	}, [walletData, asset, network]);
 
 	if (isLoading) {
 		return (
@@ -62,14 +72,14 @@ export default function ReceivePage() {
 			{/* Main card */}
 			<div className="ds-card p-4 lg:p-5">
 				<div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-					{/* Asset & network selector */}
+					{/* Asset selector */}
 					<div>
-						<label style={{ fontSize: 12, color: "var(--c-text-3)" }}>Asset &amp; network</label>
+						<label style={{ fontSize: 12, color: "var(--c-text-3)" }}>Asset</label>
 						<div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
-							{RECEIVE_ASSETS.map((a) => (
+							{RECEIVE_ASSETS.map((sym) => (
 								<button
-									key={a.sym}
-									onClick={() => setAsset(a.sym)}
+									key={sym}
+									onClick={() => setAsset(sym)}
 									style={{
 										display: "inline-flex",
 										alignItems: "center",
@@ -81,19 +91,52 @@ export default function ReceivePage() {
 										border: "1px solid var(--c-line)",
 										cursor: "pointer",
 										transition: "all 150ms ease",
-										background: asset === a.sym ? "var(--c-onyx-900)" : "transparent",
-										color: asset === a.sym ? "var(--c-cream)" : "var(--c-text)",
-										borderColor: asset === a.sym ? "var(--c-onyx-900)" : "var(--c-line)",
+										background: asset === sym ? "var(--c-onyx-900)" : "transparent",
+										color: asset === sym ? "var(--c-cream)" : "var(--c-text)",
+										borderColor: asset === sym ? "var(--c-onyx-900)" : "var(--c-line)",
 									}}
 								>
-									<AssetLogo symbol={a.sym} size="sm" />
-									{a.sym}
+									<AssetLogo symbol={sym} size="sm" />
+									{sym}
 								</button>
 							))}
 						</div>
 					</div>
 
-					{/* QR code */}
+					{/* Network selector — only for USDT/USDC */}
+					{networks.length > 1 && (
+						<div>
+							<label style={{ fontSize: 12, color: "var(--c-text-3)" }}>Network</label>
+							<div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+								{networks.map((n) => (
+									<button
+										key={n}
+										onClick={() => setNetwork(n)}
+										style={{
+											display: "inline-flex",
+											alignItems: "center",
+											gap: 6,
+											padding: "5px 12px",
+											borderRadius: 8,
+											fontSize: 12.5,
+											fontWeight: 500,
+											border: "1px solid var(--c-line)",
+											cursor: "pointer",
+											transition: "all 150ms ease",
+											background: network === n ? "var(--c-surface-2)" : "transparent",
+											color: network === n ? "var(--c-text)" : "var(--c-text-3)",
+											borderColor: network === n ? "var(--c-onyx-900)" : "var(--c-line)",
+										}}
+									>
+										{n}
+									</button>
+								))}
+							</div>
+						</div>
+					)}
+
+					{/* QR code — crypto only */}
+					{asset !== "NGN" && (
 					<div style={{ textAlign: "center", padding: "18px 0" }}>
 						<div
 							className="w-[180px] h-[180px] lg:w-[220px] lg:h-[220px]"
@@ -111,6 +154,7 @@ export default function ReceivePage() {
 							<QR value={address} size={148} />
 						</div>
 					</div>
+					)}
 
 					{/* Address card */}
 					<div
@@ -128,7 +172,7 @@ export default function ReceivePage() {
 								color: "var(--c-text-3)",
 							}}
 						>
-							Your {asset} address ({selected.chain})
+							Your {asset} address ({network})
 						</div>
 						<div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
 							<div
@@ -160,7 +204,7 @@ export default function ReceivePage() {
 							color: "var(--c-warn)",
 						}}
 					>
-						<b>Send only {asset} on the {selected.chain} network.</b>
+						<b>Send only {asset} on the {network} network.</b>
 						<br />
 						Sending other assets may result in permanent loss.
 					</div>

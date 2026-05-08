@@ -41,13 +41,13 @@ interface AssetDef {
 }
 
 const FALLBACK_ASSETS: AssetDef[] = [
-	{ sym: "USDT", name: "Tether USD", chain: "Tron", networks: ["Tron", "BSC", "Ethereum"], price: 1.0, bal: 0, balNgn: 0 },
+	{ sym: "USDT", name: "Tether USD", chain: "Tron", networks: ["Tron", "BSC", "Ethereum", "Solana"], price: 1.0, bal: 0, balNgn: 0 },
 	{ sym: "USDC", name: "USD Coin", chain: "BSC", networks: ["BSC", "Ethereum", "Solana"], price: 1.0, bal: 0, balNgn: 0 },
 	{ sym: "NGN", name: "Naira", chain: "Bank", networks: ["Bank transfer"], price: 0.000621, bal: 0, balNgn: 0 },
 ];
 
 const CHAIN_MAP: Record<string, string[]> = {
-	USDT: ["Tron", "BSC", "Ethereum"],
+	USDT: ["Tron", "BSC", "Ethereum", "Solana"],
 	USDC: ["BSC", "Ethereum", "Solana"],
 	NGN: ["Bank transfer"],
 };
@@ -793,8 +793,8 @@ export default function SendPage() {
 										))}
 									</div>
 									<p className="text-[11px] text-muted-foreground mt-2">
-										Tron has the lowest fees for {asset}. Use the same network as the
-										recipient&apos;s wallet.
+										{asset === "USDT" ? "Tron has the lowest fees." : "Solana has the lowest fees."}{" "}
+										Always use the same network as the recipient&apos;s wallet.
 									</p>
 								</div>
 							) : (
