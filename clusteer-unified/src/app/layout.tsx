@@ -29,6 +29,12 @@ export const metadata: Metadata = {
 	title: "Clusteer — Bridge your Naira into the global digital economy",
 	description:
 		"Buy, sell and hold stablecoins with Naira. Built for Nigeria.",
+	icons: {
+		icon: [
+			{ url: "/favicon.svg", type: "image/svg+xml" },
+		],
+		apple: "/apple-icon.svg",
+	},
 	keywords: [
 		"USDT to Naira",
 		"Buy USDT Nigeria",
