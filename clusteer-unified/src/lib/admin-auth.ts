@@ -66,10 +66,10 @@ function getPermissionsForRole(role: AdminUser["role"]): string[] {
 			return ["*"];
 		case "admin":
 			return [
-				"users.read", "users.write",
+				"users.read", "users.write", "users.manage", "users.suspend", "users.activate",
 				"transactions.read", "transactions.write",
 				"orders.read", "orders.write",
-				"kyc.read", "kyc.write",
+				"kyc.read", "kyc.write", "kyc.manage",
 				"settings.read", "settings.write",
 			];
 		case "moderator":
@@ -77,7 +77,7 @@ function getPermissionsForRole(role: AdminUser["role"]): string[] {
 				"users.read",
 				"transactions.read",
 				"orders.read",
-				"kyc.read", "kyc.write",
+				"kyc.read", "kyc.write", "kyc.manage",
 			];
 		default:
 			return [];

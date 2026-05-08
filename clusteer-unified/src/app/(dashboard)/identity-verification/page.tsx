@@ -1,7 +1,9 @@
 "use client";
 
 import { Check } from "lucide-react";
+import { useRef, useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { useUserId } from "@/hooks/use-user-id";
 import { getKYCVerification, type KYCVerification } from "@/lib/api/settings";
 
@@ -77,6 +79,39 @@ function deriveDocs(kyc: KYCVerification | null | undefined): [string, string, s
 
 export default function IdentityVerificationPage() {
 	const userId = useUserId();
+	const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const pendingDocType = useRef<string | null>(null);
+
+	const handleUpload = useCallback(async (docType: string, file: File) => {
+		setUploadingDoc(docType);
+		try {
+			const formData = new FormData();
+			// Map UI doc type to API field names
+			if (docType === "Selfie") {
+				formData.append("documentType", "id_card");
+				formData.append("selfie", file);
+			} else if (docType === "NIN") {
+				formData.append("documentType", "id_card");
+				formData.append("documentFront", file);
+			} else if (docType === "BVN") {
+				formData.append("documentType", "id_card");
+				formData.append("documentFront", file);
+			} else {
+				formData.append("documentType", "id_card");
+				formData.append("documentFront", file);
+			}
+			const res = await fetch("/api/kyc/upload", { method: "POST", body: formData });
+			const data = await res.json();
+			if (res.ok) toast.success(`${docType} uploaded successfully`);
+			else toast.error(data.message || "Upload failed");
+		} catch {
+			toast.error("Upload failed. Please try again.");
+		} finally {
+			setUploadingDoc(null);
+			pendingDocType.current = null;
+		}
+	}, []);
 
 	const { data: kycData, isLoading, isError } = useQuery({
 		queryKey: ["kyc-verification", userId],
@@ -177,13 +212,36 @@ export default function IdentityVerificationPage() {
 							) : s === "Under Review" ? (
 								<StatusBadge s="Under Review" />
 							) : (
-								<button className="inline-flex items-center h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium"
-									style={{ color: "var(--c-text)", border: "1px solid var(--c-line)" }}>Upload</button>
+								<button
+									disabled={uploadingDoc === k}
+									className="inline-flex items-center h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium disabled:opacity-60"
+									style={{ color: "var(--c-text)", border: "1px solid var(--c-line)" }}
+									onClick={() => {
+										pendingDocType.current = k;
+										fileInputRef.current?.click();
+									}}
+								>
+									{uploadingDoc === k ? "Uploading…" : "Upload"}
+								</button>
 							)}
 						</div>
 					))}
 				</div>
 			</div>
+			{/* Hidden file input shared across all upload buttons */}
+			<input
+				type="file"
+				accept="image/*,.pdf"
+				ref={fileInputRef}
+				className="hidden"
+				onChange={(e) => {
+					const file = e.target.files?.[0];
+					if (file && pendingDocType.current) {
+						handleUpload(pendingDocType.current, file);
+					}
+					e.target.value = "";
+				}}
+			/>
 		</div>
 	);
 }

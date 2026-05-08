@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 
 const NOTIFS = [
 	{ id: 1, type: "tx", title: "Withdrawal completed", body: "₦450,000 to GTBank ••• 2847", when: "2 min ago", read: false, icon: "↓" },
@@ -15,8 +16,19 @@ type Tab = "All" | "Unread" | "tx" | "price" | "security";
 
 export default function NotificationsPage() {
 	const [tab, setTab] = useState<Tab>("All");
+	const [notifications, setNotifications] = useState(NOTIFS);
 
-	const list = NOTIFS.filter(
+	const handleMarkAllRead = async () => {
+		const res = await fetch("/api/notifications/mark-all-read", { method: "PUT" });
+		if (res.ok) {
+			setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+			toast.success("All notifications marked as read");
+		} else {
+			toast.error("Failed to mark notifications as read");
+		}
+	};
+
+	const list = notifications.filter(
 		(n) => tab === "All" || (tab === "Unread" && !n.read) || n.type === tab.toLowerCase(),
 	);
 
@@ -24,7 +36,7 @@ export default function NotificationsPage() {
 		<div className="space-y-6">
 			<div className="flex items-center justify-between flex-wrap gap-4">
 				<h1 className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>Notifications</h1>
-				<button className="inline-flex items-center h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium" style={{ color: "var(--c-text)", border: "1px solid var(--c-line)" }}>Mark all read</button>
+				<button onClick={handleMarkAllRead} className="inline-flex items-center h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium" style={{ color: "var(--c-text)", border: "1px solid var(--c-line)" }}>Mark all read</button>
 			</div>
 			<div className="overflow-x-auto -mx-1 px-1">
 				<div className="inline-flex p-1 rounded-[10px] gap-0.5" style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>

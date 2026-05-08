@@ -5,6 +5,7 @@ import {
 	Check, X, Camera, CreditCard, FileText, Home,
 	Shield, ShieldCheck, Globe, Smartphone,
 } from "lucide-react";
+import { toast } from "sonner";
 
 /* ─── types ─── */
 interface KycItem {
@@ -364,6 +365,7 @@ function KycApproveModal({
 }) {
 	const [tier, setTier] = useState("Tier 2");
 	const [note, setNote] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		const handler = (e: KeyboardEvent) => {
@@ -459,14 +461,33 @@ function KycApproveModal({
 						Cancel
 					</button>
 					<button
-						className="flex items-center h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors"
+						disabled={loading}
+						className="flex items-center h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors disabled:opacity-60"
 						style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}
-						onClick={() => {
-							onConfirm({ tier, note });
-							onClose();
+						onClick={async () => {
+							setLoading(true);
+							try {
+								const res = await fetch(`/api/admin/kyc/${kase.id}/approve`, {
+									method: "POST",
+									headers: { "Content-Type": "application/json" },
+									body: JSON.stringify({ tier, notes: note }),
+								});
+								const data = await res.json();
+								if (res.ok) {
+									toast.success(`KYC approved for ${kase.name}`);
+									onConfirm({ tier, note });
+									onClose();
+								} else {
+									toast.error(data.error || "Approval failed");
+								}
+							} catch {
+								toast.error("Network error. Please try again.");
+							} finally {
+								setLoading(false);
+							}
 						}}
 					>
-						Approve
+						{loading ? "Approving…" : "Approve"}
 					</button>
 				</div>
 			</div>
@@ -488,6 +509,7 @@ function KycRejectModal({
 }) {
 	const [reason, setReason] = useState("Document mismatch");
 	const [message, setMessage] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		const handler = (e: KeyboardEvent) => {
@@ -597,14 +619,33 @@ function KycRejectModal({
 						Cancel
 					</button>
 					<button
-						className="flex items-center h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors"
+						disabled={loading}
+						className="flex items-center h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors disabled:opacity-60"
 						style={{ background: "var(--c-down)", color: "#fff" }}
-						onClick={() => {
-							onConfirm({ reason, message });
-							onClose();
+						onClick={async () => {
+							setLoading(true);
+							try {
+								const res = await fetch(`/api/admin/kyc/${kase.id}/reject`, {
+									method: "POST",
+									headers: { "Content-Type": "application/json" },
+									body: JSON.stringify({ reason }),
+								});
+								const data = await res.json();
+								if (res.ok) {
+									toast.success(`KYC rejected for ${kase.name}`);
+									onConfirm({ reason, message });
+									onClose();
+								} else {
+									toast.error(data.error || "Rejection failed");
+								}
+							} catch {
+								toast.error("Network error. Please try again.");
+							} finally {
+								setLoading(false);
+							}
 						}}
 					>
-						Reject
+						{loading ? "Rejecting…" : "Reject"}
 					</button>
 				</div>
 			</div>
@@ -617,13 +658,14 @@ function KycRejectModal({
    ================================================================ */
 export default function AdminKycPage() {
 	const [seg, setSeg] = useState("All");
+	const [queue, setQueue] = useState<KycItem[]>(KYC_QUEUE);
 	const [selected, setSelected] = useState<KycItem | null>(KYC_QUEUE[0] ?? null);
 	const [drawerOpen, setDrawerOpen] = useState<KycItem | null>(null);
 	const [approveModal, setApproveModal] = useState<KycItem | null>(null);
 	const [rejectModal, setRejectModal] = useState<KycItem | null>(null);
 	const [notes, setNotes] = useState("");
 
-	const filtered = KYC_QUEUE.filter(
+	const filtered = queue.filter(
 		(k) => seg === "All" || seg === "Re-review" || k.tier === seg,
 	);
 
@@ -634,7 +676,7 @@ export default function AdminKycPage() {
 				<div>
 					<h1 className="text-[22px] font-semibold tracking-tight text-[var(--c-text)]">KYC queue</h1>
 					<p className="mt-1 text-[13px] text-[var(--c-text-3)]">
-						{KYC_QUEUE.length} submissions awaiting review &middot; SLA: 24h
+						{queue.length} submissions awaiting review &middot; SLA: 24h
 					</p>
 				</div>
 				<div className="flex items-center gap-1 p-1 rounded-lg bg-[var(--c-surface-2)] border border-[var(--c-line)]">
@@ -895,9 +937,9 @@ export default function AdminKycPage() {
 				<KycApproveModal
 					kase={approveModal}
 					onClose={() => setApproveModal(null)}
-					onConfirm={(data) => {
-						// eslint-disable-next-line no-console
-						console.log("KYC approved:", approveModal.name, data);
+					onConfirm={() => {
+						setQueue((prev) => prev.filter((k) => k.id !== approveModal!.id));
+						if (selected?.id === approveModal!.id) setSelected(null);
 						setApproveModal(null);
 					}}
 				/>
@@ -908,9 +950,9 @@ export default function AdminKycPage() {
 				<KycRejectModal
 					kase={rejectModal}
 					onClose={() => setRejectModal(null)}
-					onConfirm={(data) => {
-						// eslint-disable-next-line no-console
-						console.log("KYC rejected:", rejectModal.name, data);
+					onConfirm={() => {
+						setQueue((prev) => prev.filter((k) => k.id !== rejectModal!.id));
+						if (selected?.id === rejectModal!.id) setSelected(null);
 						setRejectModal(null);
 					}}
 				/>

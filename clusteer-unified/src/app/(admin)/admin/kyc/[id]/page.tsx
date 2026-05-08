@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { toast } from "sonner";
 import {
 	ChevronRight,
 	Mail,
@@ -75,8 +76,14 @@ export default function KYCDetailPage() {
 	const [showFlagModal, setShowFlagModal] = useState(false);
 	const [newNote, setNewNote] = useState("");
 	const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
-
 	const kyc = mockKYCDetail;
+
+	const [approveLoading, setApproveLoading] = useState(false);
+	const [rejectLoading, setRejectLoading] = useState(false);
+	const [approveNote, setApproveNote] = useState("");
+	const [rejectReason, setRejectReason] = useState("Document not clear");
+	const [rejectDetails, setRejectDetails] = useState("");
+	const [kycStatus, setKycStatus] = useState<string>(kyc.status);
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
@@ -206,14 +213,14 @@ export default function KYCDetailPage() {
 								</label>
 								<p
 									className={`text-base font-medium mt-1 ${
-										kyc.status === "Approved"
+										kycStatus === "Approved"
 											? "text-success"
-											: kyc.status === "Pending"
+											: kycStatus === "Pending"
 											? "text-orange-600"
 											: "text-danger"
 									}`}
 								>
-									{kyc.status}
+									{kycStatus}
 								</p>
 							</div>
 						</div>
@@ -386,6 +393,8 @@ export default function KYCDetailPage() {
 								Add approval note (optional)
 							</label>
 							<textarea
+								value={approveNote}
+								onChange={(e) => setApproveNote(e.target.value)}
 								className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 								rows={3}
 								placeholder="Enter any notes..."
@@ -399,8 +408,33 @@ export default function KYCDetailPage() {
 							>
 								Cancel
 							</button>
-							<button className="flex-1 px-4 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors">
-								Approve KYC
+							<button
+								disabled={approveLoading}
+								className="flex-1 px-4 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors disabled:opacity-60"
+								onClick={async () => {
+									setApproveLoading(true);
+									try {
+										const res = await fetch(`/api/admin/kyc/${kyc.user.id}/approve`, {
+											method: "POST",
+											headers: { "Content-Type": "application/json" },
+											body: JSON.stringify({ tier: "Tier 2", notes: approveNote }),
+										});
+										const data = await res.json();
+										if (res.ok) {
+											toast.success("KYC approved successfully");
+											setKycStatus("Approved");
+											setShowApproveModal(false);
+										} else {
+											toast.error(data.error || "Approval failed");
+										}
+									} catch {
+										toast.error("Network error. Please try again.");
+									} finally {
+										setApproveLoading(false);
+									}
+								}}
+							>
+								{approveLoading ? "Approving…" : "Approve KYC"}
 							</button>
 						</div>
 					</div>
@@ -429,7 +463,11 @@ export default function KYCDetailPage() {
 							<label className="block text-sm font-medium text-[var(--c-text-3)] mb-2">
 								Rejection reason
 							</label>
-							<select className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent mb-3">
+							<select
+								value={rejectReason}
+								onChange={(e) => setRejectReason(e.target.value)}
+								className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent mb-3"
+							>
 								<option>Document not clear</option>
 								<option>Information mismatch</option>
 								<option>Expired document</option>
@@ -437,6 +475,8 @@ export default function KYCDetailPage() {
 								<option>Other</option>
 							</select>
 							<textarea
+								value={rejectDetails}
+								onChange={(e) => setRejectDetails(e.target.value)}
 								className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 								rows={3}
 								placeholder="Additional details..."
@@ -450,8 +490,33 @@ export default function KYCDetailPage() {
 							>
 								Cancel
 							</button>
-							<button className="flex-1 px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90 transition-colors">
-								Reject KYC
+							<button
+								disabled={rejectLoading}
+								className="flex-1 px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90 transition-colors disabled:opacity-60"
+								onClick={async () => {
+									setRejectLoading(true);
+									try {
+										const res = await fetch(`/api/admin/kyc/${kyc.user.id}/reject`, {
+											method: "POST",
+											headers: { "Content-Type": "application/json" },
+											body: JSON.stringify({ reason: rejectReason }),
+										});
+										const data = await res.json();
+										if (res.ok) {
+											toast.success("KYC rejected");
+											setKycStatus("Rejected");
+											setShowRejectModal(false);
+										} else {
+											toast.error(data.error || "Rejection failed");
+										}
+									} catch {
+										toast.error("Network error. Please try again.");
+									} finally {
+										setRejectLoading(false);
+									}
+								}}
+							>
+								{rejectLoading ? "Rejecting…" : "Reject KYC"}
 							</button>
 						</div>
 					</div>

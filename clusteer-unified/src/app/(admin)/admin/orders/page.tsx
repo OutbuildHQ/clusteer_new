@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-/* ── inline mock data ── */
-const ORDERS = [
+/* ── fallback mock data (used while loading or on error) ── */
+const MOCK_ORDERS = [
   { id: "ORD-4821", side: "Buy",  pair: "USDT/NGN", price: 1, amount: 24_500, status: "Filled", time: "14:31", user: { id: "USR-10042" } },
   { id: "ORD-4820", side: "Sell", pair: "USDT/NGN", price: 1, amount: 18_200, status: "Open",   time: "14:28", user: { id: "USR-10048" } },
   { id: "ORD-4819", side: "Buy",  pair: "USDT/NGN", price: 1, amount: 9_800,  status: "Filled", time: "14:25", user: { id: "USR-10055" } },
@@ -29,12 +30,40 @@ function ngn(n: number) {
 }
 function num(n: number, d = 2) { return n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
 
+/* ── loading skeleton row ── */
+function SkeletonRow({ cols }: { cols: number }) {
+  return (
+    <tr>
+      {Array.from({ length: cols }).map((_, i) => (
+        <td key={i} style={{ padding: "8px 16px" }}>
+          <div style={{ height: 14, borderRadius: 6, background: "var(--c-line)", animation: "pulse 1.5s ease-in-out infinite" }} />
+        </td>
+      ))}
+    </tr>
+  );
+}
+
 export default function AdminOrderBook() {
   const [pair, setPair] = useState<string>("USDT/NGN");
+  const [page] = useState(1);
 
-  const bids = ORDERS.filter((o) => o.side === "Buy").slice(0, 8);
-  const asks = ORDERS.filter((o) => o.side === "Sell").slice(0, 8);
-  const matches = ORDERS.filter((o) => o.status === "Filled").slice(0, 10);
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-orders", page, pair],
+    queryFn: async () => {
+      const params = new URLSearchParams({ page: String(page), size: "20" });
+      params.set("pair", pair);
+      const res = await fetch(`/api/admin/orders?${params}`);
+      if (!res.ok) throw new Error("Failed to fetch orders");
+      return res.json();
+    },
+    staleTime: 30_000,
+  });
+
+  const orders: typeof MOCK_ORDERS = data?.data?.length ? data.data : MOCK_ORDERS;
+
+  const bids = orders.filter((o) => o.side === "Buy").slice(0, 8);
+  const asks = orders.filter((o) => o.side === "Sell").slice(0, 8);
+  const matches = orders.filter((o) => o.status === "Filled").slice(0, 10);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -73,14 +102,17 @@ export default function AdminOrderBook() {
               </tr>
             </thead>
             <tbody>
-              {bids.map((o) => (
-                <tr key={o.id} style={{ borderBottom: "1px solid var(--c-line)" }}>
-                  <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums", color: "var(--c-up)" }}>{ngn(o.price * RATE)}</td>
-                  <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{num(o.amount)}</td>
-                  <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{ngn(o.price * o.amount * RATE)}</td>
-                  <td style={{ padding: "8px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>{o.user.id}</td>
-                </tr>
-              ))}
+              {isLoading
+                ? Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} cols={4} />)
+                : bids.map((o) => (
+                  <tr key={o.id} style={{ borderBottom: "1px solid var(--c-line)" }}>
+                    <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums", color: "var(--c-up)" }}>{ngn(o.price * RATE)}</td>
+                    <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{num(o.amount)}</td>
+                    <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{ngn(o.price * o.amount * RATE)}</td>
+                    <td style={{ padding: "8px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>{o.user.id}</td>
+                  </tr>
+                ))
+              }
             </tbody>
           </table>
         </div>
@@ -99,14 +131,17 @@ export default function AdminOrderBook() {
               </tr>
             </thead>
             <tbody>
-              {asks.map((o) => (
-                <tr key={o.id} style={{ borderBottom: "1px solid var(--c-line)" }}>
-                  <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums", color: "var(--c-down)" }}>{ngn(o.price * RATE)}</td>
-                  <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{num(o.amount)}</td>
-                  <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{ngn(o.price * o.amount * RATE)}</td>
-                  <td style={{ padding: "8px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>{o.user.id}</td>
-                </tr>
-              ))}
+              {isLoading
+                ? Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} cols={4} />)
+                : asks.map((o) => (
+                  <tr key={o.id} style={{ borderBottom: "1px solid var(--c-line)" }}>
+                    <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums", color: "var(--c-down)" }}>{ngn(o.price * RATE)}</td>
+                    <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{num(o.amount)}</td>
+                    <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{ngn(o.price * o.amount * RATE)}</td>
+                    <td style={{ padding: "8px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>{o.user.id}</td>
+                  </tr>
+                ))
+              }
             </tbody>
           </table>
         </div>
@@ -126,23 +161,26 @@ export default function AdminOrderBook() {
             </tr>
           </thead>
           <tbody>
-            {matches.map((o) => (
-              <tr key={o.id} style={{ borderBottom: "1px solid var(--c-line)" }} className="hover:bg-[var(--c-surface-2)] transition-colors">
-                <td style={{ padding: "8px 16px", color: "var(--c-text-3)" }}>{o.time}</td>
-                <td style={{ padding: "8px 16px" }}>{o.pair}</td>
-                <td style={{ padding: "8px 16px" }}>
-                  <span style={{
-                    display: "inline-flex", padding: "2px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600,
-                    background: o.side === "Buy" ? "var(--c-up-soft)" : "var(--c-down-soft)",
-                    color: o.side === "Buy" ? "var(--c-up)" : "var(--c-down)",
-                  }}>{o.side}</span>
-                </td>
-                <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{ngn(o.price * RATE)}</td>
-                <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{num(o.amount)}</td>
-                <td style={{ padding: "8px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>{o.user.id}</td>
-                <td style={{ padding: "8px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>USR-{10042 + (parseInt(o.id.slice(-2)) % 20)}</td>
-              </tr>
-            ))}
+            {isLoading
+              ? Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} cols={7} />)
+              : matches.map((o) => (
+                <tr key={o.id} style={{ borderBottom: "1px solid var(--c-line)" }} className="hover:bg-[var(--c-surface-2)] transition-colors">
+                  <td style={{ padding: "8px 16px", color: "var(--c-text-3)" }}>{o.time}</td>
+                  <td style={{ padding: "8px 16px" }}>{o.pair}</td>
+                  <td style={{ padding: "8px 16px" }}>
+                    <span style={{
+                      display: "inline-flex", padding: "2px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600,
+                      background: o.side === "Buy" ? "var(--c-up-soft)" : "var(--c-down-soft)",
+                      color: o.side === "Buy" ? "var(--c-up)" : "var(--c-down)",
+                    }}>{o.side}</span>
+                  </td>
+                  <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{ngn(o.price * RATE)}</td>
+                  <td style={{ padding: "8px 16px", fontVariantNumeric: "tabular-nums" }}>{num(o.amount)}</td>
+                  <td style={{ padding: "8px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>{o.user.id}</td>
+                  <td style={{ padding: "8px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>USR-{10042 + (parseInt(o.id.slice(-2)) % 20)}</td>
+                </tr>
+              ))
+            }
           </tbody>
         </table>
       </div>

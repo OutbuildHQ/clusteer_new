@@ -1,6 +1,9 @@
 "use client";
 
 import { Copy } from "lucide-react";
+import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { useUserId } from "@/hooks/use-user-id";
 
 function StatusBadge({ s }: { s: string }) {
 	const style = s === "Completed" || s === "Verified"
@@ -16,7 +19,7 @@ function StatusBadge({ s }: { s: string }) {
 	);
 }
 
-const REFERRALS = [
+const MOCK_REFERRALS = [
 	{ name: "Tunde Bakare", joined: "Mar 14, 2026", kyc: "Verified", traded: true },
 	{ name: "Chinedu Eze", joined: "Mar 12, 2026", kyc: "Verified", traded: true },
 	{ name: "Aisha Mohammed", joined: "Mar 10, 2026", kyc: "Pending", traded: false },
@@ -28,6 +31,28 @@ const REFERRALS = [
 ];
 
 export default function ReferralsPage() {
+	const userId = useUserId();
+	const referralLink = `https://clusteer.io/join?ref=${userId ?? "ADAEZE2K"}`;
+
+	const handleCopy = () => {
+		navigator.clipboard.writeText(referralLink);
+		toast.success("Referral link copied!");
+	};
+
+	const { data: referralData } = useQuery({
+		queryKey: ["referrals", userId],
+		queryFn: async () => {
+			const res = await fetch("/api/referrals");
+			if (!res.ok) throw new Error("Failed to fetch referrals");
+			return res.json();
+		},
+		enabled: !!userId,
+		staleTime: 60_000,
+	});
+
+	// Fall back to mock data when the API returns null (stub) or errors
+	const REFERRALS = referralData?.data ?? MOCK_REFERRALS;
+
 	return (
 		<div className="space-y-6">
 			<h1 className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>Referrals &amp; rewards</h1>
@@ -42,8 +67,12 @@ export default function ReferralsPage() {
 					<div className="mt-6 rounded-[14px] p-3.5" style={{ background: "var(--c-onyx-700)", border: "1px dashed rgba(244,241,234,0.2)" }}>
 						<div className="text-[11px] uppercase" style={{ color: "rgba(244,241,234,0.5)" }}>Your referral link</div>
 						<div className="flex items-center gap-2 mt-1.5">
-							<div className="flex-1 tabular-nums text-[13px]" style={{ fontFamily: "var(--f-mono)" }}>clusteer.ng/r/ADAEZE2K</div>
-							<button className="inline-flex items-center gap-2 h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium" style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}>
+							<div className="flex-1 tabular-nums text-[13px] truncate" style={{ fontFamily: "var(--f-mono)" }}>{referralLink}</div>
+							<button
+								onClick={handleCopy}
+								className="inline-flex items-center gap-2 h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium shrink-0"
+								style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}
+							>
 								<Copy className="size-3.5" />Copy
 							</button>
 						</div>
@@ -76,7 +105,7 @@ export default function ReferralsPage() {
 						</tr>
 					</thead>
 					<tbody>
-						{REFERRALS.map((u) => (
+						{REFERRALS.map((u: typeof MOCK_REFERRALS[number]) => (
 							<tr key={u.name} className="transition-colors hover:bg-[var(--c-surface-2)]">
 								<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
 									<div className="flex items-center gap-2.5">
@@ -101,7 +130,7 @@ export default function ReferralsPage() {
 			{/* Referrals card list (mobile) */}
 			<div className="lg:hidden space-y-2">
 				<h3 className="text-[15px] font-semibold" style={{ color: "var(--c-text)" }}>Referrals</h3>
-				{REFERRALS.map((u) => (
+				{REFERRALS.map((u: typeof MOCK_REFERRALS[number]) => (
 					<div key={u.name} className="rounded-[12px] p-3" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-2.5">

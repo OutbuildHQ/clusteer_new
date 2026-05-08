@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { getAllOrders } from "@/lib/api/user/queries";
 import { formatMoney } from "@/lib/utils";
 import { X, Search, ChevronLeft, ChevronRight } from "lucide-react";
@@ -53,13 +54,21 @@ export default function OrdersPage() {
 	const [q, setQ] = useState("");
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState<ReturnType<typeof mapOrder> | null>(null);
+	const [cancelLoading, setCancelLoading] = useState<string | null>(null);
+	const [cancelledIds, setCancelledIds] = useState<Set<string>>(new Set());
 
 	const { data: response, isLoading, isError } = useQuery({
 		queryKey: ["orders", page],
 		queryFn: () => getAllOrders({ page, size: PAGE_SIZE }),
 	});
 
-	const orders = useMemo(() => (response?.data ?? []).map(mapOrder), [response]);
+	const orders = useMemo(
+		() => (response?.data ?? []).map(mapOrder).map(
+			(o) => cancelledIds.has(o.id) ? { ...o, status: "Cancelled" as const } : o,
+		),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[response, cancelledIds],
+	);
 	const totalPages = response?.metadata?.totalPages ?? 1;
 
 	const list = useMemo(
@@ -337,8 +346,31 @@ export default function OrdersPage() {
 						</div>
 						<div className="flex items-center justify-end gap-2 px-[var(--pad)] py-3" style={{ borderTop: "1px solid var(--c-line)" }}>
 							{(open.status === "Open" || open.status === "Partial") && (
-								<button className="inline-flex items-center h-9 px-3.5 rounded-[10px] text-[13.5px] font-medium" style={{ color: "var(--c-down)", border: "1px solid var(--c-line)" }} onClick={() => setOpen(null)}>
-									Cancel order
+								<button
+									disabled={cancelLoading === open.id}
+									className="inline-flex items-center h-9 px-3.5 rounded-[10px] text-[13.5px] font-medium disabled:opacity-60"
+									style={{ color: "var(--c-down)", border: "1px solid var(--c-line)" }}
+									onClick={async () => {
+										if (!confirm("Cancel this order? This cannot be undone.")) return;
+										setCancelLoading(open.id);
+										try {
+											const res = await fetch(`/api/order/${open.id}/cancel`, { method: "POST" });
+											const data = await res.json();
+											if (res.ok) {
+												toast.success("Order cancelled");
+												setCancelledIds((prev) => new Set([...prev, open.id]));
+												setOpen((prev) => prev ? { ...prev, status: "Cancelled" } : null);
+											} else {
+												toast.error(data.message || "Failed to cancel order");
+											}
+										} catch {
+											toast.error("Network error. Please try again.");
+										} finally {
+											setCancelLoading(null);
+										}
+									}}
+								>
+									{cancelLoading === open.id ? "Cancelling…" : "Cancel order"}
 								</button>
 							)}
 							<button className="inline-flex items-center h-9 px-3.5 rounded-[10px] text-[13.5px] font-medium" style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }} onClick={() => setOpen(null)}>

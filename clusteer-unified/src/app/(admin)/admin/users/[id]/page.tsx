@@ -20,9 +20,12 @@ import {
 	Phone,
 	CheckCircle2,
 	CalendarDays,
-	TrendingUp
+	TrendingUp,
+	KeyRound,
+	ShieldOff,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface Transaction {
 	id: string;
@@ -85,11 +88,15 @@ const mockAdminNotes: AdminNote[] = [
 export default function UserDetailPage() {
 	const params = useParams();
 	const router = useRouter();
+	const userId = params.id as string;
 	const [showKycModal, setShowKycModal] = useState(false);
 	const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
 	const [showConfirmModal, setShowConfirmModal] = useState<string | null>(null);
 	const [confirmReason, setConfirmReason] = useState("");
 	const [showReleaseFundsModal, setShowReleaseFundsModal] = useState(false);
+	const [actionLoading, setActionLoading] = useState<string | null>(null);
+	const [actionError, setActionError] = useState<string | null>(null);
+	const [userStatus, setUserStatus] = useState("Active");
 
 	// Mock user data - in real app, fetch based on params.id
 	const user = {
@@ -127,15 +134,102 @@ export default function UserDetailPage() {
 		setConfirmReason("");
 	};
 
-	const confirmAction = () => {
-		console.log(`Action: ${showConfirmModal}, Reason: ${confirmReason}`);
+	const confirmAction = async () => {
+		if (!showConfirmModal) return;
+		const action = showConfirmModal;
+		const reason = confirmReason;
 		setShowConfirmModal(null);
 		setConfirmReason("");
+
+		if (action === "suspend") {
+			setActionLoading("suspend");
+			try {
+				const res = await fetch(`/api/admin/users/${userId}/suspend`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ reason }),
+				});
+				const data = await res.json();
+				if (res.ok) {
+					toast.success("User suspended successfully");
+					setUserStatus("Suspended");
+				} else {
+					toast.error(data.error || "Failed to suspend user");
+					setActionError(data.error || "Failed to suspend user");
+				}
+			} catch {
+				toast.error("Failed to suspend user");
+				setActionError("Failed to suspend user");
+			} finally {
+				setActionLoading(null);
+			}
+		}
+		// archive and reject-kyc can be wired up similarly when their API routes exist
 	};
 
-	const handleReleaseFunds = () => {
-		console.log("Releasing frozen funds");
-		setShowReleaseFundsModal(false);
+	const handleActivate = async () => {
+		setActionLoading("activate");
+		try {
+			const res = await fetch(`/api/admin/users/${userId}/activate`, { method: "POST" });
+			const data = await res.json();
+			if (res.ok) {
+				toast.success("User activated successfully");
+				setUserStatus("Active");
+			} else {
+				toast.error(data.error || "Failed to activate user");
+				setActionError(data.error || "Failed to activate user");
+			}
+		} catch {
+			toast.error("Failed to activate user");
+			setActionError("Failed to activate user");
+		} finally {
+			setActionLoading(null);
+		}
+	};
+
+	const handleResetPassword = async () => {
+		if (!confirm("Send password reset email to this user?")) return;
+		setActionLoading("reset-password");
+		try {
+			const res = await fetch(`/api/admin/users/${userId}/reset-password`, { method: "POST" });
+			const data = await res.json();
+			if (res.ok) toast.success("Password reset email sent");
+			else toast.error(data.error || "Failed to send reset email");
+		} catch {
+			toast.error("Failed to send reset email");
+		} finally {
+			setActionLoading(null);
+		}
+	};
+
+	const handleReset2FA = async () => {
+		if (!confirm("This will remove all 2FA methods for this user. Continue?")) return;
+		setActionLoading("reset-2fa");
+		try {
+			const res = await fetch(`/api/admin/users/${userId}/reset-2fa`, { method: "POST" });
+			const data = await res.json();
+			if (res.ok) toast.success("2FA reset successfully");
+			else toast.error(data.error || "Failed to reset 2FA");
+		} catch {
+			toast.error("Failed to reset 2FA");
+		} finally {
+			setActionLoading(null);
+		}
+	};
+
+	const handleReleaseFunds = async () => {
+		setActionLoading("release-funds");
+		try {
+			const res = await fetch(`/api/admin/users/${userId}/release-funds`, { method: "POST" });
+			const data = await res.json();
+			if (res.ok) toast.success("Funds released successfully");
+			else toast.error(data.error || "Failed to release funds");
+		} catch {
+			toast.error("Failed to release funds");
+		} finally {
+			setActionLoading(null);
+			setShowReleaseFundsModal(false);
+		}
 	};
 
 	return (
@@ -181,14 +275,14 @@ export default function UserDetailPage() {
 							<h1 className="text-2xl font-semibold text-[var(--c-text)]">{user.name}</h1>
 							<div className="flex items-center gap-2 mt-1">
 								<span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-									user.status === "Active"
+									userStatus === "Active"
 										? "bg-success/10 text-success"
 										: "bg-orange-50 text-orange-700"
 								}`}>
 									<span className={`w-1.5 h-1.5 rounded-full ${
-										user.status === "Active" ? "bg-success" : "bg-orange-600"
+										userStatus === "Active" ? "bg-success" : "bg-orange-600"
 									}`} />
-									{user.status}
+									{userStatus}
 								</span>
 								<span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
 									user.kycStatus === "Approved"
@@ -208,25 +302,57 @@ export default function UserDetailPage() {
 				{/* Action Buttons */}
 				<div className="flex items-center gap-3">
 					<button
+						onClick={handleResetPassword}
+						disabled={actionLoading === "reset-password"}
+						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+					>
+						<KeyRound className="w-4 h-4" />
+						{actionLoading === "reset-password" ? "Sending…" : "Reset password"}
+					</button>
+					<button
+						onClick={handleReset2FA}
+						disabled={actionLoading === "reset-2fa"}
+						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+					>
+						<ShieldOff className="w-4 h-4" />
+						{actionLoading === "reset-2fa" ? "Resetting…" : "Reset 2FA"}
+					</button>
+					<button
 						onClick={() => handleAction("archive")}
-						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
+						disabled={!!actionLoading}
+						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						Archive
 					</button>
-					<button
-						onClick={() => handleAction("suspend")}
-						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors"
-					>
-						Suspend
-					</button>
+					{userStatus === "Suspended" ? (
+						<button
+							onClick={handleActivate}
+							disabled={actionLoading === "activate"}
+							className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-success rounded-lg hover:bg-success/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+						>
+							{actionLoading === "activate" ? "Activating…" : "Unsuspend"}
+						</button>
+					) : (
+						<button
+							onClick={() => handleAction("suspend")}
+							disabled={actionLoading === "suspend"}
+							className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-[var(--c-text-3)] rounded-lg hover:bg-background transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+						>
+							{actionLoading === "suspend" ? "Suspending…" : "Suspend"}
+						</button>
+					)}
 					<button
 						onClick={() => handleAction("reject-kyc")}
-						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-danger rounded-lg hover:bg-danger/10 transition-colors flex items-center gap-2"
+						disabled={!!actionLoading}
+						className="px-4 py-2 bg-[var(--c-surface)] border border-[var(--c-line)] text-danger rounded-lg hover:bg-danger/10 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						<X className="w-4 h-4" />
 						Reject KYC
 					</button>
-					<button className="px-4 py-2 bg-[#9EE76E] text-[var(--c-text)] rounded-lg hover:bg-[#9EE76E]/90 transition-colors flex items-center gap-2">
+					<button
+						disabled={!!actionLoading}
+						className="px-4 py-2 bg-[#9EE76E] text-[var(--c-text)] rounded-lg hover:bg-[#9EE76E]/90 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+					>
 						<Check className="w-4 h-4" />
 						Verify KYC
 					</button>
@@ -791,9 +917,10 @@ export default function UserDetailPage() {
 							</button>
 							<button
 								onClick={handleReleaseFunds}
-								className="flex-1 px-4 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors"
+								disabled={actionLoading === "release-funds"}
+								className="flex-1 px-4 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								Release Funds
+								{actionLoading === "release-funds" ? "Releasing…" : "Release Funds"}
 							</button>
 						</div>
 					</div>
