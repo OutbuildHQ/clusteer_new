@@ -1,3 +1,5 @@
+"use client";
+
 import dynamic from "next/dynamic";
 import { Sidebar } from "@/components/app/sidebar";
 import { TopBar } from "@/components/app/topbar";
