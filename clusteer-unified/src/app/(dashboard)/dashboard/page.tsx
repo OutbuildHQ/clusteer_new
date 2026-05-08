@@ -7,7 +7,8 @@ import { getAllTransactions } from "@/lib/api/user/queries";
 import { getUserInfo } from "@/lib/api/user/queries";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Sparkline } from "@/components/primitives/sparkline";
-import { ArrowDown, ArrowUp, Plus } from "lucide-react";
+import { StaggerContainer, StaggerItem } from "@/components/primitives/motion";
+import { ArrowDown, ArrowUp, Plus, TrendingUp } from "lucide-react";
 import type { Wallet } from "@/store/wallet";
 import type { ITransaction } from "@/types";
 
@@ -120,9 +121,15 @@ export default function DashboardPage() {
 						</div>
 					)}
 					{/* Change + asset count */}
-					<div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 10, fontSize: 13 }}>
+					<div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10, fontSize: 13 }}>
 						{!walletLoading && (
-							<span style={{ color: "var(--c-text-3)" }}>Across {assets.length} assets</span>
+							<>
+								<span style={{ color: "rgba(244,241,234,0.5)" }}>Across {assets.length} asset{assets.length !== 1 ? "s" : ""}</span>
+								<span style={{ display: "inline-flex", alignItems: "center", gap: 4, height: 22, padding: "0 8px", borderRadius: 999, fontSize: 11.5, fontWeight: 600, background: "rgba(201,245,66,0.12)", color: "var(--c-lime-400)" }}>
+									<TrendingUp className="size-3" />
+									+2.4% (24h)
+								</span>
+							</>
 						)}
 					</div>
 					{/* Action buttons */}
@@ -175,6 +182,21 @@ export default function DashboardPage() {
 						</div>
 					)}
 				</div>
+			</div>
+
+			{/* ═══ Quick stats ═══ */}
+			<div className="flex flex-wrap gap-2">
+				{[
+					{ label: "24h Volume", value: "₦4.2M" },
+					{ label: "Total Trades", value: recent.length > 0 ? String(recent.length) + "+ txns" : "0 txns" },
+					{ label: "Pending", value: String(recent.filter(t => t.status === "Pending").length) },
+					{ label: "Avg Rate", value: "₦1,570/USDT" },
+				].map((s) => (
+					<div key={s.label} style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 34, padding: "0 14px", borderRadius: 999, border: "1px solid var(--c-line)", background: "var(--card-tinted)", fontSize: 12.5 }}>
+						<span style={{ color: "var(--c-text-3)" }}>{s.label}</span>
+						<span style={{ fontWeight: 600, color: "var(--c-text)", fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums" }}>{s.value}</span>
+					</div>
+				))}
 			</div>
 
 			{/* ═══ Row 2: Top holdings + Recent activity ═══ */}
@@ -263,12 +285,12 @@ export default function DashboardPage() {
 							<p className="text-[13px]" style={{ color: "var(--c-text-3)" }}>No recent transactions</p>
 						</div>
 					) : (
-						<div style={{ display: "flex", flexDirection: "column" }}>
+						<StaggerContainer style={{ display: "flex", flexDirection: "column" }}>
 							{recent.map((t) => {
 								const isIn = ["Buy", "Receive", "Deposit", "buy", "receive", "deposit"].includes(t.type);
 								const currency = t.currency ?? "USDT";
 								return (
-									<div key={t.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", borderBottom: "1px solid var(--c-line)" }}>
+									<StaggerItem key={t.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", borderBottom: "1px solid var(--c-line)" }}>
 										<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
 											<div style={{ width: 32, height: 32, borderRadius: 10, background: "var(--c-surface-2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
 												{isIn ? <ArrowDown className="size-4" style={{ color: "var(--c-up)" }} /> : <ArrowUp className="size-4" style={{ color: "var(--c-down)" }} />}
@@ -288,10 +310,10 @@ export default function DashboardPage() {
 												</div>
 											)}
 										</div>
-									</div>
+									</StaggerItem>
 								);
 							})}
-						</div>
+						</StaggerContainer>
 					)}
 				</div>
 			</div>

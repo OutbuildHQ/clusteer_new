@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
+import { TabCrossfade } from "@/components/primitives/motion";
 
 type Tab = "Profile" | "Security" | "Limits" | "Payment methods" | "Notifications" | "Privacy" | "API keys";
 const TABS: Tab[] = ["Profile", "Security", "Limits", "Payment methods", "Notifications", "Privacy", "API keys"];
@@ -44,6 +45,7 @@ export default function SettingsPage() {
 				</div>
 
 				<div className="flex-1 min-w-0 w-full">
+					<TabCrossfade activeKey={tab}>
 					{tab === "Profile" && (
 						<div className="rounded-[14px] p-[var(--pad)] space-y-4" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
 							<h3 className="text-[17px] font-semibold" style={{ color: "var(--c-text)" }}>Profile</h3>
@@ -167,6 +169,7 @@ export default function SettingsPage() {
 							</div>
 						</div>
 					)}
+				</TabCrossfade>
 				</div>
 			</div>
 		</div>

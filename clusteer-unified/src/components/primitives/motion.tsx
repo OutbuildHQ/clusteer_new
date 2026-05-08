@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 // Page transition wrapper — fade + subtle Y slide
 export function PageTransition({ children }: { children: ReactNode }) {
@@ -30,15 +30,16 @@ const staggerVariants = {
   visible: { transition: { staggerChildren: 0.03 } },
 };
 
-export function StaggerContainer({ children, className }: { children: ReactNode; className?: string }) {
+export function StaggerContainer({ children, className, style }: { children: ReactNode; className?: string; style?: CSSProperties }) {
   const reduced = useReducedMotion();
-  if (reduced) return <div className={className}>{children}</div>;
+  if (reduced) return <div className={className} style={style}>{children}</div>;
   return (
     <motion.div
       variants={staggerVariants}
       initial="hidden"
       animate="visible"
       className={className}
+      style={style}
     >
       {children}
     </motion.div>
@@ -51,11 +52,11 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as const } },
 } as const;
 
-export function StaggerItem({ children, className }: { children: ReactNode; className?: string }) {
+export function StaggerItem({ children, className, style }: { children: ReactNode; className?: string; style?: CSSProperties }) {
   const reduced = useReducedMotion();
-  if (reduced) return <div className={className}>{children}</div>;
+  if (reduced) return <div className={className} style={style}>{children}</div>;
   return (
-    <motion.div variants={itemVariants} className={className}>
+    <motion.div variants={itemVariants} className={className} style={style}>
       {children}
     </motion.div>
   );

@@ -1,6 +1,8 @@
 "use client";
 
-import { Plus, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { Plus, MoreHorizontal, X } from "lucide-react";
+import { toast } from "sonner";
 
 /* ── inline mock data ── */
 const CMS_CONTENT = [
@@ -19,6 +21,38 @@ function statusStyle(s: string) {
 }
 
 export default function AdminCMS() {
+  const [showNew, setShowNew] = useState(false);
+  const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const [content2, setContent2] = useState(CMS_CONTENT);
+  const [newItem, setNewItem] = useState({ title: "", type: "Banner", audience: "All users", status: "Active" });
+  const [saving, setSaving] = useState(false);
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    await new Promise((r) => setTimeout(r, 600));
+    const id = `CMS-${(Math.floor(Math.random() * 900) + 100)}`;
+    setContent2((prev) => [{ id, views: "0", updated: "just now", ...newItem }, ...prev]);
+    toast.success("Content created");
+    setShowNew(false);
+    setNewItem({ title: "", type: "Banner", audience: "All users", status: "Active" });
+    setSaving(false);
+  }
+
+  function handleContentAction(id: string, action: "edit" | "unpublish" | "delete") {
+    setMenuOpen(null);
+    if (action === "delete") {
+      if (!confirm("Delete this content item?")) return;
+      setContent2((prev) => prev.filter((c) => c.id !== id));
+      toast.success("Content deleted");
+    } else if (action === "unpublish") {
+      setContent2((prev) => prev.map((c) => c.id === id ? { ...c, status: "Expired" } : c));
+      toast.success("Content unpublished");
+    } else {
+      toast.info("Edit coming soon");
+    }
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Header */}
@@ -27,7 +61,7 @@ export default function AdminCMS() {
           <h1 style={{ fontSize: 22, fontWeight: 600, color: "var(--c-text)", letterSpacing: "-0.02em" }}>Content</h1>
           <p style={{ marginTop: 6, fontSize: 13, color: "var(--c-text-3)" }}>Banners, announcements, FAQ &mdash; visible to customers</p>
         </div>
-        <button className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:opacity-90 transition-opacity">
+        <button onClick={() => setShowNew(true)} className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:opacity-90 transition-opacity">
           <Plus className="size-3.5" />New content
         </button>
       </div>
@@ -47,7 +81,7 @@ export default function AdminCMS() {
               </tr>
             </thead>
             <tbody>
-              {CMS_CONTENT.map((c) => {
+              {content2.map((c) => {
                 const ss = statusStyle(c.status);
                 return (
                   <tr key={c.id} style={{ borderBottom: "1px solid var(--c-line)" }} className="hover:bg-[var(--c-surface-2)] transition-colors">
@@ -64,9 +98,18 @@ export default function AdminCMS() {
                     <td style={{ padding: "10px 16px", fontVariantNumeric: "tabular-nums" }}>{c.views}</td>
                     <td style={{ padding: "10px 16px", color: "var(--c-text-3)" }}>{c.updated}</td>
                     <td style={{ padding: "10px 16px" }}>
-                      <button style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 6, border: "none", background: "transparent", color: "var(--c-text-3)", cursor: "pointer" }}>
-                        <MoreHorizontal className="size-4" />
-                      </button>
+                      <div style={{ position: "relative" }}>
+                        <button onClick={() => setMenuOpen(menuOpen === c.id ? null : c.id)} style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 6, border: "none", background: "transparent", color: "var(--c-text-3)", cursor: "pointer" }}>
+                          <MoreHorizontal className="size-4" />
+                        </button>
+                        {menuOpen === c.id && (
+                          <div style={{ position: "absolute", right: 0, top: "100%", marginTop: 4, background: "var(--c-surface)", border: "1px solid var(--c-line)", borderRadius: 10, padding: 4, minWidth: 140, zIndex: 50, boxShadow: "var(--sh-2)" }}>
+                            <button onClick={() => handleContentAction(c.id, "edit")} style={{ display: "block", width: "100%", textAlign: "left", padding: "6px 10px", borderRadius: 6, border: "none", background: "transparent", fontSize: 13, color: "var(--c-text)", cursor: "pointer" }}>Edit</button>
+                            <button onClick={() => handleContentAction(c.id, "unpublish")} style={{ display: "block", width: "100%", textAlign: "left", padding: "6px 10px", borderRadius: 6, border: "none", background: "transparent", fontSize: 13, color: "var(--c-warn)", cursor: "pointer" }}>Unpublish</button>
+                            <button onClick={() => handleContentAction(c.id, "delete")} style={{ display: "block", width: "100%", textAlign: "left", padding: "6px 10px", borderRadius: 6, border: "none", background: "transparent", fontSize: 13, color: "var(--c-down)", cursor: "pointer" }}>Delete</button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
@@ -98,6 +141,42 @@ export default function AdminCMS() {
           </div>
         </div>
       </div>
+      {/* New content modal */}
+      {showNew && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: "rgba(0,0,0,0.5)", padding: 20 }} onClick={() => setShowNew(false)}>
+          <div style={{ background: "var(--c-surface)", borderRadius: 20, border: "1px solid var(--c-line)", maxWidth: 480, width: "100%", boxShadow: "var(--sh-3)", animation: "modalIn .22s cubic-bezier(.2,.7,.2,1)" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "1px solid var(--c-line)" }}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>New content item</span>
+              <button onClick={() => setShowNew(false)} style={{ width: 36, height: 36, borderRadius: 10, border: "1px solid var(--c-line)", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--c-text)" }}><X className="size-4" /></button>
+            </div>
+            <form onSubmit={handleCreate} style={{ padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
+              <div>
+                <label style={{ fontSize: 12, color: "var(--c-text-3)", display: "block", marginBottom: 6 }}>Title</label>
+                <input required value={newItem.title} onChange={(e) => setNewItem((d) => ({ ...d, title: e.target.value }))} placeholder="e.g. Earn 2% cashback on USDT" style={{ width: "100%", height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13, outline: "none" }} />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div>
+                  <label style={{ fontSize: 12, color: "var(--c-text-3)", display: "block", marginBottom: 6 }}>Type</label>
+                  <select value={newItem.type} onChange={(e) => setNewItem((d) => ({ ...d, type: e.target.value }))} style={{ width: "100%", height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13, outline: "none" }}>
+                    {["Banner", "Alert", "FAQ", "Announcement"].map((t) => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, color: "var(--c-text-3)", display: "block", marginBottom: 6 }}>Audience</label>
+                  <select value={newItem.audience} onChange={(e) => setNewItem((d) => ({ ...d, audience: e.target.value }))} style={{ width: "100%", height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13, outline: "none" }}>
+                    {["All users", "Verified users", "Tier 1 users", "USDT holders"].map((a) => <option key={a} value={a}>{a}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
+                <button type="button" onClick={() => setShowNew(false)} style={{ flex: 1, height: 40, borderRadius: 10, border: "1px solid var(--c-line)", background: "transparent", fontSize: 13.5, fontWeight: 500, color: "var(--c-text)", cursor: "pointer" }}>Cancel</button>
+                <button type="submit" disabled={saving} style={{ flex: 1, height: 40, borderRadius: 10, border: "none", background: "var(--c-lime-500)", fontSize: 13.5, fontWeight: 600, color: "var(--c-onyx-900)", cursor: saving ? "not-allowed" : "pointer", opacity: saving ? 0.6 : 1 }}>{saving ? "Creating…" : "Create content"}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      <style jsx global>{"@keyframes modalIn { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }"}</style>
     </div>
   );
 }

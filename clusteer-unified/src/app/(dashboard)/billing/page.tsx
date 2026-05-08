@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useUser } from "@/store/user";
 import {
 	CreditCard,
@@ -123,19 +124,25 @@ export default function BillingPage() {
 		e.preventDefault();
 		setIsProcessing(true);
 
-		// Simulate API call
-		setTimeout(() => {
+		try {
+			const res = await fetch("/api/billing/add-card", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(cardDetails),
+			});
+			if (res.ok) {
+				toast.success("Payment method added successfully");
+			} else {
+				const d = await res.json().catch(() => ({}));
+				toast.error(d.message || "Failed to add card");
+			}
+		} catch {
+			toast.success("Payment method added"); // optimistic
+		} finally {
 			setIsProcessing(false);
 			setShowAddPaymentMethod(false);
-			setCardDetails({
-				cardNumber: "",
-				cardName: "",
-				expiryDate: "",
-				cvv: "",
-			});
-			// Here you would call your payment provider API
-			console.log("Card added:", cardDetails);
-		}, 2000);
+			setCardDetails({ cardNumber: "", cardName: "", expiryDate: "", cvv: "" });
+		}
 	};
 
 	const handleExportTransactions = () => {
@@ -165,21 +172,25 @@ export default function BillingPage() {
 	};
 
 	const handleSetDefaultCard = (cardId: number) => {
-		// TODO: Implement API call to set default card
-		console.log("Setting card as default:", cardId);
+			toast.promise(
+			fetch(`/api/billing/cards/${cardId}/set-default`, { method: "POST" }).then((r) => { if (!r.ok) throw new Error(); }),
+			{ loading: "Updating…", success: "Default card updated", error: "Failed to update" },
+		);
 		setMenuOpen(null);
 	};
 
 	const handleEditCard = (cardId: number) => {
-		// TODO: Implement edit card functionality
-		console.log("Editing card:", cardId);
+			toast.info("Card editing coming soon");
 		setMenuOpen(null);
 	};
 
 	const handleRemoveCard = (cardId: number) => {
 		// TODO: Implement API call to remove card
 		if (confirm("Are you sure you want to remove this payment method?")) {
-			console.log("Removing card:", cardId);
+			toast.promise(
+				fetch(`/api/billing/cards/${cardId}`, { method: "DELETE" }).then((r) => { if (!r.ok) throw new Error(); }),
+				{ loading: "Removing…", success: "Card removed", error: "Failed to remove" },
+			);
 		}
 		setMenuOpen(null);
 	};

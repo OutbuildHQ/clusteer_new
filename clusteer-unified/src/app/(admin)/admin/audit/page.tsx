@@ -62,7 +62,17 @@ export default function AdminAuditLog() {
               >{t}</button>
             ))}
           </div>
-          <button className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-[var(--c-line)] text-[13px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors">
+          <button
+            onClick={() => {
+              const rows = [["ID","Actor","Action","Target","IP","When"], ...filtered.slice(0,20).map(a=>[a.id,a.actor,a.action,a.target,a.ip,a.when])];
+              const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+              const blob = new Blob([csv], { type: "text/csv" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url; a.download = `audit-log-${new Date().toISOString().split("T")[0]}.csv`; a.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-[var(--c-line)] text-[13px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors">
             <Download className="size-3.5 text-[var(--c-text-3)]" />Export
           </button>
         </div>

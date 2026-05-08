@@ -57,7 +57,17 @@ export default function AdminReports() {
               >{t}</button>
             ))}
           </div>
-          <button className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:opacity-90 transition-opacity">
+          <button
+            onClick={() => {
+              const rows = [["Metric","Value","Change"], ...KPI.map(k=>[k.label,k.val,k.sub])];
+              const csv = rows.map(r=>r.join(",")).join("\n");
+              const blob = new Blob([csv], { type: "text/csv" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url; a.download = `clusteer-report-${period}-${new Date().toISOString().split("T")[0]}.csv`; a.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:opacity-90 transition-opacity">
             <Download className="size-3.5" />Generate report
           </button>
         </div>
@@ -113,7 +123,16 @@ export default function AdminReports() {
                 <td style={{ padding: "10px 16px", color: "var(--c-text-3)" }}>{r[2]}</td>
                 <td style={{ padding: "10px 16px", fontVariantNumeric: "tabular-nums", color: "var(--c-text-3)" }}>{r[3]}</td>
                 <td style={{ padding: "10px 16px" }}>
-                  <button className="flex items-center gap-1.5 h-7 px-3 rounded-md border border-[var(--c-line)] text-[12px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors">
+                  <button
+                    onClick={() => {
+                      const csv = [["Report","Period","Generated","Size"],[r[0],r[1],r[2],r[3]]].map(row=>row.join(",")).join("\n");
+                      const blob = new Blob([csv], { type: "text/csv" });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url; a.download = `${r[0].replace(/\s+/g,"-").toLowerCase()}.csv`; a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="flex items-center gap-1.5 h-7 px-3 rounded-md border border-[var(--c-line)] text-[12px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors">
                     <Download className="size-3" />Download
                   </button>
                 </td>

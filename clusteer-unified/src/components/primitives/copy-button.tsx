@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -29,12 +30,37 @@ export function CopyButton({
 				}
 			}}
 			className={cn(
-				"inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted",
+				"inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted overflow-hidden",
 				className,
 			)}
 		>
-			{copied ? <Check className="size-3.5 text-success" /> : <Copy className="size-3.5" />}
-			<span>{copied ? "Copied" : "Copy"}</span>
+			<AnimatePresence mode="wait" initial={false}>
+				{copied ? (
+					<motion.span
+						key="check"
+						initial={{ scale: 0.5, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						exit={{ scale: 0.5, opacity: 0 }}
+						transition={{ duration: 0.12, ease: "easeOut" }}
+						className="inline-flex items-center gap-1.5"
+					>
+						<Check className="size-3.5 text-success" />
+						<span>Copied</span>
+					</motion.span>
+				) : (
+					<motion.span
+						key="copy"
+						initial={{ scale: 0.5, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						exit={{ scale: 0.5, opacity: 0 }}
+						transition={{ duration: 0.12, ease: "easeOut" }}
+						className="inline-flex items-center gap-1.5"
+					>
+						<Copy className="size-3.5" />
+						<span>Copy</span>
+					</motion.span>
+				)}
+			</AnimatePresence>
 		</button>
 	);
 }

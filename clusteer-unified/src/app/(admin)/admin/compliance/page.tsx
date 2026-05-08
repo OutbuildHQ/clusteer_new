@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, X } from "lucide-react";
+import { toast } from "sonner";
 
 /* ── inline mock data ── */
 const USERS = [
@@ -41,6 +42,23 @@ function sevStyle(sev: string) {
 
 export default function AdminCompliance() {
   const [tab, setTab] = useState<Tab>("Cases");
+  const [reviewCase, setReviewCase] = useState<typeof CASES[number] | null>(null);
+  const [reviewUserIdx, setReviewUserIdx] = useState<number>(0);
+  const [resolving, setResolving] = useState<string | null>(null);
+
+  async function handleResolve(caseId: string, action: "escalate" | "dismiss" | "close") {
+    setResolving(action);
+    try {
+      await fetch(`/api/admin/compliance/${caseId}/${action}`, { method: "POST" });
+      const labels: Record<string, string> = { escalate: "Escalated", dismiss: "Dismissed", close: "Closed" };
+      toast.success(`Case ${caseId} ${labels[action]}`);
+      setReviewCase(null);
+    } catch {
+      toast.error("Action failed. Please try again.");
+    } finally {
+      setResolving(null);
+    }
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -183,6 +201,66 @@ export default function AdminCompliance() {
           </div>
         </div>
       )}
+      {/* ── Case review modal ── */}
+      {reviewCase && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: "rgba(0,0,0,0.5)", padding: 20 }} onClick={() => setReviewCase(null)}>
+          <div style={{ background: "var(--c-surface)", borderRadius: 20, border: "1px solid var(--c-line)", maxWidth: 520, width: "100%", maxHeight: "90vh", overflow: "auto", boxShadow: "var(--sh-3)", animation: "modalIn .22s cubic-bezier(.2,.7,.2,1)" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "1px solid var(--c-line)" }}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>{reviewCase.id}</span>
+              <button onClick={() => setReviewCase(null)} style={{ width: 36, height: 36, borderRadius: 10, border: "1px solid var(--c-line)", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--c-text)" }}><X className="size-4" /></button>
+            </div>
+            <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--c-surface-3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "var(--c-text)" }}>
+                  {USERS[reviewUserIdx].name.split(" ").map((n: string) => n[0]).join("")}
+                </div>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 14, color: "var(--c-text)" }}>{USERS[reviewUserIdx].name}</div>
+                  <div style={{ fontSize: 12, color: "var(--c-text-3)" }}>Subject of case</div>
+                </div>
+              </div>
+              {[
+                ["Case ID", reviewCase.id],
+                ["Trigger", reviewCase.trigger],
+                ["Severity", reviewCase.sev],
+                ["Status", "Pending review"],
+              ].map(([k, v]) => (
+                <div key={k} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, paddingBottom: 12, borderBottom: "1px solid var(--c-line)" }}>
+                  <span style={{ color: "var(--c-text-3)" }}>{k}</span>
+                  <span style={{ color: "var(--c-text)", fontWeight: k === "Severity" ? 600 : 400 }}>{v}</span>
+                </div>
+              ))}
+              <div>
+                <label style={{ fontSize: 12, color: "var(--c-text-3)", display: "block", marginBottom: 6 }}>Notes</label>
+                <textarea
+                  placeholder="Add investigation notes…"
+                  rows={3}
+                  style={{ width: "100%", padding: "10px 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface-2)", color: "var(--c-text)", fontSize: 13, resize: "vertical", outline: "none" }}
+                />
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 8, padding: "12px 20px", borderTop: "1px solid var(--c-line)", justifyContent: "flex-end" }}>
+              <button
+                disabled={resolving !== null}
+                onClick={() => handleResolve(reviewCase.id, "dismiss")}
+                style={{ height: 36, padding: "0 14px", borderRadius: 10, border: "1px solid var(--c-line)", background: "transparent", fontSize: 13, fontWeight: 500, color: "var(--c-text-2)", cursor: "pointer", opacity: resolving ? 0.5 : 1 }}
+              >{resolving === "dismiss" ? "Dismissing…" : "Dismiss"}</button>
+              <button
+                disabled={resolving !== null}
+                onClick={() => handleResolve(reviewCase.id, "escalate")}
+                style={{ height: 36, padding: "0 14px", borderRadius: 10, border: "1px solid var(--c-warn)", background: "var(--c-warn-soft)", fontSize: 13, fontWeight: 600, color: "var(--c-warn)", cursor: "pointer", opacity: resolving ? 0.5 : 1 }}
+              >{resolving === "escalate" ? "Escalating…" : "Escalate"}</button>
+              <button
+                disabled={resolving !== null}
+                onClick={() => handleResolve(reviewCase.id, "close")}
+                style={{ height: 36, padding: "0 14px", borderRadius: 10, border: "none", background: "var(--c-lime-500)", fontSize: 13, fontWeight: 600, color: "var(--c-onyx-900)", cursor: "pointer", opacity: resolving ? 0.5 : 1 }}
+              >{resolving === "close" ? "Closing…" : "Close case"}</button>
+            </div>
+          </div>
+        </div>
+      )}
+      <style jsx global>{"@keyframes modalIn { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }"}</style>
     </div>
+
   );
 }

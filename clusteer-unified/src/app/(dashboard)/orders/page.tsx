@@ -5,7 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { getAllOrders } from "@/lib/api/user/queries";
 import { formatMoney } from "@/lib/utils";
-import { X, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, Search, Filter, ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import { EmptyState } from "@/components/primitives/empty-state";
 import type { IOrder } from "@/types";
 
 function StatusBadge({ s }: { s: string }) {
@@ -56,6 +57,10 @@ export default function OrdersPage() {
 	const [open, setOpen] = useState<ReturnType<typeof mapOrder> | null>(null);
 	const [cancelLoading, setCancelLoading] = useState<string | null>(null);
 	const [cancelledIds, setCancelledIds] = useState<Set<string>>(new Set());
+	const [filterOpen, setFilterOpen] = useState(false);
+	const [filterSide, setFilterSide] = useState("");
+	const [filterDateFrom, setFilterDateFrom] = useState("");
+	const [filterDateTo, setFilterDateTo] = useState("");
 
 	const { data: response, isLoading, isError } = useQuery({
 		queryKey: ["orders", page],
@@ -71,14 +76,17 @@ export default function OrdersPage() {
 	);
 	const totalPages = response?.metadata?.totalPages ?? 1;
 
+	const activeFilterCount = [filterSide, filterDateFrom, filterDateTo].filter(Boolean).length;
+
 	const list = useMemo(
 		() =>
 			orders.filter(
 				(o) =>
 					(tab === "All" || o.status === tab || (tab === "Open" && ["Open", "Partial"].includes(o.status))) &&
+					(!filterSide || o.side === filterSide) &&
 					(!q || o.id.toUpperCase().includes(q.toUpperCase()) || o.pair.toUpperCase().includes(q.toUpperCase()) || String(o.amount).includes(q)),
 			),
-		[orders, tab, q],
+		[orders, tab, q, filterSide, filterDateFrom, filterDateTo],
 	);
 
 	return (
@@ -130,12 +138,13 @@ export default function OrdersPage() {
 
 			{/* Empty state */}
 			{!isLoading && !isError && list.length === 0 && (
-				<div className="rounded-[14px] p-8 text-center" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-					<div className="text-[15px] font-medium" style={{ color: "var(--c-text)" }}>No orders found</div>
-					<div className="text-[13px] mt-1" style={{ color: "var(--c-text-3)" }}>
-						{q || tab !== "Open" ? "Try adjusting your search or filter." : "Your orders will appear here."}
-					</div>
-				</div>
+				<EmptyState
+					icon={ShoppingCart}
+					variant={q || tab !== "Open" ? "default" : "branded"}
+					title={q || tab !== "Open" ? "No orders found" : "No open orders yet"}
+					description={q || tab !== "Open" ? "Try adjusting your search or filter." : "Place your first buy or sell order and it will appear here."}
+					action={q || tab !== "Open" ? undefined : { label: "Start trading", href: "/trade" }}
+				/>
 			)}
 
 			{/* Table (desktop) */}
@@ -244,6 +253,77 @@ export default function OrdersPage() {
 						<ChevronRight className="size-4" />
 					</button>
 				</div>
+			)}
+
+			{/* ── Filter Drawer ── */}
+			{filterOpen && (
+				<>
+					<div className="fixed inset-0 z-[90]" style={{ background: "rgba(0,0,0,0.4)" }} onClick={() => setFilterOpen(false)} />
+					<div
+						className="fixed right-0 top-0 bottom-0 z-[100] flex flex-col"
+						style={{ width: "min(100vw, 360px)", background: "var(--c-surface)", borderLeft: "1px solid var(--c-line)", animation: "drawerIn .22s cubic-bezier(.2,.7,.2,1)" }}
+					>
+						<div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
+							<span className="text-[15px] font-semibold" style={{ color: "var(--c-text)" }}>Filters</span>
+							<button onClick={() => setFilterOpen(false)} className="inline-flex items-center justify-center size-8 rounded-[8px]" style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}>
+								<X className="size-4" />
+							</button>
+						</div>
+						<div className="flex-1 overflow-auto p-5 space-y-6">
+							{/* Side */}
+							<div>
+								<label className="block text-[12px] font-medium uppercase tracking-[0.05em] mb-2.5" style={{ color: "var(--c-text-3)" }}>Side</label>
+								<div className="flex gap-2">
+									{["", "Buy", "Sell"].map((s) => (
+										<button
+											key={s || "all"}
+											onClick={() => setFilterSide(s)}
+											className="h-8 px-4 rounded-[8px] text-[12.5px] font-medium transition-colors"
+											style={{
+												border: "1px solid var(--c-line)",
+												background: filterSide === s ? "var(--c-onyx-900)" : "transparent",
+												color: filterSide === s ? "var(--c-cream)" : "var(--c-text)",
+												borderColor: filterSide === s ? "var(--c-onyx-900)" : "var(--c-line)",
+											}}
+										>
+											{s || "All"}
+										</button>
+									))}
+								</div>
+							</div>
+							{/* Date range */}
+							<div>
+								<label className="block text-[12px] font-medium uppercase tracking-[0.05em] mb-2.5" style={{ color: "var(--c-text-3)" }}>Date range</label>
+								<div className="grid grid-cols-2 gap-2">
+									<div>
+										<label className="block text-[11px] mb-1" style={{ color: "var(--c-text-3)" }}>From</label>
+										<input type="date" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} style={{ width: "100%", height: 36, padding: "0 10px", border: "1px solid var(--c-line)", borderRadius: 8, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13, outline: "none" }} />
+									</div>
+									<div>
+										<label className="block text-[11px] mb-1" style={{ color: "var(--c-text-3)" }}>To</label>
+										<input type="date" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} style={{ width: "100%", height: 36, padding: "0 10px", border: "1px solid var(--c-line)", borderRadius: 8, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13, outline: "none" }} />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div className="flex gap-2 p-5" style={{ borderTop: "1px solid var(--c-line)" }}>
+							<button
+								onClick={() => { setFilterSide(""); setFilterDateFrom(""); setFilterDateTo(""); setFilterOpen(false); }}
+								className="flex-1 h-10 rounded-[10px] text-[13.5px] font-medium transition-colors hover:bg-[var(--c-surface-2)]"
+								style={{ border: "1px solid var(--c-line)", color: "var(--c-text)", background: "transparent", cursor: "pointer" }}
+							>
+								Clear all
+							</button>
+							<button
+								onClick={() => setFilterOpen(false)}
+								className="flex-1 h-10 rounded-[10px] text-[13.5px] font-semibold"
+								style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", cursor: "pointer" }}
+							>
+								Apply filters
+							</button>
+						</div>
+					</div>
+				</>
 			)}
 
 			{/* Order detail drawer */}
