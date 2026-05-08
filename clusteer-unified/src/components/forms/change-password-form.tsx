@@ -18,7 +18,7 @@ import {
 } from "../ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { changePassword } from "@/lib/api/auth";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 export type ChangePasswordFormData = z.infer<typeof ChangePasswordFormSchema>;
@@ -35,13 +35,13 @@ export default function ChangePasswordForm() {
 	const { isPending, mutate: updatePassword } = useMutation({
 		mutationFn: changePassword,
 		onSuccess: () => {
-			Toast.success("Password changed successfully");
+			toast.success("Password changed successfully");
 			form.reset();
 			// Redirect to security page after success
 			window.location.href = "/security";
 		},
 		onError: (error: any) => {
-			Toast.error(error?.response?.data?.message || "Failed to change password");
+			toast.error(error?.response?.data?.message || "Failed to change password");
 		},
 	});
 

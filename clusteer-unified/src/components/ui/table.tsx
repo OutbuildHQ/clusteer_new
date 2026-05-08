@@ -57,26 +57,21 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
 );
 TableCell.displayName = "TableCell";
 
-function PaginationControls({ currentPage, totalPages, onPageChange }: { currentPage: number; totalPages: number; onPageChange: (page: number) => void }) {
-	if (totalPages <= 1) return null;
-	return (
-		<div className="flex items-center justify-between px-4 py-3 border-t border-border">
-			<p className="text-xs text-muted-foreground">Page {currentPage} of {totalPages}</p>
-			<div className="flex gap-1">
-				<button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1} className="px-3 py-1 text-xs rounded-md border border-border hover:bg-muted disabled:opacity-50">Prev</button>
-				<button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage >= totalPages} className="px-3 py-1 text-xs rounded-md border border-border hover:bg-muted disabled:opacity-50">Next</button>
-			</div>
-		</div>
-	);
-}
-
-function TableRowsSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
+function TableRowsSkeleton({
+	rows = 5,
+	cols = 4,
+}: {
+	rows?: number;
+	cols?: number;
+}) {
 	return (
 		<>
-			{Array.from({ length: rows }).map((_, r) => (
-				<TableRow key={r}>
-					{Array.from({ length: cols }).map((_, c) => (
-						<TableCell key={c}><div className="h-4 w-full rounded bg-muted animate-pulse" /></TableCell>
+			{Array.from({ length: rows }).map((_, rowIndex) => (
+				<TableRow key={`skeleton-row-${rowIndex}`}>
+					{Array.from({ length: cols }).map((__, colIndex) => (
+						<TableCell key={`skeleton-cell-${rowIndex}-${colIndex}`}>
+							<div className="h-4 w-full max-w-[140px] animate-pulse rounded bg-muted" />
+						</TableCell>
 					))}
 				</TableRow>
 			))}
@@ -84,4 +79,51 @@ function TableRowsSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: numbe
 	);
 }
 
-export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, PaginationControls, TableRowsSkeleton };
+function PaginationControls({
+	pageIndex,
+	pageCount,
+	onPrevious,
+	onNext,
+	className,
+}: {
+	pageIndex: number;
+	pageCount: number;
+	onPrevious: () => void;
+	onNext: () => void;
+	className?: string;
+}) {
+	return (
+		<div className={cn("flex items-center justify-between gap-3 px-4 py-3", className)}>
+			<button
+				type="button"
+				onClick={onPrevious}
+				disabled={pageIndex <= 0}
+				className="rounded-md border border-border px-3 py-1.5 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-50"
+			>
+				Previous
+			</button>
+			<span className="text-xs text-muted-foreground">
+				Page {Math.min(pageIndex + 1, Math.max(pageCount, 1))} of {Math.max(pageCount, 1)}
+			</span>
+			<button
+				type="button"
+				onClick={onNext}
+				disabled={pageIndex >= pageCount - 1}
+				className="rounded-md border border-border px-3 py-1.5 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-50"
+			>
+				Next
+			</button>
+		</div>
+	);
+}
+
+export {
+	Table,
+	TableHeader,
+	TableBody,
+	TableRow,
+	TableHead,
+	TableCell,
+	TableRowsSkeleton,
+	PaginationControls,
+};

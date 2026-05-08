@@ -8,7 +8,7 @@ import { ChevronRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Toast } from "../toast";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
 	Form,
@@ -34,14 +34,14 @@ export default function ForgotPasswordForm() {
 	const { isPending, mutate } = useMutation({
 		mutationFn: forgotPassword,
 		onSuccess: () => {
-			Toast.success("A reset link has been sent");
+			toast.success("A reset link has been sent");
 		},
 		onError: (error: any) => {
 			const errorMessage = error?.response?.data?.message || error?.message;
 			if (errorMessage?.toLowerCase().includes("email")) {
-				Toast.error("Invalid email format. Please check and try again.");
+				toast.error("Invalid email format. Please check and try again.");
 			} else {
-				Toast.error(errorMessage || "Failed to send reset link");
+				toast.error(errorMessage || "Failed to send reset link");
 			}
 		},
 	});

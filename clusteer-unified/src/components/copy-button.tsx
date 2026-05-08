@@ -3,13 +3,13 @@
 import { cn } from "@/lib/utils";
 import { Copy } from "lucide-react";
 import Image from "next/image";
-import { Toast } from "./toast";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 
 function copyToClipboard(text?: string) {
 	if (text) {
 		navigator.clipboard.writeText(text);
-		Toast.success("Copied to clipboard");
+		toast.success("Copied to clipboard");
 	}
 }
 

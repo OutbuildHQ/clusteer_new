@@ -34,8 +34,7 @@ export default function IdentityVerificationForm() {
 		},
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const onSubmit = (_values: FieldValues) => {};
+	const onSubmit = (values: FieldValues) => console.log(values);
 
 	return (
 		<Form {...form}>
@@ -48,7 +47,7 @@ export default function IdentityVerificationForm() {
 					name="residency"
 					render={({ field }) => (
 						<FormItem className="gap-1.5">
-							<FormLabel className="font-medium text-foreground">
+							<FormLabel className="font-medium text-black">
 								Residency
 							</FormLabel>
 							<FormControl>
@@ -95,7 +94,7 @@ export default function IdentityVerificationForm() {
 				</div>
 				<Button
 					type="submit"
-					className="border-black bg-light-green border text-foreground font-semibold text-base hover:bg-muted w-full h-11 mt-20"
+					className="border-black bg-light-green border text-black font-semibold text-base hover:bg-muted w-full h-11 mt-20"
 				>
 					Continue
 				</Button>

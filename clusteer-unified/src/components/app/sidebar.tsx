@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/brand/logo";
-import { ASSETS } from "@/lib/mock-data";
 import {
 	LayoutDashboard, Wallet, ArrowLeftRight, Send, ArrowDownToLine,
 	Banknote, BookOpen, List, ShieldCheck, Bell, Gift, Settings, HelpCircle,
@@ -32,7 +31,6 @@ interface SidebarProps {
 
 export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 	const pathname = usePathname();
-	const total = ASSETS.reduce((s, a) => s + a.balanceNgn, 0);
 
 	return (
 		<aside
@@ -86,7 +84,7 @@ export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 			<div style={{ marginTop: "auto", padding: 20, background: "var(--c-onyx-900)", color: "var(--c-cream)", borderRadius: 14 }}>
 				<div style={{ fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.06em" }}>Portfolio</div>
 				<div style={{ fontSize: 22, fontWeight: 600, marginTop: 2, fontFamily: "var(--f-display)", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.025em" }}>
-					₦{total.toLocaleString("en-NG")}
+					₦--
 				</div>
 				<div style={{ display: "flex", alignItems: "flex-end", gap: 10, marginTop: 10 }}>
 					<svg viewBox="0 0 24 24" fill="none" stroke="var(--c-lime-500)" strokeWidth="2" width="100" height="100" style={{ flexShrink: 0 }}><path d="M12 19V5M5 12l7-7 7 7" /></svg>

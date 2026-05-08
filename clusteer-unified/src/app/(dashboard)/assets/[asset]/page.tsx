@@ -2,14 +2,46 @@
 
 import { use, useState, useMemo } from "react";
 import Link from "next/link";
-import { ASSETS } from "@/lib/mock-data";
 import { formatMoney, formatPct } from "@/lib/utils";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Num } from "@/components/primitives/num";
 import { PriceAreaChart } from "@/components/primitives/price-area-chart";
 import { CandleChart } from "@/components/primitives/candle-chart";
-import { generateCandles, generateAreaSeries } from "@/lib/mock-data";
 import { ArrowLeft, Send as SendIcon, ArrowDownToLine } from "lucide-react";
+
+/* Placeholder asset data until live API integration */
+const PLACEHOLDER_ASSETS = [
+	{ symbol: "USDT", name: "Tether", priceNgn: 1_570, change24h: 0, balance: 0, balanceNgn: 0 },
+	{ symbol: "USDC", name: "USD Coin", priceNgn: 1_565, change24h: 0, balance: 0, balanceNgn: 0 },
+	{ symbol: "NGN", name: "Nigerian Naira", priceNgn: 1, change24h: 0, balance: 0, balanceNgn: 0 },
+];
+
+function generateCandles(count: number, basePrice: number, drift: number) {
+	const out = [];
+	let p = basePrice;
+	const now = Date.now();
+	for (let i = 0; i < count; i++) {
+		const open = p;
+		const close = p + (Math.random() - 0.5) * drift * 2;
+		const high = Math.max(open, close) + Math.random() * drift;
+		const low = Math.min(open, close) - Math.random() * drift;
+		out.push({ time: now - (count - i) * 86400000, open, high, low, close });
+		p = close;
+	}
+	return out;
+}
+
+function generateAreaSeries(count: number, basePrice: number) {
+	const out: { t: string; v: number }[] = [];
+	let p = basePrice;
+	const now = Date.now();
+	for (let i = 0; i < count; i++) {
+		p += (Math.random() - 0.5) * basePrice * 0.02;
+		const d = new Date(now - (count - i) * 86400000);
+		out.push({ t: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }), v: p });
+	}
+	return out;
+}
 
 type ChartType = "Candle" | "Line" | "Area";
 type Range = "1D" | "1W" | "1M" | "3M" | "1Y";
@@ -19,7 +51,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ asset: s
 	const [chartType, setChartType] = useState<ChartType>("Candle");
 	const [range, setRange] = useState<Range>("1M");
 
-	const a = ASSETS.find((x) => x.symbol.toLowerCase() === asset.toLowerCase()) ?? ASSETS[0];
+	const a = PLACEHOLDER_ASSETS.find((x) => x.symbol.toLowerCase() === asset.toLowerCase()) ?? PLACEHOLDER_ASSETS[0];
 	const priceNgn = a.priceNgn;
 	const balanceNgn = a.balanceNgn;
 	const avgBuyNgn = priceNgn * 0.94;

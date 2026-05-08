@@ -19,7 +19,7 @@ import Link from "next/link";
 import SecurityAlert from "../security-alert";
 import { useMutation } from "@tanstack/react-query";
 import { changeEmail, sendEmailOTP } from "@/lib/api/auth";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 type ChangeEmailFormData = z.infer<typeof ChangeEmailFormSchema>;
@@ -40,7 +40,7 @@ export default function ChangeEmailForm() {
 	const { isPending: isSendingOTP, mutate: sendOTP } = useMutation({
 		mutationFn: sendEmailOTP,
 		onSuccess: () => {
-			Toast.success("OTP sent to your email");
+			toast.success("OTP sent to your email");
 			setOtpSent(true);
 			setCountdown(60);
 
@@ -56,25 +56,25 @@ export default function ChangeEmailForm() {
 			}, 1000);
 		},
 		onError: (error: any) => {
-			Toast.error(error?.response?.data?.message || "Failed to send OTP");
+			toast.error(error?.response?.data?.message || "Failed to send OTP");
 		},
 	});
 
 	const { isPending: isChangingEmail, mutate: updateEmail } = useMutation({
 		mutationFn: changeEmail,
 		onSuccess: () => {
-			Toast.success("Email changed successfully");
+			toast.success("Email changed successfully");
 			setIsSuccess(true);
 		},
 		onError: (error: any) => {
-			Toast.error(error?.response?.data?.message || "Failed to change email");
+			toast.error(error?.response?.data?.message || "Failed to change email");
 		},
 	});
 
 	const handleSendOTP = () => {
 		const email = form.getValues("email");
 		if (!email) {
-			Toast.error("Please enter your email address");
+			toast.error("Please enter your email address");
 			return;
 		}
 		sendOTP({ email });

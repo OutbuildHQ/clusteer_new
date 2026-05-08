@@ -8,8 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Num } from "@/components/primitives/num";
-import { ASSETS } from "@/lib/mock-data";
 import { formatMoney, formatCrypto } from "@/lib/utils";
+
+/* Placeholder stablecoin data for landing page swap widget */
+const ASSETS = [
+	{ symbol: "USDT", name: "Tether", priceNgn: 1_570 },
+	{ symbol: "USDC", name: "USD Coin", priceNgn: 1_565 },
+];
 import { ArrowDownUp, ArrowRight, RefreshCw } from "lucide-react";
 
 // Clusteer only trades stablecoins: USDT and USDC

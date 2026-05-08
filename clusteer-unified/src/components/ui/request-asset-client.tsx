@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Button } from "./button";
 import { Copy, QrCode, Share2, Mail, MessageCircle } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 import QRCode from "qrcode";
 
 export default function RequestAssetClient({ asset }: { asset: string }) {
@@ -41,7 +41,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 	// Generate QR Code
 	const handleGenerateQR = async () => {
 		if (!amount || parseFloat(amount) <= 0) {
-			Toast.error("Please enter a valid amount");
+			toast.error("Please enter a valid amount");
 			return;
 		}
 
@@ -58,7 +58,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 			setQrCodeUrl(qrUrl);
 			setShowQR(true);
 		} catch (error) {
-			Toast.error("Failed to generate QR code");
+			toast.error("Failed to generate QR code");
 		}
 	};
 
@@ -66,13 +66,13 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 	const handleCopyLink = () => {
 		const link = generatePaymentLink();
 		navigator.clipboard.writeText(link);
-		Toast.success("Payment link copied to clipboard");
+		toast.success("Payment link copied to clipboard");
 	};
 
 	// Share via native share
 	const handleShare = async () => {
 		if (!amount || parseFloat(amount) <= 0) {
-			Toast.error("Please enter a valid amount");
+			toast.error("Please enter a valid amount");
 			return;
 		}
 
@@ -97,7 +97,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 	// Share via email
 	const handleEmailShare = () => {
 		if (!amount || parseFloat(amount) <= 0) {
-			Toast.error("Please enter a valid amount");
+			toast.error("Please enter a valid amount");
 			return;
 		}
 

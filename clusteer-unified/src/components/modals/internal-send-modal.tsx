@@ -23,7 +23,7 @@ import {
 	FormMessage,
 	FormDescription,
 } from "@/components/ui/form";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 import { Loader2, UserCheck } from "lucide-react";
 import { sendInternalTransfer, verifyRecipient } from "@/lib/api/transfer";
 
@@ -90,20 +90,20 @@ export default function InternalSendModal({
 	const { mutate: sendTransfer, isPending } = useMutation({
 		mutationFn: sendInternalTransfer,
 		onSuccess: () => {
-			Toast.success("Transfer completed successfully!");
+			toast.success("Transfer completed successfully!");
 			onClose();
 			form.reset();
 			setRecipientInfo(null);
 		},
 		onError: (error: any) => {
 			const errorMessage = error?.response?.data?.message || "Transfer failed";
-			Toast.error(errorMessage);
+			toast.error(errorMessage);
 		},
 	});
 
 	const onSubmit = (data: InternalSendFormData) => {
 		if (data.amount > balance) {
-			Toast.error("Insufficient balance");
+			toast.error("Insufficient balance");
 			return;
 		}
 

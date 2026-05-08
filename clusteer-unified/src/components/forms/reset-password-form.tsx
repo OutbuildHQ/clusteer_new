@@ -20,7 +20,7 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Toast } from "../toast";
+import { toast } from "sonner";
 
 type ResetPasswordFormData = z.infer<typeof ResetPasswordFormSchema>;
 export type ResetPasswordPayload = ResetPasswordFormData & { token: string };
@@ -39,17 +39,17 @@ export default function ResetPasswordForm({ token }: { token: string }) {
 	const { isPending, mutate } = useMutation({
 		mutationFn: resetPassword,
 		onSuccess: () => {
-			Toast.success("Password successfully reset. You can now log in.");
+			toast.success("Password successfully reset. You can now log in.");
 			router.push("/login");
 		},
 		onError: (error: any) => {
 			const errorMessage = error?.response?.data?.message || error?.message;
 			if (errorMessage?.toLowerCase().includes("expired")) {
-				Toast.error("This reset link has expired. Please request a new one.");
+				toast.error("This reset link has expired. Please request a new one.");
 			} else if (errorMessage?.toLowerCase().includes("match")) {
-				Toast.error("Passwords do not match.");
+				toast.error("Passwords do not match.");
 			} else {
-				Toast.error(errorMessage || "Failed to reset password");
+				toast.error(errorMessage || "Failed to reset password");
 			}
 		},
 	});

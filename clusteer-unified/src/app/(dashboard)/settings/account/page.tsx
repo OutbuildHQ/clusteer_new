@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 import { useUserId } from "@/hooks/use-user-id";
 import {
 	getAccountLimits,
@@ -51,18 +51,18 @@ export default function Page() {
 	const exportMutation = useMutation({
 		mutationFn: () => createDataExportRequest(userId!, "transaction_history"),
 		onSuccess: () => {
-			Toast.success(
+			toast.success(
 				"Transaction history export initiated. Check your email shortly."
 			);
 		},
 		onError: () => {
-			Toast.error("Failed to initiate export");
+			toast.error("Failed to initiate export");
 		},
 	});
 
 	const handleCloseAccount = async () => {
 		setShowCloseModal(false);
-		Toast.error(
+		toast.error(
 			"Account closure feature is currently under maintenance. Please contact support."
 		);
 	};

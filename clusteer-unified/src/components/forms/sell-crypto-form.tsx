@@ -18,7 +18,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "../ui/form";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useWallets } from "@/store/wallet";
@@ -36,7 +36,6 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [receiveAmount, setReceiveAmount] = useState(0);
 	const [selectedCurrency, setSelectedCurrency] = useState<StableCoin>("USDT");
-	const { toast } = useToast();
 	const wallets = useWallets() || [];
 
 	// Get selected currency wallet balance
@@ -99,20 +98,13 @@ export default function SellCryptoForm({ onSwap }: SellCryptoFormProps) {
 				throw new Error(result.message || "Trade failed");
 			}
 
-			toast({
-				title: "Success",
-				description: result.message || "Sell order successful",
-			});
+			toast.success(result.message || "Sell order successful");
 
 			// Reset form after successful trade
 			form.reset();
 		} catch (error) {
 			console.error("Sell crypto error:", error);
-			toast({
-				title: "Error",
-				description: error instanceof Error ? error.message : "Failed to complete sell order",
-				variant: "destructive",
-			});
+			toast.error(error instanceof Error ? error.message : "Failed to complete sell order");
 		} finally {
 			setIsLoading(false);
 		}

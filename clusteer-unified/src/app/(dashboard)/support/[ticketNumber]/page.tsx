@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@/store/user";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTicketDetail, addTicketMessage, type SupportTicket, type TicketMessage } from "@/lib/api/support";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 import { ArrowLeft, Send, User, Headphones } from "lucide-react";
 
 export default function TicketDetailPage() {
@@ -33,17 +33,17 @@ export default function TicketDetailPage() {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["ticket-detail", ticketNumber] });
 			setNewMessage("");
-			Toast.success("Message sent successfully");
+			toast.success("Message sent successfully");
 		},
 		onError: () => {
-			Toast.error("Failed to send message");
+			toast.error("Failed to send message");
 		},
 	});
 
 	const handleSendMessage = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!newMessage.trim()) {
-			Toast.error("Please enter a message");
+			toast.error("Please enter a message");
 			return;
 		}
 		addMessageMutation.mutate();

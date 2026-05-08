@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Search, Loader2, RefreshCw } from "lucide-react";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 
 interface Market {
 	id: string;
@@ -42,12 +42,12 @@ export default function Page() {
 			setLastUpdated(new Date());
 
 			if (data.cached) {
-				Toast.info("Showing cached market data");
+				toast.info("Showing cached market data");
 			}
 		} catch (err: any) {
 			console.error("Error fetching markets:", err);
 			setError(err.message || "Failed to load market data");
-			Toast.error("Failed to load market data");
+			toast.error("Failed to load market data");
 		} finally {
 			setLoading(false);
 		}

@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Toast } from "./toast";
+import { toast } from "sonner";
 
 export default function VerifyEmail({ token }: { token: string }) {
 	const router = useRouter();
@@ -13,7 +13,7 @@ export default function VerifyEmail({ token }: { token: string }) {
 	const { isError, mutate } = useMutation({
 		mutationFn: verifyEmail,
 		onSuccess: (res) => {
-			Toast.success(res.message);
+			toast.success(res.message);
 			router.push("/login");
 		},
 	});

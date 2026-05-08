@@ -7,7 +7,7 @@ import { getExchangeRate, submitTrade } from "@/lib/api/trade/queries";
 import { formatMoney } from "@/lib/utils";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { ArrowDownUp, Loader2 } from "lucide-react";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 
 type Side = "Buy" | "Sell" | "Swap";
 
@@ -39,11 +39,11 @@ export default function TradePage() {
 	const tradeMutation = useMutation({
 		mutationFn: submitTrade,
 		onSuccess: () => {
-			Toast.success("Trade submitted successfully");
+			toast.success("Trade submitted successfully");
 			setAmount("");
 		},
 		onError: () => {
-			Toast.error("Trade failed. Please try again.");
+			toast.error("Trade failed. Please try again.");
 		},
 	});
 
@@ -77,11 +77,11 @@ export default function TradePage() {
 
 	const handleContinue = () => {
 		if (!amtNum || amtNum <= 0) {
-			Toast.error("Please enter a valid amount");
+			toast.error("Please enter a valid amount");
 			return;
 		}
 		if (rate === null) {
-			Toast.error("Exchange rate unavailable. Please try again later.");
+			toast.error("Exchange rate unavailable. Please try again later.");
 			return;
 		}
 		tradeMutation.mutate({

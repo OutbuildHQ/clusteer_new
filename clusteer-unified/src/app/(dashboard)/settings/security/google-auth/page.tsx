@@ -34,7 +34,7 @@ export default function Page() {
 
 	const goBack = useCallback(() => {
 		if (idx === 0) {
-			router.push("/security");
+			router.push("/settings");
 		} else {
 			setStage(formStages[idx - 1]);
 		}

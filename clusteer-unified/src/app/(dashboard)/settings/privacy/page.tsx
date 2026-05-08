@@ -3,7 +3,7 @@
 import { Download, Eye, Shield, Cookie, Link2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 import { useUserId } from "@/hooks/use-user-id";
 import {
 	getPrivacySettings,
@@ -97,10 +97,10 @@ export default function Page() {
 		mutationFn: (update: Record<string, boolean>) =>
 			updatePrivacySettings(userId!, update),
 		onSuccess: () => {
-			Toast.success("Privacy settings updated");
+			toast.success("Privacy settings updated");
 		},
 		onError: (_err, variables) => {
-			Toast.error("Failed to update privacy settings");
+			toast.error("Failed to update privacy settings");
 			// Revert the optimistic update
 			if (apiSettings) {
 				setPreferences({
@@ -117,12 +117,12 @@ export default function Page() {
 	const exportMutation = useMutation({
 		mutationFn: () => createDataExportRequest(userId!, "full_data"),
 		onSuccess: () => {
-			Toast.success(
+			toast.success(
 				"Your data export has been initiated. You'll receive an email when it's ready."
 			);
 		},
 		onError: () => {
-			Toast.error("Failed to initiate data export");
+			toast.error("Failed to initiate data export");
 		},
 	});
 

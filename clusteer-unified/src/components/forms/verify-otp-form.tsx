@@ -143,7 +143,7 @@ export default function VerifyOTPForm() {
 							onChange={(e) => setUsername(e.target.value)}
 						/>
 					</FormControl>
-					<FormDescription className="text-sm text-muted-foreground">
+					<FormDescription className="text-sm text-gray-500">
 						Enter the username you used during signup
 					</FormDescription>
 				</FormItem>
@@ -222,7 +222,7 @@ export default function VerifyOTPForm() {
 					href="/login"
 					className="text-center lg:mt-2 mx-auto block"
 				>
-					<span className="text-primary font-semibold">Back to Log in</span>
+					<span className="text-dark-green font-semibold">Back to Log in</span>
 					<ChevronRight className="inline-block size-5 stroke-dark-green ml-2" />
 				</Link>
 			</form>

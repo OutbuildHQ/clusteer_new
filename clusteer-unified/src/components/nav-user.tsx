@@ -108,7 +108,7 @@ export function NavUser() {
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem onClick={() => router.push("/profile")}>
+							<DropdownMenuItem onClick={() => router.push("/settings")}>
 								<UserCircle className="h-4 w-4 mr-2" />
 								Account
 							</DropdownMenuItem>

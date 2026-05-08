@@ -3,7 +3,7 @@
 import { Mail, MessageSquare, Smartphone } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 import { useUserId } from "@/hooks/use-user-id";
 import {
 	getNotificationPreferences,
@@ -129,11 +129,11 @@ export default function Page() {
 		mutationFn: (prefs: NotificationPreferences) =>
 			updateNotificationPreferences(userId!, mapLocalToApi(prefs)),
 		onSuccess: () => {
-			Toast.success("Notification preferences updated successfully");
+			toast.success("Notification preferences updated successfully");
 			queryClient.invalidateQueries({ queryKey: ["notification-prefs", userId] });
 		},
 		onError: () => {
-			Toast.error("Failed to update notification preferences");
+			toast.error("Failed to update notification preferences");
 		},
 	});
 

@@ -13,7 +13,7 @@ import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CopyButton } from "../copy-button";
-import { Toast } from "../toast";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
 	Form,
@@ -77,7 +77,7 @@ export default function UpdateProfileForm() {
 		},
 
 		onSuccess: () => {
-			Toast.success("Profile updated successfully");
+			toast.success("Profile updated successfully");
 		},
 		onError: (err, updatedTodo, context) => {
 			queryClient.setQueryData(["user"], context?.prevUser);

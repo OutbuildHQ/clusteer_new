@@ -3,7 +3,7 @@
 import { CreditCard, Plus, Trash2, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Toast } from "@/components/toast";
+import { toast } from "sonner";
 import { useUserId } from "@/hooks/use-user-id";
 import {
 	getBankAccounts,
@@ -59,37 +59,37 @@ export default function Page() {
 		mutationFn: (data: { bank_name: string; account_number: string; account_name: string }) =>
 			createBankAccount(userId!, data),
 		onSuccess: () => {
-			Toast.success("Bank account added successfully");
+			toast.success("Bank account added successfully");
 			setNewAccount({ bankName: "", accountNumber: "", accountName: "" });
 			setShowAddForm(false);
 			queryClient.invalidateQueries({ queryKey: ["bank-accounts", userId] });
 		},
 		onError: () => {
-			Toast.error("Failed to add bank account");
+			toast.error("Failed to add bank account");
 		},
 	});
 
 	const setDefaultMutation = useMutation({
 		mutationFn: (accountId: number) => updateBankAccount(userId!, accountId, { is_default: true }),
 		onSuccess: () => {
-			Toast.success("Default account updated");
+			toast.success("Default account updated");
 			queryClient.invalidateQueries({ queryKey: ["bank-accounts", userId] });
 		},
 		onError: () => {
-			Toast.error("Failed to update default account");
+			toast.error("Failed to update default account");
 		},
 	});
 
 	const deleteMutation = useMutation({
 		mutationFn: (accountId: number) => deleteBankAccount(userId!, accountId),
 		onSuccess: () => {
-			Toast.success("Bank account deleted successfully");
+			toast.success("Bank account deleted successfully");
 			setShowDeleteModal(false);
 			setAccountToDelete(null);
 			queryClient.invalidateQueries({ queryKey: ["bank-accounts", userId] });
 		},
 		onError: () => {
-			Toast.error("Failed to delete bank account");
+			toast.error("Failed to delete bank account");
 		},
 	});
 
@@ -101,12 +101,12 @@ export default function Page() {
 			!newAccount.accountNumber ||
 			!newAccount.accountName
 		) {
-			Toast.error("Please fill in all fields");
+			toast.error("Please fill in all fields");
 			return;
 		}
 
 		if (newAccount.accountNumber.length !== 10) {
-			Toast.error("Account number must be 10 digits");
+			toast.error("Account number must be 10 digits");
 			return;
 		}
 
@@ -120,7 +120,7 @@ export default function Page() {
 	const openDeleteDialog = (id: number) => {
 		const account = accounts.find((a) => a.id === id);
 		if (account?.isDefault) {
-			Toast.error("Cannot delete default account. Set another as default first.");
+			toast.error("Cannot delete default account. Set another as default first.");
 			return;
 		}
 		setAccountToDelete(id);
