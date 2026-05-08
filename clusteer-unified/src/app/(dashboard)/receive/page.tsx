@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { QR } from "@/components/primitives/qr";
 import { CopyButton } from "@/components/primitives/copy-button";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getUserWallet } from "@/lib/api/wallet/queries";
 import type { Wallet } from "@/store/wallet";
@@ -135,79 +135,83 @@ export default function ReceivePage() {
 						</div>
 					)}
 
-					{/* QR code — crypto only */}
+					{/* ── CRYPTO: QR + address ── */}
 					{asset !== "NGN" && (
-					<div style={{ textAlign: "center", padding: "18px 0" }}>
-						<div
-							className="w-[180px] h-[180px] lg:w-[220px] lg:h-[220px]"
-							style={{
-								margin: "0 auto",
-								background: "var(--c-cream)",
-								borderRadius: 16,
-								padding: 14,
-								boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-							}}
-						>
-							<QR value={address} size={148} />
-						</div>
-					</div>
+						<>
+							<div style={{ textAlign: "center", padding: "18px 0" }}>
+								<div
+									className="w-[180px] h-[180px] lg:w-[220px] lg:h-[220px]"
+									style={{
+										margin: "0 auto",
+										background: "var(--c-cream)",
+										borderRadius: 16,
+										padding: 14,
+										boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+									}}
+								>
+									<QR value={address} size={148} />
+								</div>
+							</div>
+
+							<div style={{ background: "var(--c-surface-2)", borderRadius: 12, padding: 14 }}>
+								<div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--c-text-3)" }}>
+									Your {asset} address · {network}
+								</div>
+								<div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+									<div
+										className="tabular-nums"
+										style={{ flex: 1, fontFamily: "var(--font-mono, monospace)", fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--c-text)" }}
+									>
+										{address}
+									</div>
+									<CopyButton value={address} label="Address" />
+								</div>
+							</div>
+
+							<div style={{ background: "var(--c-warn-soft)", border: "1px solid var(--c-warn)", borderRadius: 12, padding: 14, fontSize: 12.5, color: "var(--c-warn)" }}>
+								<b>Send only {asset} on the {network} network.</b>
+								<br />
+								Sending other assets or using the wrong network will result in permanent loss.
+							</div>
+						</>
 					)}
 
-					{/* Address card */}
-					<div
-						style={{
-							background: "var(--c-surface-2)",
-							borderRadius: 12,
-							padding: 14,
-						}}
-					>
-						<div
-							style={{
-								fontSize: 11,
-								textTransform: "uppercase",
-								letterSpacing: "0.06em",
-								color: "var(--c-text-3)",
-							}}
-						>
-							Your {asset} address ({network})
-						</div>
-						<div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
-							<div
-								className="tabular-nums"
-								style={{
-									flex: 1,
-									fontFamily: "var(--font-mono, monospace)",
-									fontSize: 13,
-									overflow: "hidden",
-									textOverflow: "ellipsis",
-									whiteSpace: "nowrap",
-									color: "var(--c-text)",
-								}}
-							>
-								{address}
+					{/* ── NGN: bank details ── */}
+					{asset === "NGN" && (
+						<>
+							<div style={{ background: "var(--c-surface-2)", borderRadius: 12, overflow: "hidden" }}>
+								{[
+									{ label: "Bank", value: "Providus Bank" },
+									{ label: "Account number", value: "9912345678", copyable: true },
+									{ label: "Account name", value: "Clusteer / [Your Name]" },
+								].map(({ label, value, copyable }, i, arr) => (
+									<div
+										key={label}
+										style={{
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "space-between",
+											padding: "12px 14px",
+											borderBottom: i < arr.length - 1 ? "1px solid var(--c-line)" : "none",
+										}}
+									>
+										<div>
+											<div style={{ fontSize: 11, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</div>
+											<div style={{ fontSize: 14, fontWeight: 500, marginTop: 2, fontFamily: copyable ? "var(--font-mono, monospace)" : "inherit", color: "var(--c-text)" }}>{value}</div>
+										</div>
+										{copyable && <CopyButton value={value} label={label} />}
+									</div>
+								))}
 							</div>
-							<CopyButton value={address} label="Address" />
-						</div>
-					</div>
 
-					{/* Warning card */}
-					<div
-						style={{
-							background: "var(--c-warn-soft)",
-							border: "1px solid var(--c-warn)",
-							borderRadius: 12,
-							padding: 14,
-							fontSize: 12.5,
-							color: "var(--c-warn)",
-						}}
-					>
-						<b>Send only {asset} on the {network} network.</b>
-						<br />
-						Sending other assets may result in permanent loss.
-					</div>
+							<div style={{ background: "var(--c-surface-2)", borderRadius: 12, padding: 14, fontSize: 12.5, color: "var(--c-text-2)", lineHeight: 1.5 }}>
+								Transfer naira from any Nigerian bank to the account above. Your Clusteer NGN wallet will be credited automatically within minutes via NIP/NIBSS.
+							</div>
+						</>
+					)}
 				</div>
 			</div>
 		</div>
