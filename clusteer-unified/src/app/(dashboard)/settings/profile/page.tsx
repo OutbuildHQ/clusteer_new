@@ -2,11 +2,14 @@ import UpdateProfileForm from "@/components/forms/update-profile-form";
 
 export default function Page() {
 	return (
-		<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
-			<h1 className="text-foreground font-semibold text-2xl">Profile</h1>
-			<div className="mt-8">
-				<UpdateProfileForm />
-			</div>
-		</section>
+		<div className="space-y-6">
+			<h1
+				className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight"
+				style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}
+			>
+				Profile
+			</h1>
+			<UpdateProfileForm />
+		</div>
 	);
 }

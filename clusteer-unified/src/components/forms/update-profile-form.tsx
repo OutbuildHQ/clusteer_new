@@ -7,26 +7,60 @@ import { UpdateProfileFormSchema } from "@/lib/validation";
 import { IUser } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Mail } from "lucide-react";
+import { Mail, Upload } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CopyButton } from "../copy-button";
+import { CopyButton } from "../primitives/copy-button";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import UploadAvatar from "../upload-avatar";
 
 export type UpdateProfileFormData = z.infer<typeof UpdateProfileFormSchema>;
+
+const inputStyle: React.CSSProperties = {
+	display: "block",
+	width: "100%",
+	maxWidth: 400,
+	height: 40,
+	padding: "0 12px",
+	borderRadius: 10,
+	border: "1px solid var(--c-line)",
+	background: "var(--c-surface)",
+	color: "var(--c-text)",
+	fontSize: 13.5,
+	outline: "none",
+	boxSizing: "border-box",
+};
+
+const disabledInputStyle: React.CSSProperties = {
+	...inputStyle,
+	background: "var(--c-surface-2)",
+	color: "var(--c-text-3)",
+	cursor: "not-allowed",
+};
+
+const labelStyle: React.CSSProperties = {
+	fontSize: 13.5,
+	fontWeight: 600,
+	color: "var(--c-text-2)",
+	width: 220,
+	flexShrink: 0,
+	paddingTop: 9,
+};
+
+const rowStyle: React.CSSProperties = {
+	display: "flex",
+	alignItems: "flex-start",
+	gap: 24,
+	padding: "20px 24px",
+	borderBottom: "1px solid var(--c-line)",
+};
+
+const errorStyle: React.CSSProperties = {
+	fontSize: 12,
+	color: "var(--c-down)",
+	marginTop: 4,
+};
 
 export default function UpdateProfileForm() {
 	const { data: user, isPending } = useQuery({
@@ -35,21 +69,21 @@ export default function UpdateProfileForm() {
 	});
 
 	const [avatarImage, setAvatarImage] = useState<File | null>(null);
-
 	const [isUpdated, setIsUpdated] = useState(false);
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleImageSelect = useCallback((file: File) => {
 		setAvatarImage(file);
 		setIsUpdated(true);
 	}, []);
 
+	const queryClient = useQueryClient();
+
 	const reset = () => {
 		form.reset({ ...user });
 		setAvatarImage(null);
 		setIsUpdated(false);
 	};
-
-	const queryClient = useQueryClient();
 
 	const { isPending: isUpdating, mutate: updateProfile } = useMutation({
 		mutationFn: updateUser,
@@ -114,8 +148,10 @@ export default function UpdateProfileForm() {
 		} : undefined,
 	});
 
+	const { register, handleSubmit, formState: { errors, isValid, isDirty } } = form;
+
 	const isBusy = isDeleting || isUpdating || isPending;
-	const isFormInvalid = !form.formState.isValid;
+	const isSaveDisabled = isBusy || !isValid || (!isDirty && !isUpdated);
 
 	const onSubmit = (values: UpdateProfileFormData) => {
 		const updatePayload: Parameters<typeof updateUser>[0] = {
@@ -132,186 +168,184 @@ export default function UpdateProfileForm() {
 		updateProfile(updatePayload);
 	};
 
+	const avatarSrc = avatarImage ? URL.createObjectURL(avatarImage) : user?.avatar;
+	const initials = user
+		? `${(user.firstName?.[0] ?? "").toUpperCase()}${(user.lastName?.[0] ?? "").toUpperCase()}` || user.username?.[0]?.toUpperCase() || "U"
+		: "U";
+
 	return (
-		<Form {...form}>
-			<form
-				onSubmit={form.handleSubmit(onSubmit)}
-				className="flex flex-col gap-y-4.5 lg:gap-5"
-			>
-				<FormField
-					control={form.control}
-					name="firstName"
-					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
-							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 shrink-0 lg:max-w-[280px] w-full">
-								First Name <span className="text-[#008000]">*</span>
-							</FormLabel>
-							<FormControl>
-								<Input
-									className="h-11 border border-border rounded-full text-foreground py-2.5 px-3.5 shadow-[0px_1px_2px_0px_#0A0D120D] lg:max-w-[512px]"
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="lastName"
-					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
-							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 shrink-0 lg:max-w-[280px] w-full">
-								Last Name <span className="text-[#008000]">*</span>
-							</FormLabel>
-							<FormControl>
-								<Input
-									className="h-11 border border-border rounded-full text-foreground py-2.5 px-3.5 shadow-[0px_1px_2px_0px_#0A0D120D] lg:max-w-[512px]"
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="username"
-					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
-							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 lg:max-w-[280px] w-full">
-								Username <span className="text-[#008000]">*</span>
-							</FormLabel>
-							<FormControl>
-								<Input
-									disabled
-									className="h-11 border border-border rounded-full text-foreground py-2.5 px-3.5 shadow-[0px_1px_2px_0px_#0A0D120D] lg:max-w-[512px]"
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="email"
-					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
-							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 lg:max-w-[280px] w-full">
-								Email <span className="text-[#008000]">*</span>
-							</FormLabel>
-							<FormControl>
-								<div className="flex w-full gap-x-2 items-center h-11 py-2.5 px-3.5 border border-border rounded-full text-foreground shadow-[0px_1px_2px_0px_#0A0D120D] overflow-hidden lg:max-w-[512px]">
-									<Mail
-										size={20}
-										stroke="#717680"
-									/>
-									<Input
-										disabled
-										className="p-0 rounded-none h-full border-0 shadow-none"
-										{...field}
-									/>
-								</div>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="phone"
-					render={({ field }) => (
-						<FormItem className="flex flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
-							<FormLabel className="font-semibold text-muted-foreground gap-x-0.5 lg:max-w-[280px] w-full">
-								Phone number <span className="text-[#008000]">*</span>
-							</FormLabel>
-							<FormControl>
-								<div className="flex w-full lg:max-w-[512px] gap-x-2 items-center h-11 py-2.5 px-3.5 border border-border rounded-full text-foreground shadow-[0px_1px_2px_0px_#0A0D120D] overflow-hidden">
-									<Image
-										src="/assets/icons/phone-call.svg"
-										alt="phone icon"
-										width={20}
-										height={20}
-									/>
-									<Input
-										type="tel"
-										className="p-0 rounded-none h-full border-0 shadow-none"
-										{...field}
-									/>
-								</div>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<div style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)", borderRadius: 14, overflow: "hidden" }}>
 
-				<UploadAvatar
-					username={user?.username}
-					currentAvatar={
-						avatarImage ? URL.createObjectURL(avatarImage) : user?.avatar
-					}
-					onImageSelect={handleImageSelect}
-				/>
+				{/* First Name */}
+				<div style={rowStyle}>
+					<label style={labelStyle}>
+						First Name <span style={{ color: "var(--c-lime-600)" }}>*</span>
+					</label>
+					<div style={{ flex: 1 }}>
+						<input
+							{...register("firstName")}
+							disabled={isBusy}
+							style={isBusy ? disabledInputStyle : inputStyle}
+							placeholder="First name"
+						/>
+						{errors.firstName && <p style={errorStyle}>{errors.firstName.message}</p>}
+					</div>
+				</div>
 
-				<div className="flex flex-col items-center lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
-					<span className="font-semibold lg:max-w-[280px] w-full text-muted-foreground gap-x-0.5 text-sm">
-						User ID
-					</span>
-					<div className="flex items-center gap-x-2 py-2.5 px-11.5 ml-auto">
-						<span className="text-sm text-muted-foreground font-mono">{user?.id}</span>
-						<CopyButton
-							value={user?.id}
-							icon="/assets/icons/copy.svg"
-							className="shrink-0 border-0 p-0 size-4.5 hover:bg-transparent"
+				{/* Last Name */}
+				<div style={rowStyle}>
+					<label style={labelStyle}>
+						Last Name <span style={{ color: "var(--c-lime-600)" }}>*</span>
+					</label>
+					<div style={{ flex: 1 }}>
+						<input
+							{...register("lastName")}
+							disabled={isBusy}
+							style={isBusy ? disabledInputStyle : inputStyle}
+							placeholder="Last name"
+						/>
+						{errors.lastName && <p style={errorStyle}>{errors.lastName.message}</p>}
+					</div>
+				</div>
+
+				{/* Username */}
+				<div style={rowStyle}>
+					<label style={labelStyle}>Username</label>
+					<div style={{ flex: 1 }}>
+						<input
+							{...register("username")}
+							disabled
+							style={disabledInputStyle}
 						/>
 					</div>
 				</div>
-				<div className="flex  items-center flex-col lg:flex-row gap-y-4 lg:gap-x-8 pb-5 border-b border-border">
-					<span className="font-semibold lg:max-w-[280px] w-full text-muted-foreground gap-x-0.5 text-sm">
-						Registration date
-					</span>
-					<div className="py-2.5 px-11.5 ml-auto">
-						{getFormattedDate(
-							new Date(user?.dateJoined ? user?.dateJoined : "")
+
+				{/* Email */}
+				<div style={rowStyle}>
+					<label style={labelStyle}>Email</label>
+					<div style={{ flex: 1 }}>
+						<div style={{ display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 12px", borderRadius: 10, border: "1px solid var(--c-line)", background: "var(--c-surface-2)", maxWidth: 400, boxSizing: "border-box" }}>
+							<Mail size={16} style={{ color: "var(--c-text-3)", flexShrink: 0 }} />
+							<input
+								{...register("email")}
+								disabled
+								style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "var(--c-text-3)", fontSize: 13.5, cursor: "not-allowed" }}
+							/>
+						</div>
+					</div>
+				</div>
+
+				{/* Phone */}
+				<div style={rowStyle}>
+					<label style={labelStyle}>
+						Phone number <span style={{ color: "var(--c-lime-600)" }}>*</span>
+					</label>
+					<div style={{ flex: 1 }}>
+						<div style={{ display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 12px", borderRadius: 10, border: `1px solid ${errors.phone ? "var(--c-down)" : "var(--c-line)"}`, background: "var(--c-surface)", maxWidth: 400, boxSizing: "border-box" }}>
+							<Image src="/assets/icons/phone-call.svg" alt="phone" width={16} height={16} style={{ flexShrink: 0 }} />
+							<input
+								{...register("phone")}
+								type="tel"
+								disabled={isBusy}
+								style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "var(--c-text)", fontSize: 13.5 }}
+								placeholder="+234 000 000 0000"
+							/>
+						</div>
+						{errors.phone && <p style={errorStyle}>{errors.phone.message}</p>}
+					</div>
+				</div>
+
+				{/* Avatar upload */}
+				<div style={rowStyle}>
+					<div style={{ ...labelStyle, paddingTop: 0 }}>
+						<div style={{ fontWeight: 600, color: "var(--c-text-2)", fontSize: 13.5 }}>Profile photo</div>
+						<div style={{ fontSize: 12, color: "var(--c-text-3)", marginTop: 4, fontWeight: 400 }}>PNG, JPG or GIF · max 800×400px</div>
+					</div>
+					<div style={{ flex: 1, display: "flex", alignItems: "center", gap: 16 }}>
+						{/* Avatar preview */}
+						<div style={{ width: 56, height: 56, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "1px solid var(--c-line)" }}>
+							{avatarSrc ? (
+								<Image src={avatarSrc} alt="avatar" width={56} height={56} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+							) : (
+								<div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, var(--c-lime-500), var(--c-onyx-700))", fontSize: 18, fontWeight: 700, color: "var(--c-onyx-900)" }}>
+									{initials}
+								</div>
+							)}
+						</div>
+						{/* Upload zone */}
+						<button
+							type="button"
+							onClick={() => fileInputRef.current?.click()}
+							style={{ display: "flex", alignItems: "center", gap: 10, height: 40, padding: "0 16px", borderRadius: 10, border: "1px dashed var(--c-line)", background: "transparent", color: "var(--c-text-2)", fontSize: 13, cursor: "pointer", transition: "border-color .12s" }}
+						>
+							<Upload size={15} style={{ color: "var(--c-lime-600)" }} />
+							{avatarImage ? "Change photo" : "Upload photo"}
+						</button>
+						<input
+							ref={fileInputRef}
+							type="file"
+							accept="image/*"
+							style={{ display: "none" }}
+							onChange={(e) => {
+								const file = e.currentTarget.files?.[0];
+								if (file) handleImageSelect(file);
+							}}
+						/>
+					</div>
+				</div>
+
+				{/* User ID */}
+				<div style={rowStyle}>
+					<span style={{ ...labelStyle }}>User ID</span>
+					<div style={{ flex: 1, display: "flex", alignItems: "center", gap: 8 }}>
+						<span style={{ fontSize: 13, color: "var(--c-text-3)", fontFamily: "var(--f-mono)", paddingTop: 8 }}>{user?.id ?? "—"}</span>
+						{user?.id && (
+							<div style={{ paddingTop: 4 }}>
+								<CopyButton value={user.id} label="User ID" />
+							</div>
 						)}
 					</div>
 				</div>
-				<div className="flex">
-					<Button
-						type="button"
-						onClick={() => deleteAccount()}
-						variant="link"
-						className="p-0 text-sm text-destructive font-semibold"
-						disabled={isBusy}
-					>
-						Close account
-					</Button>
-					<div className="ml-auto flex gap-x-3">
-						<Button
-							type="button"
-							variant="outline"
-							disabled={isBusy}
-							onClick={reset}
-							className="p-0 text-sm text-muted-foreground font-semibold h-10 px-3.5"
-						>
-							Cancel
-						</Button>
-						<Button
-							type="submit"
-							variant="outline"
-							disabled={
-								isBusy ||
-								isFormInvalid ||
-								(!form.formState.isDirty && !isUpdated)
-							}
-							className="p-0 text-sm font-semibold h-10 px-3.5 bg-primary border-custom-black/5 text-primary-foreground"
-						>
-							{isUpdating ? "Saving..." : "Save"}
-						</Button>
+
+				{/* Registration date */}
+				<div style={{ ...rowStyle, borderBottom: "none" }}>
+					<span style={{ ...labelStyle }}>Registration date</span>
+					<div style={{ paddingTop: 9, fontSize: 13.5, color: "var(--c-text-2)" }}>
+						{user?.dateJoined ? getFormattedDate(new Date(user.dateJoined)) : "—"}
 					</div>
 				</div>
-			</form>
-		</Form>
+
+			</div>
+
+			{/* Actions */}
+			<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 20 }}>
+				<button
+					type="button"
+					onClick={() => deleteAccount()}
+					disabled={isBusy}
+					style={{ background: "transparent", border: "none", padding: 0, fontSize: 13.5, fontWeight: 600, color: "var(--c-down)", cursor: isBusy ? "not-allowed" : "pointer", opacity: isBusy ? 0.5 : 1 }}
+				>
+					Close account
+				</button>
+				<div style={{ display: "flex", gap: 10 }}>
+					<button
+						type="button"
+						onClick={reset}
+						disabled={isBusy}
+						style={{ height: 40, padding: "0 18px", borderRadius: 10, fontSize: 13.5, fontWeight: 500, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text-2)", cursor: isBusy ? "not-allowed" : "pointer" }}
+					>
+						Cancel
+					</button>
+					<button
+						type="submit"
+						disabled={isSaveDisabled}
+						style={{ height: 40, padding: "0 20px", borderRadius: 10, fontSize: 13.5, fontWeight: 600, border: "none", background: isSaveDisabled ? "var(--c-surface-2)" : "var(--c-lime-500)", color: isSaveDisabled ? "var(--c-text-3)" : "var(--c-onyx-900)", cursor: isSaveDisabled ? "not-allowed" : "pointer", transition: "all .12s" }}
+					>
+						{isUpdating ? "Saving…" : "Save"}
+					</button>
+				</div>
+			</div>
+		</form>
 	);
 }
