@@ -60,11 +60,23 @@ export default function WithdrawPage() {
 		setAcctName("");
 		if (digits.length === 10) {
 			setLookingUp(true);
-			// TODO: wire to real bank-lookup API
-			setTimeout(() => {
-				setAcctName("ADAEZE OKONKWO");
-				setLookingUp(false);
-			}, 700);
+			fetch("/api/bank/verify-account", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ bank_code: bank, account_number: digits }),
+			})
+				.then((res) => res.json())
+				.then((data) => {
+					if (data.status && data.data?.account_name) {
+						setAcctName(data.data.account_name);
+					} else {
+						toast.error(data.message || "Could not verify account");
+					}
+				})
+				.catch(() => {
+					toast.error("Account verification failed");
+				})
+				.finally(() => setLookingUp(false));
 		}
 	}
 
@@ -72,11 +84,24 @@ export default function WithdrawPage() {
 		if (!isValid) return;
 		setSubmitting(true);
 		try {
-			await new Promise((r) => setTimeout(r, 1200)); // TODO: wire to real API
-			toast.success(`\u20A6${amtNum.toLocaleString("en-NG")} withdrawal submitted`);
-			setAmount("");
-			setAcctNo("");
-			setAcctName("");
+			const res = await fetch("/api/withdrawal", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					bank_account_id: `${bank}_${acctNo}`,
+					amount: amtNum,
+					currency: "NGN",
+				}),
+			});
+			const data = await res.json();
+			if (data.status === "ok") {
+				toast.success(`\u20A6${amtNum.toLocaleString("en-NG")} withdrawal submitted`);
+				setAmount("");
+				setAcctNo("");
+				setAcctName("");
+			} else {
+				toast.error(data.message || "Withdrawal failed. Please try again.");
+			}
 		} catch {
 			toast.error("Withdrawal failed. Please try again.");
 		} finally {

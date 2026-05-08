@@ -906,10 +906,24 @@ export default function SendPage() {
 									onChange={(e) => {
 										const val = e.target.value.replace(/\D/g, "").slice(0, 10);
 										setAcctNo(val);
+										setAcctName("");
 										if (val.length === 10) {
-											setAcctName("ADAEZE OLUWASEUN OKAFOR");
-										} else {
-											setAcctName("");
+											fetch("/api/bank/verify-account", {
+												method: "POST",
+												headers: { "Content-Type": "application/json" },
+												body: JSON.stringify({ bank_code: bankCode, account_number: val }),
+											})
+												.then((res) => res.json())
+												.then((data) => {
+													if (data.status && data.data?.account_name) {
+														setAcctName(data.data.account_name);
+													} else {
+														toast.error(data.message || "Could not verify account");
+													}
+												})
+												.catch(() => {
+													toast.error("Account verification failed");
+												});
 										}
 									}}
 								/>

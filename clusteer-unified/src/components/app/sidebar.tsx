@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Logo } from "@/components/brand/logo";
 import { getUserWallet } from "@/lib/api/wallet/queries";
+import { useUserId } from "@/hooks/use-user-id";
+import { getKYCVerification } from "@/lib/api/settings";
 import {
 	LayoutDashboard, Wallet, ArrowLeftRight, Send, ArrowDownToLine,
 	Banknote, BookOpen, List, ShieldCheck, Bell, Gift, Settings, HelpCircle,
@@ -20,7 +22,7 @@ const NAV = [
 	{ id: "orders",                   href: "/orders",                  label: "Orders",        icon: BookOpen },
 	{ id: "transaction-history",      href: "/transaction-history",     label: "Transactions",  icon: List },
 	{ id: "identity-verification",    href: "/identity-verification",   label: "Identity",      icon: ShieldCheck },
-	{ id: "notifications",           href: "/notifications",           label: "Notifications", icon: Bell, badge: 3 },
+	{ id: "notifications",           href: "/notifications",           label: "Notifications", icon: Bell },
 	{ id: "referrals",               href: "/referrals",               label: "Referrals",     icon: Gift },
 	{ id: "settings",                href: "/settings",                label: "Settings",      icon: Settings, tab: true },
 	{ id: "support",                 href: "/support",                 label: "Support",       icon: HelpCircle },
@@ -33,11 +35,26 @@ interface SidebarProps {
 
 export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 	const pathname = usePathname();
+	const userId = useUserId();
 	const { data: walletData, isLoading } = useQuery({
 		queryKey: ["wallet"],
 		queryFn: getUserWallet,
 		staleTime: 30_000,
 	});
+
+	const { data: kycData } = useQuery({
+		queryKey: ["kyc-status", userId],
+		queryFn: () => getKYCVerification(userId!),
+		enabled: !!userId,
+		staleTime: 300_000,
+	});
+
+	const tierLabel = (() => {
+		const status = kycData?.status;
+		if (status === "approved") return "Tier 2";
+		if (status === "pending" || status === "under_review") return "Pending";
+		return "Tier 1";
+	})();
 
 	const assets = walletData?.walletAssets ?? [];
 	const total = assets.reduce((s, a) => s + (a.balance ?? 0), 0);
@@ -58,7 +75,7 @@ export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 					className="ml-auto inline-flex items-center h-[22px] px-2 rounded-full text-[11.5px] font-medium"
 					style={{ background: "var(--c-surface-2)", color: "var(--c-text-2)", border: "1px solid var(--c-line)" }}
 				>
-					Tier 2
+					{tierLabel}
 				</span>
 			</div>
 
@@ -81,14 +98,6 @@ export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 						>
 							<Icon className="size-[18px] shrink-0" />
 							<span>{n.label}</span>
-							{n.badge && (
-								<span
-									className="ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] px-1.5 rounded-full text-[10px] font-semibold"
-									style={{ background: "var(--c-down)", color: "#fff" }}
-								>
-									{n.badge}
-								</span>
-							)}
 						</Link>
 					);
 				})}

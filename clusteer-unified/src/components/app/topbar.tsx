@@ -6,6 +6,8 @@ import { Bell, Menu, Search, Sun, Moon, User, Settings, LogOut, ChevronDown, X }
 import { Logo } from "@/components/brand/logo";
 import { Sidebar } from "./sidebar";
 import { useTheme } from "next-themes";
+import { useQuery } from "@tanstack/react-query";
+import { getUserInfo } from "@/lib/api/user/queries";
 
 export function TopBar() {
 	const { theme, setTheme } = useTheme();
@@ -13,6 +15,22 @@ export function TopBar() {
 	const [userMenu, setUserMenu] = useState(false);
 	const [mobileNav, setMobileNav] = useState(false);
 	const menuRef = useRef<HTMLDivElement>(null);
+
+	const { data: user } = useQuery({
+		queryKey: ["user-profile"],
+		queryFn: getUserInfo,
+		staleTime: 60_000,
+	});
+
+	const initials = user
+		? `${(user.firstName?.[0] ?? "").toUpperCase()}${(user.lastName?.[0] ?? "").toUpperCase()}` || user.username?.[0]?.toUpperCase() || "U"
+		: "U";
+	const displayName = user?.firstName ? `${user.firstName} ${user.lastName?.[0] ?? ""}`.trim() + "." : "User";
+	const displayEmail = user?.email
+		? user.email.length > 12
+			? user.email.slice(0, 8) + "…" + user.email.slice(user.email.lastIndexOf("."))
+			: user.email
+		: "";
 	useEffect(() => setMounted(true), []);
 	useEffect(() => {
 		if (!userMenu) return;
@@ -69,7 +87,6 @@ export function TopBar() {
 				</button>
 				<Link href="/notifications" className="relative inline-flex items-center justify-center size-9 rounded-[10px] transition-colors" style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}>
 					<Bell className="size-[17px]" />
-					<span className="absolute top-2 right-2 size-[7px] rounded-full" style={{ background: "var(--c-down)" }} />
 				</Link>
 
 				{/* User + dropdown */}
@@ -79,11 +96,11 @@ export function TopBar() {
 						className="flex items-center gap-2.5 rounded-lg px-1.5 py-1 transition-colors hover:bg-[var(--c-surface-2)]"
 					>
 						<div className="size-8 rounded-full flex items-center justify-center text-[12px] font-semibold shrink-0" style={{ background: "linear-gradient(135deg, var(--c-lime-500), var(--c-onyx-700))", color: "var(--c-onyx-900)" }}>
-							AO
+							{initials}
 						</div>
 						<div className="hidden sm:block text-left">
-							<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>Adaeze O.</div>
-							<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>adaeze@…ng</div>
+							<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>{displayName}</div>
+							<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>{displayEmail}</div>
 						</div>
 						<ChevronDown className="size-3.5 hidden sm:block" style={{ color: "var(--c-text-3)" }} />
 					</button>
