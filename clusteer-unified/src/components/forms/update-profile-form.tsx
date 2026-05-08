@@ -305,7 +305,7 @@ export default function UpdateProfileForm() {
 								isFormInvalid ||
 								(!form.formState.isDirty && !isUpdated)
 							}
-							className="p-0 text-sm font-semibold h-10 px-3.5 bg-primary border-custom-black/5 text-white"
+							className="p-0 text-sm font-semibold h-10 px-3.5 bg-primary border-custom-black/5 text-primary-foreground"
 						>
 							{isUpdating ? "Saving..." : "Save"}
 						</Button>
