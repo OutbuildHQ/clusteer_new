@@ -1,8 +1,10 @@
+import dynamic from "next/dynamic";
 import { Sidebar } from "@/components/app/sidebar";
 import { TopBar } from "@/components/app/topbar";
-import { MobileTabBar } from "@/components/app/mobile-tab-bar";
-import { CommandPalette } from "@/components/app/command-palette";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+
+const MobileTabBar = dynamic(() => import("@/components/app/mobile-tab-bar").then(m => m.MobileTabBar), { ssr: false });
+const CommandPalette = dynamic(() => import("@/components/app/command-palette").then(m => m.CommandPalette), { ssr: false });
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
 	return (
