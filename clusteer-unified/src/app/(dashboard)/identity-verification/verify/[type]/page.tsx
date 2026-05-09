@@ -82,18 +82,35 @@ export default function VerifyTypePage({ params }: { params: Promise<{ type: str
 		setSubmitting(true);
 		setStep("processing");
 		try {
-			const form = new FormData();
-			form.append("type", meta.abbr);
-			form.append("number", rawDigits);
-			form.append("selfie", selfieFile);
-			const res = await fetch("/api/kyc/upload", { method: "POST", body: form });
-			const data = await res.json();
-			if (res.ok || data.status) {
-				setStep("done");
-			} else {
-				toast.error(data.message || "Verification failed. Please try again.");
+			// ── Step 1: Submit BVN/NIN for identity verification ──────────────────
+			const verifyRes = await fetch("/api/kyc/verify", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					verificationType: meta.abbr,
+					data: meta.abbr === "BVN" ? { bvn: rawDigits } : { nin: rawDigits },
+				}),
+			});
+			const verifyData = await verifyRes.json();
+			if (!verifyRes.ok && verifyRes.status !== 202) {
+				toast.error(verifyData.message || "Verification failed. Please try again.");
 				setStep("selfie");
+				return;
 			}
+
+			// ── Step 2: Upload selfie document ────────────────────────────────────
+			const uploadForm = new FormData();
+			uploadForm.append("documentType", "id_card");
+			uploadForm.append("selfie", selfieFile);
+			const uploadRes = await fetch("/api/kyc/upload", { method: "POST", body: uploadForm });
+			const uploadData = await uploadRes.json();
+			if (!uploadRes.ok) {
+				toast.error(uploadData.message || "Document upload failed. Please try again.");
+				setStep("selfie");
+				return;
+			}
+
+			setStep("done");
 		} catch {
 			toast.error("Network error. Please try again.");
 			setStep("selfie");

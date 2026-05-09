@@ -1,30 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-// Rate limiting store (in production, use Redis)
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
-
-// Check rate limit (3 attempts per 24 hours)
-function checkRateLimit(userId: string): { allowed: boolean; message?: string } {
-	const now = Date.now();
-	const userLimit = rateLimitStore.get(userId);
-
-	if (!userLimit || now > userLimit.resetTime) {
-		// Reset or initialize
-		rateLimitStore.set(userId, { count: 1, resetTime: now + 24 * 60 * 60 * 1000 });
-		return { allowed: true };
-	}
-
-	if (userLimit.count >= 3) {
-		const hoursLeft = Math.ceil((userLimit.resetTime - now) / (60 * 60 * 1000));
-		return {
-			allowed: false,
-			message: `KYC submission limit reached. Please try again in ${hoursLeft} hours.`,
-		};
-	}
-
-	userLimit.count++;
-	return { allowed: true };
-}
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 
 // Enhanced BVN/NIN validation
 function validateDocumentNumber(documentNumber: string, type: string): { valid: boolean; message?: string } {
@@ -57,6 +32,10 @@ function validateDocumentNumber(documentNumber: string, type: string): { valid: 
 }
 
 export async function POST(request: NextRequest) {
+	// Rate limit: 3 KYC submissions per 24 hours per IP
+	const rateLimitRes = rateLimit(request, RateLimitPresets.strict);
+	if (rateLimitRes) return rateLimitRes;
+
 	try {
 		// Get the auth token from cookies (already verified by middleware)
 		const token = request.cookies.get("auth_token")?.value;
@@ -88,15 +67,6 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json(
 				{ status: false, message: "Invalid token" },
 				{ status: 401 }
-			);
-		}
-
-		// Check rate limit
-		const rateLimitResult = checkRateLimit(userId);
-		if (!rateLimitResult.allowed) {
-			return NextResponse.json(
-				{ status: false, message: rateLimitResult.message },
-				{ status: 429 }
 			);
 		}
 

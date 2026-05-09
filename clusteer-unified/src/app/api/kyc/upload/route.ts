@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DJANGO_URL, API_KEY } from "@/lib/api-helpers";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 
 // Allowed MIME types for document uploads
 const ALLOWED_MIME_TYPES = [
@@ -35,6 +36,9 @@ function validateFileSignature(buffer: Buffer, mimeType: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
+	const rateLimitRes = rateLimit(request, RateLimitPresets.moderate);
+	if (rateLimitRes) return rateLimitRes;
+
 	try {
 		// Get the auth token from cookies (already verified by middleware)
 		const token = request.cookies.get("auth_token")?.value;
