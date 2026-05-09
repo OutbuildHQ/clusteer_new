@@ -66,6 +66,7 @@ function mapTxn(t: ITransaction, ngnRate: number) {
 		fee: +((t.amount * unitPrice * 0.001) + 0.5).toFixed(2),
 		when: t.dateCreated ? new Date(t.dateCreated).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "",
 		date: t.date ?? (t.dateCreated ? new Date(t.dateCreated).toLocaleDateString([], { month: "short", day: "numeric" }) : "—"),
+		rawDate: t.dateCreated ?? t.date ?? "",
 		hash: null as string | null,
 		description: t.description,
 		rate: t.rate,
@@ -112,8 +113,8 @@ export default function TransactionsPage() {
 					(type === "All" || t.type === type) &&
 					(!filters.status || t.status === filters.status) &&
 					(!filters.asset || t.asset === filters.asset) &&
-					(!filters.dateFrom || !t.date || new Date(t.date) >= new Date(filters.dateFrom)) &&
-					(!filters.dateTo || !t.date || new Date(t.date) <= new Date(filters.dateTo + "T23:59:59")) &&
+					(!filters.dateFrom || !t.rawDate || new Date(t.rawDate) >= new Date(filters.dateFrom)) &&
+					(!filters.dateTo || !t.rawDate || new Date(t.rawDate) <= new Date(filters.dateTo + "T23:59:59")) &&
 					(!q || t.id.toUpperCase().includes(q.toUpperCase()) || t.asset.toUpperCase().includes(q.toUpperCase()) || String(t.amount).includes(q)),
 			),
 		[transactions, type, q, filters],
