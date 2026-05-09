@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getUserWallet } from "@/lib/api/wallet/queries";
-import { getExchangeRate, submitTrade } from "@/lib/api/trade/queries";
 import { formatMoney } from "@/lib/utils";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { ArrowDownUp, Loader2 } from "lucide-react";
@@ -12,14 +11,22 @@ import { toast } from "sonner";
 type Side = "Buy" | "Sell" | "Swap";
 
 const SUPPORTED_ASSETS = [
-	{ symbol: "USDT", name: "Tether", chains: ["Tron", "BSC", "Ethereum"] },
-	{ symbol: "USDC", name: "USD Coin", chains: ["Ethereum", "Solana", "Polygon"] },
+	{ symbol: "USDT", name: "Tether", chains: ["tron", "bsc", "ethereum"] },
+	{ symbol: "USDC", name: "USD Coin", chains: ["ethereum", "solana"] },
 ];
+
+const CHAIN_LABELS: Record<string, string> = {
+	tron: "Tron (TRC-20)",
+	bsc: "BNB Chain (BEP-20)",
+	ethereum: "Ethereum (ERC-20)",
+	solana: "Solana",
+};
 
 export default function TradePage() {
 	const [side, setSide] = useState<Side>("Buy");
 	const [asset, setAsset] = useState("USDT");
 	const [amount, setAmount] = useState("");
+	const [chain, setChain] = useState("tron");
 
 	const { data: walletData } = useQuery({
 		queryKey: ["wallet"],
@@ -32,50 +39,67 @@ export default function TradePage() {
 		isError: rateError,
 	} = useQuery({
 		queryKey: ["exchange-rate", "NGN"],
-		queryFn: () => getExchangeRate("NGN"),
-		refetchInterval: 30_000, // refresh rate every 30s
+		queryFn: async () => {
+			const res = await fetch("/api/system/exchange-rate?targetCurrency=NGN&type=sell");
+			if (!res.ok) throw new Error("Failed to fetch rate");
+			return res.json() as Promise<{ buyRate: number; sellRate: number; rate: number }>;
+		},
+		refetchInterval: 30_000,
 	});
 
 	const tradeMutation = useMutation({
-		mutationFn: submitTrade,
+		mutationFn: async (payload: { side: string; amount: number; chain: string }) => {
+			const res = await fetch("/api/trade", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(payload),
+			});
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.message || "Trade failed");
+			return data;
+		},
 		onSuccess: () => {
 			toast.success("Trade submitted successfully");
 			setAmount("");
 		},
-		onError: () => {
-			toast.error("Trade failed. Please try again.");
+		onError: (err: Error) => {
+			toast.error(err.message || "Trade failed. Please try again.");
 		},
 	});
 
 	const selected = SUPPORTED_ASSETS.find((a) => a.symbol === asset) ?? SUPPORTED_ASSETS[0];
+	// Keep chain valid when asset changes
+	const effectiveChain = selected.chains.includes(chain) ? chain : selected.chains[0];
 
-	// Use live rate if available, otherwise show unavailable
-	const rate: number | null = rateData?.rate ?? rateData?.data?.rate ?? null;
+	// Use buyRate for Buy (user buys USDT with NGN), sellRate for Sell (user gets NGN)
+	const buyRate: number | null = rateData?.buyRate ?? null;
+	const sellRate: number | null = rateData?.sellRate ?? null;
+	const rate = side === "Sell" ? sellRate : buyRate;
+
 	const amtNum = parseFloat(amount) || 0;
-	const ngnValue = rate !== null ? amtNum * rate : 0;
 	const feePct = 0.015;
+	// For Buy: amtNum is NGN → ngnValue = amtNum. For Sell: amtNum is USDT → ngnValue = amtNum * sellRate
+	const ngnValue = side === "Buy" ? amtNum : (rate !== null ? amtNum * rate : 0);
 	const feeAmt = ngnValue * feePct;
 
-	// Find user's balance for the selected asset from wallet data
-	const walletBalance = walletData?.walletAssets?.find(
-		(w) => w.currency === asset
-	)?.balance;
+	// Wallet balances
+	const walletBalance = walletData?.walletAssets?.find((w) => w.currency === asset)?.balance;
+	const ngnWalletBalance = walletData?.walletAssets?.find((w) => w.currency === "NGN")?.balance;
 
 	const receiveValue = (() => {
 		if (rate === null) return "Rate unavailable";
-		if (side === "Buy") {
-			return amtNum ? (amtNum / rate).toFixed(6) : "0";
-		}
-		if (side === "Sell") {
-			return formatMoney(ngnValue, "NGN", { decimals: 0 });
-		}
-		// Swap: asset-to-asset placeholder
+		if (side === "Buy") return amtNum ? (amtNum / rate).toFixed(6) : "0";
+		if (side === "Sell") return formatMoney(ngnValue, "NGN", { decimals: 0 });
 		return amtNum ? amtNum.toFixed(6) : "0";
 	})();
 
 	const payLabel = side === "Buy" ? "You pay" : "You sell";
 
 	const handleContinue = () => {
+		if (side === "Swap") {
+			toast.info("Swap is coming soon!");
+			return;
+		}
 		if (!amtNum || amtNum <= 0) {
 			toast.error("Please enter a valid amount");
 			return;
@@ -87,7 +111,7 @@ export default function TradePage() {
 		tradeMutation.mutate({
 			side: side.toLowerCase(),
 			amount: amtNum,
-			chain: selected.chains[0],
+			chain: effectiveChain,
 		});
 	};
 
@@ -170,16 +194,14 @@ export default function TradePage() {
 							>
 								{payLabel}
 							</label>
-							{side !== "Buy" && walletBalance !== undefined && (
-								<span
-									style={{
-										fontSize: 11.5,
-										color: "var(--c-text-3)",
-										fontFamily: "var(--f-mono)",
-										fontVariantNumeric: "tabular-nums",
-									}}
-								>
-									Balance: {walletBalance.toLocaleString()} {asset}
+							{side === "Buy" && ngnWalletBalance !== undefined && (
+								<span style={{ fontSize: 11.5, color: "var(--c-text-3)", fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums" }}>
+									Bal: {formatMoney(ngnWalletBalance, "NGN", { decimals: 0 })}
+								</span>
+							)}
+							{side === "Sell" && walletBalance !== undefined && (
+								<span style={{ fontSize: 11.5, color: "var(--c-text-3)", fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums" }}>
+									Bal: {walletBalance.toLocaleString()} {asset}
 								</span>
 							)}
 						</div>
@@ -337,9 +359,17 @@ export default function TradePage() {
 										{formatMoney(feeAmt, "NGN", { decimals: 0 })}
 									</span>
 								</div>
-								<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
+								<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12.5, marginTop: 6 }}>
 									<span style={{ color: "var(--c-text-3)" }}>Network</span>
-									<span style={{ color: "var(--c-text)" }}>{selected.chains[0]}</span>
+									<select
+										value={effectiveChain}
+										onChange={(e) => setChain(e.target.value)}
+										style={{ border: "1px solid var(--c-line)", borderRadius: 6, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 12, padding: "2px 6px", cursor: "pointer" }}
+									>
+										{selected.chains.map((c) => (
+											<option key={c} value={c}>{CHAIN_LABELS[c] ?? c}</option>
+										))}
+									</select>
 								</div>
 							</>
 						)}
@@ -348,22 +378,19 @@ export default function TradePage() {
 					{/* Continue button */}
 					<button
 						onClick={handleContinue}
-						disabled={tradeMutation.isPending || rateLoading || rate === null}
+						disabled={side !== "Swap" && (tradeMutation.isPending || rateLoading || rate === null)}
 						className="h-[50px] lg:h-12"
 						style={{
 							width: "100%",
 							borderRadius: 10,
 							border: "none",
-							cursor: tradeMutation.isPending || rateLoading || rate === null ? "not-allowed" : "pointer",
+							cursor: (side !== "Swap" && (tradeMutation.isPending || rateLoading || rate === null)) ? "not-allowed" : "pointer",
 							fontSize: 15,
 							fontWeight: 500,
 							fontFamily: "var(--f-sans)",
-							background: tradeMutation.isPending || rateLoading || rate === null
-								? "var(--c-onyx-700)"
-								: "var(--c-lime-500)",
-							color: tradeMutation.isPending || rateLoading || rate === null
-								? "var(--c-text-3)"
-								: "var(--c-onyx-900)",
+							background: "var(--c-lime-500)",
+							opacity: (side !== "Swap" && (tradeMutation.isPending || rateLoading || rate === null)) ? 0.45 : 1,
+							color: "var(--c-onyx-900)",
 							marginTop: 6,
 							display: "flex",
 							alignItems: "center",
@@ -376,8 +403,10 @@ export default function TradePage() {
 								<Loader2 size={16} className="animate-spin" />
 								Processing...
 							</>
+						) : side === "Swap" ? (
+							"Swap — Coming Soon"
 						) : (
-							"Continue \u2192 Review"
+							"Continue → Review"
 						)}
 					</button>
 				</div>
