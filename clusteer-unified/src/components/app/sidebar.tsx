@@ -92,7 +92,7 @@ export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 							className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13.5px] font-medium transition-colors ${!active ? "hover:bg-[var(--c-surface-2)] hover:text-[var(--c-text)]" : ""}`}
 							style={
 								active
-									? { background: "var(--c-onyx-900)", color: "var(--c-cream)" }
+									? { background: "color-mix(in oklab, var(--c-lime-500) 10%, transparent)", color: "var(--c-lime-500)" }
 									: { color: "var(--c-text-2)" }
 							}
 						>
