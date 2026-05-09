@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { getUserWallet } from "@/lib/api/wallet/queries";
 import { formatMoney } from "@/lib/utils";
 import { AssetLogo } from "@/components/primitives/asset-logo";
-import { ArrowDownUp, Loader2, AlertTriangle } from "lucide-react";
+import { ArrowDownUp, ArrowLeftRight, Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -28,6 +28,15 @@ export default function TradePage() {
 	const [asset, setAsset] = useState("USDT");
 	const [amount, setAmount] = useState("");
 	const [chain, setChain] = useState("tron");
+
+	// Swap tab state
+	const [swapFrom, setSwapFrom] = useState<"USDT" | "USDC">("USDT");
+	const [swapAmount, setSwapAmount] = useState("");
+	const swapTo = swapFrom === "USDT" ? "USDC" : "USDT";
+	const SWAP_FEE_PCT = 0.001; // 0.1%
+	const swapAmtNum = parseFloat(swapAmount) || 0;
+	const swapReceive = swapAmtNum > 0 ? swapAmtNum * (1 - SWAP_FEE_PCT) : 0;
+	const swapFeeAmt = swapAmtNum * SWAP_FEE_PCT;
 
 	const { data: walletData } = useQuery({
 		queryKey: ["wallet"],
@@ -87,6 +96,26 @@ export default function TradePage() {
 		},
 	});
 
+	const swapMutation = useMutation({
+		mutationFn: async (payload: { from_currency: string; to_currency: string; amount: number; chain: string }) => {
+			const res = await fetch("/api/swap", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(payload),
+			});
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.message || "Swap failed");
+			return data;
+		},
+		onSuccess: () => {
+			toast.success(`Swapped ${swapAmtNum} ${swapFrom} → ${swapTo}`, { description: "Balance updated." });
+			setSwapAmount("");
+		},
+		onError: (err: Error) => {
+			toast.error(err.message || "Swap failed. Please try again.");
+		},
+	});
+
 	const selected = SUPPORTED_ASSETS.find((a) => a.symbol === asset) ?? SUPPORTED_ASSETS[0];
 	// Keep chain valid when asset changes
 	const effectiveChain = selected.chains.includes(chain) ? chain : selected.chains[0];
@@ -116,10 +145,6 @@ export default function TradePage() {
 	const payLabel = side === "Buy" ? "You pay" : "You sell";
 
 	const handleContinue = () => {
-		if (side === "Swap") {
-			toast.info("Swap is coming soon!");
-			return;
-		}
 		if (!amtNum || amtNum <= 0) {
 			toast.error("Please enter a valid amount");
 			return;
@@ -133,6 +158,15 @@ export default function TradePage() {
 			amount: amtNum,
 			chain: effectiveChain,
 		});
+	};
+
+	const handleSwap = () => {
+		if (!swapAmtNum || swapAmtNum <= 0) {
+			toast.error("Please enter a valid amount");
+			return;
+		}
+		const chain = swapFrom === "USDT" ? "tron" : "ethereum";
+		swapMutation.mutate({ from_currency: swapFrom, to_currency: swapTo, amount: swapAmtNum, chain });
 	};
 
 	return (
@@ -213,6 +247,139 @@ export default function TradePage() {
 					</Link>
 				)}
 
+				{/* ---- Swap UI ---- */}
+				{side === "Swap" && (
+					<div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 18 }}>
+						{/* From */}
+						<div>
+							<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+								<label style={{ fontSize: 12, color: "var(--c-text-3)", fontWeight: 500 }}>You swap</label>
+								{(() => {
+									const bal = walletData?.walletAssets?.find((w) => w.currency === swapFrom)?.balance;
+									return bal !== undefined ? (
+										<span style={{ fontSize: 11.5, color: "var(--c-text-3)", fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums" }}>
+											Bal: {bal.toLocaleString()} {swapFrom}
+										</span>
+									) : null;
+								})()}
+							</div>
+							<div
+								className="h-[54px] lg:h-16"
+								style={{
+									padding: "0 14px",
+									border: "1px solid var(--c-line)",
+									borderRadius: 14,
+									background: "var(--c-surface-2)",
+									display: "flex",
+									alignItems: "center",
+									gap: 8,
+								}}
+							>
+								<input
+									inputMode="decimal"
+									placeholder="0"
+									value={swapAmount}
+									onChange={(e) => setSwapAmount(e.target.value)}
+									style={{
+										flex: 1, border: "none", background: "transparent", outline: "none",
+										height: "100%", fontSize: 28, fontWeight: 600,
+										fontFamily: "var(--f-display)", fontVariantNumeric: "tabular-nums",
+										color: "var(--c-text)", padding: 0, minWidth: 0,
+									}}
+								/>
+								<AssetSelector value={swapFrom} onChange={(v) => setSwapFrom(v as "USDT" | "USDC")} />
+							</div>
+						</div>
+
+						{/* Flip */}
+						<div style={{ display: "flex", justifyContent: "center" }}>
+							<button
+								onClick={() => setSwapFrom(swapTo as "USDT" | "USDC")}
+								style={{
+									width: 36, height: 36, borderRadius: "50%",
+									background: "var(--c-onyx-900)", color: "var(--c-cream)",
+									display: "flex", alignItems: "center", justifyContent: "center",
+									border: "none", cursor: "pointer",
+								}}
+							>
+								<ArrowLeftRight size={16} />
+							</button>
+						</div>
+
+						{/* To */}
+						<div>
+							<label style={{ display: "block", fontSize: 12, color: "var(--c-text-3)", marginBottom: 6, fontWeight: 500 }}>You receive</label>
+							<div
+								className="h-[54px] lg:h-16"
+								style={{
+									padding: "0 14px",
+									border: "1px solid var(--c-line)",
+									borderRadius: 14,
+									background: "var(--c-surface-2)",
+									display: "flex",
+									alignItems: "center",
+									gap: 8,
+								}}
+							>
+								<div style={{
+									flex: 1, fontSize: 28, fontWeight: 600,
+									fontFamily: "var(--f-display)", fontVariantNumeric: "tabular-nums",
+									color: swapAmtNum > 0 ? "var(--c-text)" : "var(--c-text-3)",
+								}}>
+									{swapAmtNum > 0 ? swapReceive.toFixed(6) : "0"}
+								</div>
+								<AssetSelector value={swapTo} onChange={(v) => setSwapFrom(v === "USDT" ? "USDC" : "USDT")} />
+							</div>
+						</div>
+
+						{/* Fee */}
+						<div style={{ background: "var(--c-surface-2)", borderRadius: 14, padding: 14 }}>
+							<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
+								<span style={{ color: "var(--c-text-3)" }}>Rate</span>
+								<span style={{ fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>
+									1 {swapFrom} ≈ 1 {swapTo}
+								</span>
+							</div>
+							<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
+								<span style={{ color: "var(--c-text-3)" }}>Fee (0.1%)</span>
+								<span style={{ fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>
+									{swapFeeAmt > 0 ? swapFeeAmt.toFixed(4) : "0"} {swapFrom}
+								</span>
+							</div>
+							<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
+								<span style={{ color: "var(--c-text-3)" }}>Network</span>
+								<span style={{ fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>
+									{swapFrom === "USDT" ? "Tron (TRC-20)" : "Ethereum (ERC-20)"}
+								</span>
+							</div>
+						</div>
+
+						{/* Swap button */}
+						<button
+							onClick={handleSwap}
+							disabled={swapMutation.isPending || swapAmtNum <= 0}
+							className="h-[50px] lg:h-12"
+							style={{
+								width: "100%", borderRadius: 10, border: "none",
+								cursor: (swapMutation.isPending || swapAmtNum <= 0) ? "not-allowed" : "pointer",
+								fontSize: 15, fontWeight: 500, fontFamily: "var(--f-sans)",
+								background: "var(--c-lime-500)",
+								opacity: (swapMutation.isPending || swapAmtNum <= 0) ? 0.45 : 1,
+								color: "var(--c-onyx-900)", marginTop: 6,
+								display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+							}}
+						>
+							{swapMutation.isPending ? (
+								<><Loader2 size={16} className="animate-spin" />Processing...</>
+							) : (
+								`Swap ${swapFrom} → ${swapTo}`
+							)}
+						</button>
+					</div>
+				)}
+
+				{/* ---- Buy / Sell UI ---- */}
+				{side !== "Swap" && (
 				<div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 18 }}>
 					{/* You pay / sell panel */}
 					<div>
@@ -417,18 +584,18 @@ export default function TradePage() {
 					{/* Continue button */}
 					<button
 						onClick={handleContinue}
-						disabled={side !== "Swap" && (tradeMutation.isPending || rateLoading || rate === null)}
+						disabled={tradeMutation.isPending || rateLoading || rate === null}
 						className="h-[50px] lg:h-12"
 						style={{
 							width: "100%",
 							borderRadius: 10,
 							border: "none",
-							cursor: (side !== "Swap" && (tradeMutation.isPending || rateLoading || rate === null)) ? "not-allowed" : "pointer",
+							cursor: (tradeMutation.isPending || rateLoading || rate === null) ? "not-allowed" : "pointer",
 							fontSize: 15,
 							fontWeight: 500,
 							fontFamily: "var(--f-sans)",
 							background: "var(--c-lime-500)",
-							opacity: (side !== "Swap" && (tradeMutation.isPending || rateLoading || rate === null)) ? 0.45 : 1,
+							opacity: (tradeMutation.isPending || rateLoading || rate === null) ? 0.45 : 1,
 							color: "var(--c-onyx-900)",
 							marginTop: 6,
 							display: "flex",
@@ -442,13 +609,12 @@ export default function TradePage() {
 								<Loader2 size={16} className="animate-spin" />
 								Processing...
 							</>
-						) : side === "Swap" ? (
-							"Swap — Coming Soon"
 						) : (
 							"Continue → Review"
 						)}
 					</button>
 				</div>
+				)}
 			</div>
 		</div>
 	);
