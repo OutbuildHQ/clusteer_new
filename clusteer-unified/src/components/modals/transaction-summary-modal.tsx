@@ -48,7 +48,7 @@ export default function TransactionSummaryModal() {
 					<span className="ml-auto w-fit font-semibold">0.3 USDT</span>
 				</div>
 			</div>
-			<Alert className="bg-[#F4E6D5] border border-border flex items-start p-4 h-[72px] gap-x-2.5">
+			<Alert className="flex items-start p-4 h-[72px] gap-x-2.5" style={{ background: "var(--c-warn-soft)", border: "1px solid var(--c-warn)" }}>
 				<Image
 					src="/assets/icons/alert_circle.svg"
 					alt="alert icon"
@@ -64,7 +64,8 @@ export default function TransactionSummaryModal() {
 				<Button
 					type="button"
 					onClick={() => openModal(MODAL_IDS.PAYMENT)}
-					className="bg-[#21241D] rounded-full w-full font-medium h-[38px] px-5 text-[15px]"
+					className="rounded-full w-full font-medium h-[38px] px-5 text-[15px]"
+					style={{ background: "var(--c-onyx-900)", color: "var(--c-cream)" }}
 				>
 					Confirm
 				</Button>

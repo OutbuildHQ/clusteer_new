@@ -1,198 +1,159 @@
 "use client";
 
-import { DotIcon, Mail } from "lucide-react";
+import { DotIcon, Mail, ShieldCheck, Lock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useUser } from "@/store/user";
 
-export default function Page() {
+function StatusBadge({ enabled }: { enabled: boolean }) {
+	return (
+		<span
+			style={{
+				display: "inline-flex",
+				alignItems: "center",
+				borderRadius: "9999px",
+				height: 24,
+				padding: "0 10px",
+				fontSize: 12,
+				fontWeight: 500,
+				color: enabled ? "var(--c-up)" : "var(--c-text-3)",
+				background: enabled ? "var(--c-up-soft)" : "var(--c-surface-2)",
+			}}
+		>
+			<DotIcon
+				style={{ color: enabled ? "var(--c-up)" : "var(--c-text-3)" }}
+				strokeWidth={8}
+				size={16}
+			/>
+			{enabled ? "Enabled" : "Disabled"}
+		</span>
+	);
+}
+
+function SecurityCard({
+	href,
+	icon,
+	title,
+	description,
+	enabled,
+	actionLabel,
+	disabled,
+}: {
+	href?: string;
+	icon: React.ReactNode;
+	title: string;
+	description: string;
+	enabled: boolean;
+	actionLabel: string;
+	disabled?: boolean;
+}) {
+	const card = (
+		<div
+			className="rounded-[14px] p-5 w-full xl:max-w-[435px] shrink-0 space-y-3 transition-colors"
+			style={{
+				background: "var(--c-surface)",
+				border: "1px solid var(--c-line)",
+				opacity: disabled ? 0.55 : 1,
+			}}
+		>
+			<div className="flex items-center justify-between">
+				<div
+					className="size-11 rounded-[10px] flex items-center justify-center"
+					style={{ background: "var(--c-surface-2)", color: "var(--c-text-2)" }}
+				>
+					{icon}
+				</div>
+				<StatusBadge enabled={enabled} />
+			</div>
+			<div>
+				<p className="font-semibold text-[15px]" style={{ color: "var(--c-text)" }}>
+					{title}
+				</p>
+				<p className="text-[13px] mt-1 leading-relaxed" style={{ color: "var(--c-text-3)" }}>
+					{description}
+				</p>
+			</div>
+			<span
+				className="text-[13.5px] font-semibold"
+				style={{ color: disabled ? "var(--c-text-3)" : "var(--c-lime-500)" }}
+			>
+				{actionLabel}
+			</span>
+		</div>
+	);
+
+	if (!href || disabled) return card;
+	return (
+		<Link href={href} className="block hover:no-underline">
+			{card}
+		</Link>
+	);
+}
+
+export default function SecurityPage() {
 	const user = useUser();
 	const is2FAEnabled = user?.twoFactorEnabled || false;
 	const isEmailVerified = user?.emailVerified || false;
 
 	return (
-		<section className="mt-5 lg:mt-10 pb-[113px] xl:pb-[140px]">
-			<header>
-				<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
+		<section className="space-y-8 pb-24">
+			<div>
+				<h1 className="text-[22px] font-semibold" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>
 					Security
 				</h1>
-				<p className="text-sm lg:mt-2">
-					Please configure the following verification method(s) as soon as
-					possible:
+				<p className="mt-1 text-[13.5px]" style={{ color: "var(--c-text-2)" }}>
+					Configure your verification methods to keep your account protected.
 				</p>
-			</header>
-			<div className="mt-5 lg:mt-7">
-				<span className="text-sm lg:font-medium lg:p-0 lg:text-lg font-semibold py-2">
-					Two-Factor Authentication
-				</span>
-				<ul className="mt-5 lg:mt-6.5 flex flex-col flex-wrap lg:flex-row gap-y-7 gap-x-6">
-					<Link href="/security/google-auth">
-						<li className="bg-[#F2F2F0] rounded-2xl border border-[#21241D1A] p-5 xl:max-w-[435px] w-full shrink-0 md:space-y-2">
-							<div className="flex items-center">
-								<Image
-									src="/assets/images/google-auth.png"
-									alt="google auth logo"
-									width={46}
-									height={46}
-								/>
-								<span
-									className="ml-auto"
-									style={{
-										display: "inline-flex",
-										alignItems: "center",
-										borderRadius: "9999px",
-										height: "24px",
-										padding: "0 10px",
-										fontSize: "12px",
-										fontWeight: 500,
-										color: is2FAEnabled ? "var(--c-success, #15803d)" : "#344054",
-										background: is2FAEnabled ? "rgba(21,128,61,0.1)" : "#E9E9E9",
-									}}
-								>
-									<DotIcon
-										stroke={is2FAEnabled ? "#15803d" : "#344054"}
-										strokeWidth={8}
-									/>
-									{is2FAEnabled ? "Enabled" : "Disabled"}
-								</span>
-							</div>
-							<p className="font-medium text-lg mt-2.5">
-								Google Authenticator (recommended)
-							</p>
-							<p className="text-sm">
-								Google Authenticator codes help guarantee account and
-								transaction security. Changing your bound Google Authenticator
-								will disable payment and withdrawal for 24 hours.
-							</p>
-							<span className="text-primary text-[15px] font-medium mt-1.5 inline-block">
-								{is2FAEnabled ? "Manage" : "Bind"}
-							</span>
-						</li>
-					</Link>
-					<Link href="/security/change-email">
-						<li className="bg-[#F2F2F0] rounded-2xl border border-[#21241D1A] p-5 xl:max-w-[435px] w-full shrink-0 md:space-y-2">
-							<div className="flex items-center">
-								<Mail size={46} />
-								<span
-									className="ml-auto"
-									style={{
-										display: "inline-flex",
-										alignItems: "center",
-										borderRadius: "9999px",
-										height: "24px",
-										padding: "0 10px",
-										fontSize: "12px",
-										fontWeight: 500,
-										color: isEmailVerified ? "var(--c-success, #15803d)" : "#344054",
-										background: isEmailVerified ? "rgba(21,128,61,0.1)" : "#E9E9E9",
-									}}
-								>
-									<DotIcon
-										stroke={isEmailVerified ? "#15803d" : "#344054"}
-										strokeWidth={8}
-									/>
-									{isEmailVerified ? "Enabled" : "Disabled"}
-								</span>
-							</div>
-							<p className="font-medium text-lg mt-2.5">Email verification</p>
-							<p className="text-sm">
-								Email verification codes help guarantee account and transaction
-								security. Changing your bound email will disable payment and
-								withdrawal for 24 hours.
-							</p>
-							<span className="text-primary text-[15px] font-medium mt-1.5 inline-block">
-								{isEmailVerified ? "Change" : "Bind"}
-							</span>
-						</li>
-					</Link>
-					<li className="bg-[#F2F2F0] rounded-2xl border border-[#21241D1A] p-5 xl:max-w-[435px] w-full shrink-0 md:space-y-2 opacity-60">
-						<div className="flex items-center">
-							<Image
-								src="/assets/icons/phone.svg"
-								alt="phone icon"
-								width={46}
-								height={46}
-							/>
-							<span
-								className="ml-auto"
-								style={{
-									display: "inline-flex",
-									alignItems: "center",
-									borderRadius: "9999px",
-									height: "24px",
-									padding: "0 10px",
-									fontSize: "12px",
-									fontWeight: 500,
-									color: "#344054",
-									background: "#E9E9E9",
-								}}
-							>
-								<DotIcon
-									stroke="#344054"
-									strokeWidth={8}
-								/>
-								Disabled
-							</span>
-						</div>
-						<p className="font-medium text-lg mt-2.5">
-							Phone number verification
-						</p>
-						<p className="text-sm">
-							Phone verification codes help guarantee account and transaction
-							security. Changing your bound phone number will disable payment
-							and withdrawal for 24 hours.
-						</p>
-						<span className="text-muted-foreground text-[15px] font-medium mt-1.5 inline-block">
-							Coming soon
-						</span>
-					</li>
-				</ul>
 			</div>
-			<div className="mt-5">
-				<span className="text-sm font-semibold py-2">Advanced Security</span>
-				<ul className="mt-5 flex flex-col gap-y-7">
-					<Link href="/security/change-password">
-						<li className="bg-[#F2F2F0] rounded-2xl border border-[#21241D1A] p-5 xl:max-w-[435px] w-full shrink-0 md:space-y-2">
-							<div className="flex items-center">
-								<Image
-									src="/assets/icons/passcode.svg"
-									alt="passcode icon"
-									width={46}
-									height={46}
-								/>
-								<span
-									className="ml-auto"
-									style={{
-										display: "inline-flex",
-										alignItems: "center",
-										borderRadius: "9999px",
-										height: "24px",
-										padding: "0 10px",
-										fontSize: "12px",
-										fontWeight: 500,
-										color: "var(--c-success, #15803d)",
-										background: "rgba(21,128,61,0.1)",
-									}}
-								>
-									<DotIcon
-										stroke="#15803d"
-										strokeWidth={8}
-									/>
-									Enabled
-								</span>
-							</div>
-							<p className="font-medium text-lg mt-2.5">Login password</p>
-							<p className="text-sm">
-								The login password helps guarantee account and transaction
-								security. Changing the login password will disable payment and
-								withdrawal for 24 hours.
-							</p>
-							<span className="text-primary text-[15px] font-medium mt-1.5 inline-block">
-								Change
-							</span>
-						</li>
-					</Link>
-				</ul>
+
+			{/* 2FA */}
+			<div>
+				<p className="text-[11px] font-semibold uppercase tracking-[0.08em] mb-4" style={{ color: "var(--c-text-3)" }}>
+					Two-Factor Authentication
+				</p>
+				<div className="flex flex-col lg:flex-row flex-wrap gap-4">
+					<SecurityCard
+						href="/security/google-auth"
+						icon={<Image src="/assets/images/google-auth.png" alt="Google Authenticator" width={28} height={28} />}
+						title="Google Authenticator"
+						description="Use Google Authenticator codes to secure your account and transactions. Recommended method."
+						enabled={is2FAEnabled}
+						actionLabel={is2FAEnabled ? "Manage →" : "Set up →"}
+					/>
+					<SecurityCard
+						href="/security/change-email"
+						icon={<Mail className="size-5" />}
+						title="Email verification"
+						description="Receive a one-time code to your email to confirm sensitive account actions."
+						enabled={isEmailVerified}
+						actionLabel={isEmailVerified ? "Change →" : "Verify →"}
+					/>
+					<SecurityCard
+						icon={<ShieldCheck className="size-5" />}
+						title="Phone number verification"
+						description="Confirm sensitive actions with an SMS code sent to your registered phone number."
+						enabled={false}
+						actionLabel="Coming soon"
+						disabled
+					/>
+				</div>
+			</div>
+
+			{/* Advanced */}
+			<div>
+				<p className="text-[11px] font-semibold uppercase tracking-[0.08em] mb-4" style={{ color: "var(--c-text-3)" }}>
+					Advanced Security
+				</p>
+				<div className="flex flex-col lg:flex-row flex-wrap gap-4">
+					<SecurityCard
+						href="/security/change-password"
+						icon={<Lock className="size-5" />}
+						title="Login password"
+						description="Your login password protects account access. Changing it disables payments and withdrawals for 24 hours."
+						enabled={true}
+						actionLabel="Change →"
+					/>
+				</div>
 			</div>
 		</section>
 	);
