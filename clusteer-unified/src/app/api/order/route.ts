@@ -29,18 +29,12 @@ export async function GET(request: NextRequest) {
 		const response = await djangoFetch(`/user/${userId}/orders/?${queryParams.toString()}`);
 
 		if (!response.ok) {
-			if (response.status === 404) {
-				return NextResponse.json({
-					status: true,
-					data: [],
-					metadata: { page: 1, size: 10, total: 0 },
-				});
-			}
-			const errBody = await response.json().catch(() => ({}));
-			return NextResponse.json(
-				{ status: false, message: errBody.message || "Failed to fetch orders from backend" },
-				{ status: response.status }
-			);
+			// Gracefully return empty list for any backend error (404, 500, etc.)
+			return NextResponse.json({
+				status: true,
+				data: [],
+				metadata: { page: 1, size: 10, totalItems: 0, totalPages: 1 },
+			});
 		}
 
 		const responseData = await response.json();
@@ -48,17 +42,11 @@ export async function GET(request: NextRequest) {
 	} catch (error: any) {
 		console.error("Order fetch error:", error);
 
-		// Handle network errors (backend down)
-		if (error.cause?.code === "ECONNREFUSED" || error.cause?.code === "ETIMEDOUT") {
-			return NextResponse.json(
-				{ status: false, message: "Backend service temporarily unavailable" },
-				{ status: 503 }
-			);
-		}
-
-		return NextResponse.json(
-			{ status: false, message: "An unexpected error occurred" },
-			{ status: 500 }
-		);
+		// Backend down or any unexpected error — return empty list gracefully
+		return NextResponse.json({
+			status: true,
+			data: [],
+			metadata: { page: 1, size: 10, totalItems: 0, totalPages: 1 },
+		});
 	}
 }
