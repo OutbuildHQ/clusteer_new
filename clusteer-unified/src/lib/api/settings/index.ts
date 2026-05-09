@@ -88,66 +88,54 @@ export interface BankAccount {
 	updated_at: string;
 }
 
-export async function getBankAccounts(userId: string) {
-	try {
-		const res = await blockchainApiClient.get<{
-			status: boolean;
-			data: BankAccount[];
-		}>(`/user/${userId}/bank-accounts/`);
-		return res.data.data;
-	} catch (error) {
-		throw error as AxiosError;
-	}
+// Bank account functions use the Next.js proxy (/api/user/bank-accounts)
+// so the Django API key is never exposed to the browser.
+export async function getBankAccounts(_userId: string): Promise<BankAccount[]> {
+	const res = await fetch("/api/user/bank-accounts");
+	if (!res.ok) throw new Error("Failed to fetch bank accounts");
+	const json = await res.json();
+	return json.data ?? [];
 }
 
 export async function createBankAccount(
-	userId: string,
+	_userId: string,
 	data: {
 		bank_name: string;
 		account_number: string;
 		account_name: string;
 		is_default?: boolean;
 	}
-) {
-	try {
-		const res = await blockchainApiClient.post<{
-			status: boolean;
-			message: string;
-			data: BankAccount;
-		}>(`/user/${userId}/bank-accounts/`, data);
-		return res.data;
-	} catch (error) {
-		throw error as AxiosError;
-	}
+): Promise<{ status: boolean; message: string; data: BankAccount }> {
+	const res = await fetch("/api/user/bank-accounts", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(data),
+	});
+	const json = await res.json();
+	if (!res.ok) throw new Error(json.message || "Failed to create bank account");
+	return json;
 }
 
 export async function updateBankAccount(
-	userId: string,
+	_userId: string,
 	accountId: number,
 	data: Partial<{ is_default: boolean }>
-) {
-	try {
-		const res = await blockchainApiClient.put<{
-			status: boolean;
-			message: string;
-			data: BankAccount;
-		}>(`/user/${userId}/bank-accounts/${accountId}/`, data);
-		return res.data;
-	} catch (error) {
-		throw error as AxiosError;
-	}
+): Promise<{ status: boolean; message: string; data: BankAccount }> {
+	const res = await fetch(`/api/user/bank-accounts/${accountId}`, {
+		method: "PUT",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(data),
+	});
+	const json = await res.json();
+	if (!res.ok) throw new Error(json.message || "Failed to update bank account");
+	return json;
 }
 
-export async function deleteBankAccount(userId: string, accountId: number) {
-	try {
-		const res = await blockchainApiClient.delete<{
-			status: boolean;
-			message: string;
-		}>(`/user/${userId}/bank-accounts/${accountId}/`);
-		return res.data;
-	} catch (error) {
-		throw error as AxiosError;
-	}
+export async function deleteBankAccount(_userId: string, accountId: number): Promise<{ status: boolean; message: string }> {
+	const res = await fetch(`/api/user/bank-accounts/${accountId}`, { method: "DELETE" });
+	const json = await res.json();
+	if (!res.ok) throw new Error(json.message || "Failed to delete bank account");
+	return json;
 }
 
 // ==================== PRIVACY SETTINGS ====================

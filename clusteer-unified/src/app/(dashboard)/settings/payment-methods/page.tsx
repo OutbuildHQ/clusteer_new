@@ -136,10 +136,10 @@ export default function Page() {
 		return (
 			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 				<header className="mb-6">
-					<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
+					<h1 className="font-semibold text-xl lg:text-2xl" style={{ color: "var(--c-text)" }}>
 						Payment Methods
 					</h1>
-					<p className="text-sm lg:text-base text-muted-foreground mt-2">
+					<p className="text-sm lg:text-base mt-2" style={{ color: "var(--c-text-3)" }}>
 						Loading your payment methods...
 					</p>
 				</header>
@@ -151,10 +151,10 @@ export default function Page() {
 		return (
 			<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 				<header className="mb-6">
-					<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
+					<h1 className="font-semibold text-xl lg:text-2xl" style={{ color: "var(--c-text)" }}>
 						Payment Methods
 					</h1>
-					<p className="text-sm lg:text-base text-muted-foreground mt-2">
+					<p className="text-sm lg:text-base mt-2" style={{ color: "var(--c-text-3)" }}>
 						Failed to load payment methods. Please refresh the page.
 					</p>
 				</header>
@@ -165,10 +165,10 @@ export default function Page() {
 	return (
 		<section className="pb-[100px] lg:pb-[91px] pt-1.5 lg:pt-8">
 			<header className="mb-6">
-				<h1 className="text-foreground font-semibold text-xl lg:text-2xl">
+				<h1 className="font-semibold text-xl lg:text-2xl" style={{ color: "var(--c-text)" }}>
 					Payment Methods
 				</h1>
-				<p className="text-sm lg:text-base text-muted-foreground mt-2">
+				<p className="text-sm lg:text-base mt-2" style={{ color: "var(--c-text-3)" }}>
 					Manage your bank accounts for deposits and withdrawals
 				</p>
 			</header>
@@ -181,7 +181,7 @@ export default function Page() {
 						disabled={accounts.length >= 5}
 						style={{
 							background: "transparent",
-							color: "var(--c-fg, inherit)",
+							color: "var(--c-text)",
 							border: "2px dashed var(--c-border, #e5e5e5)",
 							height: "auto",
 							padding: "16px 24px",
@@ -199,13 +199,13 @@ export default function Page() {
 						Add Bank Account {accounts.length >= 5 && "(Maximum reached)"}
 					</button>
 				) : (
-					<div className="bg-card rounded-2xl border border-border p-6">
-						<h3 className="font-semibold text-lg text-foreground mb-4">
+					<div className="ds-card p-6">
+						<h3 className="font-semibold text-lg text-[var(--c-text)] mb-4">
 							Add New Bank Account
 						</h3>
 						<div className="space-y-4">
 							<div>
-								<label className="text-sm font-medium text-foreground mb-2 block">
+								<label className="text-sm font-medium text-[var(--c-text)] mb-2 block">
 									Bank Name
 								</label>
 								<input
@@ -214,12 +214,12 @@ export default function Page() {
 									onChange={(e) =>
 										setNewAccount({ ...newAccount, bankName: e.target.value })
 									}
-									className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
+									className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-lime-500)]"
 									placeholder="e.g., GTBank"
 								/>
 							</div>
 							<div>
-								<label className="text-sm font-medium text-foreground mb-2 block">
+								<label className="text-sm font-medium text-[var(--c-text)] mb-2 block">
 									Account Number
 								</label>
 								<input
@@ -232,12 +232,12 @@ export default function Page() {
 										})
 									}
 									maxLength={10}
-									className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
+									className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-lime-500)]"
 									placeholder="0123456789"
 								/>
 							</div>
 							<div>
-								<label className="text-sm font-medium text-foreground mb-2 block">
+								<label className="text-sm font-medium text-[var(--c-text)] mb-2 block">
 									Account Name
 								</label>
 								<input
@@ -249,7 +249,7 @@ export default function Page() {
 											accountName: e.target.value,
 										})
 									}
-									className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
+									className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-lime-500)]"
 									placeholder="John Doe"
 								/>
 							</div>
@@ -258,7 +258,7 @@ export default function Page() {
 									onClick={handleAddAccount}
 									disabled={addMutation.isPending}
 									style={{
-										background: "var(--c-accent, #9FE870)",
+										background: "var(--c-lime-500)",
 										color: "#fff",
 										border: "1px solid rgba(0,0,0,0.05)",
 										height: "40px",
@@ -283,7 +283,7 @@ export default function Page() {
 									}}
 									style={{
 										background: "transparent",
-										color: "var(--c-fg, inherit)",
+										color: "var(--c-text)",
 										border: "1px solid var(--c-border, #e5e5e5)",
 										height: "40px",
 										padding: "0 24px",
@@ -305,16 +305,16 @@ export default function Page() {
 					{accounts.map((account) => (
 						<div
 							key={account.id}
-							className="bg-card rounded-2xl border border-border p-5 lg:p-6"
+							className="ds-card p-5 lg:p-6"
 						>
 							<div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
 								<div className="flex items-start gap-4">
-									<div className="p-3 bg-primary/10 rounded-lg">
-										<CreditCard className="w-6 h-6 text-primary" />
+									<div className="p-3 bg-[var(--c-lime-500)]/10 rounded-lg">
+										<CreditCard className="w-6 h-6 text-[var(--c-lime-500)]" />
 									</div>
 									<div>
 										<div className="flex items-center gap-2 mb-1">
-											<h3 className="font-semibold text-lg text-foreground">
+											<h3 className="font-semibold text-lg text-[var(--c-text)]">
 												{account.bankName}
 											</h3>
 											{account.isDefault && (
@@ -327,7 +327,7 @@ export default function Page() {
 														padding: "0 10px",
 														fontSize: "12px",
 														fontWeight: 500,
-														color: "var(--c-accent, #9FE870)",
+														color: "var(--c-lime-500)",
 														background: "rgba(159,232,112,0.1)",
 													}}
 												>
@@ -335,13 +335,13 @@ export default function Page() {
 												</span>
 											)}
 											{account.isVerified && (
-												<CheckCircle2 className="w-4 h-4 text-success" />
+												<CheckCircle2 className="w-4 h-4 text-[var(--success)]" />
 											)}
 										</div>
-										<p className="text-sm text-muted-foreground mb-1">
+										<p className="text-sm text-[var(--c-text-3)] mb-1">
 											{account.accountNumber}
 										</p>
-										<p className="text-sm font-medium text-foreground">
+										<p className="text-sm font-medium text-[var(--c-text)]">
 											{account.accountName}
 										</p>
 									</div>
@@ -354,7 +354,7 @@ export default function Page() {
 											disabled={setDefaultMutation.isPending}
 											style={{
 												background: "transparent",
-												color: "var(--c-fg, inherit)",
+												color: "var(--c-text)",
 												border: "1px solid var(--c-border, #e5e5e5)",
 												height: "36px",
 												padding: "0 16px",
@@ -372,7 +372,7 @@ export default function Page() {
 										disabled={account.isDefault}
 										style={{
 											background: "transparent",
-											color: "var(--c-danger, #ef4444)",
+											color: "var(--danger)",
 											border: "none",
 											height: "36px",
 											width: "36px",
@@ -395,20 +395,20 @@ export default function Page() {
 
 				{/* Empty State */}
 				{accounts.length === 0 && (
-					<div className="bg-card rounded-2xl border border-border p-12 text-center">
-						<div className="w-16 h-16 mx-auto bg-pale-green rounded-full flex items-center justify-center mb-4">
-							<CreditCard className="w-8 h-8 text-primary" />
+					<div className="ds-card p-12 text-center">
+						<div className="w-16 h-16 mx-auto bg-[var(--c-surface-2)] rounded-full flex items-center justify-center mb-4">
+							<CreditCard className="w-8 h-8 text-[var(--c-lime-500)]" />
 						</div>
-						<h3 className="font-semibold text-lg text-foreground mb-2">
+						<h3 className="font-semibold text-lg text-[var(--c-text)] mb-2">
 							No payment methods added
 						</h3>
-						<p className="text-sm text-muted-foreground mb-6">
+						<p className="text-sm text-[var(--c-text-3)] mb-6">
 							Add a bank account to start making deposits and withdrawals
 						</p>
 						<button
 							onClick={() => setShowAddForm(true)}
 							style={{
-								background: "var(--c-accent, #9FE870)",
+								background: "var(--c-lime-500)",
 								color: "#fff",
 								border: "1px solid rgba(0,0,0,0.05)",
 								height: "40px",
@@ -429,11 +429,11 @@ export default function Page() {
 				)}
 
 				{/* Info Card */}
-				<div className="bg-muted rounded-2xl border border-border p-5">
-					<h3 className="font-semibold text-base text-foreground mb-3">
+				<div className="ds-card p-5">
+					<h3 className="font-semibold text-base text-[var(--c-text)] mb-3">
 						Important Information
 					</h3>
-					<ul className="space-y-2 text-sm text-muted-foreground">
+					<ul className="space-y-2 text-sm text-[var(--c-text-3)]">
 						<li className="flex items-start gap-2">
 							<span className="text-[#9FE870] mt-1">•</span>
 							<span>
@@ -483,7 +483,7 @@ export default function Page() {
 				>
 					<div
 						style={{
-							background: "var(--c-surface, #fff)",
+							background: "var(--c-surface)",
 							borderRadius: "16px",
 							padding: "24px",
 							maxWidth: "480px",
@@ -495,7 +495,7 @@ export default function Page() {
 						<h3 style={{ fontSize: "18px", fontWeight: 600, marginBottom: "8px" }}>
 							Delete Bank Account
 						</h3>
-						<p style={{ fontSize: "14px", color: "var(--c-muted, #6b7280)", marginBottom: "24px" }}>
+						<p style={{ fontSize: "14px", color: "var(--c-text-3)", marginBottom: "24px" }}>
 							Are you sure you want to delete this bank account? This action cannot be undone.
 						</p>
 						<div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
@@ -506,7 +506,7 @@ export default function Page() {
 								}}
 								style={{
 									background: "transparent",
-									color: "var(--c-fg, inherit)",
+									color: "var(--c-text)",
 									border: "1px solid var(--c-border, #e5e5e5)",
 									height: "40px",
 									padding: "0 16px",
@@ -522,7 +522,7 @@ export default function Page() {
 								onClick={handleDelete}
 								disabled={deleteMutation.isPending}
 								style={{
-									background: "var(--c-danger, #ef4444)",
+									background: "var(--danger)",
 									color: "#fff",
 									border: "none",
 									height: "40px",

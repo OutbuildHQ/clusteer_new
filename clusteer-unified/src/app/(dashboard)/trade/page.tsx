@@ -5,8 +5,9 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { getUserWallet } from "@/lib/api/wallet/queries";
 import { formatMoney } from "@/lib/utils";
 import { AssetLogo } from "@/components/primitives/asset-logo";
-import { ArrowDownUp, Loader2 } from "lucide-react";
+import { ArrowDownUp, Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 type Side = "Buy" | "Sell" | "Swap";
 
@@ -33,6 +34,17 @@ export default function TradePage() {
 		queryFn: getUserWallet,
 	});
 
+	const { data: bankAccounts = [] } = useQuery<{ id: number; bank_name: string; account_number: string; is_default: boolean }[]>({
+		queryKey: ["bank-accounts"],
+		queryFn: async () => {
+			const res = await fetch("/api/user/bank-accounts");
+			if (!res.ok) return [];
+			const json = await res.json();
+			return json.data ?? [];
+		},
+	});
+	const hasBankAccount = bankAccounts.length > 0;
+
 	const {
 		data: rateData,
 		isLoading: rateLoading,
@@ -58,8 +70,16 @@ export default function TradePage() {
 			if (!res.ok) throw new Error(data.message || "Trade failed");
 			return data;
 		},
-		onSuccess: () => {
-			toast.success("Trade submitted successfully");
+		onSuccess: (_, vars) => {
+			if (vars.side === "sell") {
+				toast.success("Sell order submitted — NGN credited to your wallet", {
+					description: "Withdraw to your bank account when ready.",
+					action: { label: "Withdraw now", onClick: () => { window.location.href = "/withdraw"; } },
+					duration: 8000,
+				});
+			} else {
+				toast.success("Trade submitted successfully");
+			}
 			setAmount("");
 		},
 		onError: (err: Error) => {
@@ -173,6 +193,25 @@ export default function TradePage() {
 						</button>
 					))}
 				</div>
+
+				{side === "Sell" && !hasBankAccount && (
+					<Link
+						href="/settings/payment-methods"
+						style={{
+							display: "flex", alignItems: "center", gap: 10, marginTop: 14,
+							padding: "10px 12px", borderRadius: 10,
+							background: "oklch(0.965 0.035 22)",
+							border: "1px solid oklch(0.588 0.218 27 / 0.25)",
+							textDecoration: "none",
+						}}
+					>
+						<AlertTriangle className="size-4 shrink-0" style={{ color: "var(--danger)" }} />
+						<div style={{ flex: 1 }}>
+							<p style={{ fontSize: 12.5, fontWeight: 600, color: "var(--danger)", margin: 0 }}>No bank account on file</p>
+							<p style={{ fontSize: 11.5, color: "var(--danger)", margin: 0, opacity: 0.8 }}>Add a bank account to withdraw your NGN after selling →</p>
+						</div>
+					</Link>
+				)}
 
 				<div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 18 }}>
 					{/* You pay / sell panel */}
