@@ -1,23 +1,24 @@
 import { jwtVerify, SignJWT } from 'jose';
 
-// SECURITY: Require JWT_SECRET to be set - fail fast if missing
-if (!process.env.JWT_SECRET) {
-  throw new Error(
-    'CRITICAL: JWT_SECRET environment variable is not set. ' +
-    'Generate a secure secret with: openssl rand -base64 32'
-  );
+// Lazy getter — validated at request time, not module load time.
+// This prevents Next.js build from crashing when JWT_SECRET is absent
+// during static page data collection.
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error(
+      'CRITICAL: JWT_SECRET environment variable is not set. ' +
+      'Generate a secure secret with: openssl rand -base64 32'
+    );
+  }
+  if (secret.length < 32) {
+    throw new Error(
+      'CRITICAL: JWT_SECRET must be at least 32 characters long. ' +
+      'Current length: ' + secret.length
+    );
+  }
+  return new TextEncoder().encode(secret);
 }
-
-// Validate JWT_SECRET strength
-if (process.env.JWT_SECRET.length < 32) {
-  throw new Error(
-    'CRITICAL: JWT_SECRET must be at least 32 characters long. ' +
-    'Current length: ' + process.env.JWT_SECRET.length + '. ' +
-    'Generate a secure secret with: openssl rand -base64 32'
-  );
-}
-
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export interface JWTPayload {
   userId: string;
@@ -32,7 +33,7 @@ export interface JWTPayload {
  */
 export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET, {
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
       algorithms: ['HS256'],
     });
 
@@ -56,7 +57,7 @@ export async function generateToken(payload: Omit<JWTPayload, 'exp' | 'iat'>): P
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 
   return token;
 }
@@ -81,7 +82,7 @@ export async function signPendingToken(
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(expiresIn)
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 /**
@@ -91,7 +92,7 @@ export async function verifyPendingToken(
   token: string
 ): Promise<Record<string, unknown> | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET, { algorithms: ["HS256"] });
+    const { payload } = await jwtVerify(token, getJwtSecret(), { algorithms: ["HS256"] });
     if (payload.scope !== "pending") return null;
     return payload as Record<string, unknown>;
   } catch {
