@@ -12,15 +12,24 @@ import type { Wallet } from "@/store/wallet";
 const TABS = ["All", "Holdings", "Watchlist"] as const;
 type Tab = typeof TABS[number];
 
+function formatChain(chain: string): string {
+	const map: Record<string, string> = {
+		tron: "Tron", bsc: "BSC", eth: "Ethereum", sol: "Solana",
+		polygon: "Polygon", ethereum: "Ethereum", solana: "Solana",
+	};
+	return map[chain.toLowerCase()] ?? chain.charAt(0).toUpperCase() + chain.slice(1);
+}
+
 /** Map a Wallet to a display-friendly row */
-function walletToRow(w: Wallet) {
-	const rateNgn = w.type === "FIAT" ? 1 : w.currency === "USDT" ? 1_570 : w.currency === "USDC" ? 1_568 : 1;
+function walletToRow(w: Wallet, usdtToNgn: number) {
+	const rateNgn = w.type === "FIAT" ? 1 : usdtToNgn;
 	const balanceNgn = w.balance * rateNgn;
+	const primaryChain = w.addresses?.[0] ? formatChain(w.addresses[0].chain) : (w.currency === "USDT" ? "Tron" : "BSC");
 	return {
 		symbol: w.currency,
 		name: w.name || w.currency,
 		type: w.type,
-		chain: w.type === "FIAT" ? "Bank" : w.currency === "USDT" ? "Tron" : "BSC",
+		chain: w.type === "FIAT" ? "Bank" : primaryChain,
 		balance: w.balance,
 		balanceNgn,
 		rateNgn,
@@ -35,7 +44,19 @@ export default function AssetsPage() {
 		queryFn: getUserWallet,
 	});
 
-	const allRows = (walletData?.walletAssets ?? []).map(walletToRow);
+	const { data: rateData } = useQuery({
+		queryKey: ["exchange-rate-ngn"],
+		queryFn: async () => {
+			const res = await fetch("/api/system/exchange-rate?targetCurrency=NGN&type=sell");
+			if (!res.ok) return { sellRate: 1_570 };
+			const json = await res.json();
+			return { sellRate: (json.sellRate as number) ?? 1_570 };
+		},
+		staleTime: 5 * 60 * 1000,
+	});
+	const usdtToNgn = rateData?.sellRate ?? 1_570;
+
+	const allRows = (walletData?.walletAssets ?? []).map((w) => walletToRow(w, usdtToNgn));
 	const ngnRow = allRows.find((r) => r.symbol === "NGN");
 	const ngnBalance = ngnRow?.balance ?? 0;
 
@@ -84,7 +105,7 @@ export default function AssetsPage() {
 						<div className="mt-2 flex items-center gap-3 text-[12px]">
 							{!isLoading && (
 								<span style={{ opacity: 0.5 }}>
-									{totalNgn > 0 ? `≈ $${(totalNgn / 1_570).toLocaleString("en-US", { maximumFractionDigits: 0 })}` : ""}
+									{totalNgn > 0 ? `≈ $${(totalNgn / usdtToNgn).toLocaleString("en-US", { maximumFractionDigits: 0 })}` : ""}
 								</span>
 							)}
 						</div>

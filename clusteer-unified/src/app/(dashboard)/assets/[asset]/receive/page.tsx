@@ -9,10 +9,13 @@ import { CopyButton } from "@/components/primitives/copy-button";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import Link from "next/link";
 
-const CHAIN_MAP: Record<string, string[]> = {
-	USDT: ["Tron", "BSC", "Ethereum"],
-	USDC: ["Ethereum", "Solana", "Polygon"],
-};
+function formatChain(chain: string): string {
+	const map: Record<string, string> = {
+		tron: "Tron", bsc: "BSC", eth: "Ethereum", sol: "Solana",
+		polygon: "Polygon", ethereum: "Ethereum", solana: "Solana",
+	};
+	return map[chain.toLowerCase()] ?? chain.charAt(0).toUpperCase() + chain.slice(1);
+}
 
 export default function ReceivePage({ params }: { params: Promise<{ asset: string }> }) {
 	const { asset } = use(params);
@@ -20,9 +23,21 @@ export default function ReceivePage({ params }: { params: Promise<{ asset: strin
 
 	const wallets = walletData?.walletAssets ?? [];
 	const a = wallets.find((w) => w.currency.toLowerCase() === asset.toLowerCase());
-	const networks = CHAIN_MAP[asset.toUpperCase()] ?? [];
-	const [network, setNetwork] = useState(networks[0] ?? "Tron");
-	const address = a?.address ?? "";
+
+	// Derive networks from actual wallet addresses; fallback to empty
+	const networkOptions = (a?.addresses ?? []).map((addr) => ({
+		label: formatChain(addr.chain),
+		value: addr.chain,
+	}));
+	// network state: "" means "not yet chosen" — fall back to first available
+	const [network, setNetwork] = useState("");
+	const effectiveNetwork = network || networkOptions[0]?.value || "";
+
+	// Find the address for the selected network
+	const address =
+		a?.addresses?.find((addr) => addr.chain === effectiveNetwork)?.address ??
+		a?.address ??
+		"";
 
 	if (isLoading) {
 		return (
@@ -63,15 +78,15 @@ export default function ReceivePage({ params }: { params: Promise<{ asset: strin
 					</div>
 				</div>
 				<div className="space-y-4 p-4 sm:p-6">
-					{networks.length > 0 && (
+					{networkOptions.length > 0 && (
 						<div>
 							<label style={{ fontSize: 12, color: "var(--c-text-3)" }} className="uppercase tracking-wide font-medium">Network</label>
 							<select
-								value={network}
+								value={effectiveNetwork}
 								onChange={(e) => setNetwork(e.target.value)}
 								style={{ height: 38, padding: "0 12px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5, width: "100%", marginTop: 4 }}
 							>
-								{networks.map((n) => <option key={n} value={n}>{n}</option>)}
+								{networkOptions.map((n) => <option key={n.value} value={n.value}>{n.label}</option>)}
 							</select>
 						</div>
 					)}
@@ -82,7 +97,7 @@ export default function ReceivePage({ params }: { params: Promise<{ asset: strin
 								<QR value={address} size={192} />
 								<div className="w-full">
 									<label style={{ fontSize: 12, color: "var(--c-text-3)" }} className="uppercase tracking-wide font-medium">Deposit address</label>
-									<div className="mt-1 flex items-center gap-2 rounded-lg border border-border bg-muted/40 p-3">
+									<div className="mt-1 flex items-center gap-2 rounded-lg p-3" style={{ border: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>
 										<code className="mono flex-1 break-all text-xs">{address}</code>
 										<CopyButton value={address} label="Address" />
 									</div>
@@ -99,13 +114,20 @@ export default function ReceivePage({ params }: { params: Promise<{ asset: strin
 						<div className="flex gap-3 rounded-lg border border-warning/30 bg-warning-bg p-3 text-warning">
 							<AlertTriangle className="size-5 shrink-0 mt-0.5" />
 							<div className="text-xs">
-								Only send <strong>{a.currency}</strong> on the <strong>{network}</strong> network to this address.
+								Only send <strong>{a.currency}</strong> on the <strong>{formatChain(effectiveNetwork)}</strong> network to this address.
 								Other assets or networks will be lost permanently.
 							</div>
 						</div>
 					)}
 
 					<button
+						onClick={async () => {
+							if (navigator.share) {
+								await navigator.share({ title: `${a.currency} Address`, text: address });
+							} else {
+								await navigator.clipboard.writeText(address);
+							}
+						}}
 						style={{ height: 36, padding: "0 14px", borderRadius: 10, fontSize: 13.5, fontWeight: 500, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: "pointer", width: "100%" }}
 					>
 						Share address
