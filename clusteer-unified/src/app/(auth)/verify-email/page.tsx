@@ -37,22 +37,26 @@ export default function VerifyEmailPage() {
 
 	return (
 		<div>
-			<div className="flex size-12 items-center justify-center rounded-full bg-brand-50 text-brand-700">
-				<MailCheck className="size-5" />
+			{/* Icon badge — neobrutalist */}
+			<div className="flex size-14 items-center justify-center rounded-2xl border-2 border-custom-black bg-light-green shadow-brutal-sm">
+				<MailCheck className="size-6 text-custom-black" />
 			</div>
 
-			<h1 className="mt-5 font-display text-2xl sm:text-3xl font-bold tracking-tight">Verify your email</h1>
-			<p className="mt-1 text-sm text-muted-foreground">
+			<h1 className="mt-5 font-display text-2xl sm:text-3xl font-bold tracking-tight text-custom-black">
+				Verify your email
+			</h1>
+			<p className="mt-1.5 text-sm text-muted-foreground">
 				We sent a verification link to{" "}
-				<span className="font-semibold text-foreground">{email ?? "your email address"}</span>.
+				<span className="font-semibold text-custom-black">{email ?? "your email address"}</span>.
 				Click the link in that email to activate your account.
 			</p>
 
-			<div className="mt-6 rounded-lg border border-brand-100 bg-brand-50/40 p-4 text-sm space-y-1.5">
-				<p className="font-semibold text-foreground">What to do next</p>
-				<ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-					<li>Open your email inbox (check spam too)</li>
-					<li>Click the <span className="font-medium text-foreground">Verify email</span> link</li>
+			{/* Steps card — neobrutalist */}
+			<div className="mt-6 rounded-2xl border-2 border-custom-black bg-warm-beige p-4 shadow-brutal-sm space-y-2">
+				<p className="font-bold text-sm text-custom-black uppercase tracking-wide">What to do next</p>
+				<ol className="list-decimal list-inside space-y-1.5 text-sm text-custom-black/70">
+					<li>Open your email inbox <span className="text-custom-black/50">(check spam too)</span></li>
+					<li>Click the <span className="font-semibold text-custom-black">Verify email</span> link</li>
 					<li>Return here and log in</li>
 				</ol>
 			</div>
@@ -61,25 +65,28 @@ export default function VerifyEmailPage() {
 				<Button
 					size="lg"
 					variant="outline"
-					className="w-full min-h-[52px]"
+					className="w-full min-h-[52px] border-2 border-custom-black font-bold shadow-brutal-sm hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
 					onClick={resend}
 					disabled={resending || resent}
 				>
 					<RefreshCw className={`size-4 mr-2 ${resending ? "animate-spin" : ""}`} />
-					{resent ? "Email sent" : resending ? "Sending\u2026" : "Resend verification email"}
+					{resent ? "Email sent ✓" : resending ? "Sending…" : "Resend verification email"}
 				</Button>
 
 				<Link
 					href="/login"
-					className="flex items-center justify-center min-h-[44px] text-sm font-semibold text-brand-800 hover:underline"
+					className="flex items-center justify-center min-h-[44px] text-sm font-bold text-custom-black hover:underline"
 				>
 					Already verified? Log in &rarr;
 				</Link>
 			</div>
 
 			<div className="mt-8 text-center">
-				<Link href="/login" className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center min-h-[44px]">
-					Back to login
+				<Link
+					href="/login"
+					className="text-xs text-muted-foreground hover:text-custom-black inline-flex items-center min-h-[44px] transition-colors"
+				>
+					&larr; Back to login
 				</Link>
 			</div>
 		</div>

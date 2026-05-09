@@ -34,17 +34,9 @@ export async function POST(request: NextRequest) {
 
     const { firebaseUser, token } = await loginWithFirebase(email, password);
 
-    // ── 1. Email verification gate ──────────────────────────────────────────
-    if (!firebaseUser.emailVerified) {
-      return NextResponse.json(
-        {
-          status: false,
-          requiresEmailVerification: true,
-          message: "Please verify your email before logging in. Check your inbox for the verification link.",
-        },
-        { status: 403 }
-      );
-    }
+    // ── 1. Email verification gate (bypassed until Resend is configured) ────
+    // TODO: re-enable once Resend email service is active
+    // if (!firebaseUser.emailVerified) { ... }
 
     // ── 2. 2FA check ────────────────────────────────────────────────────────
     const userId = firebaseUser.uid;
