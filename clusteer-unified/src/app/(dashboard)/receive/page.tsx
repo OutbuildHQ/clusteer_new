@@ -7,6 +7,7 @@ import { CopyButton } from "@/components/primitives/copy-button";
 import { Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getUserWallet } from "@/lib/api/wallet/queries";
+import { getUserInfo } from "@/lib/api/user/queries";
 import type { Wallet } from "@/store/wallet";
 
 /* ── asset/chain catalogue ── */
@@ -18,17 +19,34 @@ const ASSET_NETWORKS: Record<string, string[]> = {
 
 const RECEIVE_ASSETS = ["USDT", "USDC", "NGN"] as const;
 
+/** Maps display network name → lowercase chain key used in wallet.addresses */
+const NETWORK_TO_CHAIN: Record<string, string> = {
+	Tron: "tron",
+	BSC: "bsc",
+	Ethereum: "ethereum",
+	Solana: "solana",
+};
+
 /** Derive a placeholder address per chain when wallet data is unavailable */
-function placeholderAddr(chain: string) {
-	if (chain === "Tron") return "TQrZ8xY9k2PpVm5Lq6Wc3FjN1Hm4Bg7Aa";
-	if (chain === "Solana") return "7xKXy2pPq8mLnVcRfTbKjW3sN1Hm4Bg7Aa9KdEsXrYz";
-	if (chain === "NIBSS") return "NGN Bank Transfer — no on-chain address";
+function placeholderAddr(network: string) {
+	if (network === "Tron") return "TQrZ8xY9k2PpVm5Lq6Wc3FjN1Hm4Bg7Aa";
+	if (network === "Solana") return "7xKXy2pPq8mLnVcRfTbKjW3sN1Hm4Bg7Aa9KdEsXrYz";
+	if (network === "NIBSS") return "NGN Bank Transfer — no on-chain address";
 	return "0x742d35Cc6634C0532925a3b8D8c4f5e88aB12345"; // BSC / Ethereum (EVM)
 }
 
-function walletAddress(wallets: Wallet[], symbol: string): string {
+/** Resolve network-specific deposit address from wallet addresses[] */
+function walletAddress(wallets: Wallet[], symbol: string, network: string): string {
 	const w = wallets.find((w) => w.currency === symbol);
-	return w?.address ?? "";
+	if (!w) return "";
+	const chainKey = NETWORK_TO_CHAIN[network];
+	// Prefer per-chain address from addresses[] array; fall back to primary address
+	const perChain = chainKey
+		? (w as Wallet & { addresses?: { chain: string; address: string }[] }).addresses?.find(
+				(a) => a.chain === chainKey
+		  )?.address
+		: undefined;
+	return perChain || w.address || "";
 }
 
 export default function ReceivePage() {
@@ -44,6 +62,12 @@ export default function ReceivePage() {
 		retry: false,
 	});
 
+	const { data: userInfo } = useQuery({
+		queryKey: ["user-profile"],
+		queryFn: getUserInfo,
+		staleTime: 60_000,
+	});
+
 	// Reset network to first valid option when asset changes
 	useMemo(() => {
 		if (!networks.includes(network)) setNetwork(networks[0]);
@@ -51,10 +75,18 @@ export default function ReceivePage() {
 	}, [asset]);
 
 	const address = useMemo(() => {
-		if (asset === "NGN") return "Use the bank account listed in your profile";
-		const real = walletAddress(walletData?.walletAssets ?? [], asset);
+		if (asset === "NGN") return "";
+		const real = walletAddress(walletData?.walletAssets ?? [], asset, network);
 		return real || placeholderAddr(network);
 	}, [walletData, asset, network]);
+
+	const ngnAccountName = useMemo(() => {
+		if (!userInfo) return "Clusteer Customer";
+		const name = (userInfo.firstName && userInfo.lastName)
+			? `${userInfo.firstName} ${userInfo.lastName}`
+			: userInfo.firstName || userInfo.lastName || userInfo.username || "Customer";
+		return `Clusteer / ${name}`;
+	}, [userInfo]);
 
 	if (isLoading) {
 		return (
@@ -186,7 +218,7 @@ export default function ReceivePage() {
 								{[
 									{ label: "Bank", value: "Providus Bank" },
 									{ label: "Account number", value: "9912345678", copyable: true },
-									{ label: "Account name", value: "Clusteer / [Your Name]" },
+									{ label: "Account name", value: ngnAccountName },
 								].map(({ label, value, copyable }, i, arr) => (
 									<div
 										key={label}

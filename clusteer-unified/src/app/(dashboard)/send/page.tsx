@@ -52,9 +52,8 @@ const CHAIN_MAP: Record<string, string[]> = {
 	NGN: ["Bank transfer"],
 };
 
-const NGN_RATE = 1610.5;
 
-function walletToAssets(wallets: Wallet[]): AssetDef[] {
+function walletToAssets(wallets: Wallet[], ngnRate: number): AssetDef[] {
 	return wallets
 		.filter((w) => ["USDT", "USDC", "NGN"].includes(w.currency))
 		.map((w) => ({
@@ -64,7 +63,7 @@ function walletToAssets(wallets: Wallet[]): AssetDef[] {
 			networks: CHAIN_MAP[w.currency] ?? ["Tron"],
 			price: (w.currency as string) === "NGN" ? 0.000621 : 1.0,
 			bal: w.balance,
-			balNgn: (w.currency as string) === "NGN" ? w.balance : w.balance * NGN_RATE,
+			balNgn: (w.currency as string) === "NGN" ? w.balance : w.balance * ngnRate,
 		}));
 }
 
@@ -569,10 +568,23 @@ export default function SendPage() {
 		retry: false,
 	});
 
+	// Live exchange rate
+	const { data: rateData } = useQuery({
+		queryKey: ["exchange-rate", "NGN"],
+		queryFn: async () => {
+			const res = await fetch("/api/system/exchange-rate?targetCurrency=NGN&type=sell");
+			if (!res.ok) throw new Error("Rate unavailable");
+			return res.json() as Promise<{ buyRate: number; sellRate: number; rate: number }>;
+		},
+		staleTime: 5 * 60 * 1000,
+		retry: false,
+	});
+	const liveRate = rateData?.sellRate ?? 1_610;
+
 	const assets = useMemo(() => {
-		const live = walletToAssets(walletData?.walletAssets ?? []);
+		const live = walletToAssets(walletData?.walletAssets ?? [], liveRate);
 		return live.length > 0 ? live : FALLBACK_ASSETS;
-	}, [walletData]);
+	}, [walletData, liveRate]);
 
 	const a = assets.find((x) => x.sym === asset) ?? FALLBACK_ASSETS[0];
 	const isNgn = asset === "NGN";
@@ -602,7 +614,7 @@ export default function SendPage() {
 		: `${fee} ${network === "Tron" ? "TRX" : network === "BSC" ? "BNB" : network === "Solana" ? "SOL" : "USDT"}`;
 
 	const amtNum = parseFloat(amount) || 0;
-	const ngnValue = amtNum * (a.price > 1 ? a.price * NGN_RATE : a.price > 0.5 ? NGN_RATE : a.price);
+	const ngnValue = amtNum * (a.price > 1 ? a.price * liveRate : a.price > 0.5 ? liveRate : a.price);
 	const recipientValid = isNgn ? acctNo.length >= 10 : addr.length >= 20;
 
 	// Navigation validation
@@ -974,7 +986,7 @@ export default function SendPage() {
 								</div>
 								<div className="text-muted-foreground text-sm mt-1">
 									{isNgn
-										? `≈ ${(amtNum / NGN_RATE).toFixed(2)} USDT`
+										? `≈ ${(amtNum / liveRate).toFixed(2)} USDT`
 										: `≈ ${formatMoney(ngnValue, "NGN", { decimals: 0 })}`}
 								</div>
 							</div>

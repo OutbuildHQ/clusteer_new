@@ -152,15 +152,19 @@ export async function POST(request: NextRequest) {
 				},
 			});
 		} else {
-			// Crypto external transfer via Django
-			const transferResponse = await djangoFetch("/external-transfer/", {
+			// Crypto withdrawal via Django /withdrawal-request/
+			// Fee estimate: 1% platform fee on top of the withdrawal amount
+			const feePct = 0.01;
+			const amountWithFee = parsedAmount * (1 + feePct);
+			const transferResponse = await djangoFetch("/withdrawal-request/", {
 				method: "POST",
 				body: JSON.stringify({
-					sender_user_id: userId,
-					recipient_address,
+					user_id: userId,
+					network: network?.toLowerCase() || "tron",
+					receiver_address: recipient_address,
+					withdrawal_amount: parsedAmount.toString(),
+					amount_with_fee: amountWithFee.toFixed(6),
 					asset: asset.toUpperCase(),
-					amount: parsedAmount,
-					chain: network?.toLowerCase() || null,
 				}),
 			});
 
