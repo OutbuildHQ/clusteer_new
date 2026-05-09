@@ -89,12 +89,8 @@ export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 							key={n.id}
 							href={n.href}
 							onClick={onNavClick}
-							className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13.5px] font-medium transition-colors ${!active ? "hover:bg-[var(--c-surface-2)] hover:text-[var(--c-text)]" : ""}`}
-							style={
-								active
-									? { background: "var(--c-onyx-900)", color: "var(--c-lime-500)" }
-									: { color: "var(--c-text-2)" }
-							}
+							className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13.5px] font-medium transition-colors ${active ? "sidebar-item-active" : "hover:bg-[var(--c-surface-2)] hover:text-[var(--c-text)]"}`}
+							style={active ? undefined : { color: "var(--c-text-2)" }}
 						>
 							<Icon className="size-[18px] shrink-0" />
 							<span>{n.label}</span>

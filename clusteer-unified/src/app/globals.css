@@ -203,6 +203,18 @@ button:active:not(:disabled) {
 	transform: translateY(1px);
 }
 
+/* ---- Sidebar active item ---- */
+/* Light: dark pill (onyx) + lime text — bold contrast on white sidebar */
+/* Dark:  elevated surface-3 + lime text — distinguishable on dark sidebar without disappearing */
+.sidebar-item-active {
+	background: var(--c-onyx-900);
+	color: var(--c-lime-500);
+}
+.dark .sidebar-item-active {
+	background: var(--c-surface-3);
+	color: var(--c-lime-500);
+}
+
 /* ---- Dashboard primitives ---- */
 .ds-card { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg); }
 .ds-card-hd { padding: 16px var(--pad); border-bottom: 1px solid var(--c-line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
