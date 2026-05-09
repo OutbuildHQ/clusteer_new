@@ -47,10 +47,13 @@ interface FilterState {
 const DEFAULT_FILTERS: FilterState = { status: "", asset: "", dateFrom: "", dateTo: "" };
 
 /** Map API ITransaction to the shape the UI rows expect */
-function mapTxn(t: ITransaction) {
+function mapTxn(t: ITransaction, ngnRate: number) {
 	const asset = t.currency ?? "USDT";
-	const prices: Record<string, number> = { USDT: 1610, USDC: 1608, BTC: 114_000_000, ETH: 5_740_000, SOL: 293_000, BNB: 985_000, NGN: 1 };
-	const ngn = Math.floor(t.amount * (prices[asset] ?? 1610));
+	// For stables, use live NGN/USDT rate; others use approximate values
+	const stableRate = ngnRate;
+	const prices: Record<string, number> = { USDT: stableRate, USDC: stableRate, NGN: 1 };
+	const unitPrice = prices[asset] ?? stableRate;
+	const ngn = Math.floor(t.amount * unitPrice);
 	return {
 		id: t.orderNumber ?? t.id,
 		type: t.type,
@@ -60,7 +63,7 @@ function mapTxn(t: ITransaction) {
 		ngn,
 		status: t.status,
 		counterparty: t.flow ?? "—",
-		fee: +((t.amount * (prices[asset] ?? 1610) * 0.001) + 0.5).toFixed(2),
+		fee: +((t.amount * unitPrice * 0.001) + 0.5).toFixed(2),
 		when: t.dateCreated ? new Date(t.dateCreated).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "",
 		date: t.date ?? (t.dateCreated ? new Date(t.dateCreated).toLocaleDateString([], { month: "short", day: "numeric" }) : "—"),
 		hash: null as string | null,
@@ -85,7 +88,19 @@ export default function TransactionsPage() {
 		queryFn: () => getAllTransactions({ page, size: PAGE_SIZE }),
 	});
 
-	const transactions = useMemo(() => (response?.data ?? []).map(mapTxn), [response]);
+	const { data: rateData } = useQuery({
+		queryKey: ["exchange-rate", "NGN"],
+		queryFn: async () => {
+			const res = await fetch("/api/system/exchange-rate?targetCurrency=NGN&type=sell");
+			if (!res.ok) throw new Error("Rate unavailable");
+			return res.json() as Promise<{ buyRate: number; sellRate: number; rate: number }>;
+		},
+		staleTime: 5 * 60 * 1000,
+		retry: false,
+	});
+	const liveRate = rateData?.sellRate ?? 1_610;
+
+	const transactions = useMemo(() => (response?.data ?? []).map((t) => mapTxn(t, liveRate)), [response, liveRate]);
 	const totalPages = response?.metadata?.totalPages ?? 1;
 
 	const activeFilterCount = [filters.status, filters.asset, filters.dateFrom, filters.dateTo].filter(Boolean).length;
@@ -97,6 +112,8 @@ export default function TransactionsPage() {
 					(type === "All" || t.type === type) &&
 					(!filters.status || t.status === filters.status) &&
 					(!filters.asset || t.asset === filters.asset) &&
+					(!filters.dateFrom || !t.date || new Date(t.date) >= new Date(filters.dateFrom)) &&
+					(!filters.dateTo || !t.date || new Date(t.date) <= new Date(filters.dateTo + "T23:59:59")) &&
 					(!q || t.id.toUpperCase().includes(q.toUpperCase()) || t.asset.toUpperCase().includes(q.toUpperCase()) || String(t.amount).includes(q)),
 			),
 		[transactions, type, q, filters],
@@ -164,7 +181,7 @@ export default function TransactionsPage() {
 				<div className="overflow-x-auto -mx-1 px-1">
 					<div className="inline-flex p-1 rounded-[10px] gap-0.5" style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>
 						{(["All", ...TYPES] as TxnType[]).map((t) => (
-							<button key={t} onClick={() => setType(t)}
+							<button key={t} onClick={() => { setType(t); setPage(1); }}
 								className="px-3 py-1.5 rounded-[6px] text-[12.5px] font-medium transition-colors whitespace-nowrap"
 								style={type === t ? { background: "var(--c-surface)", color: "var(--c-text)", boxShadow: "var(--sh-1)" } : { color: "var(--c-text-2)" }}>
 								{t}
