@@ -67,6 +67,18 @@ export default function OrdersPage() {
 		queryFn: () => getAllOrders({ page, size: PAGE_SIZE }),
 	});
 
+	const { data: rateData } = useQuery({
+		queryKey: ["exchange-rate", "NGN"],
+		queryFn: async () => {
+			const res = await fetch("/api/system/exchange-rate?targetCurrency=NGN&type=sell");
+			if (!res.ok) throw new Error("Rate unavailable");
+			return res.json() as Promise<{ buyRate: number; sellRate: number; rate: number }>;
+		},
+		staleTime: 5 * 60 * 1000,
+		retry: false,
+	});
+	const liveRate = rateData?.sellRate ?? 1_610;
+
 	const orders = useMemo(
 		() => (response?.data ?? []).map(mapOrder).map(
 			(o) => cancelledIds.has(o.id) ? { ...o, status: "Cancelled" as const } : o,
@@ -84,6 +96,8 @@ export default function OrdersPage() {
 				(o) =>
 					(tab === "All" || o.status === tab || (tab === "Open" && ["Open", "Partial"].includes(o.status))) &&
 					(!filterSide || o.side === filterSide) &&
+					(!filterDateFrom || !o.placed || new Date(o.placed) >= new Date(filterDateFrom)) &&
+					(!filterDateTo || !o.placed || new Date(o.placed) <= new Date(filterDateTo + "T23:59:59")) &&
 					(!q || o.id.toUpperCase().includes(q.toUpperCase()) || o.pair.toUpperCase().includes(q.toUpperCase()) || String(o.amount).includes(q)),
 			),
 		[orders, tab, q, filterSide, filterDateFrom, filterDateTo],
@@ -96,7 +110,7 @@ export default function OrdersPage() {
 				<h1 className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>Orders</h1>
 				<div className="inline-flex p-1 rounded-[10px] gap-0.5" style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>
 					{(["Open", "Filled", "Cancelled", "All"] as Tab[]).map((t) => (
-						<button key={t} onClick={() => setTab(t)}
+						<button key={t} onClick={() => { setTab(t); setPage(1); }}
 							className="px-3 py-1.5 rounded-[6px] text-[12.5px] font-medium transition-colors"
 							style={tab === t ? { background: "var(--c-surface)", color: "var(--c-text)", boxShadow: "var(--sh-1)" } : { color: "var(--c-text-2)" }}>
 							{t}
@@ -110,6 +124,21 @@ export default function OrdersPage() {
 				<Search className="size-4 shrink-0" style={{ color: "var(--c-text-3)" }} />
 				<input className="flex-1 bg-transparent outline-none text-[13.5px] ml-2" style={{ color: "var(--c-text)" }} placeholder="Search by ID, pair, amount…" value={q} onChange={(e) => setQ(e.target.value)} />
 			</div>
+
+			{/* Filter button */}
+			<button
+				onClick={() => setFilterOpen(true)}
+				className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[10px] text-[13px] font-medium transition-colors relative shrink-0"
+				style={{ border: "1px solid var(--c-line)", background: "var(--c-surface)", color: "var(--c-text)", cursor: "pointer" }}
+			>
+				<Filter className="size-4" />
+				Filter
+				{activeFilterCount > 0 && (
+					<span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center size-4 rounded-full text-[10px] font-semibold" style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}>
+						{activeFilterCount}
+					</span>
+				)}
+			</button>
 
 			{/* Loading state */}
 			{isLoading && (
@@ -171,7 +200,7 @@ export default function OrdersPage() {
 									</td>
 									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", color: "var(--c-text)" }}>{o.type}</td>
 									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-										{formatMoney(o.price * 1610, "NGN", { decimals: 0 })}
+										{formatMoney(o.price * liveRate, "NGN", { decimals: 0 })}
 									</td>
 									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
 										{o.amount.toFixed(2)}
@@ -216,7 +245,7 @@ export default function OrdersPage() {
 							<div className="flex items-center justify-between mt-2">
 								<div>
 									<div className="tabular-nums text-[13px] font-semibold" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>{o.amount.toFixed(2)}</div>
-									<div className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>@ {formatMoney(o.price * 1610, "NGN", { decimals: 0 })}</div>
+									<div className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>@ {formatMoney(o.price * liveRate, "NGN", { decimals: 0 })}</div>
 								</div>
 								<div className="flex items-center gap-2">
 									<div className="w-[60px] h-[6px] rounded-full overflow-hidden" style={{ background: "var(--c-surface-3)" }}>
@@ -358,13 +387,13 @@ export default function OrdersPage() {
 											{open.amount.toFixed(4)} {open.pair.split("/")[0]}
 										</div>
 										<div className="tabular-nums text-[13px] mt-0.5" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>
-											@ {formatMoney(open.price * 1610, "NGN", { decimals: 0 })}
+											@ {formatMoney(open.price * liveRate, "NGN", { decimals: 0 })}
 										</div>
 									</div>
 									<div className="text-right">
 										<div className="text-[11px] uppercase" style={{ color: "var(--c-text-3)" }}>Total</div>
 										<div className="tabular-nums text-[18px] font-semibold mt-1" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-											{formatMoney(open.price * open.amount * 1610, "NGN", { decimals: 0 })}
+											{formatMoney(open.price * open.amount * liveRate, "NGN", { decimals: 0 })}
 										</div>
 									</div>
 								</div>
@@ -387,7 +416,7 @@ export default function OrdersPage() {
 									["Time in force", "Good till cancel"],
 									["Placed", open.placed],
 									["Order ID", open.id],
-									["Estimated fee", `${(open.price * open.amount * 1610 * 0.001).toFixed(2)} NGN`],
+									["Estimated fee", `${(open.price * open.amount * liveRate * 0.001).toFixed(2)} NGN`],
 								].map(([k, v]) => (
 									<div key={k} className="flex items-center justify-between py-2.5 text-[13px]" style={{ borderBottom: "1px solid var(--c-line)" }}>
 										<span style={{ color: "var(--c-text-3)" }}>{k}</span>
@@ -416,7 +445,7 @@ export default function OrdersPage() {
 													<div className="tabular-nums text-[11px] mt-0.5" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>{f.time}</div>
 												</div>
 												<div className="tabular-nums" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-													{formatMoney(f.px * 1610, "NGN", { decimals: 0 })}
+													{formatMoney(f.px * liveRate, "NGN", { decimals: 0 })}
 												</div>
 											</div>
 										))}
