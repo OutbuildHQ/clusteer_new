@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPendingToken } from "@/lib/auth";
 import { djangoFetch } from "@/lib/api-helpers";
-import { loginWithFirebase } from "@/lib/auth-firebase";
 import { getAdminAuth } from "@/lib/firebase-admin";
 import speakeasy from "speakeasy";
 
