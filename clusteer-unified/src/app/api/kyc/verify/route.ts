@@ -158,8 +158,29 @@ export async function POST(request: NextRequest) {
 			// Continue with verification even if duplicate check fails
 		}
 
-		// Submit KYC verification to Django backend
+		// Fetch user profile to get name/DOB for provider cross-reference
+		let firstName = data.firstName || "";
+		let lastName = data.lastName || "";
+		let dateOfBirth = data.dateOfBirth || "";
+		let phoneNumber = data.phoneNumber || "";
+		try {
+			const profileRes = await fetch(
+				`${djangoUrl}/api/v1/user/${userId}/profile/`,
+				{ headers: { "Content-Type": "application/json", "X-API-KEY": djangoApiKey } }
+			);
+			if (profileRes.ok) {
+				const profileData = await profileRes.json();
+				const profile = profileData.data || profileData;
+				firstName = firstName || profile.first_name || profile.firstName || "";
+				lastName = lastName || profile.last_name || profile.lastName || "";
+				dateOfBirth = dateOfBirth || profile.date_of_birth || profile.dateOfBirth || "";
+				phoneNumber = phoneNumber || profile.phone || profile.phone_number || "";
+			}
+		} catch {
+			// Profile fetch failed — proceed with whatever we have
+		}
 
+		// Submit KYC verification to Django backend
 		try {
 			const kycResponse = await fetch(
 				`${djangoUrl}/api/v1/user/${userId}/kyc-verification/`,
@@ -172,10 +193,10 @@ export async function POST(request: NextRequest) {
 					body: JSON.stringify({
 						verification_type: verificationType,
 						document_number: documentNumber,
-						first_name: data.firstName,
-						last_name: data.lastName,
-						date_of_birth: data.dateOfBirth,
-						phone_number: data.phoneNumber,
+						first_name: firstName,
+						last_name: lastName,
+						date_of_birth: dateOfBirth,
+						phone_number: phoneNumber,
 						email: userEmail,
 					}),
 				}
