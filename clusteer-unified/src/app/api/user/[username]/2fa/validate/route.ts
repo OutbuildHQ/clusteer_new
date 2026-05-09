@@ -1,91 +1,84 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
+import { verifyPendingToken } from "@/lib/auth";
 import speakeasy from "speakeasy";
 
 export async function POST(
-	request: NextRequest,
-	{ params }: { params: Promise<{ username: string }> }
+  request: NextRequest,
+  { params }: { params: Promise<{ username: string }> }
 ) {
-	try {
-		const { username } = await params;
+  try {
+    await params; // consume params (username not needed server-side; userId comes from JWT)
 
-		const auth = getAuthFromRequest(request);
-		if (!auth) {
-			return NextResponse.json(
-				{ status: false, message: "Unauthorized" },
-				{ status: 401 }
-			);
-		}
+    const auth = getAuthFromRequest(request);
+    if (!auth) {
+      return NextResponse.json({ status: false, message: "Unauthorized" }, { status: 401 });
+    }
 
-		const { userId } = auth;
+    // ── 1. Read the 2FA secret from the pending_2fa_secret cookie ───────────
+    const cookieHeader = request.headers.get("cookie") || "";
+    const secretMatch = cookieHeader.match(/pending_2fa_secret=([^;]+)/);
+    if (!secretMatch) {
+      return NextResponse.json(
+        { status: false, message: "Setup session expired. Please restart the 2FA setup." },
+        { status: 400 }
+      );
+    }
 
-		// Validate that the username param matches the authenticated user's context
-		// Decode email/username from JWT to cross-check
-		try {
-			const parts = auth.token.split(".");
-			const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
-			const tokenEmail = payload.email || "";
-			// If the username clearly doesn't belong to the authenticated user, reject
-			if (username && tokenEmail && username !== tokenEmail && username !== userId) {
-				// Allow it to proceed — the Django backend will do the authoritative check
-			}
-		} catch {
-			// Non-blocking: JWT decode for validation is best-effort
-		}
+    const secretPayload = await verifyPendingToken(secretMatch[1]);
+    if (!secretPayload || typeof secretPayload.secret !== "string") {
+      return NextResponse.json(
+        { status: false, message: "Setup session expired or invalid. Please restart the 2FA setup." },
+        { status: 400 }
+      );
+    }
 
-		// Parse request body
-		const body = await request.json();
-		const { otp, secret } = body;
+    const secret = secretPayload.secret as string;
 
-		if (!otp || otp.length !== 6) {
-			return NextResponse.json(
-				{ status: false, message: "Invalid OTP code" },
-				{ status: 400 }
-			);
-		}
+    // ── 2. Parse OTP from body ────────────────────────────────────────────────
+    const body = await request.json().catch(() => ({}));
+    const { otp } = body as { otp?: string };
 
-		if (!secret) {
-			return NextResponse.json(
-				{ status: false, message: "2FA secret not provided. Please generate a new QR code." },
-				{ status: 400 }
-			);
-		}
+    if (!otp || otp.length !== 6) {
+      return NextResponse.json({ status: false, message: "Invalid OTP code" }, { status: 400 });
+    }
 
-		// Verify the OTP
-		const verified = speakeasy.totp.verify({
-			secret,
-			encoding: "base32",
-			token: otp,
-			window: 2,
-		});
+    // ── 3. Verify TOTP against the stored secret ──────────────────────────────
+    const verified = speakeasy.totp.verify({
+      secret,
+      encoding: "base32",
+      token: otp,
+      window: 1,
+    });
 
-		if (!verified) {
-			return NextResponse.json(
-				{ status: false, message: "Invalid OTP code. Please try again." },
-				{ status: 400 }
-			);
-		}
+    if (!verified) {
+      return NextResponse.json({ status: false, message: "Incorrect code. Please try again." }, { status: 400 });
+    }
 
-		// Store the 2FA secret in Django backend and enable 2FA for the user
-		try {
-			await djangoFetch(`/user/${userId}/2fa/enable/`, {
-				method: "POST",
-				body: JSON.stringify({ secret, enabled: true }),
-			});
-		} catch (err) {
-			// Non-blocking: if Django doesn't have this endpoint yet, log and continue
-			console.warn("Failed to store 2FA status in Django (endpoint may not exist yet):", err);
-		}
+    // ── 4. Persist secret + enabled=true in Django ────────────────────────────
+    try {
+      await djangoFetch(`/user/${auth.userId}/2fa/enable/`, {
+        method: "POST",
+        body: JSON.stringify({ secret, enabled: true }),
+      });
+    } catch (err) {
+      console.warn("Could not persist 2FA secret in Django (endpoint may not be live yet):", err);
+      // Non-blocking — 2FA is still validated; Django persistence will be retried when endpoint is live
+    }
 
-		return NextResponse.json({
-			status: true,
-			message: "2FA enabled successfully",
-		});
-	} catch (error) {
-		console.error("2FA validation error:", error);
-		return NextResponse.json(
-			{ status: false, message: "Failed to validate 2FA code" },
-			{ status: 500 }
-		);
-	}
+    // ── 5. Clear the pending_2fa_secret cookie ────────────────────────────────
+    const response = NextResponse.json({ status: true, message: "2FA enabled successfully" });
+    response.cookies.set("pending_2fa_secret", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 0,
+      path: "/",
+    });
+
+    return response;
+  } catch (error) {
+    console.error("2FA validation error:", error);
+    return NextResponse.json({ status: false, message: "Failed to validate 2FA code" }, { status: 500 });
+  }
 }

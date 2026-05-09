@@ -68,3 +68,33 @@ export function isTokenExpired(exp?: number): boolean {
   if (!exp) return true;
   return Date.now() >= exp * 1000;
 }
+
+/**
+ * Sign a short-lived "pending" token (for 2FA challenge, email verification gate, etc.)
+ * Scope field distinguishes these from full auth tokens.
+ */
+export async function signPendingToken(
+  payload: Record<string, unknown>,
+  expiresIn: string = "5m"
+): Promise<string> {
+  return new SignJWT({ ...payload, scope: "pending" })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(expiresIn)
+    .sign(JWT_SECRET);
+}
+
+/**
+ * Verify a pending token. Returns the decoded payload or null.
+ */
+export async function verifyPendingToken(
+  token: string
+): Promise<Record<string, unknown> | null> {
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET, { algorithms: ["HS256"] });
+    if (payload.scope !== "pending") return null;
+    return payload as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}

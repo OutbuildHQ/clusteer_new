@@ -32,10 +32,40 @@ export default function SignupPage() {
 	});
 
 	async function onSubmit(values: FormValues) {
-		await new Promise((r) => setTimeout(r, 500));
-		requireTwoFactor(values.email);
-		toast.success("Check your inbox for the verification code");
-		router.push("/verify-email");
+		try {
+			// Derive username from email prefix (lowercase, alphanumeric only)
+			const username = values.email
+				.split("@")[0]
+				.toLowerCase()
+				.replace(/[^a-z0-9_]/g, "")
+				.slice(0, 20) || "user";
+
+			const res = await fetch("/api/auth-firebase/register", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					username,
+					email: values.email,
+					phone: values.phone,
+					password: values.password,
+					name: values.name,
+				}),
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				toast.error(data.message || "Registration failed");
+				return;
+			}
+
+			// Store email in auth store so verify-email page can display it
+			requireTwoFactor(values.email);
+			toast.success("Account created! Check your inbox for a verification link.");
+			router.push("/verify-email");
+		} catch {
+			toast.error("Unable to connect. Please try again.");
+		}
 	}
 
 	return (

@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { loginWithFirebase } from "@/lib/auth-firebase";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 import { isFirebaseConfigured } from "@/lib/firebase";
+import { djangoFetch } from "@/lib/api-helpers";
+import { signPendingToken } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
-  // Check if Firebase is configured
   if (!isFirebaseConfigured) {
     return NextResponse.json(
       { status: false, message: "Firebase authentication is not configured" },
@@ -12,25 +13,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Apply strict rate limiting (5 requests/minute)
   const rateLimitResponse = rateLimit(request, RateLimitPresets.strict);
-  if (rateLimitResponse) {
-    return rateLimitResponse;
-  }
+  if (rateLimitResponse) return rateLimitResponse;
 
   try {
-    let body;
+    let body: { email?: string; password?: string };
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json(
-        { status: false, message: "Invalid request body" },
-        { status: 400 }
-      );
+      return NextResponse.json({ status: false, message: "Invalid request body" }, { status: 400 });
     }
-    const { email, password } = body;
 
-    // Validate input
+    const { email, password } = body;
     if (!email || !password) {
       return NextResponse.json(
         { status: false, message: "Email and password are required" },
@@ -38,36 +32,69 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Login with Firebase and get user profile from Spring Boot
-    const { user, token } = await loginWithFirebase(email, password);
+    const { firebaseUser, token } = await loginWithFirebase(email, password);
 
-    // Create response
+    // ── 1. Email verification gate ──────────────────────────────────────────
+    if (!firebaseUser.emailVerified) {
+      return NextResponse.json(
+        {
+          status: false,
+          requiresEmailVerification: true,
+          message: "Please verify your email before logging in. Check your inbox for the verification link.",
+        },
+        { status: 403 }
+      );
+    }
+
+    // ── 2. 2FA check ────────────────────────────────────────────────────────
+    const userId = firebaseUser.uid;
+    let twoFactorEnabled = false;
+    try {
+      const r = await djangoFetch(`/user/${userId}/2fa/status/`);
+      if (r.ok) {
+        const d = await r.json();
+        twoFactorEnabled = d.enabled === true;
+      }
+    } catch {
+      // Django endpoint may not exist yet — default to disabled
+    }
+
+    if (twoFactorEnabled) {
+      const pendingToken = await signPendingToken({ userId, email }, "5m");
+      const response = NextResponse.json({
+        status: true,
+        requiresTwoFactor: true,
+        message: "2FA verification required",
+      });
+      response.cookies.set("pending_2fa_token", pendingToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 300,
+        path: "/",
+      });
+      return response;
+    }
+
+    // ── 3. Normal login ─────────────────────────────────────────────────────
     const response = NextResponse.json({
       status: true,
       message: "Login successful",
       token,
-      data: user,
     });
 
-    // Set Firebase ID token as HttpOnly cookie
     response.cookies.set("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 3600, // 1 hour (Firebase tokens expire after 1 hour)
+      maxAge: 3600,
       path: "/",
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Login failed";
     console.error("Firebase login error:", error);
-
-    return NextResponse.json(
-      {
-        status: false,
-        message: error.message || "Login failed",
-      },
-      { status: 401 }
-    );
+    return NextResponse.json({ status: false, message }, { status: 401 });
   }
 }

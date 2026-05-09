@@ -23,7 +23,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function LoginPage() {
 	const router = useRouter();
-	const signIn = useAuth((s) => s.signIn);
+	const { signIn, requireTwoFactor } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 	const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
 		resolver: zodResolver(schema),
@@ -40,11 +40,26 @@ export default function LoginPage() {
 
 			const data = await res.json();
 
-			if (!res.ok) {
+			if (!res.ok || !data.status) {
+				// Email not yet verified — send user to verify-email page
+				if (data.requiresEmailVerification) {
+					requireTwoFactor(values.email); // stores email in auth store
+					toast.error("Please verify your email first.");
+					router.push("/verify-email");
+					return;
+				}
 				toast.error(data.message || "Login failed");
 				return;
 			}
 
+			// 2FA required — store email, redirect to OTP challenge
+			if (data.requiresTwoFactor) {
+				requireTwoFactor(values.email);
+				router.push("/verify-otp?flow=login");
+				return;
+			}
+
+			// Full login success
 			signIn(values.email);
 			toast.success("Welcome back!");
 			window.location.href = "/dashboard";
