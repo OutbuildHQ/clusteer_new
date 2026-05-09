@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 					order: "market_cap_desc",
 					per_page: limit,
 					page: 1,
-					sparkline: false,
+					sparkline: true,
 					price_change_percentage: "24h",
 				},
 				timeout: 10000,
@@ -43,21 +43,29 @@ export async function GET(request: NextRequest) {
 		);
 
 		// Transform CoinGecko data to our format
-		const markets = response.data.map((coin: any, index: number) => ({
-			id: coin.id,
-			rank: index + 1,
-			name: coin.name,
-			symbol: coin.symbol.toUpperCase(),
-			icon: coin.image,
-			price: coin.current_price,
-			change24h: coin.price_change_percentage_24h || 0,
-			volume: coin.total_volume,
-			marketCap: coin.market_cap,
-			high24h: coin.high_24h,
-			low24h: coin.low_24h,
-			ath: coin.ath,
-			atl: coin.atl,
-		}));
+		const markets = response.data.map((coin: any, index: number) => {
+			// Downsample 168-pt hourly sparkline to 14 pts (every 12 hours)
+			const rawSparkline: number[] = coin.sparkline_in_7d?.price ?? [];
+			const sparkline7d = rawSparkline.length > 14
+				? rawSparkline.filter((_: number, i: number) => i % 12 === 0)
+				: rawSparkline;
+			return {
+				id: coin.id,
+				rank: index + 1,
+				name: coin.name,
+				symbol: coin.symbol.toUpperCase(),
+				icon: coin.image,
+				price: coin.current_price,
+				change24h: coin.price_change_percentage_24h || 0,
+				volume: coin.total_volume,
+				marketCap: coin.market_cap,
+				high24h: coin.high_24h,
+				low24h: coin.low_24h,
+				ath: coin.ath,
+				atl: coin.atl,
+				sparkline7d,
+			};
+		});
 
 		// Update cache
 		cachedData = markets;

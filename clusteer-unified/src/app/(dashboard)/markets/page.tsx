@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { Search, Loader2, RefreshCw } from "lucide-react";
-import { toast } from "sonner";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Search, RefreshCw, TrendingUp, TrendingDown, Loader2 } from "lucide-react";
+import { Sparkline } from "@/components/primitives/sparkline";
 
 interface Market {
 	id: string;
@@ -17,217 +18,300 @@ interface Market {
 	marketCap: number;
 	high24h: number;
 	low24h: number;
+	sparkline7d?: number[];
 }
 
-export default function Page() {
-	const [searchQuery, setSearchQuery] = useState("");
-	const [markets, setMarkets] = useState<Market[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+const STABLECOINS = new Set(["USDT", "USDC", "DAI", "BUSD", "USDS", "PYUSD"]);
+const TABS = ["All", "Stablecoins"] as const;
+type Tab = typeof TABS[number];
 
-	const fetchMarkets = async () => {
-		try {
-			setLoading(true);
-			setError(null);
+function formatLargeNumber(num: number) {
+	if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
+	if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
+	return `$${num.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+}
 
-			const response = await fetch("/api/markets?limit=20");
-			const data = await response.json();
+function formatPrice(price: number) {
+	if (price < 0.001) return `$${price.toFixed(6)}`;
+	if (price < 1) return `$${price.toFixed(4)}`;
+	return `$${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
 
-			if (!data.status) {
-				throw new Error(data.message || "Failed to fetch market data");
-			}
+export default function MarketsPage() {
+	const [search, setSearch] = useState("");
+	const [tab, setTab] = useState<Tab>("All");
 
-			setMarkets(data.data);
-			setLastUpdated(new Date());
+	const {
+		data: markets = [],
+		isLoading: marketsLoading,
+		refetch,
+		dataUpdatedAt,
+	} = useQuery<Market[]>({
+		queryKey: ["markets"],
+		queryFn: async () => {
+			const res = await fetch("/api/markets?limit=25");
+			const json = await res.json();
+			if (!json.status) throw new Error(json.message || "Failed to fetch");
+			return json.data as Market[];
+		},
+		staleTime: 2 * 60 * 1000,
+	});
 
-			if (data.cached) {
-				toast.info("Showing cached market data");
-			}
-		} catch (err: any) {
-			console.error("Error fetching markets:", err);
-			setError(err.message || "Failed to load market data");
-			toast.error("Failed to load market data");
-		} finally {
-			setLoading(false);
-		}
-	};
+	const { data: rateData } = useQuery({
+		queryKey: ["exchange-rate-ngn"],
+		queryFn: async () => {
+			const res = await fetch("/api/system/exchange-rate?targetCurrency=NGN&type=sell");
+			if (!res.ok) return null;
+			return res.json();
+		},
+		staleTime: 5 * 60 * 1000,
+	});
 
-	useEffect(() => {
-		fetchMarkets();
+	const buyRate: number = rateData?.buyRate ?? 0;
+	const sellRate: number = rateData?.sellRate ?? 0;
 
-		// Auto-refresh every 5 minutes
-		const interval = setInterval(fetchMarkets, 5 * 60 * 1000);
+	const filteredMarkets = markets.filter((m) => {
+		const matchesSearch =
+			m.name.toLowerCase().includes(search.toLowerCase()) ||
+			m.symbol.toLowerCase().includes(search.toLowerCase());
+		const matchesTab = tab === "All" || STABLECOINS.has(m.symbol);
+		return matchesSearch && matchesTab;
+	});
 
-		return () => clearInterval(interval);
-	}, []);
-
-	const filteredMarkets = markets.filter(
-		(market) =>
-			market.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			market.symbol.toLowerCase().includes(searchQuery.toLowerCase())
-	);
-
-	const formatPrice = (price: number) => {
-		return new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency: "USD",
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		}).format(price);
-	};
-
-	const formatLargeNumber = (num: number) => {
-		if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
-		if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-		return formatPrice(num);
-	};
+	const lastUpdated = dataUpdatedAt ? new Date(dataUpdatedAt) : null;
 
 	return (
-		<div className=" pb-6 lg:pt-[50px]">
-			<header className="mb-6">
-				<div className="flex justify-between items-start">
-					<div>
-						<h1 className="text-2xl lg:text-[32px] font-bold text-foreground">
-							Markets
-						</h1>
-						<p className="text-sm lg:text-base text-muted-foreground mt-1">
-							Track stablecoin rates and market trends
+		<div className="space-y-5 pb-6">
+			{/* Header */}
+			<div className="flex items-start justify-between gap-4 flex-wrap">
+				<div>
+					<h1 style={{ fontSize: 32, fontWeight: 600, letterSpacing: "-0.03em", color: "var(--c-text)" }}>Markets</h1>
+					{lastUpdated && (
+						<p style={{ fontSize: 12, color: "var(--c-text-3)", marginTop: 2 }}>
+							Updated {lastUpdated.toLocaleTimeString()}
 						</p>
-						{lastUpdated && (
-							<p className="text-xs text-muted-foreground mt-1">
-								Last updated: {lastUpdated.toLocaleTimeString()}
-							</p>
-						)}
-					</div>
-					<button
-						onClick={fetchMarkets}
-						disabled={loading}
-						style={{ height: 36, padding: "0 14px", borderRadius: 10, fontSize: 13.5, fontWeight: 500, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: loading ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: 8, opacity: loading ? 0.5 : 1 }}
-					>
-						{loading ? (
-							<Loader2 className="h-4 w-4 animate-spin" />
-						) : (
-							<RefreshCw className="h-4 w-4" />
-						)}
-						Refresh
-					</button>
+					)}
 				</div>
-			</header>
-
-			<div className="mb-6">
-				<div className="relative max-w-md">
-					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-					<input
-						type="text"
-						placeholder="Search stablecoins..."
-						value={searchQuery}
-						onChange={(e) => setSearchQuery(e.target.value)}
-						style={{ display: "flex", alignItems: "center", height: 44, padding: "0 12px 0 40px", border: "1px solid var(--c-line)", borderRadius: 12, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5, width: "100%", outline: "none" }}
-					/>
-				</div>
+				<button
+					onClick={() => refetch()}
+					disabled={marketsLoading}
+					style={{ height: 36, padding: "0 14px", borderRadius: 10, fontSize: 13.5, fontWeight: 500, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", cursor: marketsLoading ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: 8, opacity: marketsLoading ? 0.5 : 1 }}
+				>
+					{marketsLoading ? <Loader2 className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
+					Refresh
+				</button>
 			</div>
 
-			{error && (
-				<div className="mb-6 p-4 bg-danger/10 border border-danger rounded-lg">
-					<p className="text-sm text-danger">{error}</p>
+			{/* Live NGN rate cards */}
+			{(buyRate > 0 || sellRate > 0) && (
+				<div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+					<div className="ds-card p-4">
+						<div style={{ fontSize: 11, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--c-text-3)" }}>USDT Buy Rate</div>
+						<div style={{ fontSize: 22, fontWeight: 600, fontFamily: "var(--font-display, inherit)", color: "var(--c-text)", marginTop: 4 }}>
+							₦{buyRate.toLocaleString("en-NG", { maximumFractionDigits: 0 })}
+						</div>
+						<div style={{ fontSize: 11, color: "var(--c-text-3)", marginTop: 2 }}>per USDT</div>
+					</div>
+					<div className="ds-card p-4">
+						<div style={{ fontSize: 11, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--c-text-3)" }}>USDT Sell Rate</div>
+						<div style={{ fontSize: 22, fontWeight: 600, fontFamily: "var(--font-display, inherit)", color: "var(--c-text)", marginTop: 4 }}>
+							₦{sellRate.toLocaleString("en-NG", { maximumFractionDigits: 0 })}
+						</div>
+						<div style={{ fontSize: 11, color: "var(--c-text-3)", marginTop: 2 }}>per USDT</div>
+					</div>
+					<div className="ds-card p-4">
+						<div style={{ fontSize: 11, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--c-text-3)" }}>USDC Buy Rate</div>
+						<div style={{ fontSize: 22, fontWeight: 600, fontFamily: "var(--font-display, inherit)", color: "var(--c-text)", marginTop: 4 }}>
+							₦{buyRate.toLocaleString("en-NG", { maximumFractionDigits: 0 })}
+						</div>
+						<div style={{ fontSize: 11, color: "var(--c-text-3)", marginTop: 2 }}>per USDC</div>
+					</div>
+					<div className="ds-card p-4">
+						<div style={{ fontSize: 11, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--c-text-3)" }}>USDC Sell Rate</div>
+						<div style={{ fontSize: 22, fontWeight: 600, fontFamily: "var(--font-display, inherit)", color: "var(--c-text)", marginTop: 4 }}>
+							₦{sellRate.toLocaleString("en-NG", { maximumFractionDigits: 0 })}
+						</div>
+						<div style={{ fontSize: 11, color: "var(--c-text-3)", marginTop: 2 }}>per USDC</div>
+					</div>
 				</div>
 			)}
 
-			<div className="ds-card" style={{ borderRadius: 20, overflow: "hidden" }}>
-				{loading && markets.length === 0 ? (
-					<div className="flex items-center justify-center py-12">
-						<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+			{/* Search + tabs */}
+			<div className="flex items-center gap-3 flex-wrap">
+				<div className="relative flex-1 min-w-[200px] max-w-xs">
+					<Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4" style={{ color: "var(--c-text-3)" }} />
+					<input
+						type="text"
+						placeholder="Search coins..."
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+						style={{ height: 40, padding: "0 12px 0 36px", border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13.5, width: "100%", outline: "none" }}
+					/>
+				</div>
+				<div className="flex items-center gap-1 p-1 rounded-lg bg-[var(--c-surface-2)] border border-[var(--c-line)]">
+					{TABS.map((t) => (
+						<button
+							key={t}
+							onClick={() => setTab(t)}
+							style={{
+								padding: "4px 12px",
+								borderRadius: 7,
+								fontSize: 12.5,
+								fontWeight: 500,
+								border: "none",
+								cursor: "pointer",
+								transition: "all 0.15s",
+								background: tab === t ? "var(--c-surface)" : "transparent",
+								color: tab === t ? "var(--c-text)" : "var(--c-text-2)",
+								boxShadow: tab === t ? "var(--sh-1)" : "none",
+							}}
+						>
+							{t}
+						</button>
+					))}
+				</div>
+			</div>
+
+			{/* Table */}
+			<div className="ds-card overflow-hidden">
+				{marketsLoading && markets.length === 0 ? (
+					<div className="flex items-center justify-center py-16">
+						<Loader2 className="size-8 animate-spin" style={{ color: "var(--c-text-3)" }} />
 					</div>
 				) : (
-					<div className="overflow-x-auto">
-						<table className="w-full">
-							<thead className="bg-background border-b border-border">
-								<tr>
-									<th className="text-left py-4 px-6 text-sm font-semibold text-muted-foreground">
-										#
-									</th>
-									<th className="text-left py-4 px-6 text-sm font-semibold text-muted-foreground">
-										Name
-									</th>
-									<th className="text-right py-4 px-6 text-sm font-semibold text-muted-foreground">
-										Price
-									</th>
-									<th className="text-right py-4 px-6 text-sm font-semibold text-muted-foreground">
-										24h Change
-									</th>
-									<th className="text-right py-4 px-6 text-sm font-semibold text-muted-foreground">
-										24h Volume
-									</th>
-									<th className="text-right py-4 px-6 text-sm font-semibold text-muted-foreground">
-										Market Cap
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								{filteredMarkets.map((market) => (
-									<tr
-										key={market.id}
-										className="border-b border-border hover:bg-background transition-colors cursor-pointer"
+					<>
+						{/* Desktop table */}
+						<div className="hidden md:block overflow-x-auto">
+							<table className="w-full text-[13px] border-collapse">
+								<thead>
+									<tr style={{ borderBottom: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>
+										{["#", "Asset", "Price", "7d", "24h Change", "24h Volume", "Market Cap"].map((h, i) => (
+											<th
+												key={h}
+												style={{
+													padding: "10px 16px",
+													textAlign: i === 0 || i === 1 || i === 3 ? "left" : "right",
+													fontSize: 11,
+													fontWeight: 500,
+													textTransform: "uppercase",
+													letterSpacing: "0.05em",
+													color: "var(--c-text-3)",
+													whiteSpace: "nowrap",
+												}}
+											>
+												{h}
+											</th>
+										))}
+									</tr>
+								</thead>
+								<tbody>
+									{filteredMarkets.map((m) => {
+										const isStablecoin = STABLECOINS.has(m.symbol);
+										const isUp = m.change24h >= 0;
+										return (
+											<tr
+												key={m.id}
+												style={{
+													borderBottom: "1px solid var(--c-line)",
+													background: isStablecoin ? "var(--c-surface-2)" : "transparent",
+													transition: "background 0.12s",
+												}}
+												onMouseEnter={(e) => (e.currentTarget.style.background = "var(--c-surface-2)")}
+												onMouseLeave={(e) => (e.currentTarget.style.background = isStablecoin ? "var(--c-surface-2)" : "transparent")}
+											>
+												<td style={{ padding: "12px 16px", color: "var(--c-text-3)", fontSize: 12 }}>{m.rank}</td>
+												<td style={{ padding: "12px 16px" }}>
+													<div className="flex items-center gap-2.5">
+														<Image src={m.icon} alt={m.name} width={28} height={28} className="rounded-full" />
+														<div>
+															<div style={{ fontWeight: 600, color: "var(--c-text)", display: "flex", alignItems: "center", gap: 6 }}>
+																{m.name}
+																{isStablecoin && (
+																	<span style={{ fontSize: 10, fontWeight: 500, padding: "1px 5px", borderRadius: 4, background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}>
+																		stable
+																	</span>
+																)}
+															</div>
+															<div style={{ fontSize: 11, color: "var(--c-text-3)" }}>{m.symbol}</div>
+														</div>
+													</div>
+												</td>
+												<td style={{ padding: "12px 16px", textAlign: "right", fontWeight: 600, color: "var(--c-text)", fontVariantNumeric: "tabular-nums" }}>
+													{formatPrice(m.price)}
+												</td>
+												<td style={{ padding: "12px 16px", textAlign: "left" }}>
+													{m.sparkline7d && m.sparkline7d.length > 1 && (
+														<Sparkline data={m.sparkline7d} width={80} height={28} tone="auto" />
+													)}
+												</td>
+												<td style={{ padding: "12px 16px", textAlign: "right" }}>
+													<span
+														className="inline-flex items-center gap-1"
+														style={{ fontWeight: 600, color: isUp ? "var(--success)" : "var(--danger)", fontVariantNumeric: "tabular-nums" }}
+													>
+														{isUp ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
+														{isUp ? "+" : ""}{m.change24h.toFixed(2)}%
+													</span>
+												</td>
+												<td style={{ padding: "12px 16px", textAlign: "right", color: "var(--c-text-2)", fontVariantNumeric: "tabular-nums" }}>
+													{formatLargeNumber(m.volume)}
+												</td>
+												<td style={{ padding: "12px 16px", textAlign: "right", color: "var(--c-text-2)", fontVariantNumeric: "tabular-nums" }}>
+													{formatLargeNumber(m.marketCap)}
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						</div>
+
+						{/* Mobile stacked */}
+						<div className="md:hidden">
+							{filteredMarkets.map((m, i) => {
+								const isUp = m.change24h >= 0;
+								return (
+									<div
+										key={m.id}
+										style={{
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "space-between",
+											padding: "12px 16px",
+											borderBottom: i < filteredMarkets.length - 1 ? "1px solid var(--c-line)" : "none",
+										}}
 									>
-										<td className="py-4 px-6 text-sm text-muted-foreground">{market.rank}</td>
-										<td className="py-4 px-6">
-											<div className="flex items-center gap-3">
-												<Image
-													src={market.icon}
-													alt={market.name}
-													width={32}
-													height={32}
-													className="rounded-full"
-												/>
-												<div>
-													<div className="font-semibold text-foreground">
-														{market.name}
-													</div>
-													<div className="text-sm text-muted-foreground">
-														{market.symbol}
-													</div>
+										<div className="flex items-center gap-2.5">
+											<Image src={m.icon} alt={m.name} width={32} height={32} className="rounded-full" />
+											<div>
+												<div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--c-text)" }}>{m.name}</div>
+												<div style={{ fontSize: 11, color: "var(--c-text-3)" }}>{m.symbol}</div>
+											</div>
+										</div>
+										<div className="flex items-center gap-3">
+											{m.sparkline7d && m.sparkline7d.length > 1 && (
+												<Sparkline data={m.sparkline7d} width={56} height={22} tone="auto" />
+											)}
+											<div className="text-right">
+												<div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--c-text)", fontVariantNumeric: "tabular-nums" }}>
+													{formatPrice(m.price)}
+												</div>
+												<div style={{ fontSize: 11, fontWeight: 500, color: isUp ? "var(--success)" : "var(--danger)", fontVariantNumeric: "tabular-nums" }}>
+													{isUp ? "+" : ""}{m.change24h.toFixed(2)}%
 												</div>
 											</div>
-										</td>
-										<td className="py-4 px-6 text-right font-semibold text-foreground">
-											{formatPrice(market.price)}
-										</td>
-										<td className="py-4 px-6 text-right">
-											<span
-												className={`font-semibold ${
-													market.change24h >= 0
-														? "text-success"
-														: "text-danger"
-												}`}
-											>
-												{market.change24h >= 0 ? "+" : ""}
-												{market.change24h.toFixed(2)}%
-											</span>
-										</td>
-										<td className="py-4 px-6 text-right text-muted-foreground">
-											{formatLargeNumber(market.volume)}
-										</td>
-										<td className="py-4 px-6 text-right text-muted-foreground">
-											{formatLargeNumber(market.marketCap)}
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
+										</div>
+									</div>
+								);
+							})}
+						</div>
 
-						{!loading && filteredMarkets.length === 0 && markets.length > 0 && (
-							<div className="text-center py-12 text-muted-foreground">
-								No stablecoins found matching your search.
+						{filteredMarkets.length === 0 && !marketsLoading && (
+							<div className="py-16 text-center" style={{ color: "var(--c-text-3)" }}>
+								{search ? `No coins matching "${search}"` : "No market data available."}
 							</div>
 						)}
-
-						{!loading && markets.length === 0 && !error && (
-							<div className="text-center py-12 text-muted-foreground">
-								No market data available. Please try refreshing.
-							</div>
-						)}
-					</div>
+					</>
 				)}
 			</div>
 		</div>
