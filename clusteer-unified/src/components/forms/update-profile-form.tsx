@@ -80,7 +80,17 @@ export default function UpdateProfileForm() {
 	const queryClient = useQueryClient();
 
 	const reset = () => {
-		form.reset({ ...user });
+		form.reset({
+			firstName: user?.firstName || "",
+			lastName: user?.lastName || "",
+			username: user?.username || "",
+			email: user?.email || "",
+			phone: user?.phone || "",
+			dateOfBirth: user?.dateOfBirth || "",
+			gender: (user?.gender as UpdateProfileFormData["gender"]) || "",
+			occupation: user?.occupation || "",
+			bio: user?.bio || "",
+		});
 		setAvatarImage(null);
 		setIsUpdated(false);
 	};
@@ -124,8 +134,11 @@ export default function UpdateProfileForm() {
 
 	const { isPending: isDeleting, mutate: deleteAccount } = useMutation({
 		mutationFn: deleteUserAccount,
-		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ["user"] });
+		onSuccess: () => {
+			window.location.href = "/login";
+		},
+		onError: () => {
+			toast.error("Failed to close account. Please contact support.");
 		},
 	});
 
@@ -138,6 +151,10 @@ export default function UpdateProfileForm() {
 			username: user?.username || "",
 			email: user?.email || "",
 			phone: user?.phone || "",
+			dateOfBirth: user?.dateOfBirth || "",
+			gender: (user?.gender as UpdateProfileFormData["gender"]) || "",
+			occupation: user?.occupation || "",
+			bio: user?.bio || "",
 		},
 		values: user ? {
 			firstName: user.firstName || "",
@@ -145,6 +162,10 @@ export default function UpdateProfileForm() {
 			username: user.username || "",
 			email: user.email || "",
 			phone: user.phone || "",
+			dateOfBirth: user.dateOfBirth || "",
+			gender: (user.gender as UpdateProfileFormData["gender"]) || "",
+			occupation: user.occupation || "",
+			bio: user.bio || "",
 		} : undefined,
 	});
 
@@ -256,6 +277,67 @@ export default function UpdateProfileForm() {
 					</div>
 				</div>
 
+				{/* Date of Birth */}
+				<div style={rowStyle}>
+					<label style={labelStyle}>Date of birth</label>
+					<div style={{ flex: 1 }}>
+						<input
+							{...register("dateOfBirth")}
+							type="date"
+							disabled={isBusy}
+							style={isBusy ? disabledInputStyle : inputStyle}
+						/>
+						{errors.dateOfBirth && <p style={errorStyle}>{errors.dateOfBirth.message}</p>}
+					</div>
+				</div>
+
+				{/* Gender */}
+				<div style={rowStyle}>
+					<label style={labelStyle}>Gender</label>
+					<div style={{ flex: 1 }}>
+						<select
+							{...register("gender")}
+							disabled={isBusy}
+							style={isBusy ? disabledInputStyle : inputStyle}
+						>
+							<option value="">Prefer not to say</option>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+							<option value="other">Other</option>
+						</select>
+					</div>
+				</div>
+
+				{/* Occupation */}
+				<div style={rowStyle}>
+					<label style={labelStyle}>Occupation</label>
+					<div style={{ flex: 1 }}>
+						<input
+							{...register("occupation")}
+							disabled={isBusy}
+							style={isBusy ? disabledInputStyle : inputStyle}
+							placeholder="e.g. Software engineer"
+						/>
+						{errors.occupation && <p style={errorStyle}>{errors.occupation.message}</p>}
+					</div>
+				</div>
+
+				{/* Bio */}
+				<div style={rowStyle}>
+					<label style={labelStyle}>Bio</label>
+					<div style={{ flex: 1 }}>
+						<textarea
+							{...register("bio")}
+							disabled={isBusy}
+							rows={3}
+							maxLength={300}
+							placeholder="A short bio about yourself"
+							style={{ ...inputStyle, maxWidth: 400, height: "auto", padding: "10px 12px", resize: "vertical" as const, ...(isBusy ? { background: "var(--c-surface-2)", color: "var(--c-text-3)", cursor: "not-allowed" as const } : {}) }}
+						/>
+						{errors.bio && <p style={errorStyle}>{errors.bio.message}</p>}
+					</div>
+				</div>
+
 				{/* Avatar upload */}
 				<div style={rowStyle}>
 					<div style={{ ...labelStyle, paddingTop: 0 }}>
@@ -322,7 +404,11 @@ export default function UpdateProfileForm() {
 			<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 20 }}>
 				<button
 					type="button"
-					onClick={() => deleteAccount()}
+					onClick={() => {
+						if (window.confirm("Permanently close your account? This cannot be undone.")) {
+							deleteAccount();
+						}
+					}}
 					disabled={isBusy}
 					style={{ background: "transparent", border: "none", padding: 0, fontSize: 13.5, fontWeight: 600, color: "var(--c-down)", cursor: isBusy ? "not-allowed" : "pointer", opacity: isBusy ? 0.5 : 1 }}
 				>

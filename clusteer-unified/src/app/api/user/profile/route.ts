@@ -67,6 +67,10 @@ export async function GET(request: NextRequest) {
 						dateJoined: profile.date_joined || profile.created_at || baseProfile.dateJoined,
 						created_at: profile.created_at || baseProfile.created_at,
 						updated_at: profile.updated_at || baseProfile.updated_at,
+						dateOfBirth: profile.date_of_birth || profile.dateOfBirth || null,
+						gender: profile.gender || null,
+						occupation: profile.occupation || null,
+						bio: profile.bio || null,
 					},
 				});
 			}

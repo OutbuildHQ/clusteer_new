@@ -103,6 +103,10 @@ export const UpdateProfileFormSchema = z.object({
 		.regex(/^[0-9+\-() ]+$/, "Invalid phone number format")
 		.optional()
 		.or(z.literal("")),
+	dateOfBirth: z.string().optional().or(z.literal("")),
+	gender: z.enum(["male", "female", "other", ""]).optional(),
+	occupation: z.string().max(100, "Occupation too long").optional().or(z.literal("")),
+	bio: z.string().max(300, "Bio must be at most 300 characters").optional().or(z.literal("")),
 });
 
 export const IdentityVerficationFormSchema = z.object({

@@ -45,6 +45,11 @@ export interface IUser {
 	dateJoined?: string;
 	created_at?: string;
 	updated_at?: string;
+	kyc_status?: string;
+	dateOfBirth?: string;
+	gender?: string;
+	occupation?: string;
+	bio?: string;
 }
 
 export interface ITransaction {

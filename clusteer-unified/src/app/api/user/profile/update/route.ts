@@ -49,7 +49,7 @@ export async function PUT(request: NextRequest) {
 			);
 		}
 
-		const { firstName, lastName, username, email, phone } = body;
+		const { firstName, lastName, username, email, phone, dateOfBirth, gender, occupation, bio } = body;
 
 		// Update profile via Django backend
 		const blockchainEngineUrl = process.env.BLOCKCHAIN_ENGINE_URL || "http://localhost:8000";
@@ -75,6 +75,10 @@ export async function PUT(request: NextRequest) {
 					last_name: lastName || null,
 					username,
 					phone: phone || null,
+					date_of_birth: dateOfBirth || null,
+					gender: gender || null,
+					occupation: occupation || null,
+					bio: bio || null,
 				}),
 			}
 		);
@@ -98,6 +102,10 @@ export async function PUT(request: NextRequest) {
 				username: updatedProfile.username || username,
 				email,
 				phone: updatedProfile.phone || phone,
+				dateOfBirth: updatedProfile.date_of_birth || dateOfBirth,
+				gender: updatedProfile.gender || gender,
+				occupation: updatedProfile.occupation || occupation,
+				bio: updatedProfile.bio || bio,
 			},
 		});
 	} catch (error) {
