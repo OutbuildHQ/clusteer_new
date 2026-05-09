@@ -42,7 +42,7 @@ function ResetPasswordContent() {
 				<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Invalid reset link</h1>
 				<p className="mt-2 text-sm text-muted-foreground">
 					This password reset link is invalid or has expired.{" "}
-					<Link href="/forgot-password" className="font-semibold text-brand-800 hover:underline">Request a new one</Link>.
+					<Link href="/forgot-password" className="font-semibold text-custom-black/70 hover:underline">Request a new one</Link>.
 				</p>
 			</div>
 		);

@@ -70,7 +70,7 @@ export default function SignupPage() {
 
 	return (
 		<div>
-			<p className="mb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Get started</p>
+			<p className="mb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70">&#9670; Get started</p>
 			<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-[-0.03em]">Create your account</h1>
 			<p className="mt-1.5 text-sm text-muted-foreground">Free to open. Takes 60 seconds.</p>
 

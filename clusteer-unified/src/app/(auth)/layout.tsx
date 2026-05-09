@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
 	return (
+		<ThemeProvider forcedTheme="light">
 		<div className="min-h-[100dvh] grid lg:grid-cols-[1fr_1fr] bg-background">
 			{/* Brand side — warm beige with bold Clusteer personality */}
 			<div className="relative hidden lg:flex flex-col justify-between p-10 bg-warm-beige overflow-hidden">
@@ -33,7 +35,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
 				<div className="relative z-10 max-w-md">
 					{/* Kicker */}
-					<p className="mb-3 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">
+					<p className="mb-3 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70">
 						&#9670; Secure &middot; Fast &middot; Licensed
 					</p>
 					<h2 className="font-display text-4xl font-bold leading-tight tracking-[-0.03em] text-custom-black">
@@ -89,5 +91,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 				</div>
 			</div>
 		</div>
+		</ThemeProvider>
 	);
 }

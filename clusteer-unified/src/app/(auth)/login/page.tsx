@@ -70,7 +70,7 @@ export default function LoginPage() {
 
 	return (
 		<div>
-			<p className="mb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">&#9670; Welcome back</p>
+			<p className="mb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70">&#9670; Welcome back</p>
 			<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-[-0.03em]">Log in to Clusteer</h1>
 			<p className="mt-1.5 text-sm text-muted-foreground">Enter your credentials to access your account.</p>
 
@@ -86,7 +86,7 @@ export default function LoginPage() {
 				<div className="space-y-1.5">
 					<div className="flex items-center justify-between">
 						<Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wide">Password <span className="text-danger">*</span></Label>
-						<Link href="/forgot-password" className="text-xs font-medium text-brand-800 hover:underline">Forgot?</Link>
+						<Link href="/forgot-password" className="text-xs font-medium text-custom-black/70 hover:underline">Forgot?</Link>
 					</div>
 					<div className="relative">
 						<Input id="password" type={showPassword ? "text" : "password"} placeholder="Min. 8 characters" autoComplete="current-password" className="min-h-[48px]" {...register("password")} />

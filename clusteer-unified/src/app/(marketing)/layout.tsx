@@ -3,6 +3,7 @@ import { Logo } from "@/components/brand/logo";
 import { Footer } from "@/components/app/footer";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 
 export default function MarketingLayout({
 	children,
@@ -10,6 +11,7 @@ export default function MarketingLayout({
 	children: React.ReactNode;
 }) {
 	return (
+		<ThemeProvider forcedTheme="light">
 		<div className="min-h-screen bg-background">
 			{/* ─── Nav ─── */}
 			<nav className="sticky top-0 z-50 border-b border-custom-black/6 bg-background/85 backdrop-blur-xl">
@@ -39,5 +41,6 @@ export default function MarketingLayout({
 			{/* ─── Footer ─── */}
 			<Footer />
 		</div>
+		</ThemeProvider>
 	);
 }
