@@ -27,7 +27,7 @@ export default function SignupPage() {
 
 	const ok8 = data.password.length >= 8;
 	const strengthLabel = strength <= 1 ? "Weak" : strength === 2 ? "Okay" : strength === 3 ? "Good" : "Strong";
-	const strengthHint = strength < 4 ? "add uppercase / number / symbol for max strength" : "Top-shelf";
+	const strengthHint = strength < 4 ? "add uppercase / number / symbol for max strength" : "Top-shelf \uD83D\uDD10";
 
 	async function onSubmit() {
 		if (submitting) return;
@@ -143,7 +143,7 @@ export default function SignupPage() {
 					<div className="flex flex-col gap-2 mb-4">
 						<label style={{ fontSize: 13, fontWeight: 500 }}>Phone number</label>
 						<div className="flex items-center gap-2" style={inputStyle}>
-							<span style={{ fontSize: 14, fontWeight: 600 }}>+234</span>
+							<span style={{ fontSize: 14, fontWeight: 600 }}>&#x1F1F3;&#x1F1EC; +234</span>
 							<input
 								placeholder="80 1234 5678"
 								value={data.phone}

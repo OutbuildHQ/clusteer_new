@@ -92,8 +92,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 			<div className="flex flex-col overflow-auto">
 				{/* Top bar */}
 				<div className="flex items-center justify-between px-6 sm:px-10 py-6">
-					<Link href="/">
-						<Logo />
+					<Link href="/" className="flex items-center gap-3">
+						<Logo monogramOnly />
+						<span className="font-display text-lg font-semibold" style={{ fontFamily: "var(--f-display)" }}>Clusteer</span>
 					</Link>
 				</div>
 
