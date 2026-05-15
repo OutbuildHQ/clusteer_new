@@ -1,78 +1,84 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { toast } from "sonner";
 import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { auth } from "@/lib/firebase";
-
-const schema = z
-	.object({
-		password: z.string().min(8, "At least 8 characters").regex(/[A-Z]/, "Add an uppercase letter").regex(/[0-9]/, "Add a number"),
-		confirm: z.string(),
-	})
-	.refine((v) => v.password === v.confirm, { path: ["confirm"], message: "Passwords don't match" });
-
-type Values = z.infer<typeof schema>;
 
 function ResetPasswordContent() {
 	const router = useRouter();
 	const params = useSearchParams();
 	const oobCode = params.get("oobCode");
-	const [showPassword, setShowPassword] = useState(false);
-	const [showConfirm, setShowConfirm] = useState(false);
+	const [showP1, setShowP1] = useState(false);
+	const [showP2, setShowP2] = useState(false);
+	const [p1, setP1] = useState("");
+	const [p2, setP2] = useState("");
+	const [submitting, setSubmitting] = useState(false);
 	const [done, setDone] = useState(false);
 
-	const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Values>({
-		resolver: zodResolver(schema),
-	});
+	const match = p1 && p1 === p2;
 
-	// Missing oobCode means the user landed here without a valid reset link
+	const inputStyle = {
+		padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)",
+	} as const;
+	const innerInputStyle = {
+		flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)",
+	} as const;
+	const btnPrimary = {
+		height: 48, width: "100%", display: "flex" as const, alignItems: "center" as const, justifyContent: "center" as const,
+		borderRadius: "var(--r-md)", border: "1px solid transparent", fontSize: 14.5, fontWeight: 600,
+		background: "var(--c-lime-500)", color: "var(--c-onyx-900)", cursor: "pointer", fontFamily: "var(--f-sans)",
+	};
+
+	// Missing oobCode
 	if (!oobCode) {
 		return (
 			<div>
-				<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Invalid reset link</h1>
-				<p className="mt-2 text-sm text-muted-foreground">
+				<div style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 10, fontWeight: 600, color: "var(--c-text-3)" }}>
+					Account recovery
+				</div>
+				<h1 className="font-display" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1.1, marginBottom: 10 }}>
+					Invalid reset link
+				</h1>
+				<div style={{ fontSize: 14.5, marginBottom: 28, lineHeight: 1.5, color: "var(--c-text-2)" }}>
 					This password reset link is invalid or has expired.{" "}
-					<Link href="/forgot-password" className="font-semibold text-custom-black/70 hover:underline">Request a new one</Link>.
-				</p>
+					<a href="/forgot-password" style={{ fontWeight: 600, color: "var(--c-lime-600)" }}>Request a new one</a>.
+				</div>
 			</div>
 		);
 	}
 
+	// Success state
 	if (done) {
 		return (
 			<div>
-				<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Password updated</h1>
-				<p className="mt-2 text-sm text-muted-foreground">Your password has been changed successfully.</p>
-				<Button
-					size="lg"
-					className="mt-6 w-full min-h-[52px] text-[15px] font-bold btn-shine shadow-brutal-sm"
+				<div style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 10, fontWeight: 600, color: "var(--c-text-3)" }}>
+					Account recovery
+				</div>
+				<h1 className="font-display" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1.1, marginBottom: 10 }}>
+					Password updated
+				</h1>
+				<div style={{ fontSize: 14.5, marginBottom: 28, lineHeight: 1.5, color: "var(--c-text-2)" }}>
+					Your password has been changed successfully.
+				</div>
+				<button
+					type="button"
 					onClick={() => router.push("/login")}
+					style={btnPrimary}
 				>
 					Log in now
-				</Button>
+				</button>
 			</div>
 		);
 	}
 
-	async function onSubmit(values: Values) {
-		if (!auth) {
-			toast.error("Authentication not configured");
-			return;
-		}
+	async function onSubmit() {
+		if (!auth || !match || p1.length < 8 || submitting) return;
+		setSubmitting(true);
 		try {
-			// Verify the code is still valid before resetting
 			await verifyPasswordResetCode(auth, oobCode!);
-			await confirmPasswordReset(auth, oobCode!, values.password);
+			await confirmPasswordReset(auth, oobCode!, p1);
 			setDone(true);
 			toast.success("Password updated successfully");
 		} catch (error: unknown) {
@@ -84,56 +90,88 @@ function ResetPasswordContent() {
 			} else {
 				toast.error("Failed to reset password. Please try again.");
 			}
+		} finally {
+			setSubmitting(false);
 		}
 	}
 
 	return (
 		<div>
-			<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Set a new password</h1>
-			<p className="mt-1 text-sm text-muted-foreground">Choose something strong and unique.</p>
-
-			<form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 space-y-4">
-				<div className="space-y-1.5">
-					<Label htmlFor="password">New password <span className="text-danger">*</span></Label>
-					<div className="relative">
-						<Input id="password" type={showPassword ? "text" : "password"} className="min-h-[48px]" {...register("password")} />
-						<button type="button" tabIndex={-1} onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground hover:text-foreground">
-							{showPassword ? "Hide" : "Show"}
-						</button>
-					</div>
-					<div className="min-h-[16px]">
-						{errors.password && <p className="text-xs text-danger">{errors.password.message}</p>}
-					</div>
-				</div>
-
-				<div className="space-y-1.5">
-					<Label htmlFor="confirm">Confirm password <span className="text-danger">*</span></Label>
-					<div className="relative">
-						<Input id="confirm" type={showConfirm ? "text" : "password"} className="min-h-[48px]" {...register("confirm")} />
-						<button type="button" tabIndex={-1} onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground hover:text-foreground">
-							{showConfirm ? "Hide" : "Show"}
-						</button>
-					</div>
-					<div className="min-h-[16px]">
-						{errors.confirm && <p className="text-xs text-danger">{errors.confirm.message}</p>}
-					</div>
-				</div>
-
-				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold btn-shine shadow-brutal-sm" disabled={isSubmitting}>
-					{isSubmitting ? "Saving\u2026" : "Update password"}
-				</Button>
-			</form>
-
-			<div className="mt-6 text-center text-sm text-muted-foreground">
-				<Link href="/login" className="hover:text-foreground inline-flex items-center min-h-[44px]">Back to login</Link>
+			{/* Eyebrow */}
+			<div style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 10, fontWeight: 600, color: "var(--c-text-3)" }}>
+				New password
 			</div>
+			<h1 className="font-display" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1.1, marginBottom: 10 }}>
+				Set a new password
+			</h1>
+			<div style={{ fontSize: 14.5, marginBottom: 28, lineHeight: 1.5, color: "var(--c-text-2)" }}>
+				Pick something strong &mdash; at least 8 characters with a number and a symbol.
+			</div>
+
+			{/* New password */}
+			<div className="flex flex-col gap-2 mb-4">
+				<label style={{ fontSize: 13, fontWeight: 500 }}>New password</label>
+				<div className="flex items-center gap-2" style={inputStyle}>
+					<input
+						type={showP1 ? "text" : "password"}
+						placeholder="Min. 8 characters"
+						value={p1}
+						onChange={(e) => setP1(e.target.value)}
+						autoFocus
+						style={innerInputStyle}
+					/>
+					<button
+						type="button"
+						tabIndex={-1}
+						onClick={() => setShowP1(!showP1)}
+						style={{ height: 30, padding: "0 10px", borderRadius: "var(--r-md)", border: "1px solid var(--c-line)", background: "transparent", fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", fontFamily: "var(--f-sans)", cursor: "pointer" }}
+					>
+						{showP1 ? "Hide" : "Show"}
+					</button>
+				</div>
+			</div>
+
+			{/* Confirm password */}
+			<div className="flex flex-col gap-2 mb-4">
+				<label style={{ fontSize: 13, fontWeight: 500 }}>Confirm new password</label>
+				<div className="flex items-center gap-2" style={inputStyle}>
+					<input
+						type={showP2 ? "text" : "password"}
+						placeholder="Re-enter password"
+						value={p2}
+						onChange={(e) => setP2(e.target.value)}
+						style={innerInputStyle}
+					/>
+					<button
+						type="button"
+						tabIndex={-1}
+						onClick={() => setShowP2(!showP2)}
+						style={{ height: 30, padding: "0 10px", borderRadius: "var(--r-md)", border: "1px solid var(--c-line)", background: "transparent", fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", fontFamily: "var(--f-sans)", cursor: "pointer" }}
+					>
+						{showP2 ? "Hide" : "Show"}
+					</button>
+				</div>
+				{p2 && !match && <div style={{ fontSize: 12, color: "var(--c-down)" }}>Passwords don&apos;t match</div>}
+			</div>
+
+			{/* Submit */}
+			<button
+				type="button"
+				onClick={onSubmit}
+				disabled={!match || p1.length < 8 || submitting}
+				style={{ ...btnPrimary, opacity: (!match || p1.length < 8 || submitting) ? 0.5 : 1 }}
+			>
+				{submitting ? (
+					<span style={{ width: 18, height: 18, border: "2px solid currentColor", borderTopColor: "transparent", borderRadius: "50%", animation: "spin .8s linear infinite", display: "inline-block" }} />
+				) : "Update password"}
+			</button>
 		</div>
 	);
 }
 
 export default function ResetPasswordPage() {
 	return (
-		<Suspense fallback={<div className="text-center text-muted-foreground py-12">Loading&hellip;</div>}>
+		<Suspense fallback={<div className="text-center py-12" style={{ color: "var(--c-text-2)" }}>Loading&hellip;</div>}>
 			<ResetPasswordContent />
 		</Suspense>
 	);

@@ -2,94 +2,122 @@ import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 
+function AuthAccentPanel() {
+	return (
+		<div
+			className="relative hidden lg:flex items-center justify-center overflow-hidden"
+			style={{ background: "var(--c-onyx-900)", color: "var(--c-cream)" }}
+		>
+			{/* Lime gradient blobs */}
+			<div
+				className="absolute rounded-full"
+				style={{
+					width: 520, height: 520, top: -120, right: -160,
+					background: "radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--c-lime-500) 55%, transparent), transparent 70%)",
+				}}
+			/>
+			<div
+				className="absolute rounded-full"
+				style={{
+					width: 360, height: 360, bottom: -80, left: -100,
+					background: "radial-gradient(circle, color-mix(in oklab, var(--c-lime-500) 32%, transparent), transparent 65%)",
+				}}
+			/>
+
+			<div className="relative z-10 p-12 max-w-[480px]">
+				{/* Live rate badge */}
+				<div
+					className="flex items-center gap-2 mb-4"
+					style={{ fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--c-lime-500)", fontWeight: 600 }}
+				>
+					<span
+						className="inline-block rounded-full"
+						style={{
+							width: 6, height: 6,
+							background: "var(--c-lime-500)",
+							boxShadow: "0 0 12px var(--c-lime-500)",
+						}}
+					/>
+					Live &middot; USDT / NGN
+				</div>
+
+				{/* Price */}
+				<h2
+					className="font-display tabular-nums"
+					style={{ fontSize: 64, fontWeight: 600, letterSpacing: "-.03em", lineHeight: 1, color: "var(--c-cream)" }}
+				>
+					&#8358;1,610.50
+				</h2>
+				<div style={{ color: "rgba(244,241,234,.6)", marginTop: 8, fontSize: 13 }}>
+					+0.32% (24h) &middot; 3.8M USDT volume today
+				</div>
+
+				{/* Tagline */}
+				<div
+					className="font-display"
+					style={{ marginTop: 48, fontSize: 22, fontWeight: 500, letterSpacing: "-.02em", lineHeight: 1.3, color: "var(--c-cream)" }}
+				>
+					Naira &#8596; Stablecoins, settled in{" "}
+					<span style={{ color: "var(--c-lime-500)" }}>5 minutes</span>.
+				</div>
+				<div style={{ color: "rgba(244,241,234,.6)", marginTop: 14, fontSize: 13.5, lineHeight: 1.55 }}>
+					Verified Nigerians use Clusteer to buy, sell, send and receive USDT &amp; USDC at the fairest rate. No spread games.
+				</div>
+
+				{/* Stats */}
+				<div
+					className="flex items-center gap-4"
+					style={{ marginTop: 32, paddingTop: 24, borderTop: "1px solid rgba(244,241,234,.1)" }}
+				>
+					{[["92k+", "Verified users"], ["\u20A642B", "Volume settled"], ["4.9\u2605", "App rating"]].map(([v, l]) => (
+						<div key={l}>
+							<div className="font-display tabular-nums" style={{ fontSize: 20, fontWeight: 600, color: "var(--c-cream)" }}>{v}</div>
+							<div style={{ fontSize: 11, color: "rgba(244,241,234,.5)" }}>{l}</div>
+						</div>
+					))}
+				</div>
+			</div>
+		</div>
+	);
+}
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<ThemeProvider forcedTheme="light">
-		<div className="min-h-[100dvh] grid lg:grid-cols-[1fr_1fr] bg-background">
-			{/* Brand side — warm beige with bold Clusteer personality */}
-			<div className="relative hidden lg:flex flex-col justify-between p-10 bg-warm-beige overflow-hidden">
-				{/* Large watermark — actual Clusteer logo */}
-				<div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center opacity-[0.05]">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 38" className="w-[500px] h-[500px]" fill="currentColor">
-						<path d="M0 19.002C0 9.249 7.347 1.212 16.809.125c1.205-.138 2.193.859 2.193 2.072v33.61c0 1.214-.988 2.21-2.193 2.072C7.347 36.792 0 28.755 0 19.002" />
-						<circle cx="25.537" cy="10.654" r="2.581" />
-						<circle cx="25.537" cy="19.002" r="2.581" />
-						<circle cx="25.537" cy="27.35" r="2.581" />
-						<circle cx="32.897" cy="19.002" r="2.581" />
-					</svg>
-				</div>
-
-				{/* Decorative dots grid */}
-				<svg className="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
-					<defs>
-						<pattern id="auth-dots" width="24" height="24" patternUnits="userSpaceOnUse">
-							<circle cx="2" cy="2" r="1" fill="currentColor" className="text-custom-black" />
-						</pattern>
-					</defs>
-					<rect width="100%" height="100%" fill="url(#auth-dots)" />
-				</svg>
-
-				<Link href="/" className="relative z-10">
-					<Logo />
-				</Link>
-
-				<div className="relative z-10 max-w-md">
-					{/* Kicker */}
-					<p className="mb-3 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70">
-						&#9670; Secure &middot; Fast &middot; Licensed
-					</p>
-					<h2 className="font-display text-4xl font-bold leading-tight tracking-[-0.03em] text-custom-black">
-						Your stablecoins,{" "}
-						<span className="text-light-green bg-custom-black px-2 py-0.5 rounded-lg inline-block">your Naira.</span>
-					</h2>
-					<p className="mt-4 text-custom-black/60 text-[15px] leading-relaxed">
-						Buy, sell, and hold USDT — directly from your Nigerian bank account. No debit card required.
-					</p>
-
-					{/* Trust pills */}
-					<div className="mt-8 flex flex-wrap gap-2">
-						<span className="rounded-full border-2 border-custom-black bg-white px-3.5 py-1.5 text-xs font-semibold text-custom-black shadow-brutal-xs">
-							Bank-grade encryption
-						</span>
-						<span className="rounded-full border-2 border-custom-black bg-white px-3.5 py-1.5 text-xs font-semibold text-custom-black shadow-brutal-xs">
-							BVN-verified accounts
-						</span>
-						<span className="rounded-full border-2 border-custom-black bg-white px-3.5 py-1.5 text-xs font-semibold text-custom-black shadow-brutal-xs">
-							2FA security
-						</span>
-					</div>
-
-					{/* Mini stats */}
-					<div className="mt-8 flex gap-8">
-						<div>
-							<p className="font-display text-2xl font-bold text-custom-black">12K+</p>
-							<p className="text-xs text-custom-black/50 font-medium">Users</p>
-						</div>
-						<div>
-							<p className="font-display text-2xl font-bold text-custom-black">₦4B+</p>
-							<p className="text-xs text-custom-black/50 font-medium">Traded</p>
-						</div>
-						<div>
-							<p className="font-display text-2xl font-bold text-custom-black">5</p>
-							<p className="text-xs text-custom-black/50 font-medium">Chains</p>
-						</div>
-					</div>
-				</div>
-
-				<div className="relative z-10 text-xs text-custom-black/30">
-					&copy; {new Date().getFullYear()} Clusteer. All rights reserved.
-				</div>
-			</div>
-
+		<div
+			className="min-h-[100dvh] grid lg:grid-cols-2"
+			style={{ background: "var(--c-bg)", color: "var(--c-text)", fontFamily: "var(--f-sans)" }}
+		>
 			{/* Form side */}
-			<div className="flex flex-col">
-				<div className="lg:hidden border-b-2 border-custom-black px-4 sm:px-6 py-3 sm:py-4">
-					<Link href="/"><Logo /></Link>
+			<div className="flex flex-col overflow-auto">
+				{/* Top bar */}
+				<div className="flex items-center justify-between px-6 sm:px-10 py-6">
+					<Link href="/">
+						<Logo />
+					</Link>
 				</div>
-				<div className="flex-1 flex items-center justify-center px-4 py-6 sm:p-6 md:p-10">
-					<div className="w-full max-w-md">{children}</div>
+
+				{/* Content */}
+				<div className="flex-1 flex items-center justify-center px-6 sm:px-10 py-6">
+					<div className="w-full max-w-[420px]">{children}</div>
+				</div>
+
+				{/* Footer */}
+				<div
+					className="flex items-center justify-between px-6 sm:px-10 py-5 text-xs"
+					style={{ color: "var(--c-text-3)" }}
+				>
+					<div>&copy; Clusteer &middot; NDPR-aligned &middot; BVN encrypted</div>
+					<div className="hidden sm:flex items-center gap-3">
+						<Link href="/terms-of-service" className="hover:underline">Terms</Link>
+						<Link href="/privacy-policy" className="hover:underline">Privacy</Link>
+						<Link href="/contact" className="hover:underline">Help</Link>
+					</div>
 				</div>
 			</div>
+
+			{/* Accent panel */}
+			<AuthAccentPanel />
 		</div>
 		</ThemeProvider>
 	);

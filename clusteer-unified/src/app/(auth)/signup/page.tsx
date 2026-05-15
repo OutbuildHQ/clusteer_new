@@ -1,40 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/stores/auth";
-
-const schema = z.object({
-	name: z.string().min(2, "Enter your full name"),
-	email: z.string().email("Enter a valid email"),
-	phone: z.string().regex(/^(\+234|0)(7|8|9)(0|1)\d{8}$/, "Enter a valid Nigerian phone number (e.g. 08012345678)"),
-	password: z.string().min(8, "At least 8 characters").regex(/[A-Z]/, "Add an uppercase letter").regex(/[0-9]/, "Add a number"),
-	terms: z.literal(true, { errorMap: () => ({ message: "Accept the terms to continue" }) }),
-});
-type FormValues = z.infer<typeof schema>;
 
 export default function SignupPage() {
 	const router = useRouter();
 	const requireTwoFactor = useAuth((s) => s.requireTwoFactor);
+	const [step, setStep] = useState(1);
+	const [submitting, setSubmitting] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
-	const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
-		resolver: zodResolver(schema),
-	});
+	const [data, setData] = useState({ name: "", email: "", phone: "", password: "", terms: false });
+	const [strength, setStrength] = useState(0);
 
-	async function onSubmit(values: FormValues) {
+	useEffect(() => {
+		const p = data.password;
+		let s = 0;
+		if (p.length >= 8) s++;
+		if (/[A-Z]/.test(p)) s++;
+		if (/\d/.test(p)) s++;
+		if (/[^A-Za-z0-9]/.test(p)) s++;
+		setStrength(s);
+	}, [data.password]);
+
+	const ok8 = data.password.length >= 8;
+	const strengthLabel = strength <= 1 ? "Weak" : strength === 2 ? "Okay" : strength === 3 ? "Good" : "Strong";
+	const strengthHint = strength < 4 ? "add uppercase / number / symbol for max strength" : "Top-shelf";
+
+	async function onSubmit() {
+		if (submitting) return;
+		setSubmitting(true);
 		try {
-			// Derive username from email prefix (lowercase, alphanumeric only)
-			const username = values.email
+			const username = data.email
 				.split("@")[0]
 				.toLowerCase()
 				.replace(/[^a-z0-9_]/g, "")
@@ -45,92 +44,240 @@ export default function SignupPage() {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					username,
-					email: values.email,
-					phone: values.phone,
-					password: values.password,
-					name: values.name,
+					email: data.email,
+					phone: data.phone.startsWith("+") ? data.phone : `+234${data.phone.replace(/^0/, "")}`,
+					password: data.password,
+					name: data.name,
 				}),
 			});
 
-			const data = await res.json();
+			const result = await res.json();
 
 			if (!res.ok) {
-				toast.error(data.message || "Registration failed");
+				toast.error(result.message || "Registration failed");
 				return;
 			}
 
-			// Store email in auth store so verify-email page can display it
-			requireTwoFactor(values.email);
+			requireTwoFactor(data.email);
 			toast.success("Account created! Check your inbox for a verification link.");
 			router.push("/verify-email");
 		} catch {
 			toast.error("Unable to connect. Please try again.");
+		} finally {
+			setSubmitting(false);
 		}
 	}
 
+	const inputStyle = {
+		padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)",
+	} as const;
+	const innerInputStyle = {
+		flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)",
+	} as const;
+	const btnPrimary = {
+		height: 48, display: "flex", alignItems: "center", justifyContent: "center",
+		borderRadius: "var(--r-md)", border: "1px solid transparent", fontSize: 14.5, fontWeight: 600,
+		background: "var(--c-lime-500)", color: "var(--c-onyx-900)", cursor: "pointer", fontFamily: "var(--f-sans)",
+	} as const;
+	const btnGhost = {
+		height: 48, display: "flex", alignItems: "center", justifyContent: "center",
+		borderRadius: "var(--r-md)", border: "1px solid var(--c-line)", background: "transparent",
+		fontSize: 14, fontWeight: 500, color: "var(--c-text)", fontFamily: "var(--f-sans)", cursor: "pointer",
+	} as const;
+
 	return (
 		<div>
-			<p className="mb-2 font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70">&#9670; Get started</p>
-			<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-[-0.03em]">Create your account</h1>
-			<p className="mt-1.5 text-sm text-muted-foreground">Free to open. Takes 60 seconds.</p>
+			{/* Top-right link */}
+			<div className="flex items-center justify-end gap-2 mb-6 -mt-2" style={{ fontSize: 13 }}>
+				Already a member?{" "}
+				<Link href="/login" style={{ color: "var(--c-lime-600)", fontWeight: 600 }}>
+					Sign in
+				</Link>
+			</div>
 
-			<form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 space-y-4">
-				<div className="space-y-1.5">
-					<Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wide">Full name <span className="text-danger">*</span></Label>
-					<Input id="name" placeholder="John Doe" className="min-h-[48px]" {...register("name")} />
-					<div className="min-h-[16px]">
-						{errors.name && <p className="text-xs text-danger">{errors.name.message}</p>}
+			{/* Eyebrow */}
+			<div style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 10, fontWeight: 600, color: "var(--c-text-3)" }}>
+				Step {step} of 2
+			</div>
+			<h1 className="font-display" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1.1, marginBottom: 10 }}>
+				{step === 1 ? "Create your account" : "Secure your account"}
+			</h1>
+			<div style={{ fontSize: 14.5, marginBottom: 28, lineHeight: 1.5, color: "var(--c-text-2)" }}>
+				{step === 1
+					? "NDPR-aligned. We never share your data with third parties."
+					: "Pick a strong password. You can add 2FA in the next step."}
+			</div>
+
+			{step === 1 && (
+				<>
+					{/* Full name */}
+					<div className="flex flex-col gap-2 mb-4">
+						<label style={{ fontSize: 13, fontWeight: 500 }}>Full name as on NIN</label>
+						<div className="flex items-center gap-2" style={inputStyle}>
+							<input
+								placeholder="Adaeze Chukwu"
+								value={data.name}
+								onChange={(e) => setData({ ...data, name: e.target.value })}
+								autoFocus
+								style={innerInputStyle}
+							/>
+						</div>
 					</div>
-				</div>
 
-				<div className="space-y-1.5">
-					<Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wide">Email <span className="text-danger">*</span></Label>
-					<Input id="email" type="email" placeholder="you@example.com" autoComplete="email" className="min-h-[48px]" {...register("email")} />
-					<div className="min-h-[16px]">
-						{errors.email && <p className="text-xs text-danger">{errors.email.message}</p>}
+					{/* Email */}
+					<div className="flex flex-col gap-2 mb-4">
+						<label style={{ fontSize: 13, fontWeight: 500 }}>Email</label>
+						<div className="flex items-center gap-2" style={inputStyle}>
+							<input
+								type="email"
+								placeholder="adaeze@example.com"
+								value={data.email}
+								onChange={(e) => setData({ ...data, email: e.target.value })}
+								autoComplete="email"
+								style={innerInputStyle}
+							/>
+						</div>
 					</div>
-				</div>
 
-				<div className="space-y-1.5">
-					<Label htmlFor="phone" className="text-xs font-semibold uppercase tracking-wide">Phone <span className="text-danger">*</span></Label>
-					<Input id="phone" type="tel" placeholder="08012345678" className="min-h-[48px]" {...register("phone")} />
-					<div className="min-h-[16px]">
-						{errors.phone && <p className="text-xs text-danger">{errors.phone.message}</p>}
+					{/* Phone */}
+					<div className="flex flex-col gap-2 mb-4">
+						<label style={{ fontSize: 13, fontWeight: 500 }}>Phone number</label>
+						<div className="flex items-center gap-2" style={inputStyle}>
+							<span style={{ fontSize: 14, fontWeight: 600 }}>+234</span>
+							<input
+								placeholder="80 1234 5678"
+								value={data.phone}
+								onChange={(e) => setData({ ...data, phone: e.target.value })}
+								style={innerInputStyle}
+							/>
+						</div>
+						<div style={{ fontSize: 12, color: "var(--c-text-2)" }}>Nigerian numbers only</div>
 					</div>
-				</div>
 
-				<div className="space-y-1.5">
-					<Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wide">Password <span className="text-danger">*</span></Label>
-					<div className="relative">
-						<Input id="password" type={showPassword ? "text" : "password"} placeholder="Min. 8 characters" className="min-h-[48px]" {...register("password")} />
-						<button type="button" tabIndex={-1} onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:text-foreground">
-							{showPassword ? "Hide" : "Show"}
+					{/* Continue */}
+					<button
+						type="button"
+						onClick={() => setStep(2)}
+						disabled={!data.name || !data.email || !data.phone}
+						style={{ ...btnPrimary, width: "100%", opacity: (!data.name || !data.email || !data.phone) ? 0.5 : 1 }}
+					>
+						Continue &rarr;
+					</button>
+
+					{/* Divider */}
+					<div className="flex items-center gap-3" style={{ margin: "18px 0" }}>
+						<div className="flex-1" style={{ height: 1, background: "var(--c-line)" }} />
+						<div style={{ fontSize: 11, letterSpacing: ".1em", color: "var(--c-text-3)" }}>OR</div>
+						<div className="flex-1" style={{ height: 1, background: "var(--c-line)" }} />
+					</div>
+
+					{/* Social buttons */}
+					<div className="flex items-center gap-3">
+						<button
+							type="button"
+							onClick={() => toast.info("Coming soon: Google")}
+							style={{ ...btnGhost, flex: 1, height: 46, gap: 8, fontSize: 13.5 }}
+						>
+							<span style={{ width: 18, height: 18, borderRadius: 4, background: "#fff", color: "#444", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, border: "1px solid var(--c-line)" }}>G</span>
+							Continue with Google
+						</button>
+						<button
+							type="button"
+							onClick={() => toast.info("Coming soon: Apple")}
+							style={{ ...btnGhost, flex: 1, height: 46, gap: 8, fontSize: 13.5 }}
+						>
+							<span style={{ width: 18, height: 18, borderRadius: 4, background: "#000", color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700 }}></span>
+							Apple
 						</button>
 					</div>
-					<div className="min-h-[16px]">
-						{errors.password && <p className="text-xs text-danger">{errors.password.message}</p>}
+				</>
+			)}
+
+			{step === 2 && (
+				<>
+					{/* Password */}
+					<div className="flex flex-col gap-2 mb-4">
+						<label style={{ fontSize: 13, fontWeight: 500 }}>Password</label>
+						<div className="flex items-center gap-2" style={inputStyle}>
+							<input
+								type={showPassword ? "text" : "password"}
+								placeholder="Min 8 chars, 1 number"
+								value={data.password}
+								onChange={(e) => setData({ ...data, password: e.target.value })}
+								autoFocus
+								style={innerInputStyle}
+							/>
+							<button
+								type="button"
+								tabIndex={-1}
+								onClick={() => setShowPassword(!showPassword)}
+								style={{ height: 30, padding: "0 10px", borderRadius: "var(--r-md)", border: "1px solid var(--c-line)", background: "transparent", fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", fontFamily: "var(--f-sans)", cursor: "pointer" }}
+							>
+								{showPassword ? "Hide" : "Show"}
+							</button>
+						</div>
 					</div>
-					<p className="text-[11px] text-muted-foreground">8+ characters, one uppercase, one number.</p>
-				</div>
 
-				<label className="flex items-start gap-2.5 text-sm min-h-[44px]">
-					<Checkbox className="mt-0.5" {...register("terms")} />
-					<span className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-						I agree to the <Link href="/terms-of-service" className="font-bold text-custom-black hover:underline">Terms</Link> and acknowledge the{" "}
-						<Link href="/privacy-policy" className="font-bold text-custom-black hover:underline">Privacy Policy</Link>.
-					</span>
-				</label>
-				{errors.terms && <p className="text-xs text-danger">{errors.terms.message}</p>}
+					{/* Strength meter */}
+					<div className="flex items-center gap-1" style={{ marginBottom: 18 }}>
+						{[1, 2, 3, 4].map((i) => (
+							<div
+								key={i}
+								className="flex-1"
+								style={{
+									height: 4, borderRadius: 2,
+									background: strength >= i
+										? (strength <= 1 ? "var(--c-down)" : strength <= 2 ? "var(--c-warn)" : strength <= 3 ? "#86CC57" : "var(--c-up)")
+										: "var(--c-line)",
+								}}
+							/>
+						))}
+					</div>
+					<div style={{ fontSize: 12, marginBottom: 18, marginTop: -12, color: "var(--c-text-2)" }}>
+						{strengthLabel} &middot; {strengthHint}
+					</div>
 
-				<Button type="submit" size="lg" className="w-full min-h-[52px] text-[15px] font-bold btn-shine shadow-brutal-sm" disabled={isSubmitting}>
-					{isSubmitting ? "Creating\u2026" : "Create account"}
-				</Button>
-			</form>
+					{/* Terms */}
+					<div className="flex items-start gap-2" style={{ marginBottom: 18, fontSize: 13 }}>
+						<input
+							id="terms"
+							type="checkbox"
+							checked={data.terms}
+							onChange={(e) => setData({ ...data, terms: e.target.checked })}
+							style={{ marginTop: 3, accentColor: "var(--c-lime-500)" }}
+						/>
+						<label htmlFor="terms" style={{ color: "var(--c-text-2)" }}>
+							I agree to Clusteer&apos;s{" "}
+							<Link href="/terms-of-service" style={{ color: "var(--c-lime-600)", fontWeight: 500 }}>Terms</Link> and{" "}
+							<Link href="/privacy-policy" style={{ color: "var(--c-lime-600)", fontWeight: 500 }}>Privacy Policy</Link>.
+						</label>
+					</div>
 
-			<p className="mt-6 text-center text-sm text-muted-foreground">
-				Already have an account?{" "}
-				<Link href="/login" className="font-bold text-custom-black hover:underline">Log in</Link>
-			</p>
+					{/* Buttons */}
+					<div className="flex items-center gap-2">
+						<button
+							type="button"
+							onClick={() => setStep(1)}
+							style={{ ...btnGhost, padding: "0 20px" }}
+						>
+							Back
+						</button>
+						<button
+							type="button"
+							onClick={onSubmit}
+							disabled={!ok8 || strength < 2 || !data.terms || submitting}
+							style={{
+								...btnPrimary, flex: 1,
+								opacity: (!ok8 || strength < 2 || !data.terms || submitting) ? 0.5 : 1,
+							}}
+						>
+							{submitting ? (
+								<span style={{ width: 18, height: 18, border: "2px solid currentColor", borderTopColor: "transparent", borderRadius: "50%", animation: "spin .8s linear infinite", display: "inline-block" }} />
+							) : "Create account"}
+						</button>
+					</div>
+				</>
+			)}
 		</div>
 	);
 }

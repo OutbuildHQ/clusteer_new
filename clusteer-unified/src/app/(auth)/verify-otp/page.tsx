@@ -2,37 +2,43 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/stores/auth";
 
 function VerifyOtpContent() {
 	const router = useRouter();
 	const params = useSearchParams();
 	const flow = params.get("flow") ?? "login";
-	const [code, setCode] = useState("");
+	const [code, setCode] = useState(["", "", "", "", "", ""]);
+	const refs = useRef<(HTMLInputElement | null)[]>([]);
+	const [countdown, setCountdown] = useState(30);
 	const [submitting, setSubmitting] = useState(false);
 	const { email, completeTwoFactor, signIn } = useAuth();
 
-	async function submit() {
-		if (code.length !== 6 || submitting) return;
+	useEffect(() => {
+		const t = setInterval(() => setCountdown((c) => (c > 0 ? c - 1 : 0)), 1000);
+		return () => clearInterval(t);
+	}, []);
+
+	const submitCode = useCallback(async (digits: string[]) => {
+		const joined = digits.join("");
+		if (joined.length !== 6 || submitting) return;
 		setSubmitting(true);
 
 		try {
 			if (flow === "login") {
-				// Validate the TOTP against the server — pending_2fa_token cookie is sent automatically
 				const res = await fetch("/api/auth-firebase/verify-2fa", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ code }),
+					body: JSON.stringify({ code: joined }),
 				});
 				const data = await res.json();
 
 				if (!res.ok || !data.status) {
 					toast.error(data.message || "Invalid code. Please try again.");
-					setCode("");
+					setCode(["", "", "", "", "", ""]);
+					refs.current[0]?.focus();
 					return;
 				}
 
@@ -40,7 +46,6 @@ function VerifyOtpContent() {
 				toast.success("Verified. Welcome back.");
 				window.location.href = "/dashboard";
 			} else {
-				// Non-login OTP flows (e.g. email change) — complete sign-in
 				signIn(email ?? "");
 				toast.success("Verified.");
 				router.push("/dashboard");
@@ -50,54 +55,131 @@ function VerifyOtpContent() {
 		} finally {
 			setSubmitting(false);
 		}
-	}
+	}, [flow, submitting, completeTwoFactor, signIn, email, router]);
+
+	const onChange = (i: number, v: string) => {
+		v = v.replace(/\D/g, "");
+		if (v.length > 1) {
+			// Paste handling
+			const nc = [...code];
+			for (let j = 0; j < 6 && j < v.length; j++) {
+				nc[Math.min(i + j, 5)] = v[j];
+			}
+			setCode(nc);
+			const last = Math.min(5, i + v.length - 1);
+			refs.current[last]?.focus();
+			if (nc.every((x) => x)) submitCode(nc);
+			return;
+		}
+		v = v.slice(-1);
+		const nc = [...code];
+		nc[i] = v;
+		setCode(nc);
+		if (v && i < 5) refs.current[i + 1]?.focus();
+		if (nc.every((x) => x)) submitCode(nc);
+	};
+
+	const onKey = (i: number, e: React.KeyboardEvent) => {
+		if (e.key === "Backspace" && !code[i] && i > 0) refs.current[i - 1]?.focus();
+	};
+
+	const btnPrimary = {
+		height: 48, width: "100%", display: "flex", alignItems: "center", justifyContent: "center",
+		borderRadius: "var(--r-md)", border: "1px solid transparent", fontSize: 14.5, fontWeight: 600,
+		background: "var(--c-lime-500)", color: "var(--c-onyx-900)", cursor: "pointer", fontFamily: "var(--f-sans)",
+	} as const;
 
 	return (
 		<div>
-			<h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Enter your code</h1>
-			<p className="mt-1 text-sm text-muted-foreground">
+			{/* Eyebrow */}
+			<div style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 10, fontWeight: 600, color: "var(--c-text-3)" }}>
+				Verify it&apos;s you
+			</div>
+			<h1 className="font-display" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1.1, marginBottom: 10 }}>
+				{flow === "login" ? "Enter your 6-digit code" : "Check your email"}
+			</h1>
+			<div style={{ fontSize: 14.5, marginBottom: 28, lineHeight: 1.5, color: "var(--c-text-2)" }}>
 				{flow === "login"
-					? "Open Google Authenticator and enter the 6-digit code for Clusteer."
-					: <>We sent a 6-digit code to <span className="font-medium text-foreground">{email ?? "your email"}</span>.</>
+					? "Open your authenticator app (Authy, Google Authenticator, 1Password) and copy the current code."
+					: <>We sent a 6-digit code to <span style={{ fontWeight: 500, color: "var(--c-text)" }}>{email ?? "your email"}</span>. It expires in 10 minutes.</>
 				}
-			</p>
-
-			<div className="mt-8">
-				<InputOTP
-					maxLength={6}
-					value={code}
-					onChange={setCode}
-					onComplete={submit}
-				>
-					<InputOTPGroup>
-						{Array.from({ length: 6 }).map((_, i) => <InputOTPSlot key={i} index={i} />)}
-					</InputOTPGroup>
-				</InputOTP>
 			</div>
 
-			<Button
-				size="lg"
-				className="mt-6 w-full min-h-[52px] text-[15px] font-bold btn-shine shadow-brutal-sm"
-				disabled={code.length !== 6 || submitting}
-				onClick={submit}
-			>
-				{submitting ? "Verifying\u2026" : "Verify"}
-			</Button>
+			{/* OTP boxes */}
+			<div className="flex items-center justify-between gap-2" style={{ marginBottom: 24 }}>
+				{code.map((c, i) => (
+					<input
+						key={i}
+						ref={(el) => { refs.current[i] = el; }}
+						value={c}
+						onChange={(e) => onChange(i, e.target.value)}
+						onKeyDown={(e) => onKey(i, e)}
+						inputMode="numeric"
+						maxLength={6}
+						autoFocus={i === 0}
+						className="tabular-nums"
+						style={{
+							width: 54, height: 62,
+							border: `1.5px solid ${c ? "var(--c-onyx-900)" : "var(--c-line)"}`,
+							borderRadius: 12, textAlign: "center",
+							fontSize: 26, fontWeight: 600,
+							background: "var(--c-bg)", outline: "none",
+							fontFamily: "var(--f-mono)", color: "var(--c-text)",
+						}}
+					/>
+				))}
+			</div>
 
-			{flow !== "login" && (
-				<div className="mt-6 text-center text-sm text-muted-foreground">
-					Didn&apos;t receive a code?{" "}
+			{/* Resend countdown */}
+			<div style={{ fontSize: 13, textAlign: "center", marginBottom: 24, color: "var(--c-text-2)" }}>
+				Didn&apos;t get it?{" "}
+				{countdown > 0 ? (
+					<span>Resend in <span className="mono tabular-nums">{countdown}s</span></span>
+				) : (
 					<button
-						className="font-medium text-primary hover:underline min-h-[44px] inline-flex items-center"
-						onClick={() => toast.info("Check your email or contact support to resend.")}
+						type="button"
+						onClick={() => { setCountdown(30); toast.info("Code resent"); }}
+						style={{ color: "var(--c-lime-600)", fontWeight: 600, cursor: "pointer", background: "none", border: "none", fontFamily: "var(--f-sans)" }}
 					>
-						Resend
+						Resend code
 					</button>
-				</div>
-			)}
+				)}
+			</div>
 
-			<div className="mt-3 text-center">
-				<Link href="/login" className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center min-h-[44px]">Back to login</Link>
+			{/* Verify button */}
+			<button
+				type="button"
+				onClick={() => submitCode(code)}
+				disabled={!code.every((x) => x) || submitting}
+				style={{ ...btnPrimary, opacity: (!code.every((x) => x) || submitting) ? 0.5 : 1 }}
+			>
+				{submitting ? (
+					<span style={{ width: 18, height: 18, border: "2px solid currentColor", borderTopColor: "transparent", borderRadius: "50%", animation: "spin .8s linear infinite", display: "inline-block" }} />
+				) : "Verify"}
+			</button>
+
+			{/* Alternate channel */}
+			<button
+				type="button"
+				onClick={() => toast.info(flow === "login" ? "SMS verification coming soon" : "Phone OTP coming soon")}
+				style={{
+					width: "100%", height: 46, display: "flex", alignItems: "center", justifyContent: "center",
+					marginTop: 10, borderRadius: "var(--r-md)", border: "1px solid var(--c-line)", background: "transparent",
+					fontSize: 13.5, color: "var(--c-text)", fontFamily: "var(--f-sans)", cursor: "pointer",
+				}}
+			>
+				Use {flow === "login" ? "SMS" : "phone"} instead
+			</button>
+
+			{/* Back to login */}
+			<div className="mt-4 text-center">
+				<Link
+					href="/login"
+					style={{ fontSize: 13, color: "var(--c-text-3)" }}
+					className="hover:underline inline-flex items-center min-h-[44px]"
+				>
+					&larr; Back to sign in
+				</Link>
 			</div>
 		</div>
 	);
@@ -105,7 +187,7 @@ function VerifyOtpContent() {
 
 export default function VerifyOtpPage() {
 	return (
-		<Suspense fallback={<div className="text-center text-muted-foreground py-12">Loading&hellip;</div>}>
+		<Suspense fallback={<div className="text-center py-12" style={{ color: "var(--c-text-2)" }}>Loading&hellip;</div>}>
 			<VerifyOtpContent />
 		</Suspense>
 	);
