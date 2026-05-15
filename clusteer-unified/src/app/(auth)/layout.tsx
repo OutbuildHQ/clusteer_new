@@ -88,36 +88,38 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 			className="min-h-[100dvh] grid lg:grid-cols-2"
 			style={{ background: "var(--c-bg)", color: "var(--c-text)", fontFamily: "var(--f-sans)" }}
 		>
-			{/* Form side */}
-			<div className="flex flex-col overflow-auto">
+			{/* Form side — scrollable on mobile */}
+			<div className="flex flex-col min-h-[100dvh] lg:min-h-0 overflow-auto">
 				{/* Top bar */}
-				<div className="flex items-center justify-between px-6 sm:px-10 py-6">
+				<div className="flex items-center justify-between px-5 sm:px-10 py-4 sm:py-6">
 					<Link href="/" className="flex items-center gap-3">
 						<Logo monogramOnly />
 						<span className="font-display text-lg font-semibold" style={{ fontFamily: "var(--f-display)" }}>Clusteer</span>
 					</Link>
 				</div>
 
-				{/* Content */}
-				<div className="flex-1 flex items-center justify-center px-6 sm:px-10 py-6">
+				{/* Content — top-aligned on mobile, centered on desktop */}
+				<div className="flex-1 flex lg:items-center justify-center px-5 sm:px-10 py-4 sm:py-6">
 					<div className="w-full max-w-[420px]">{children}</div>
 				</div>
 
 				{/* Footer */}
 				<div
-					className="flex items-center justify-between px-6 sm:px-10 py-5 text-xs"
+					className="flex items-center justify-between px-5 sm:px-10 py-4 sm:py-5 text-xs"
 					style={{ color: "var(--c-text-3)" }}
 				>
-					<div>&copy; Clusteer &middot; NDPR-aligned &middot; BVN encrypted</div>
-					<div className="hidden sm:flex items-center gap-3">
+					<div>&copy; Clusteer</div>
+					<div className="flex items-center gap-3">
 						<Link href="/terms-of-service" className="hover:underline">Terms</Link>
 						<Link href="/privacy-policy" className="hover:underline">Privacy</Link>
-						<Link href="/contact" className="hover:underline">Help</Link>
+						<span className="hidden sm:inline">
+							<Link href="/contact" className="hover:underline">Help</Link>
+						</span>
 					</div>
 				</div>
 			</div>
 
-			{/* Accent panel */}
+			{/* Accent panel — hidden on mobile/tablet */}
 			<AuthAccentPanel />
 		</div>
 		</ThemeProvider>

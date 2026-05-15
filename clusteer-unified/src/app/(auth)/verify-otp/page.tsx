@@ -95,7 +95,7 @@ function VerifyOtpContent() {
 			<div style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 10, fontWeight: 600, color: "var(--c-text-3)" }}>
 				Verify it&apos;s you
 			</div>
-			<h1 className="font-display" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1.1, marginBottom: 10 }}>
+			<h1 className="font-display text-[28px] sm:text-[36px]" style={{ fontWeight: 600, lineHeight: 1.1, marginBottom: 10 }}>
 				{flow === "login" ? "Enter your 6-digit code" : "Check your email"}
 			</h1>
 			<div style={{ fontSize: 14.5, marginBottom: 28, lineHeight: 1.5, color: "var(--c-text-2)" }}>
@@ -105,8 +105,8 @@ function VerifyOtpContent() {
 				}
 			</div>
 
-			{/* OTP boxes */}
-			<div className="flex items-center justify-between gap-2" style={{ marginBottom: 24 }}>
+			{/* OTP boxes — responsive: flex-1 on mobile, fixed 54px on sm+ */}
+			<div className="flex items-center justify-between gap-1.5 sm:gap-2" style={{ marginBottom: 24 }}>
 				{code.map((c, i) => (
 					<input
 						key={i}
@@ -117,12 +117,12 @@ function VerifyOtpContent() {
 						inputMode="numeric"
 						maxLength={6}
 						autoFocus={i === 0}
-						className="tabular-nums"
+						className="tabular-nums flex-1 sm:flex-none sm:w-[54px] auth-otp-box"
 						style={{
-							width: 54, height: 62,
+							maxWidth: 54, height: 56,
 							border: `1.5px solid ${c ? "var(--c-onyx-900)" : "var(--c-line)"}`,
-							borderRadius: 12, textAlign: "center",
-							fontSize: 26, fontWeight: 600,
+							borderRadius: 10, textAlign: "center",
+							fontSize: 22, fontWeight: 600,
 							background: "var(--c-bg)", outline: "none",
 							fontFamily: "var(--f-mono)", color: "var(--c-text)",
 						}}

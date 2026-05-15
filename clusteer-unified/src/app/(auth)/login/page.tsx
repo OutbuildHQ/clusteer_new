@@ -76,7 +76,7 @@ export default function LoginPage() {
 				Welcome back
 			</div>
 			{/* Title */}
-			<h1 className="font-display" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1.1, marginBottom: 10 }}>
+			<h1 className="font-display text-[28px] sm:text-[36px]" style={{ fontWeight: 600, lineHeight: 1.1, marginBottom: 10 }}>
 				Sign in to Clusteer
 			</h1>
 			{/* Subtitle */}
@@ -165,7 +165,7 @@ export default function LoginPage() {
 				</div>
 
 				{/* Social buttons */}
-				<div className="flex items-center gap-3">
+				<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
 					<button
 						type="button"
 						onClick={() => toast.info("Coming soon: Google")}
@@ -176,7 +176,7 @@ export default function LoginPage() {
 						}}
 					>
 						<span style={{ width: 18, height: 18, borderRadius: 4, background: "#fff", color: "#444", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, border: "1px solid var(--c-line)" }}>G</span>
-						Continue with Google
+						<span className="sm:hidden">Google</span><span className="hidden sm:inline">Continue with Google</span>
 					</button>
 					<button
 						type="button"
