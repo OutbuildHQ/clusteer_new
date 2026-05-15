@@ -66,7 +66,7 @@ export default function LoginPage() {
 			{/* Top-right link (positioned via layout) */}
 			<div className="flex items-center justify-end gap-2 mb-6 -mt-2" style={{ fontSize: 13 }}>
 				New here?{" "}
-				<Link href="/signup" style={{ color: "var(--c-lime-600)", fontWeight: 600 }}>
+				<Link href="/signup" style={{ color: "var(--c-onyx-900)", fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2 }}>
 					Create account
 				</Link>
 			</div>

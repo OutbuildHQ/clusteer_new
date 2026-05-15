@@ -90,7 +90,7 @@ export default function SignupPage() {
 			{/* Top-right link */}
 			<div className="flex items-center justify-end gap-2 mb-6 -mt-2" style={{ fontSize: 13 }}>
 				Already a member?{" "}
-				<Link href="/login" style={{ color: "var(--c-lime-600)", fontWeight: 600 }}>
+				<Link href="/login" style={{ color: "var(--c-onyx-900)", fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2 }}>
 					Sign in
 				</Link>
 			</div>
