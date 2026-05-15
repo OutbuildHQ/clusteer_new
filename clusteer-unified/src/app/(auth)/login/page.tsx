@@ -89,8 +89,8 @@ export default function LoginPage() {
 				<div className="flex flex-col gap-2 mb-4">
 					<label style={{ fontSize: 13, fontWeight: 500 }}>Email or phone</label>
 					<div
-						className="flex items-center gap-2"
-						style={{ padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)" }}
+						className="flex items-center gap-2 auth-input-wrap"
+						style={{ padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)", transition: "box-shadow .15s, border-color .15s" }}
 					>
 						<input
 							{...register("email")}
@@ -98,8 +98,8 @@ export default function LoginPage() {
 							placeholder="adaeze@example.com or +234..."
 							autoFocus
 							autoComplete="email"
-							className="flex-1 bg-transparent outline-none"
-							style={{ border: "none", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)" }}
+							className="flex-1 border-0 bg-transparent outline-none"
+							style={{ fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)" }}
 						/>
 					</div>
 					{errors.email && <div style={{ fontSize: 12, color: "var(--c-down)" }}>{errors.email.message}</div>}
@@ -112,16 +112,16 @@ export default function LoginPage() {
 						<Link href="/forgot-password" style={{ fontSize: 12, color: "var(--c-text-3)", cursor: "pointer" }}>Forgot?</Link>
 					</div>
 					<div
-						className="flex items-center gap-2"
-						style={{ padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)" }}
+						className="flex items-center gap-2 auth-input-wrap"
+						style={{ padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)", transition: "box-shadow .15s, border-color .15s" }}
 					>
 						<input
 							{...register("password")}
 							type={showPassword ? "text" : "password"}
 							placeholder="Min. 8 characters"
 							autoComplete="current-password"
-							className="flex-1 bg-transparent outline-none"
-							style={{ border: "none", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)" }}
+							className="flex-1 border-0 bg-transparent outline-none"
+							style={{ fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)" }}
 						/>
 						<button
 							type="button"

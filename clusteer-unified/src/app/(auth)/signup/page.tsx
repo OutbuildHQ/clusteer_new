@@ -69,10 +69,10 @@ export default function SignupPage() {
 	}
 
 	const inputStyle = {
-		padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)",
+		padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)", transition: "box-shadow .15s, border-color .15s",
 	} as const;
 	const innerInputStyle = {
-		flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)",
+		flex: 1, border: 0, outline: "none", background: "transparent", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)",
 	} as const;
 	const btnPrimary = {
 		height: 48, display: "flex", alignItems: "center", justifyContent: "center",
@@ -113,7 +113,7 @@ export default function SignupPage() {
 					{/* Full name */}
 					<div className="flex flex-col gap-2 mb-4">
 						<label style={{ fontSize: 13, fontWeight: 500 }}>Full name as on NIN</label>
-						<div className="flex items-center gap-2" style={inputStyle}>
+						<div className="flex items-center gap-2 auth-input-wrap" style={inputStyle}>
 							<input
 								placeholder="Adaeze Chukwu"
 								value={data.name}
@@ -127,7 +127,7 @@ export default function SignupPage() {
 					{/* Email */}
 					<div className="flex flex-col gap-2 mb-4">
 						<label style={{ fontSize: 13, fontWeight: 500 }}>Email</label>
-						<div className="flex items-center gap-2" style={inputStyle}>
+						<div className="flex items-center gap-2 auth-input-wrap" style={inputStyle}>
 							<input
 								type="email"
 								placeholder="adaeze@example.com"
@@ -142,7 +142,7 @@ export default function SignupPage() {
 					{/* Phone */}
 					<div className="flex flex-col gap-2 mb-4">
 						<label style={{ fontSize: 13, fontWeight: 500 }}>Phone number</label>
-						<div className="flex items-center gap-2" style={inputStyle}>
+						<div className="flex items-center gap-2 auth-input-wrap" style={inputStyle}>
 							<span style={{ fontSize: 14, fontWeight: 600 }}>&#x1F1F3;&#x1F1EC; +234</span>
 							<input
 								placeholder="80 1234 5678"
@@ -198,7 +198,7 @@ export default function SignupPage() {
 					{/* Password */}
 					<div className="flex flex-col gap-2 mb-4">
 						<label style={{ fontSize: 13, fontWeight: 500 }}>Password</label>
-						<div className="flex items-center gap-2" style={inputStyle}>
+						<div className="flex items-center gap-2 auth-input-wrap" style={inputStyle}>
 							<input
 								type={showPassword ? "text" : "password"}
 								placeholder="Min 8 chars, 1 number"

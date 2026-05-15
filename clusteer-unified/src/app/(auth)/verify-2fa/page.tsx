@@ -56,8 +56,8 @@ export default function TwoFactorPage() {
 			{/* Code input */}
 			<div className="flex flex-col gap-2 mb-6">
 				<div
-					className="flex items-center gap-2"
-					style={{ padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)" }}
+					className="flex items-center gap-2 auth-input-wrap"
+					style={{ padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)", transition: "box-shadow .15s, border-color .15s" }}
 				>
 					<Shield className="shrink-0" style={{ width: 18, height: 18, color: "var(--c-text-3)" }} />
 					<input
@@ -66,8 +66,8 @@ export default function TwoFactorPage() {
 						placeholder="000 000"
 						autoFocus
 						inputMode="numeric"
-						className="flex-1 bg-transparent outline-none mono tabular-nums"
-						style={{ border: "none", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-mono)" }}
+						className="flex-1 border-0 bg-transparent outline-none mono tabular-nums"
+						style={{ fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-mono)" }}
 					/>
 				</div>
 			</div>
@@ -94,7 +94,7 @@ export default function TwoFactorPage() {
 				<button
 					type="button"
 					onClick={() => toast.info("Backup-code flow coming soon")}
-					style={{ color: "var(--c-text-3)", cursor: "pointer", background: "none", border: "none", fontFamily: "var(--f-sans)" }}
+					style={{ color: "var(--c-text-3)", cursor: "pointer", background: "none", fontFamily: "var(--f-sans)" }}
 				>
 					Use a backup code
 				</button>
@@ -102,7 +102,7 @@ export default function TwoFactorPage() {
 				<button
 					type="button"
 					onClick={() => toast.info("Help link sent to email")}
-					style={{ color: "var(--c-text-3)", cursor: "pointer", background: "none", border: "none", fontFamily: "var(--f-sans)" }}
+					style={{ color: "var(--c-text-3)", cursor: "pointer", background: "none", fontFamily: "var(--f-sans)" }}
 				>
 					Lost access?
 				</button>

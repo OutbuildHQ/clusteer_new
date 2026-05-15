@@ -38,10 +38,10 @@ export default function ForgotPasswordPage() {
 	}
 
 	const inputStyle = {
-		padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)",
+		padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)", transition: "box-shadow .15s, border-color .15s",
 	} as const;
 	const innerInputStyle = {
-		flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)",
+		flex: 1, border: 0, outline: "none", background: "transparent", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)",
 	} as const;
 	const btnPrimary = {
 		height: 48, width: "100%", display: "flex", alignItems: "center", justifyContent: "center",
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="flex flex-col gap-2 mb-4">
 						<label style={{ fontSize: 13, fontWeight: 500 }}>Email</label>
-						<div className="flex items-center gap-2" style={inputStyle}>
+						<div className="flex items-center gap-2 auth-input-wrap" style={inputStyle}>
 							<input
 								{...register("email")}
 								type="email"

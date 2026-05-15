@@ -20,10 +20,10 @@ function ResetPasswordContent() {
 	const match = p1 && p1 === p2;
 
 	const inputStyle = {
-		padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)",
+		padding: "0 14px", height: 46, border: "1px solid var(--c-line)", borderRadius: 10, background: "var(--c-bg)", transition: "box-shadow .15s, border-color .15s",
 	} as const;
 	const innerInputStyle = {
-		flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)",
+		flex: 1, border: 0, outline: "none", background: "transparent", fontSize: 14, color: "var(--c-text)", fontFamily: "var(--f-sans)",
 	} as const;
 	const btnPrimary = {
 		height: 48, width: "100%", display: "flex" as const, alignItems: "center" as const, justifyContent: "center" as const,
@@ -111,7 +111,7 @@ function ResetPasswordContent() {
 			{/* New password */}
 			<div className="flex flex-col gap-2 mb-4">
 				<label style={{ fontSize: 13, fontWeight: 500 }}>New password</label>
-				<div className="flex items-center gap-2" style={inputStyle}>
+				<div className="flex items-center gap-2 auth-input-wrap" style={inputStyle}>
 					<input
 						type={showP1 ? "text" : "password"}
 						placeholder="Min. 8 characters"
@@ -134,7 +134,7 @@ function ResetPasswordContent() {
 			{/* Confirm password */}
 			<div className="flex flex-col gap-2 mb-4">
 				<label style={{ fontSize: 13, fontWeight: 500 }}>Confirm new password</label>
-				<div className="flex items-center gap-2" style={inputStyle}>
+				<div className="flex items-center gap-2 auth-input-wrap" style={inputStyle}>
 					<input
 						type={showP2 ? "text" : "password"}
 						placeholder="Re-enter password"

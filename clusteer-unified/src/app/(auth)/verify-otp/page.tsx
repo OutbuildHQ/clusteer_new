@@ -139,7 +139,7 @@ function VerifyOtpContent() {
 					<button
 						type="button"
 						onClick={() => { setCountdown(30); toast.info("Code resent"); }}
-						style={{ color: "var(--c-lime-600)", fontWeight: 600, cursor: "pointer", background: "none", border: "none", fontFamily: "var(--f-sans)" }}
+						style={{ color: "var(--c-lime-600)", fontWeight: 600, cursor: "pointer", background: "none", fontFamily: "var(--f-sans)" }}
 					>
 						Resend code
 					</button>
