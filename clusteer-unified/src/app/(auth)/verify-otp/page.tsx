@@ -17,9 +17,13 @@ function VerifyOtpContent() {
 	const { email, completeTwoFactor, signIn } = useAuth();
 
 	useEffect(() => {
-		const t = setInterval(() => setCountdown((c) => (c > 0 ? c - 1 : 0)), 1000);
+		if (countdown <= 0) return;
+		const t = setInterval(() => setCountdown((c) => {
+			if (c <= 1) { clearInterval(t); return 0; }
+			return c - 1;
+		}), 1000);
 		return () => clearInterval(t);
-	}, []);
+	}, [countdown > 0]);
 
 	const submitCode = useCallback(async (digits: string[]) => {
 		const joined = digits.join("");

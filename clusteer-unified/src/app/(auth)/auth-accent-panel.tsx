@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatNumber } from "@/lib/utils";
 
 type RateData = {
 	rate: string;
@@ -10,44 +11,40 @@ type RateData = {
 
 const FALLBACK: RateData = { rate: "1,610.50", change: "+0.32%", volume: "3.8M" };
 
-function formatRate(n: number): string {
-	return n.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
 export function AuthAccentPanel() {
 	const [data, setData] = useState<RateData>(FALLBACK);
 
 	useEffect(() => {
-		let cancelled = false;
+		const controller = new AbortController();
 
 		async function fetchRate() {
 			try {
-				const res = await fetch("/api/system/exchange-rate?targetCurrency=NGN&type=sell");
+				const res = await fetch("/api/system/exchange-rate?targetCurrency=NGN&type=sell", {
+					signal: controller.signal,
+				});
 				const json = await res.json();
-				if (cancelled || !json.status) return;
+				if (controller.signal.aborted || !json.status) return;
 
 				const rate = json.sellRate ?? json.rate;
 				if (!rate) return;
 
-				// Calculate a pseudo 24h change from buy vs sell spread
 				const buyRate = json.buyRate ?? rate;
 				const spread = ((rate - buyRate) / buyRate) * 100;
 				const changeStr = spread >= 0 ? `+${spread.toFixed(2)}%` : `${spread.toFixed(2)}%`;
 
 				setData({
-					rate: formatRate(rate),
+					rate: formatNumber(rate),
 					change: changeStr,
-					volume: FALLBACK.volume, // volume not available from this endpoint
+					volume: FALLBACK.volume,
 				});
 			} catch {
-				// keep fallback
+				// keep fallback — includes AbortError on unmount
 			}
 		}
 
 		fetchRate();
-		// Refresh every 5 minutes (matches API cache)
 		const interval = setInterval(fetchRate, 5 * 60 * 1000);
-		return () => { cancelled = true; clearInterval(interval); };
+		return () => { controller.abort(); clearInterval(interval); };
 	}, []);
 
 	return (
