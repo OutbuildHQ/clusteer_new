@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clusteer Mobile · Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; background: #1A1A18; font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; color: #21241D; }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="android-frame.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script type="text/babel" src="mobile/theme.jsx"></script>
+<script type="text/babel" src="mobile/icons.jsx"></script>
+<script type="text/babel" src="mobile/data.jsx"></script>
+<script type="text/babel" src="mobile/charts.jsx"></script>
+<script type="text/babel" src="mobile/ui.jsx"></script>
+
+<script type="text/babel" src="mobile/screens/onboarding.jsx"></script>
+<script type="text/babel" src="mobile/screens/kyc.jsx"></script>
+<script type="text/babel" src="mobile/screens/dashboard.jsx"></script>
+<script type="text/babel" src="mobile/screens/trade.jsx"></script>
+<script type="text/babel" src="mobile/screens/transfer.jsx"></script>
+<script type="text/babel" src="mobile/screens/account.jsx"></script>
+<script type="text/babel" src="mobile/screens/identity.jsx"></script>
+
+<script type="text/babel">
+  // Pull globals from window into local scope so JSX references resolve.
+  const {
+    DesignCanvas, DCSection, DCArtboard, DCPostIt,
+    ThemeProvider, Phone, Screen, AppBar, IconBtn,
+    BtnPrimary, BtnSecondary, BtnGhost, Pill, Card, Row, BottomNav,
+    TextField, Sheet, Toast, Num, Tabs, Badge, Sparkline, Switch,
+    ClusteerLogo, AssetLogo, BankLogo, Icon,
+    ASSETS, TX_HISTORY, BANKS, NOTIFICATIONS, SUPPORT_CHAT,
+    RATE_USDT_NGN, FEE_PCT, RATE_SERIES, BTC_SERIES, ETH_SERIES, FAQ_TOPICS,
+    FMT_NGN, FMT_USDT, FMT_USD,
+    ClusteerChart, CandleChart, RangeTabs, Donut,
+    OnboardingA, OnboardingB, OnboardingC, SignUpScreen, LoginScreen, OtpScreen, ForgotPasswordScreen,
+    KycIntro, KycPersonalInfo, KycIdType, KycNinEntry, KycSelfie, KycSubmitting, KycSuccess, KycPending, KycRejected,
+    DashboardA, DashboardB, DashboardC,
+    BuyAmountA, BuyAmountB, BuyReview, BuyProcessing, BuySuccess,
+    SellAmount, SellSuccess, SwapScreen,
+    ReceiveScreen, SendRecipient, SendAmount, QrScanner, WithdrawScreen, TxDetail, HistoryScreen, AssetDetail,
+    NotificationsScreen, SettingsScreen, TwoFactorSetup, ProfileEdit, HelpCenter, SupportChat,
+    EmptyState, ErrorState, LoadingState,
+    AppIcon, AppIconShowcase, LockScreen, PushNotification, HomeWidget, AppLockedState,
+  } = window;
+  const noop = () => {};
+
+  // Helper: phone wrapped in iOS frame at proper scale
+  function PhoneFrame({ children, mode = 'light', label, badge, scale = 1 }) {
+    return (
+      <ThemeProvider mode={mode}>
+        <Phone platform="ios" mode={mode} label={label} badge={badge}>
+          {children}
+        </Phone>
+      </ThemeProvider>
+    );
+  }
+
+  // Each artboard wraps a 390x844 phone in a fixed-size frame.
+  // The design_canvas <DCArtboard> is a static design frame.
+  const PHONE_W = 390, PHONE_H = 844;
+
+  function App() {
+    return (
+      <DesignCanvas
+        title="Clusteer · Mobile App"
+        subtitle="iOS + Android · NIN-verified Nigerian crypto wallet · 30+ screens, 3 dashboard variations, full edge states"
+        background="#1A1A18"
+      >
+        {/* ─────── 01. BRAND IDENTITY ─────── */}
+        <DCSection id="brand" title="01 · Brand & app identity">
+          <DCArtboard id="app-icon" label="App icon — variations" width={520} height={580}>
+            <ThemeProvider mode="light">
+              <div style={{ width: '100%', height: '100%', background: '#F0EBE6', padding: 24, overflow: 'auto' }}>
+                <AppIconShowcase />
+              </div>
+            </ThemeProvider>
+          </DCArtboard>
+
+          <DCArtboard id="lock-light" label="Lock screen — light push" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><LockScreen onUnlock={noop} /></PhoneFrame>
+          </DCArtboard>
+
+          <DCArtboard id="lock-dark" label="Lock screen — dark push" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="dark"><LockScreen onUnlock={noop} /></PhoneFrame>
+          </DCArtboard>
+
+          <DCArtboard id="widget-medium" label="Home screen widget · medium" width={400} height={220}>
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F0EBE6', padding: 20 }}>
+              <HomeWidget size="medium" />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="widget-small" label="Home screen widget · small" width={220} height={220}>
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F0EBE6', padding: 20 }}>
+              <HomeWidget size="small" />
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 02. ONBOARDING ─────── */}
+        <DCSection id="onboarding" title="02 · Onboarding & sign-up">
+          <DCArtboard id="onb-a" label="A · Bold playful" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><OnboardingA onDone={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="onb-b" label="B · Soft premium" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><OnboardingB onDone={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="onb-c" label="C · Scrolling storybook" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><OnboardingC onDone={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="signup" label="Sign up" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><SignUpScreen onSubmit={noop} onBack={noop} onLogin={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="login" label="Login (biometric)" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><LoginScreen onSubmit={noop} onBack={noop} onSignup={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="otp" label="OTP / 2FA verify" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><OtpScreen onSubmit={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="forgot" label="Forgot password" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><ForgotPasswordScreen onSubmit={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 03. KYC / IDENTITY ─────── */}
+        <DCSection id="kyc" title="03 · KYC / NIN verification">
+          <DCArtboard id="kyc-intro" label="Intro" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><KycIntro onStart={noop} onClose={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="kyc-personal" label="Step 1 · Personal info" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><KycPersonalInfo onNext={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="kyc-id" label="Step 2 · Pick ID" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><KycIdType onNext={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="kyc-nin" label="Step 3 · Enter NIN" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><KycNinEntry onNext={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="kyc-selfie" label="Step 4 · Selfie tips" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><KycSelfie onNext={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="kyc-submitting" label="Submitting" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><KycSubmitting onDone={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="kyc-success" label="Verified ✓" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><KycSuccess onDone={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="kyc-pending" label="Manual review" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><KycPending onDone={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="kyc-rejected" label="Rejected" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><KycRejected onRetry={noop} /></PhoneFrame>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 04. DASHBOARD VARIATIONS ─────── */}
+        <DCSection id="dashboard" title="04 · Dashboard / Home — 3 variations">
+          <DCArtboard id="dash-a" label="A · Bold playful (lime hero)" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><DashboardA onNav={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="dash-b" label="B · Soft premium (clean)" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><DashboardB onNav={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="dash-c" label="C · Dark command center" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><DashboardC onNav={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="dash-a-dark" label="A · Dark mode" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="dark"><DashboardA onNav={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="dash-b-dark" label="B · Dark mode" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="dark"><DashboardB onNav={noop} /></PhoneFrame>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 05. BUY USDT ─────── */}
+        <DCSection id="buy" title="05 · Buy USDT flow — 2 variations">
+          <DCArtboard id="buy-a" label="A · Dual-field with rate ribbon" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><BuyAmountA onNext={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="buy-b" label="B · Numeric keypad" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><BuyAmountB onNext={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="buy-review" label="Review" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><BuyReview onConfirm={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="buy-processing" label="Processing" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><BuyProcessing onDone={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="buy-success" label="Success" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><BuySuccess onDone={noop} onShare={noop} onAgain={noop} /></PhoneFrame>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 06. SELL & SWAP ─────── */}
+        <DCSection id="sell" title="06 · Sell & swap">
+          <DCArtboard id="sell-amount" label="Sell amount" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><SellAmount onNext={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="sell-success" label="Sell success" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><SellSuccess onDone={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="swap" label="Swap (any pair)" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><SwapScreen onBack={noop} onConfirm={noop} /></PhoneFrame>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 07. SEND / RECEIVE / WITHDRAW ─────── */}
+        <DCSection id="transfer" title="07 · Send · Receive · Withdraw">
+          <DCArtboard id="receive" label="Receive (QR)" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><ReceiveScreen onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="send-recipient" label="Send · Pick recipient" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><SendRecipient onNext={noop} onBack={noop} onScan={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="send-amount" label="Send · Amount" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><SendAmount onNext={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="qr-scanner" label="QR scanner" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light" fullBleed><QrScanner onClose={noop} onResult={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="withdraw" label="Withdraw to bank" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><WithdrawScreen onNext={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="tx-detail" label="Transaction detail" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><TxDetail onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="history" label="Full history" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><HistoryScreen onBack={noop} onTx={noop} /></PhoneFrame>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 08. PORTFOLIO / ASSETS ─────── */}
+        <DCSection id="assets" title="08 · Portfolio / asset detail">
+          <DCArtboard id="asset-usdt" label="USDT detail (chart)" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><AssetDetail asset={ASSETS[0]} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="asset-btc" label="BTC detail" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><AssetDetail asset={ASSETS[2]} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="asset-btc-dark" label="BTC detail · dark" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="dark"><AssetDetail asset={ASSETS[2]} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 09. ACCOUNT / SETTINGS / SUPPORT ─────── */}
+        <DCSection id="account" title="09 · Notifications · Settings · Security · Support">
+          <DCArtboard id="notifs" label="Notifications" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><NotificationsScreen onBack={noop} onTx={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="settings" label="Settings" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><SettingsScreen onBack={noop} onNav={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="settings-dark" label="Settings · dark" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="dark"><SettingsScreen onBack={noop} onNav={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="profile" label="Profile edit" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><ProfileEdit onBack={noop} onSave={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="2fa" label="2FA setup" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><TwoFactorSetup onDone={noop} onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="help" label="Help center" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><HelpCenter onBack={noop} onChat={noop} /></PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="chat" label="Live chat support" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light"><SupportChat onBack={noop} /></PhoneFrame>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 10. EDGE STATES ─────── */}
+        <DCSection id="edge" title="10 · Edge states (empty / error / loading)">
+          <DCArtboard id="empty" label="Empty state" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light">
+              <AppBar title="Activity" />
+              <EmptyState title="No transactions yet" body="Buy your first USDT and your activity will show up here." cta="Buy USDT" />
+            </PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="error" label="Error state" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light">
+              <AppBar title="Wallet" />
+              <ErrorState />
+            </PhoneFrame>
+          </DCArtboard>
+          <DCArtboard id="loading" label="Loading skeletons" width={PHONE_W} height={PHONE_H}>
+            <PhoneFrame mode="light">
+              <AppBar title="Home" />
+              <LoadingState />
+            </PhoneFrame>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ─────── 11. ANDROID ─────── */}
+        <DCSection id="android" title="11 · Android (Material chrome)">
+          <DCArtboard id="android-dash" label="Dashboard A · Android" width={PHONE_W} height={PHONE_H}>
+            <ThemeProvider mode="light">
+              <Phone platform="android" mode="light"><DashboardA onNav={noop} /></Phone>
+            </ThemeProvider>
+          </DCArtboard>
+          <DCArtboard id="android-buy" label="Buy · Android" width={PHONE_W} height={PHONE_H}>
+            <ThemeProvider mode="light">
+              <Phone platform="android" mode="light"><BuyAmountA onNext={noop} onBack={noop} /></Phone>
+            </ThemeProvider>
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<style>
+  @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 0.8; } 100% { opacity: 0.5; } }
+  @keyframes scanline { 0%, 100% { top: 8px; } 50% { top: calc(100% - 10px); } }
+  @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+</body>
+</html>

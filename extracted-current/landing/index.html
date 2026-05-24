@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Clusteer — Stables to naira, the bold way</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #FAFAF7;
+      color: #21241D;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: 0; background: transparent; padding: 0; }
+    img { display: block; max-width: 100%; }
+    ::selection { background: #9FE870; color: #21241D; }
+
+    /* fonts as utilities */
+    .f-display { font-family: 'Sora', sans-serif; }
+    .f-body { font-family: 'Inter', sans-serif; }
+    .f-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* token shorthands */
+    :root {
+      --lime: #9FE870;
+      --pale: #EFFCD0;
+      --onyx: #21241D;
+      --cream: #F0EBE6;
+      --sand: #FAFAF7;
+      --paper: #FFFFFF;
+      --ink-2: #475467;
+      --line: rgba(33,36,29,0.10);
+      --line-strong: #21241D;
+      --deep: #0F4F26;
+    }
+
+    /* rate ticker number ticker */
+    @keyframes pulse-dot { 0%,100% { opacity: 1 } 50% { opacity: 0.35 } }
+    .live-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+    @keyframes float-1 { 0%,100% { transform: translate(0,0) rotate(-6deg) } 50% { transform: translate(8px,-12px) rotate(-4deg) } }
+    @keyframes float-2 { 0%,100% { transform: translate(0,0) rotate(8deg) } 50% { transform: translate(-10px,8px) rotate(6deg) } }
+    @keyframes float-3 { 0%,100% { transform: translate(0,0) rotate(-3deg) } 50% { transform: translate(6px,10px) rotate(-1deg) } }
+    .float-1 { animation: float-1 6s ease-in-out infinite; }
+    .float-2 { animation: float-2 7s ease-in-out infinite; }
+    .float-3 { animation: float-3 8s ease-in-out infinite; }
+
+    /* marquee */
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .marquee-track { animation: marquee 35s linear infinite; }
+
+    /* button shine */
+    .btn-shine { position: relative; overflow: hidden; }
+    .btn-shine::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+    .btn-shine:hover::after { transform: translateX(100%); }
+
+    /* section reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* mock chart bars rise */
+    @keyframes bar-rise {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" src="brand.jsx"></script>
+  <script type="text/babel" src="sections.jsx"></script>
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>

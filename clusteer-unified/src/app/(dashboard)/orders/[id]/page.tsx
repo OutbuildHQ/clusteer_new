@@ -107,7 +107,7 @@ export default function OrderDetailPage() {
 						<ArrowLeft className="size-5" />
 					</button>
 					<div>
-						<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">
+						<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70">
 							&#9670; Order details
 						</div>
 						<h1 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">

@@ -25,7 +25,7 @@ export default function AboutPage() {
 			{/* ─── Hero ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="max-w-[820px]">
-					<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">
+					<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">
 						&#9670; ABOUT US
 					</div>
 					<h1 className="font-display text-[clamp(36px,9vw,88px)] sm:text-[clamp(48px,7vw,88px)] font-bold leading-[0.92] tracking-[-0.045em]">
@@ -49,7 +49,7 @@ export default function AboutPage() {
 						<div className="size-12 sm:size-[52px] rounded-2xl bg-custom-black text-light-green inline-flex items-center justify-center">
 							<Target className="size-5 sm:size-[22px]" strokeWidth={2.4} />
 						</div>
-						<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] uppercase">
+						<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase">
 							Our mission
 						</div>
 						<h2 className="font-display text-xl sm:text-2xl lg:text-[32px] font-bold leading-tight tracking-[-0.025em]">
@@ -68,7 +68,7 @@ export default function AboutPage() {
 						<div className="size-12 sm:size-[52px] rounded-2xl bg-light-green border-[1.5px] border-custom-black inline-flex items-center justify-center">
 							<Eye className="size-5 sm:size-[22px]" strokeWidth={2.4} />
 						</div>
-						<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] uppercase">
+						<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase">
 							Our vision
 						</div>
 						<h2 className="font-display text-xl sm:text-2xl lg:text-[32px] font-bold leading-tight tracking-[-0.025em]">
@@ -141,7 +141,7 @@ export default function AboutPage() {
 			{/* ─── Team ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="mb-8 sm:mb-14 max-w-[720px]">
-					<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">
+					<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">
 						&#9670; THE TEAM
 					</div>
 					<h2 className="font-display text-[clamp(28px,7vw,56px)] sm:text-[clamp(36px,5vw,56px)] font-bold leading-none tracking-[-0.04em]">
@@ -181,8 +181,8 @@ export default function AboutPage() {
 				<div className="mt-6 sm:mt-10 bg-[#EFFCD0] border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-6 sm:p-10 lg:p-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-8">
 					<div>
 						<div className="flex items-center gap-2 mb-2">
-							<MapPin className="size-4 text-brand-800" />
-							<span className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] uppercase">
+							<MapPin className="size-4 text-custom-black/70" />
+							<span className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase">
 								Lagos, Nigeria
 							</span>
 						</div>

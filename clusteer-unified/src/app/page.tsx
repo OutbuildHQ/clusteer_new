@@ -106,7 +106,7 @@ function FAQ({ q, a }: { q: string; a: string }) {
 	const [open, setOpen] = useState(false);
 	return (
 		<div className="border-b-2 border-custom-black/10">
-			<button onClick={() => setOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between gap-3 py-4 sm:py-5 text-left font-display font-bold text-[15px] sm:text-base md:text-lg hover:text-brand-700 transition-colors min-h-[44px]">
+			<button onClick={() => setOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between gap-3 py-4 sm:py-5 text-left font-display font-bold text-[15px] sm:text-base md:text-lg hover:text-custom-black transition-colors min-h-[44px]">
 				{q}
 				<ChevronDown className={`size-5 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
 			</button>
@@ -208,9 +208,9 @@ export default function Home() {
 								</Button>
 							</div>
 							<div className="mt-6 sm:mt-11 flex flex-wrap gap-x-4 gap-y-2 sm:gap-5 lg:gap-7 text-[12px] sm:text-[13px] text-muted-foreground">
-								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-brand-800" strokeWidth={2.6} /> <strong className="text-foreground">2FA</strong> protected</span>
-								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-brand-800" strokeWidth={2.6} /> <strong className="text-foreground">92,000+</strong> Nigerians</span>
-								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-brand-800" strokeWidth={2.6} /> <strong className="text-foreground">5-min</strong> payouts</span>
+								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">2FA</strong> protected</span>
+								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">92,000+</strong> Nigerians</span>
+								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">5-min</strong> payouts</span>
 							</div>
 						</FadeUp>
 
@@ -269,7 +269,7 @@ export default function Home() {
 												<AssetLogo symbol="NGN" size="md" />
 												<div>
 													<div className="font-mono text-[22px] font-semibold">{formatMoney(1000 * liveRateInt, "NGN", { decimals: 0 })}</div>
-													<div className="text-[11px] text-brand-800 font-semibold">You receive · NGN · GTBank ••3421</div>
+													<div className="text-[11px] text-custom-black/70 font-semibold">You receive · NGN · GTBank ••3421</div>
 												</div>
 											</div>
 										</div>
@@ -316,7 +316,7 @@ export default function Home() {
 			<section id="how" className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<FadeUp>
 					<div className="mb-8 sm:mb-16 max-w-[720px]">
-						<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">◆ HOW IT WORKS</div>
+						<div className="font-mono text-xs font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">◆ HOW IT WORKS</div>
 						<h2 className="font-display text-[clamp(28px,7vw,68px)] sm:text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
 							Three steps. <em className="italic">That&apos;s it.</em>
 						</h2>
@@ -335,7 +335,7 @@ export default function Home() {
 										{s.n}
 									</div>
 									<div>
-										<div className={`font-mono text-[11px] font-semibold tracking-[1.5px] uppercase mb-3 ${s.dark ? "text-light-green" : "text-brand-800"}`}>
+										<div className={`font-mono text-[11px] font-semibold tracking-[1.5px] uppercase mb-3 ${s.dark ? "text-light-green" : "text-custom-black/70"}`}>
 											{s.kicker}
 										</div>
 										<h3 className={`font-display text-xl sm:text-2xl lg:text-[32px] font-bold leading-tight tracking-[-0.025em] mb-3 ${s.dark ? "text-white" : "text-custom-black"}`}>
@@ -380,7 +380,7 @@ export default function Home() {
 			<section id="trust" className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<FadeUp>
 					<div className="mb-8 sm:mb-14 max-w-[720px]">
-						<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">◆ TRUST</div>
+						<div className="font-mono text-xs font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">◆ TRUST</div>
 						<h2 className="font-display text-[clamp(28px,7vw,68px)] sm:text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
 							We hold the boring stuff <em className="italic">seriously</em> so you don&apos;t have to.
 						</h2>
@@ -450,7 +450,7 @@ export default function Home() {
 			{/* ─── FAQ ─── */}
 			<section id="faq" className="py-12 sm:py-20 px-4 sm:px-8 max-w-[800px] mx-auto">
 				<FadeUp>
-					<div className="font-mono text-xs font-semibold text-brand-800 tracking-[1.5px] mb-4">◆ FAQ</div>
+					<div className="font-mono text-xs font-semibold text-custom-black/70 tracking-[1.5px] mb-4">◆ FAQ</div>
 					<h2 className="font-display text-xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] mb-6 sm:mb-10">Common questions</h2>
 				</FadeUp>
 				<FadeUp delay={0.1}>
@@ -533,7 +533,7 @@ function MobileSwap({ rate }: { rate: number }) {
 					<AssetLogo symbol="NGN" size="sm" />
 					<div className="min-w-0">
 						<div className="font-mono text-base sm:text-lg font-semibold truncate">{ngn}</div>
-						<div className="text-[10px] text-brand-800 font-semibold">You receive · NGN</div>
+						<div className="text-[10px] text-custom-black/70 font-semibold">You receive · NGN</div>
 					</div>
 				</div>
 			</div>
@@ -554,7 +554,7 @@ function StepVisualRate({ rate }: { rate: number }) {
 		<div className="w-full max-w-[320px] sm:max-w-[380px] bg-background border-[1.5px] border-custom-black rounded-[20px] p-4 sm:p-6 flex flex-col gap-3">
 			<div className="flex justify-between items-baseline">
 				<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">You send</span>
-				<span className="text-[11px] text-brand-800 font-semibold">USDT • TRC-20</span>
+				<span className="text-[11px] text-custom-black/70 font-semibold">USDT • TRC-20</span>
 			</div>
 			<div className="flex items-center gap-3">
 				<AssetLogo symbol="USDT" size="lg" />
@@ -563,7 +563,7 @@ function StepVisualRate({ rate }: { rate: number }) {
 			<div className="border-t border-dashed border-custom-black/20 my-1" />
 			<div className="flex justify-between items-baseline">
 				<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">You get</span>
-				<span className="font-mono text-[11px] text-brand-800 font-semibold">@ ₦{rate.toLocaleString()}</span>
+				<span className="font-mono text-[11px] text-custom-black/70 font-semibold">@ ₦{rate.toLocaleString()}</span>
 			</div>
 			<div className="bg-light-green p-3.5 sm:p-4 rounded-[14px] border-[1.5px] border-custom-black flex items-center gap-3">
 				<AssetLogo symbol="NGN" size="lg" />
@@ -623,7 +623,7 @@ function StepVisualPaid({ rate }: { rate: number }) {
 			</div>
 			<div className="flex justify-between text-xs text-muted-foreground">
 				<span>Ref: <span className="font-mono">CL-9F2A3D81</span></span>
-				<span className="text-brand-800 font-semibold">✓ NIBSS confirmed</span>
+				<span className="text-custom-black/70 font-semibold">✓ NIBSS confirmed</span>
 			</div>
 		</div>
 	);
@@ -682,7 +682,7 @@ function PhoneMockup({ rate }: { rate: number }) {
 						{/* Rate card */}
 						<div className="bg-light-green rounded-[14px] sm:rounded-[18px] p-3 sm:p-4 flex items-center justify-between">
 							<div>
-								<div className="text-[10px] sm:text-[11px] text-brand-800 font-mono font-semibold">USDT / NGN</div>
+								<div className="text-[10px] sm:text-[11px] text-custom-black/70 font-mono font-semibold">USDT / NGN</div>
 								<div className="font-mono text-lg sm:text-[22px] font-semibold text-custom-black">₦{rate.toLocaleString()}</div>
 							</div>
 							<div className="w-16 sm:w-20 h-7 sm:h-9">
@@ -699,7 +699,7 @@ function PhoneMockup({ rate }: { rate: number }) {
 							].map((r, i) => (
 								<div key={i} className="flex items-center justify-between p-2 sm:p-2.5 bg-white rounded-xl border border-custom-black/6 mb-1.5">
 									<div className="flex items-center gap-2 sm:gap-2.5">
-										<div className={`size-7 sm:size-8 rounded-full ${r.g ? "bg-[var(--button-bg)] text-brand-800" : "bg-warm-beige text-custom-black"} inline-flex items-center justify-center`}>
+										<div className={`size-7 sm:size-8 rounded-full ${r.g ? "bg-[var(--button-bg)] text-custom-black/70" : "bg-warm-beige text-custom-black"} inline-flex items-center justify-center`}>
 											{r.g ? "−" : "+"}
 										</div>
 										<div>
@@ -707,7 +707,7 @@ function PhoneMockup({ rate }: { rate: number }) {
 											<div className="text-[10px] sm:text-[11px] text-muted-foreground">{r.d}</div>
 										</div>
 									</div>
-									<div className={`font-mono text-xs sm:text-[13px] font-semibold ${r.g ? "text-brand-800" : ""}`}>{r.a}</div>
+									<div className={`font-mono text-xs sm:text-[13px] font-semibold ${r.g ? "text-custom-black/70" : ""}`}>{r.a}</div>
 								</div>
 							))}
 						</div>

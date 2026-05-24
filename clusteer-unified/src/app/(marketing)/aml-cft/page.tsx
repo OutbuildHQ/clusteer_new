@@ -15,7 +15,7 @@ export default function AmlCftPolicyPage() {
 						Back to Home
 					</Button>
 				</Link>
-				<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-3">
+				<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70 mb-3">
 					&#9670; LEGAL
 				</div>
 				<h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">

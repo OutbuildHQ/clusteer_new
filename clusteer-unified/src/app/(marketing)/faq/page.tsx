@@ -26,7 +26,7 @@ function FAQ({ q, a }: { q: string; a: string }) {
 			<button
 				onClick={() => setOpen(!open)}
 				aria-expanded={open}
-				className="flex w-full items-center justify-between gap-3 py-4 sm:py-5 text-left font-display font-bold text-[15px] sm:text-base md:text-lg hover:text-brand-700 transition-colors min-h-[44px]"
+				className="flex w-full items-center justify-between gap-3 py-4 sm:py-5 text-left font-display font-bold text-[15px] sm:text-base md:text-lg hover:text-custom-black/70 transition-colors min-h-[44px]"
 			>
 				{q}
 				<ChevronDown className={`size-5 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
@@ -121,14 +121,14 @@ export default function FAQPage() {
 		<>
 			{/* ─── Hero ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto text-center">
-				<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-3 sm:mb-4">
+				<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70 mb-3 sm:mb-4">
 					◆ FAQ
 				</div>
 				<h1 className="font-display text-[clamp(32px,7vw,72px)] sm:text-[clamp(40px,5.5vw,72px)] font-bold leading-[0.95] tracking-[-0.03em]">
 					Frequently asked questions
 				</h1>
 				<p className="mt-4 sm:mt-5 text-[15px] sm:text-[17px] text-muted-foreground max-w-[560px] mx-auto leading-[1.5]">
-					Everything you need to know about using Clusteer to trade stablecoins and get paid in Naira. Can&apos;t find your answer? <Link href="/help" className="text-brand-800 font-semibold hover:underline">Visit our Help Center</Link>.
+					Everything you need to know about using Clusteer to trade stablecoins and get paid in Naira. Can&apos;t find your answer? <Link href="/help" className="text-custom-black/70 font-semibold hover:underline">Visit our Help Center</Link>.
 				</p>
 			</section>
 
@@ -161,7 +161,7 @@ export default function FAQPage() {
 								<category.icon className="size-5" strokeWidth={2.4} />
 							</div>
 							<div>
-								<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">
+								<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70">
 									◆ {category.label.toUpperCase()}
 								</div>
 								<h2 className="font-display text-xl sm:text-2xl lg:text-3xl font-bold tracking-[-0.03em]">

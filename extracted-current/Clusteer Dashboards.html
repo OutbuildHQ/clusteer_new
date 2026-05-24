@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Clusteer · Dashboards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboards/tokens.css">
+<style>
+  html,body,#root{height:100%}
+  body{margin:0;background:var(--c-bg);color:var(--c-text);font-family:var(--f-sans);overflow:hidden}
+  .switcher{position:fixed;top:14px;right:14px;z-index:100;display:flex;gap:6px;background:var(--c-surface);border:1px solid var(--c-line);border-radius:999px;padding:4px;box-shadow:var(--sh-md)}
+  .switcher button{border:none;background:transparent;padding:6px 14px;border-radius:999px;font-family:var(--f-sans);font-size:12px;font-weight:600;cursor:pointer;color:var(--c-text-2)}
+  .switcher button.active{background:var(--c-onyx-900);color:var(--c-cream)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="dashboards/data.js"></script>
+<script type="text/babel" src="dashboards/ui.jsx"></script>
+<script type="text/babel" src="dashboards/charts.jsx"></script>
+<script type="text/babel" src="dashboards/client-shell.jsx"></script>
+<script type="text/babel" src="dashboards/client-screens.jsx"></script>
+<script type="text/babel" src="dashboards/client-misc.jsx"></script>
+<script type="text/babel" src="dashboards/admin-shell.jsx"></script>
+<script type="text/babel" src="dashboards/admin-extras.jsx"></script>
+<script type="text/babel" src="dashboards/overlays.jsx"></script>
+<script type="text/babel" src="dashboards/drawers.jsx"></script>
+<script type="text/babel" src="dashboards/tweaks-panel.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "density": "regular",
+  "accent": "#C8F051",
+  "radius": 14,
+  "showSwitcher": true
+}/*EDITMODE-END*/;
+
+function App(){
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  useEffect(()=>{
+    const r = document.documentElement;
+    r.style.setProperty('--c-lime-500', t.accent);
+    r.style.setProperty('--r-md', t.radius+'px');
+    r.style.setProperty('--clt-density', t.density==='compact'?'0.85':t.density==='comfy'?'1.1':'1');
+  }, [t.accent, t.radius, t.density]);
+  const [app, setApp] = useState(localStorage.getItem('clt_app') || 'client');
+  const [theme, setTheme] = useState(localStorage.getItem('clt_theme') || 'light');
+  const [route, setRoute] = useState(localStorage.getItem('clt_route') || 'home');
+  const [adminRoute, setAdminRoute] = useState(localStorage.getItem('clt_adminRoute') || 'ops');
+  const [activeAsset, setActiveAsset] = useState('USDT');
+
+  useEffect(()=>{ localStorage.setItem('clt_app', app); }, [app]);
+  useEffect(()=>{ localStorage.setItem('clt_theme', theme); document.documentElement.setAttribute('data-theme', theme); }, [theme]);
+  useEffect(()=>{ localStorage.setItem('clt_route', route); }, [route]);
+  useEffect(()=>{ localStorage.setItem('clt_adminRoute', adminRoute); }, [adminRoute]);
+
+  const go = (r) => setRoute(r);
+
+  // global overlay state — exposed via window for any deep child to trigger
+  const [sendPayload, setSendPayload] = useState(null);
+  const [kycApprove, setKycApprove] = useState(null);
+  const [kycReject, setKycReject] = useState(null);
+  const [freezeUser, setFreezeUser] = useState(null);
+  const [confirm, setConfirm] = useState(null);
+  const [drawerTxn, setDrawerTxn] = useState(null);
+  const [drawerOrder, setDrawerOrder] = useState(null);
+  const [drawerKyc, setDrawerKyc] = useState(null);
+  const [drawerUser, setDrawerUser] = useState(null);
+  useEffect(()=>{
+    window.openSendConfirm = (p) => setSendPayload(p);
+    window.openKycApprove = (k) => setKycApprove(k);
+    window.openKycReject  = (k) => setKycReject(k);
+    window.openFreezeUser = (u) => setFreezeUser(u);
+    window.openConfirm    = (c) => setConfirm(c);
+    window.openTxnDetail  = (t, opts={}) => setDrawerTxn({...t, _admin: opts.admin});
+    window.openOrderDetail= (o) => setDrawerOrder(o);
+    window.openKycCase    = (k) => setDrawerKyc(k);
+    window.openUserProfile= (u) => setDrawerUser(u);
+  }, []);
+
+  const clientScreen = () => {
+    switch (route){
+      case 'home':      return <OverviewV1 go={go}/>;
+      case 'wallet':    return <Wallet go={go} setActiveAsset={setActiveAsset}/>;
+      case 'asset':     return <AssetDetail sym={activeAsset} go={go}/>;
+      case 'trade':     return <Trade go={go}/>;
+      case 'send':      return <Send go={go}/>;
+      case 'receive':   return <Receive go={go}/>;
+      case 'withdraw':  return <Withdraw go={go}/>;
+      case 'orders':    return <Orders/>;
+      case 'txns':      return <Transactions/>;
+      case 'kyc':       return <KYC/>;
+      case 'notifs':    return <Notifications/>;
+      case 'referrals': return <Referrals/>;
+      case 'settings':  return <Settings/>;
+      case 'support':   return <Support/>;
+      default:          return <OverviewV1 go={go}/>;
+    }
+  };
+
+  const adminScreen = () => {
+    switch (adminRoute){
+      case 'ops':        return <OpsOverview/>;
+      case 'users':      return <Users/>;
+      case 'kyc':        return <KycQueue/>;
+      case 'pool':       return <WalletPool/>;
+      case 'monitor':    return <TxMonitor/>;
+      case 'orders':     return <OrderBook/>;
+      case 'fees':       return <Fees/>;
+      case 'compliance': return <Compliance/>;
+      case 'audit':      return <Audit/>;
+      case 'cms':        return <CMS/>;
+      case 'reports':    return <Reports/>;
+      case 'staff':      return <StaffPage/>;
+      case 'settings':   return <AdminSettings/>;
+      default:           return <OpsOverview/>;
+    }
+  };
+
+  return (<>
+    <TweaksPanel>
+      <TweakSection label="Layout"/>
+      <TweakRadio label="Density" value={t.density} options={['compact','regular','comfy']} onChange={(v)=>setTweak('density', v)}/>
+      <TweakSlider label="Corner radius" value={t.radius} min={4} max={24} unit="px" onChange={(v)=>setTweak('radius', v)}/>
+      <TweakToggle label="Show app switcher" value={t.showSwitcher} onChange={(v)=>setTweak('showSwitcher', v)}/>
+      <TweakSection label="Brand"/>
+      <TweakColor label="Accent" value={t.accent} options={['#C8F051','#7DD0FF','#FFB347','#FF7AA8','#A78BFA']} onChange={(v)=>setTweak('accent', v)}/>
+    </TweaksPanel>
+    {t.showSwitcher && <div className="switcher">
+      <button className={app==='client'?'active':''} onClick={()=>setApp('client')}>Customer app</button>
+      <button className={app==='admin'?'active':''} onClick={()=>setApp('admin')}>Admin console</button>
+    </div>}
+    {app==='client'
+      ? <ClientShell route={route} setRoute={setRoute} theme={theme} setTheme={setTheme}>{clientScreen()}</ClientShell>
+      : <AdminShell route={adminRoute} setRoute={setAdminRoute} theme={theme} setTheme={setTheme}>{adminScreen()}</AdminShell>
+    }
+    <ToastHost/>
+    <CommandPalette go={app==='client'?go:setAdminRoute} adminMode={app==='admin'} items={app==='client'?[
+      {id:'home',label:'Overview',icon:I.home},{id:'wallet',label:'Wallet',icon:I.wallet},{id:'trade',label:'Trade',icon:I.swap},{id:'send',label:'Send',icon:I.send},{id:'receive',label:'Receive',icon:I.recv},{id:'withdraw',label:'Withdraw to bank',icon:I.bank},{id:'orders',label:'Orders',icon:I.list},{id:'txns',label:'Transactions',icon:I.history||I.list},{id:'kyc',label:'Identity verification',icon:I.shield},{id:'notifs',label:'Notifications',icon:I.bell},{id:'referrals',label:'Referrals',icon:I.user},{id:'settings',label:'Settings',icon:I.cog},{id:'support',label:'Support',icon:I.help}
+    ]:[
+      {id:'ops',label:'Operations overview',icon:I.chart},{id:'users',label:'Users',icon:I.user},{id:'kyc',label:'KYC queue',icon:I.shield},{id:'pool',label:'Wallet pool',icon:I.wallet},{id:'monitor',label:'Transaction monitor',icon:I.eye},{id:'orders',label:'Order book',icon:I.list},{id:'fees',label:'Fees & limits',icon:I.cog},{id:'compliance',label:'Compliance',icon:I.shield},{id:'audit',label:'Audit log',icon:I.book},{id:'cms',label:'CMS',icon:I.book},{id:'reports',label:'Reports',icon:I.chart},{id:'staff',label:'Staff',icon:I.user},{id:'settings',label:'Admin settings',icon:I.cog}
+    ]}/>
+    <SendConfirmModal open={!!sendPayload} onClose={()=>setSendPayload(null)} payload={sendPayload}/>
+    <KycApproveModal open={!!kycApprove} onClose={()=>setKycApprove(null)} kase={kycApprove}/>
+    <KycRejectModal open={!!kycReject} onClose={()=>setKycReject(null)} kase={kycReject}/>
+    <FreezeUserModal open={!!freezeUser} onClose={()=>setFreezeUser(null)} user={freezeUser}/>
+    <ConfirmModal open={!!confirm} onClose={()=>setConfirm(null)} title={confirm?.title} message={confirm?.message} confirmLabel={confirm?.confirmLabel} danger={confirm?.danger} onConfirm={confirm?.onConfirm}/>
+    <TxnDetail txn={drawerTxn} open={!!drawerTxn} onClose={()=>setDrawerTxn(null)} admin={drawerTxn?._admin} toast={(m,t)=>window.toast?.(m,t)}/>
+    <OrderDetail order={drawerOrder} open={!!drawerOrder} onClose={()=>setDrawerOrder(null)} toast={(m,t)=>window.toast?.(m,t)}/>
+    <KycCase kase={drawerKyc} open={!!drawerKyc} onClose={()=>setDrawerKyc(null)} toast={(m,t)=>window.toast?.(m,t)}/>
+    <UserProfile user={drawerUser} open={!!drawerUser} onClose={()=>setDrawerUser(null)} toast={(m,t)=>window.toast?.(m,t)}/>
+  </>);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

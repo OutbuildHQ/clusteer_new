@@ -1,0 +1,238 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* =========================================================
+   Clusteer Design Tokens
+   Source: design/tokens.css (canonical)
+   Neutral base → shadcn new-york; overlaid with brand blue
+   + chain accents + mono numeric type.
+   ========================================================= */
+
+:root {
+	/* Brand */
+	--clusteer-blue-50: oklch(0.972 0.014 254);
+	--clusteer-blue-100: oklch(0.935 0.033 254);
+	--clusteer-blue-200: oklch(0.867 0.075 254);
+	--clusteer-blue-300: oklch(0.772 0.13 254);
+	--clusteer-blue-400: oklch(0.668 0.182 254);
+	--clusteer-blue-500: oklch(0.562 0.215 254);
+	--clusteer-blue-600: oklch(0.48 0.2 254);
+	--clusteer-blue-700: oklch(0.398 0.168 254);
+	--clusteer-blue-800: oklch(0.324 0.13 254);
+	--clusteer-blue-900: oklch(0.255 0.093 254);
+
+	/* Chain accents */
+	--chain-btc: oklch(0.742 0.163 64);
+	--chain-eth: oklch(0.52 0.12 268);
+	--chain-usdt: oklch(0.645 0.138 163);
+	--chain-usdc: oklch(0.618 0.168 244);
+	--chain-sol: oklch(0.605 0.243 298);
+	--chain-bnb: oklch(0.812 0.17 92);
+	--chain-polygon: oklch(0.56 0.215 295);
+	--chain-trx: oklch(0.58 0.222 27);
+
+	/* Semantic */
+	--success: oklch(0.648 0.164 149);
+	--success-bg: oklch(0.965 0.035 149);
+	--warning: oklch(0.735 0.158 75);
+	--warning-bg: oklch(0.972 0.04 85);
+	--danger: oklch(0.588 0.218 27);
+	--danger-bg: oklch(0.965 0.035 22);
+	--info: var(--clusteer-blue-500);
+	--info-bg: var(--clusteer-blue-50);
+
+	/* shadcn surfaces — light */
+	--radius: 0.625rem;
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.145 0 0);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.145 0 0);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.145 0 0);
+	--primary: var(--clusteer-blue-600);
+	--primary-foreground: oklch(0.99 0 0);
+	--secondary: oklch(0.97 0 0);
+	--secondary-foreground: oklch(0.205 0 0);
+	--muted: oklch(0.97 0 0);
+	--muted-foreground: oklch(0.52 0 0);
+	--accent: var(--clusteer-blue-50);
+	--accent-foreground: var(--clusteer-blue-700);
+	--destructive: var(--danger);
+	--border: oklch(0.918 0.005 254);
+	--input: oklch(0.918 0.005 254);
+	--ring: var(--clusteer-blue-500);
+
+	--chart-1: var(--clusteer-blue-500);
+	--chart-2: var(--success);
+	--chart-3: var(--warning);
+	--chart-4: var(--chain-eth);
+	--chart-5: var(--chain-sol);
+
+	--sidebar: oklch(0.985 0 0);
+	--sidebar-foreground: oklch(0.145 0 0);
+	--sidebar-primary: var(--clusteer-blue-600);
+	--sidebar-primary-foreground: oklch(0.99 0 0);
+	--sidebar-accent: oklch(0.965 0 0);
+	--sidebar-accent-foreground: oklch(0.205 0 0);
+	--sidebar-border: oklch(0.922 0 0);
+	--sidebar-ring: var(--clusteer-blue-500);
+
+	--toast-width: 380px;
+}
+
+@theme inline {
+	/* Tailwind theme mappings */
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+
+	--color-brand-50: var(--clusteer-blue-50);
+	--color-brand-100: var(--clusteer-blue-100);
+	--color-brand-200: var(--clusteer-blue-200);
+	--color-brand-300: var(--clusteer-blue-300);
+	--color-brand-400: var(--clusteer-blue-400);
+	--color-brand-500: var(--clusteer-blue-500);
+	--color-brand-600: var(--clusteer-blue-600);
+	--color-brand-700: var(--clusteer-blue-700);
+	--color-brand-800: var(--clusteer-blue-800);
+	--color-brand-900: var(--clusteer-blue-900);
+
+	--color-chain-btc: var(--chain-btc);
+	--color-chain-eth: var(--chain-eth);
+	--color-chain-usdt: var(--chain-usdt);
+	--color-chain-usdc: var(--chain-usdc);
+	--color-chain-sol: var(--chain-sol);
+	--color-chain-bnb: var(--chain-bnb);
+	--color-chain-polygon: var(--chain-polygon);
+	--color-chain-trx: var(--chain-trx);
+
+	--color-success: var(--success);
+	--color-success-bg: var(--success-bg);
+	--color-warning: var(--warning);
+	--color-warning-bg: var(--warning-bg);
+	--color-danger: var(--danger);
+	--color-danger-bg: var(--danger-bg);
+	--color-info: var(--info);
+	--color-info-bg: var(--info-bg);
+
+	--font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	--font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+	--font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+	--radius-2xl: calc(var(--radius) + 8px);
+}
+
+.dark {
+	--background: oklch(0.14 0.015 254);
+	--foreground: oklch(0.985 0 0);
+	--card: oklch(0.185 0.015 254);
+	--card-foreground: oklch(0.985 0 0);
+	--popover: oklch(0.185 0.015 254);
+	--popover-foreground: oklch(0.985 0 0);
+	--primary: var(--clusteer-blue-400);
+	--primary-foreground: oklch(0.145 0.015 254);
+	--secondary: oklch(0.235 0.015 254);
+	--secondary-foreground: oklch(0.985 0 0);
+	--muted: oklch(0.235 0.015 254);
+	--muted-foreground: oklch(0.68 0.01 254);
+	--accent: oklch(0.255 0.035 254);
+	--accent-foreground: oklch(0.985 0 0);
+	--destructive: oklch(0.68 0.19 27);
+	--border: oklch(1 0 0 / 0.1);
+	--input: oklch(1 0 0 / 0.12);
+	--ring: var(--clusteer-blue-400);
+
+	--sidebar: oklch(0.16 0.015 254);
+	--sidebar-foreground: oklch(0.985 0 0);
+	--sidebar-primary: var(--clusteer-blue-400);
+	--sidebar-primary-foreground: oklch(0.145 0.015 254);
+	--sidebar-accent: oklch(0.235 0.015 254);
+	--sidebar-accent-foreground: oklch(0.985 0 0);
+	--sidebar-border: oklch(1 0 0 / 0.1);
+	--sidebar-ring: var(--clusteer-blue-400);
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground font-sans;
+		font-feature-settings: "ss01", "cv11";
+	}
+	h1, h2, h3, h4, h5 {
+		font-family: var(--font-display);
+		letter-spacing: -0.02em;
+	}
+}
+
+/* Tabular numerics — apply to any element showing money / amounts */
+.tabular,
+.tabular-nums {
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: "tnum" 1;
+}
+
+.mono {
+	font-family: var(--font-mono);
+	font-variant-numeric: tabular-nums;
+}
+
+/* Subtle grid background used on marketing hero */
+.bg-grid {
+	background-image:
+		linear-gradient(to right, oklch(0 0 0 / 0.04) 1px, transparent 1px),
+		linear-gradient(to bottom, oklch(0 0 0 / 0.04) 1px, transparent 1px);
+	background-size: 40px 40px;
+}
+
+.dark .bg-grid {
+	background-image:
+		linear-gradient(to right, oklch(1 0 0 / 0.05) 1px, transparent 1px),
+		linear-gradient(to bottom, oklch(1 0 0 / 0.05) 1px, transparent 1px);
+}
+
+/* Focus ring tokens */
+.focus-ring {
+	@apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+}
+
+button {
+	cursor: pointer;
+}

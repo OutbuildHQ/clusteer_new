@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1280" />
+<title>Clusteer — Design system & frontend plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+	theme: {
+		extend: {
+			fontFamily: {
+				sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+				display: ['Sora', 'ui-sans-serif', 'system-ui'],
+				mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+			},
+		},
+	},
+};
+</script>
+<style>
+:root {
+	--brand-50:  oklch(0.972 0.014 254);
+	--brand-100: oklch(0.935 0.033 254);
+	--brand-200: oklch(0.867 0.075 254);
+	--brand-300: oklch(0.772 0.13  254);
+	--brand-400: oklch(0.668 0.182 254);
+	--brand-500: oklch(0.562 0.215 254);
+	--brand-600: oklch(0.48  0.2   254);
+	--brand-700: oklch(0.398 0.168 254);
+	--brand-800: oklch(0.324 0.13  254);
+	--brand-900: oklch(0.255 0.093 254);
+
+	--chain-btc: oklch(0.742 0.163 64);
+	--chain-eth: oklch(0.52 0.12 268);
+	--chain-usdt: oklch(0.645 0.138 163);
+	--chain-usdc: oklch(0.618 0.168 244);
+	--chain-sol: oklch(0.605 0.243 298);
+	--chain-bnb: oklch(0.812 0.17 92);
+	--chain-polygon: oklch(0.56 0.215 295);
+	--chain-trx: oklch(0.58 0.222 27);
+
+	--success: oklch(0.648 0.164 149);
+	--success-bg: oklch(0.965 0.035 149);
+	--warning: oklch(0.735 0.158 75);
+	--warning-bg: oklch(0.972 0.04 85);
+	--danger:  oklch(0.588 0.218 27);
+	--danger-bg:  oklch(0.965 0.035 22);
+	--info: var(--brand-500);
+	--info-bg: var(--brand-50);
+
+	--bg: oklch(0.99 0 0);
+	--fg: oklch(0.145 0 0);
+	--card: #fff;
+	--muted: oklch(0.97 0 0);
+	--muted-fg: oklch(0.52 0 0);
+	--border: oklch(0.918 0.005 254);
+}
+html, body { background: var(--bg); color: var(--fg); font-family: 'Inter', sans-serif; }
+.font-display { font-family: 'Sora', sans-serif; }
+.mono, code { font-family: 'JetBrains Mono', monospace; }
+.tabular { font-variant-numeric: tabular-nums; }
+.bg-grid { background-image:
+	linear-gradient(to right, color-mix(in oklch, var(--border) 60%, transparent) 1px, transparent 1px),
+	linear-gradient(to bottom, color-mix(in oklch, var(--border) 60%, transparent) 1px, transparent 1px);
+	background-size: 32px 32px;
+}
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; }
+.chip { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:600; }
+.dot { display:inline-block; width:8px; height:8px; border-radius:999px; }
+.scrollshadow { box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 24px -16px rgba(0,0,0,.08); }
+
+/* ===== Mini mockup primitives (for the page previews) ===== */
+.mock { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; font-size: 10px; }
+.mock .top { height: 28px; background: var(--muted); border-bottom: 1px solid var(--border); display:flex; align-items:center; gap:4px; padding: 0 8px; }
+.mock .top .tl { width: 6px; height: 6px; border-radius: 999px; background: #ddd; }
+.mock .body { padding: 10px; display: grid; gap: 8px; }
+.mock .side { position:absolute; inset:28px auto 0 0; width: 52px; border-right: 1px solid var(--border); background: color-mix(in oklch, var(--muted) 70%, transparent); padding: 8px 6px; display: flex; flex-direction: column; gap:4px; }
+.mock .side .s { height: 8px; border-radius: 3px; background: #eee; }
+.mock .side .s.active { background: var(--brand-600); }
+.mock .row { display:flex; gap:6px; }
+.mock .bar { background: #f0f0f0; border-radius: 3px; height: 8px; }
+.mock .h1 { height: 12px; width: 40%; background: var(--fg); opacity: 0.85; border-radius: 3px; }
+.mock .h2 { height: 8px; width: 60%; background: #ddd; border-radius: 3px; }
+.mock .pill { padding: 1px 5px; border-radius: 4px; font-size: 8px; display: inline-flex; align-items: center; gap: 3px; }
+.mock .pos { color: var(--success); background: var(--success-bg); }
+.mock .neg { color: var(--danger); background: var(--danger-bg); }
+.mock .warn { color: var(--warning); background: var(--warning-bg); }
+.mock .info { color: var(--brand-600); background: var(--brand-50); }
+</style>
+</head>
+
+<body class="text-slate-900">
+
+<!-- ======================= HERO ======================= -->
+<header class="border-b border-[var(--border)] relative overflow-hidden">
+	<div class="bg-grid absolute inset-0 opacity-50"></div>
+	<div class="max-w-7xl mx-auto px-8 py-14 relative">
+		<div class="flex items-center gap-3 mb-6">
+			<!-- Logo -->
+			<div class="flex items-center gap-2">
+				<div class="relative size-8 rounded-lg" style="background:var(--brand-600);">
+					<svg viewBox="0 0 32 32" class="size-full p-1.5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M24 12a8 8 0 1 0 0 8" />
+						<circle cx="16" cy="16" r="2.5" fill="currentColor" stroke="none" />
+					</svg>
+				</div>
+				<span class="font-display text-xl font-bold tracking-tight">Clusteer</span>
+			</div>
+			<span class="chip" style="background:var(--success-bg); color:var(--success);">
+				<span class="dot" style="background:var(--success);"></span> Redesign v1 · delivered
+			</span>
+		</div>
+		<h1 class="font-display text-5xl font-bold tracking-tight leading-[1.05] max-w-3xl">
+			A complete Naira‑first crypto exchange, redrawn from the tokens up.
+		</h1>
+		<p class="mt-5 text-lg text-[color:var(--muted-fg)] max-w-2xl">
+			The `clusteer-frontend/` Next.js app ships 27 pages across marketing, auth, customer, and
+			admin — all wired to a single design token layer, a shadcn/ui component set, and typed mock data.
+		</p>
+		<div class="mt-6 flex flex-wrap gap-2 text-xs">
+			<span class="chip" style="background:var(--muted); color:var(--fg);">Next.js 15 · App Router</span>
+			<span class="chip" style="background:var(--muted); color:var(--fg);">TypeScript</span>
+			<span class="chip" style="background:var(--muted); color:var(--fg);">Tailwind v4</span>
+			<span class="chip" style="background:var(--muted); color:var(--fg);">shadcn/ui + Radix</span>
+			<span class="chip" style="background:var(--muted); color:var(--fg);">Recharts</span>
+			<span class="chip" style="background:var(--muted); color:var(--fg);">React Query</span>
+			<span class="chip" style="background:var(--muted); color:var(--fg);">Zustand</span>
+			<span class="chip" style="background:var(--muted); color:var(--fg);">Sonner</span>
+		</div>
+	</div>
+</header>
+
+<main class="max-w-7xl mx-auto px-8 py-12 space-y-16">
+
+<!-- ======================= COLOR ======================= -->
+<section>
+	<div class="flex items-end justify-between mb-4">
+		<div>
+			<div class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted-fg)]">01</div>
+			<h2 class="font-display text-3xl font-bold tracking-tight">Color</h2>
+			<p class="text-[color:var(--muted-fg)] mt-1 text-sm">OKLCH palette — predictable contrast, printer‑safe, and WCAG‑AA on body text.</p>
+		</div>
+	</div>
+
+	<!-- Brand scale -->
+	<div class="card p-5">
+		<div class="flex items-baseline justify-between">
+			<div class="text-sm font-semibold">Brand · Clusteer Blue</div>
+			<code class="text-xs text-[color:var(--muted-fg)]">oklch(L 0.255→0.972 · C ~0.21 · H 254°)</code>
+		</div>
+		<div class="mt-4 grid grid-cols-10 gap-2">
+			<!-- Scale -->
+			<div class="space-y-1.5"><div class="h-14 rounded-md" style="background:var(--brand-50)"></div><div class="text-[10px] mono text-[color:var(--muted-fg)]">50</div></div>
+			<div class="space-y-1.5"><div class="h-14 rounded-md" style="background:var(--brand-100)"></div><div class="text-[10px] mono text-[color:var(--muted-fg)]">100</div></div>
+			<div class="space-y-1.5"><div class="h-14 rounded-md" style="background:var(--brand-200)"></div><div class="text-[10px] mono text-[color:var(--muted-fg)]">200</div></div>
+			<div class="space-y-1.5"><div class="h-14 rounded-md" style="background:var(--brand-300)"></div><div class="text-[10px] mono text-[color:var(--muted-fg)]">300</div></div>
+			<div class="space-y-1.5"><div class="h-14 rounded-md" style="background:var(--brand-400)"></div><div class="text-[10px] mono text-[color:var(--muted-fg)]">400</div></div>
+			<div class="space-y-1.5"><div class="h-14 rounded-md" style="background:var(--brand-500)"></div><div class="text-[10px] mono text-[color:var(--muted-fg)]">500</div></div>
+			<div class="space-y-1.5"><div class="h-14 rounded-md ring-2 ring-offset-2" style="background:var(--brand-600); box-shadow:0 0 0 2px var(--brand-600);"></div><div class="text-[10px] mono font-semibold" style="color:var(--brand-700)">600 · primary</div></div>
+			<div class="space-y-1.5"><div class="h-14 rounded-md" style="background:var(--brand-700)"></div><div class="text-[10px] mono text-[color:var(--muted-fg)]">700</div></div>
+			<div class="space-y-1.5"><div class="h-14 rounded-md" style="background:var(--brand-800)"></div><div class="text-[10px] mono text-[color:var(--muted-fg)]">800</div></div>
+			<div class="space-y-1.5"><div class="h-14 rounded-md" style="background:var(--brand-900)"></div><div class="text-[10px] mono text-[color:var(--muted-fg)]">900</div></div>
+		</div>
+	</div>
+
+	<div class="grid grid-cols-2 gap-4 mt-4">
+		<!-- Semantic -->
+		<div class="card p-5">
+			<div class="text-sm font-semibold mb-3">Semantic</div>
+			<div class="grid grid-cols-2 gap-3">
+				<div class="rounded-lg p-3" style="background:var(--success-bg); color:var(--success); border:1px solid color-mix(in oklch, var(--success) 20%, transparent);">
+					<div class="text-[10px] font-semibold uppercase tracking-wider opacity-70">Success</div>
+					<div class="font-display text-lg font-bold mt-0.5 tabular">+2.14%</div>
+					<div class="text-[10px] mono opacity-70">Trade filled</div>
+				</div>
+				<div class="rounded-lg p-3" style="background:var(--warning-bg); color:var(--warning); border:1px solid color-mix(in oklch, var(--warning) 20%, transparent);">
+					<div class="text-[10px] font-semibold uppercase tracking-wider opacity-70">Warning</div>
+					<div class="font-display text-lg font-bold mt-0.5 tabular">Pending</div>
+					<div class="text-[10px] mono opacity-70">KYC under review</div>
+				</div>
+				<div class="rounded-lg p-3" style="background:var(--danger-bg); color:var(--danger); border:1px solid color-mix(in oklch, var(--danger) 20%, transparent);">
+					<div class="text-[10px] font-semibold uppercase tracking-wider opacity-70">Danger</div>
+					<div class="font-display text-lg font-bold mt-0.5 tabular">−1.84%</div>
+					<div class="text-[10px] mono opacity-70">Withdrawal failed</div>
+				</div>
+				<div class="rounded-lg p-3" style="background:var(--info-bg); color:var(--brand-700); border:1px solid color-mix(in oklch, var(--brand-500) 20%, transparent);">
+					<div class="text-[10px] font-semibold uppercase tracking-wider opacity-70">Info</div>
+					<div class="font-display text-lg font-bold mt-0.5 tabular">Tier 2</div>
+					<div class="text-[10px] mono opacity-70">Limit upgraded</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Chain accents -->
+		<div class="card p-5">
+			<div class="text-sm font-semibold mb-3">Chain accents</div>
+			<div class="grid grid-cols-4 gap-2">
+				<div class="flex items-center gap-2 rounded-md border border-[var(--border)] p-2">
+					<div class="size-6 rounded-full grid place-items-center text-[10px] font-bold text-white" style="background:var(--chain-btc)">B</div>
+					<span class="text-xs font-medium">BTC</span>
+				</div>
+				<div class="flex items-center gap-2 rounded-md border border-[var(--border)] p-2">
+					<div class="size-6 rounded-full grid place-items-center text-[10px] font-bold text-white" style="background:var(--chain-eth)">E</div>
+					<span class="text-xs font-medium">ETH</span>
+				</div>
+				<div class="flex items-center gap-2 rounded-md border border-[var(--border)] p-2">
+					<div class="size-6 rounded-full grid place-items-center text-[10px] font-bold text-white" style="background:var(--chain-usdt)">₮</div>
+					<span class="text-xs font-medium">USDT</span>
+				</div>
+				<div class="flex items-center gap-2 rounded-md border border-[var(--border)] p-2">
+					<div class="size-6 rounded-full grid place-items-center text-[10px] font-bold text-white" style="background:var(--chain-usdc)">$</div>
+					<span class="text-xs font-medium">USDC</span>
+				</div>
+				<div class="flex items-center gap-2 rounded-md border border-[var(--border)] p-2">
+					<div class="size-6 rounded-full grid place-items-center text-[10px] font-bold text-white" style="background:var(--chain-sol)">S</div>
+					<span class="text-xs font-medium">SOL</span>
+				</div>
+				<div class="flex items-center gap-2 rounded-md border border-[var(--border)] p-2">
+					<div class="size-6 rounded-full grid place-items-center text-[10px] font-bold text-white" style="background:var(--chain-bnb)">B</div>
+					<span class="text-xs font-medium">BNB</span>
+				</div>
+				<div class="flex items-center gap-2 rounded-md border border-[var(--border)] p-2">
+					<div class="size-6 rounded-full grid place-items-center text-[10px] font-bold text-white" style="background:var(--chain-trx)">T</div>
+					<span class="text-xs font-medium">TRX</span>
+				</div>
+				<div class="flex items-center gap-2 rounded-md border border-[var(--border)] p-2">
+					<div class="size-6 rounded-full grid place-items-center text-[10px] font-bold text-white" style="background:var(--chain-polygon)">P</div>
+					<span class="text-xs font-medium">MATIC</span>
+				</div>
+			</div>
+			<p class="text-[11px] text-[color:var(--muted-fg)] mt-3">Reserved for asset marks, chain badges, and deposit chrome only — never use for UI intent.</p>
+		</div>
+	</div>
+</section>
+
+<!-- ======================= TYPE ======================= -->
+<section>
+	<div class="mb-4">
+		<div class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted-fg)]">02</div>
+		<h2 class="font-display text-3xl font-bold tracking-tight">Type</h2>
+		<p class="text-[color:var(--muted-fg)] mt-1 text-sm">Three‑family stack. Financial numerics always go through <code>&lt;Num&gt;</code> for tabular alignment.</p>
+	</div>
+
+	<div class="grid grid-cols-3 gap-4">
+		<div class="card p-6">
+			<div class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted-fg)]">Display</div>
+			<div class="font-display text-4xl font-bold mt-2 tracking-tight leading-tight">Bridge your Naira</div>
+			<p class="mt-2 text-[11px] mono text-[color:var(--muted-fg)]">Sora · 700 · -0.01em tracking</p>
+			<div class="mt-4 space-y-2 text-[color:var(--muted-fg)] text-xs">
+				<div>Hero h1 · 48–60px</div>
+				<div>Page h1 · 28–32px</div>
+				<div>Card title · 18px</div>
+				<div>Dashboard total · 32px</div>
+			</div>
+		</div>
+		<div class="card p-6">
+			<div class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted-fg)]">Sans · body</div>
+			<div class="text-lg mt-2">Buy, sell, swap and hold crypto with Naira. Multi‑chain, custodial, audited.</div>
+			<p class="mt-2 text-[11px] mono text-[color:var(--muted-fg)]">Inter · 400 / 500 / 600 / 700</p>
+			<div class="mt-4 space-y-2 text-[color:var(--muted-fg)] text-xs">
+				<div>Body · 14–16px</div>
+				<div>Small / hint · 12px</div>
+				<div>Micro · 11px uppercase</div>
+			</div>
+		</div>
+		<div class="card p-6">
+			<div class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted-fg)]">Numeric · mono</div>
+			<div class="mono text-2xl font-medium tabular mt-2">₦ 12,703,435.00</div>
+			<div class="mono text-sm tabular mt-2 text-[color:var(--muted-fg)]">0x742d35Cc…4438f44e</div>
+			<p class="mt-2 text-[11px] mono text-[color:var(--muted-fg)]">JetBrains Mono · 400 / 500 · tabular-nums</p>
+			<div class="mt-4 space-y-2 text-[color:var(--muted-fg)] text-xs">
+				<div>Amounts, balances, order IDs</div>
+				<div>Wallet addresses, tx hashes</div>
+				<div>BVN, NIN, OTP codes</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ======================= COMPONENT LIBRARY ======================= -->
+<section>
+	<div class="mb-4">
+		<div class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted-fg)]">03</div>
+		<h2 class="font-display text-3xl font-bold tracking-tight">Components</h2>
+		<p class="text-[color:var(--muted-fg)] mt-1 text-sm">shadcn/ui primitives plus Clusteer‑specific primitives for asset and trust surfaces.</p>
+	</div>
+
+	<div class="grid grid-cols-12 gap-4">
+
+		<!-- Buttons -->
+		<div class="card p-5 col-span-6">
+			<div class="text-sm font-semibold mb-4">Buttons</div>
+			<div class="flex flex-wrap gap-2 items-center">
+				<button class="h-9 px-4 rounded-md text-sm font-medium text-white" style="background:var(--brand-600)">Primary</button>
+				<button class="h-9 px-4 rounded-md text-sm font-medium text-white" style="background:var(--danger)">Destructive</button>
+				<button class="h-9 px-4 rounded-md text-sm font-medium border border-[var(--border)] bg-white">Outline</button>
+				<button class="h-9 px-4 rounded-md text-sm font-medium" style="background:var(--muted)">Secondary</button>
+				<button class="h-9 px-4 rounded-md text-sm font-medium hover:bg-[var(--muted)]">Ghost</button>
+				<button class="text-sm font-medium" style="color:var(--brand-600); text-decoration: underline; text-underline-offset: 4px;">Link</button>
+			</div>
+			<div class="mt-4 text-xs text-[color:var(--muted-fg)]">Sizes: sm (h-8) · default (h-9) · lg (h-11) · xl (h-12)</div>
+		</div>
+
+		<!-- Badges -->
+		<div class="card p-5 col-span-6">
+			<div class="text-sm font-semibold mb-4">Badges</div>
+			<div class="flex flex-wrap gap-2 items-center">
+				<span class="chip" style="background:var(--brand-600); color:white;">Default</span>
+				<span class="chip" style="background:var(--muted); color:var(--fg);">Secondary</span>
+				<span class="chip" style="background:var(--success-bg); color:var(--success);"><span class="dot" style="background:var(--success)"></span> Approved</span>
+				<span class="chip" style="background:var(--warning-bg); color:var(--warning);">Pending</span>
+				<span class="chip" style="background:var(--danger-bg); color:var(--danger);">Failed</span>
+				<span class="chip" style="background:var(--info-bg); color:var(--brand-700);">Tier 2</span>
+				<span class="chip border border-[var(--border)]" style="background:transparent; color:var(--muted-fg);">Outline</span>
+			</div>
+		</div>
+
+		<!-- Inputs -->
+		<div class="card p-5 col-span-6">
+			<div class="text-sm font-semibold mb-4">Inputs</div>
+			<div class="space-y-3">
+				<label class="block">
+					<span class="text-xs font-medium">Email</span>
+					<input class="mt-1 w-full h-9 px-3 rounded-md border border-[var(--border)] bg-white outline-none focus:ring-2" style="outline-color:var(--brand-500)" value="aisha@example.ng" />
+				</label>
+				<label class="block">
+					<span class="text-xs font-medium">BVN</span>
+					<input class="mono mt-1 w-full h-9 px-3 rounded-md border border-[var(--border)] bg-white" value="22192847311" />
+				</label>
+				<div class="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-white px-3 py-2">
+					<input class="mono flex-1 bg-transparent outline-none text-2xl font-semibold tabular" value="420.00" />
+					<span class="chip" style="background:var(--muted);"><span class="size-4 rounded-full grid place-items-center text-[8px] font-bold text-white" style="background:var(--chain-usdt)">₮</span> USDT</span>
+					<button class="text-[10px] font-bold px-2 py-1 rounded" style="color:var(--brand-600); background:var(--brand-50)">MAX</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- OTP -->
+		<div class="card p-5 col-span-6">
+			<div class="text-sm font-semibold mb-4">OTP</div>
+			<div class="flex gap-2">
+				<input value="4" class="mono size-12 rounded-md border-2 border-[var(--brand-500)] text-center text-xl font-semibold bg-white" />
+				<input value="8" class="mono size-12 rounded-md border border-[var(--border)] text-center text-xl font-semibold bg-white" />
+				<input value="1" class="mono size-12 rounded-md border border-[var(--border)] text-center text-xl font-semibold bg-white" />
+				<input class="mono size-12 rounded-md border border-[var(--border)] text-center text-xl font-semibold bg-white" />
+				<input class="mono size-12 rounded-md border border-[var(--border)] text-center text-xl font-semibold bg-white" />
+				<input class="mono size-12 rounded-md border border-[var(--border)] text-center text-xl font-semibold bg-white" />
+			</div>
+			<p class="text-xs text-[color:var(--muted-fg)] mt-3">Used for login 2FA, transaction authorization, and email verification.</p>
+		</div>
+
+		<!-- Asset logo -->
+		<div class="card p-5 col-span-4">
+			<div class="text-sm font-semibold mb-4">&lt;AssetLogo&gt;</div>
+			<div class="flex items-center gap-3">
+				<div class="size-10 rounded-full grid place-items-center text-white font-bold" style="background:var(--chain-btc)">₿</div>
+				<div class="size-10 rounded-full grid place-items-center text-white font-bold" style="background:var(--chain-eth)">Ξ</div>
+				<div class="size-10 rounded-full grid place-items-center text-white font-bold" style="background:var(--chain-usdt)">₮</div>
+				<div class="size-10 rounded-full grid place-items-center text-white font-bold" style="background:var(--chain-usdc)">$</div>
+				<div class="size-10 rounded-full grid place-items-center text-white font-bold" style="background:var(--chain-sol)">◎</div>
+				<div class="size-10 rounded-full grid place-items-center text-white font-bold" style="background:var(--chain-bnb)">ⓑ</div>
+			</div>
+			<p class="text-xs text-[color:var(--muted-fg)] mt-3">Small/md/lg/xl sizes. Symbol → brand color via token lookup.</p>
+		</div>
+
+		<!-- Chain badge -->
+		<div class="card p-5 col-span-4">
+			<div class="text-sm font-semibold mb-4">&lt;ChainBadge&gt;</div>
+			<div class="flex flex-wrap gap-1.5">
+				<span class="chip" style="background:color-mix(in oklch, var(--chain-btc) 15%, transparent); color:var(--chain-btc);"><span class="dot" style="background:var(--chain-btc)"></span> Bitcoin</span>
+				<span class="chip" style="background:color-mix(in oklch, var(--chain-eth) 15%, transparent); color:var(--chain-eth);"><span class="dot" style="background:var(--chain-eth)"></span> Ethereum</span>
+				<span class="chip" style="background:color-mix(in oklch, var(--chain-trx) 15%, transparent); color:var(--chain-trx);"><span class="dot" style="background:var(--chain-trx)"></span> Tron</span>
+				<span class="chip" style="background:color-mix(in oklch, var(--chain-sol) 15%, transparent); color:var(--chain-sol);"><span class="dot" style="background:var(--chain-sol)"></span> Solana</span>
+				<span class="chip" style="background:color-mix(in oklch, var(--chain-bnb) 15%, transparent); color:oklch(0.5 0.15 92);"><span class="dot" style="background:var(--chain-bnb)"></span> BSC</span>
+				<span class="chip" style="background:color-mix(in oklch, var(--chain-polygon) 15%, transparent); color:var(--chain-polygon);"><span class="dot" style="background:var(--chain-polygon)"></span> Polygon</span>
+			</div>
+		</div>
+
+		<!-- Num -->
+		<div class="card p-5 col-span-4">
+			<div class="text-sm font-semibold mb-4">&lt;Num&gt; · tabular</div>
+			<div class="space-y-1.5 text-sm">
+				<div class="flex justify-between"><span class="text-[color:var(--muted-fg)]">Default</span> <span class="mono tabular font-medium">₦12,703,435.00</span></div>
+				<div class="flex justify-between"><span class="text-[color:var(--muted-fg)]">Positive</span> <span class="mono tabular font-medium" style="color:var(--success)">+2.14%</span></div>
+				<div class="flex justify-between"><span class="text-[color:var(--muted-fg)]">Negative</span> <span class="mono tabular font-medium" style="color:var(--danger)">−1.21%</span></div>
+				<div class="flex justify-between"><span class="text-[color:var(--muted-fg)]">Muted</span> <span class="mono tabular font-medium text-[color:var(--muted-fg)]">₦0.00</span></div>
+			</div>
+		</div>
+
+		<!-- Steps -->
+		<div class="card p-5 col-span-8">
+			<div class="text-sm font-semibold mb-4">Steps</div>
+			<ol class="flex items-center gap-3">
+				<li class="flex items-center gap-3 flex-1">
+					<div class="size-7 rounded-full grid place-items-center text-white font-semibold text-xs" style="background:var(--brand-600)">✓</div>
+					<span class="text-sm font-medium whitespace-nowrap">Details</span>
+					<div class="h-px flex-1" style="background:var(--brand-600)"></div>
+				</li>
+				<li class="flex items-center gap-3 flex-1">
+					<div class="size-7 rounded-full grid place-items-center font-semibold text-xs" style="background:var(--brand-50); color:var(--brand-600); box-shadow:0 0 0 2px var(--brand-600) inset;">2</div>
+					<span class="text-sm font-medium whitespace-nowrap">Review</span>
+					<div class="h-px flex-1" style="background:var(--border)"></div>
+				</li>
+				<li class="flex items-center gap-3 flex-1">
+					<div class="size-7 rounded-full grid place-items-center font-semibold text-xs bg-[var(--muted)] text-[color:var(--muted-fg)]">3</div>
+					<span class="text-sm font-medium whitespace-nowrap text-[color:var(--muted-fg)]">Authorize</span>
+					<div class="h-px flex-1" style="background:var(--border)"></div>
+				</li>
+				<li class="flex items-center gap-3">
+					<div class="size-7 rounded-full grid place-items-center font-semibold text-xs bg-[var(--muted)] text-[color:var(--muted-fg)]">4</div>
+					<span class="text-sm font-medium whitespace-nowrap text-[color:var(--muted-fg)]">Submitted</span>
+				</li>
+			</ol>
+		</div>
+
+		<!-- QR + address -->
+		<div class="card p-5 col-span-4">
+			<div class="text-sm font-semibold mb-4">QR + Copy</div>
+			<div class="flex items-center gap-3">
+				<div class="size-20 rounded-md grid grid-cols-8 grid-rows-8 gap-[1px] p-1" style="background:var(--fg)">
+					<div class="col-span-3 row-span-3 bg-white"></div>
+					<div class="col-span-2 row-span-1 col-start-4 bg-white"></div>
+					<div class="col-span-3 row-span-3 col-start-6 bg-white"></div>
+					<div class="col-span-1 row-span-1 col-start-4 row-start-2 bg-white"></div>
+					<div class="col-span-2 row-span-1 col-start-3 row-start-4 bg-white"></div>
+					<div class="col-span-1 row-start-5 col-start-5 bg-white"></div>
+					<div class="col-span-3 row-span-3 row-start-6 bg-white"></div>
+					<div class="col-span-2 col-start-4 row-start-7 bg-white"></div>
+					<div class="col-span-1 col-start-6 row-start-6 bg-white"></div>
+					<div class="col-span-2 col-start-7 row-start-8 bg-white"></div>
+				</div>
+				<div class="flex-1 rounded border border-[var(--border)] bg-[var(--muted)] p-2">
+					<code class="mono text-[10px] break-all">bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq</code>
+				</div>
+			</div>
+		</div>
+
+		<!-- Table -->
+		<div class="card p-5 col-span-12">
+			<div class="text-sm font-semibold mb-4">Data table &amp; sparkline</div>
+			<div class="overflow-hidden rounded-lg border border-[var(--border)]">
+				<table class="w-full text-sm">
+					<thead style="background:var(--muted)">
+						<tr class="text-left text-xs font-semibold text-[color:var(--muted-fg)]">
+							<th class="px-4 py-2.5">Asset</th>
+							<th class="px-4 py-2.5">Price</th>
+							<th class="px-4 py-2.5">24h</th>
+							<th class="px-4 py-2.5">7d</th>
+							<th class="px-4 py-2.5 text-right">Balance</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="border-t border-[var(--border)]">
+							<td class="px-4 py-3">
+								<div class="flex items-center gap-3">
+									<div class="size-8 rounded-full grid place-items-center text-white font-bold text-sm" style="background:var(--chain-btc)">₿</div>
+									<div><div class="font-medium">Bitcoin</div><div class="text-xs text-[color:var(--muted-fg)]">BTC</div></div>
+								</div>
+							</td>
+							<td class="px-4 py-3 mono tabular">₦150,872,400</td>
+							<td class="px-4 py-3 mono tabular" style="color:var(--success)">+2.14%</td>
+							<td class="px-4 py-3">
+								<svg width="90" height="28" viewBox="0 0 90 28">
+									<polyline fill="none" stroke-width="1.5" stroke="var(--success)" points="0,18 10,14 20,16 30,10 40,12 50,8 60,10 70,6 80,8 90,4" />
+								</svg>
+							</td>
+							<td class="px-4 py-3 text-right mono tabular font-medium">0.0842 BTC<div class="text-xs text-[color:var(--muted-fg)]">₦12,703,435</div></td>
+						</tr>
+						<tr class="border-t border-[var(--border)]">
+							<td class="px-4 py-3">
+								<div class="flex items-center gap-3">
+									<div class="size-8 rounded-full grid place-items-center text-white font-bold text-sm" style="background:var(--chain-usdt)">₮</div>
+									<div><div class="font-medium">Tether</div><div class="text-xs text-[color:var(--muted-fg)]">USDT</div></div>
+								</div>
+							</td>
+							<td class="px-4 py-3 mono tabular">₦1,570</td>
+							<td class="px-4 py-3 mono tabular" style="color:var(--success)">+0.03%</td>
+							<td class="px-4 py-3">
+								<svg width="90" height="28" viewBox="0 0 90 28">
+									<polyline fill="none" stroke-width="1.5" stroke="var(--success)" points="0,14 10,15 20,13 30,14 40,13 50,14 60,13 70,14 80,13 90,14" />
+								</svg>
+							</td>
+							<td class="px-4 py-3 text-right mono tabular font-medium">4,820.12 USDT<div class="text-xs text-[color:var(--muted-fg)]">₦7,567,588</div></td>
+						</tr>
+						<tr class="border-t border-[var(--border)]">
+							<td class="px-4 py-3">
+								<div class="flex items-center gap-3">
+									<div class="size-8 rounded-full grid place-items-center text-white font-bold text-sm" style="background:var(--chain-eth)">Ξ</div>
+									<div><div class="font-medium">Ethereum</div><div class="text-xs text-[color:var(--muted-fg)]">ETH</div></div>
+								</div>
+							</td>
+							<td class="px-4 py-3 mono tabular">₦5,420,800</td>
+							<td class="px-4 py-3 mono tabular" style="color:var(--danger)">−0.84%</td>
+							<td class="px-4 py-3">
+								<svg width="90" height="28" viewBox="0 0 90 28">
+									<polyline fill="none" stroke-width="1.5" stroke="var(--danger)" points="0,8 10,10 20,6 30,12 40,14 50,10 60,16 70,14 80,20 90,18" />
+								</svg>
+							</td>
+							<td class="px-4 py-3 text-right mono tabular font-medium">1.284 ETH<div class="text-xs text-[color:var(--muted-fg)]">₦6,960,307</div></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+</section>
+
+<!-- ======================= INFORMATION ARCHITECTURE ======================= -->
+<section>
+	<div class="mb-4">
+		<div class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted-fg)]">04</div>
+		<h2 class="font-display text-3xl font-bold tracking-tight">Information architecture</h2>
+		<p class="text-[color:var(--muted-fg)] mt-1 text-sm">Four route groups. One layout each. 27 pages total.</p>
+	</div>
+
+	<div class="grid grid-cols-4 gap-4">
+		<!-- Marketing -->
+		<div class="card p-5">
+			<div class="flex items-center gap-2 mb-3">
+				<div class="size-6 rounded-md grid place-items-center text-white text-xs font-bold" style="background:var(--brand-600)">M</div>
+				<div class="font-semibold text-sm">Marketing</div>
+			</div>
+			<code class="text-[10px] text-[color:var(--muted-fg)] mono">(public)</code>
+			<ul class="mt-3 space-y-1 text-xs">
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span><span>Landing</span></li>
+			</ul>
+		</div>
+
+		<!-- Auth -->
+		<div class="card p-5">
+			<div class="flex items-center gap-2 mb-3">
+				<div class="size-6 rounded-md grid place-items-center text-white text-xs font-bold" style="background:var(--chain-sol)">A</div>
+				<div class="font-semibold text-sm">Auth</div>
+			</div>
+			<code class="text-[10px] text-[color:var(--muted-fg)] mono">(auth)</code>
+			<ul class="mt-3 space-y-1 text-xs">
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>login</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>signup</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>verify-otp</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>verify-email</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>forgot-password</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>reset-password</li>
+			</ul>
+		</div>
+
+		<!-- Customer -->
+		<div class="card p-5">
+			<div class="flex items-center gap-2 mb-3">
+				<div class="size-6 rounded-md grid place-items-center text-white text-xs font-bold" style="background:var(--success)">C</div>
+				<div class="font-semibold text-sm">Customer</div>
+			</div>
+			<code class="text-[10px] text-[color:var(--muted-fg)] mono">(app)</code>
+			<ul class="mt-3 space-y-1 text-xs">
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>dashboard</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>assets</li>
+				<li class="flex items-center gap-2 pl-3"><span class="text-[color:var(--muted-fg)]">└</span>[asset] detail</li>
+				<li class="flex items-center gap-2 pl-3"><span class="text-[color:var(--muted-fg)]">└</span>[asset]/receive</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>trade</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>send</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>receive</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>transactions</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>identity-verification</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>settings</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>help</li>
+			</ul>
+		</div>
+
+		<!-- Admin -->
+		<div class="card p-5">
+			<div class="flex items-center gap-2 mb-3">
+				<div class="size-6 rounded-md grid place-items-center text-white text-xs font-bold" style="background:var(--warning)">⌘</div>
+				<div class="font-semibold text-sm">Admin</div>
+			</div>
+			<code class="text-[10px] text-[color:var(--muted-fg)] mono">/admin</code>
+			<ul class="mt-3 space-y-1 text-xs">
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>admin · overview</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>admin/users</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>admin/kyc</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>admin/wallets</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>admin/transactions</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>admin/reports</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>admin/audit</li>
+				<li class="flex items-center gap-2"><span class="text-[color:var(--muted-fg)]">/</span>admin/cms</li>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- ======================= SCREEN WIREFRAMES ======================= -->
+<section>
+	<div class="mb-4">
+		<div class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted-fg)]">05</div>
+		<h2 class="font-display text-3xl font-bold tracking-tight">Key screens</h2>
+		<p class="text-[color:var(--muted-fg)] mt-1 text-sm">Composition snapshots — full code lives in <code class="mono text-xs">clusteer-frontend/src/app/</code>.</p>
+	</div>
+
+	<div class="grid grid-cols-2 gap-5">
+		<!-- Dashboard -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between mb-3">
+				<div class="font-semibold text-sm">Dashboard</div>
+				<code class="text-[10px] text-[color:var(--muted-fg)] mono">/dashboard</code>
+			</div>
+			<div class="relative rounded-lg border border-[var(--border)] bg-[var(--muted)] aspect-[16/10] overflow-hidden">
+				<div class="absolute left-0 right-0 top-0 h-7 bg-white border-b border-[var(--border)] flex items-center px-3 gap-1">
+					<div class="dot" style="background:#eee"></div><div class="dot" style="background:#eee"></div><div class="dot" style="background:#eee"></div>
+					<div class="mx-auto text-[9px] mono text-[color:var(--muted-fg)]">clusteer.co/dashboard</div>
+				</div>
+				<div class="absolute left-0 top-7 bottom-0 w-16 bg-[var(--muted)] border-r border-[var(--border)] p-2 flex flex-col gap-1.5">
+					<div class="h-1.5 rounded-full" style="background:var(--brand-600)"></div>
+					<div class="h-1.5 rounded-full bg-white/80"></div>
+					<div class="h-1.5 rounded-full bg-white/80"></div>
+					<div class="h-1.5 rounded-full bg-white/80"></div>
+					<div class="h-1.5 rounded-full bg-white/80"></div>
+				</div>
+				<div class="absolute left-16 right-0 top-7 bottom-0 p-3 space-y-2 bg-white/60">
+					<div class="flex gap-2">
+						<div class="flex-1 card p-2">
+							<div class="text-[9px] text-[color:var(--muted-fg)]">Total balance</div>
+							<div class="font-display text-sm font-bold mt-0.5 tabular mono">₦33,183,434.00</div>
+							<div class="mt-1 h-10 relative">
+								<svg viewBox="0 0 160 40" class="w-full h-full">
+									<defs><linearGradient id="g1" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--brand-500)" stop-opacity=".3"/><stop offset="1" stop-color="var(--brand-500)" stop-opacity="0"/></linearGradient></defs>
+									<path d="M0,26 L15,22 L30,24 L45,18 L60,15 L75,20 L90,14 L105,10 L120,12 L135,8 L150,6 L160,8 L160,40 L0,40 Z" fill="url(#g1)" />
+									<path d="M0,26 L15,22 L30,24 L45,18 L60,15 L75,20 L90,14 L105,10 L120,12 L135,8 L150,6 L160,8" stroke="var(--brand-600)" fill="none" stroke-width="1.5" />
+								</svg>
+							</div>
+						</div>
+						<div class="w-24 card p-2">
+							<div class="text-[8px] font-semibold">Quick send</div>
+							<div class="mt-1 space-y-1">
+								<div class="h-4 rounded bg-[var(--muted)]"></div>
+								<div class="h-4 rounded bg-[var(--muted)]"></div>
+								<div class="h-4 rounded bg-[var(--muted)]"></div>
+							</div>
+						</div>
+					</div>
+					<div class="card p-2">
+						<div class="text-[9px] font-semibold mb-1.5">Your assets</div>
+						<div class="space-y-1">
+							<div class="flex items-center gap-2">
+								<div class="size-3 rounded-full" style="background:var(--chain-btc)"></div>
+								<div class="mock bar flex-1" style="height:5px"></div>
+								<div class="text-[8px] mono" style="color:var(--success)">+2.14%</div>
+							</div>
+							<div class="flex items-center gap-2">
+								<div class="size-3 rounded-full" style="background:var(--chain-usdt)"></div>
+								<div class="mock bar flex-1" style="height:5px"></div>
+								<div class="text-[8px] mono" style="color:var(--success)">+0.03%</div>
+							</div>
+							<div class="flex items-center gap-2">
+								<div class="size-3 rounded-full" style="background:var(--chain-eth)"></div>
+								<div class="mock bar flex-1" style="height:5px"></div>
+								<div class="text-[8px] mono" style="color:var(--danger)">−0.84%</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<p class="mt-2 text-xs text-[color:var(--muted-fg)]">Total balance · 30d chart · quick send · assets table · recent activity</p>
+		</div>
+
+		<!-- Trade -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between mb-3">
+				<div class="font-semibold text-sm">Trade — Buy / Sell / Swap</div>
+				<code class="text-[10px] text-[color:var(--muted-fg)] mono">/trade</code>
+			</div>
+			<div class="relative rounded-lg border border-[var(--border)] bg-[var(--muted)] aspect-[16/10] p-4 flex items-center justify-center">
+				<div class="card p-3 max-w-sm w-full space-y-2 scrollshadow">
+					<div class="h-7 rounded-md bg-[var(--muted)] p-0.5 grid grid-cols-3 text-[9px] font-medium">
+						<div class="rounded bg-white grid place-items-center shadow-sm">Buy</div>
+						<div class="grid place-items-center text-[color:var(--muted-fg)]">Sell</div>
+						<div class="grid place-items-center text-[color:var(--muted-fg)]">Swap</div>
+					</div>
+					<div class="rounded-lg border border-[var(--border)] bg-white p-2">
+						<div class="text-[8px] font-semibold uppercase text-[color:var(--muted-fg)]">You pay</div>
+						<div class="flex items-center justify-between">
+							<div class="font-display text-lg font-bold mono tabular">250,000</div>
+							<div class="chip" style="background:var(--muted)"><div class="size-3 rounded-full text-white text-[7px] font-bold grid place-items-center" style="background:var(--success)">₦</div> NGN</div>
+						</div>
+					</div>
+					<div class="flex justify-center -my-1"><div class="size-5 rounded-full bg-white border border-[var(--border)] grid place-items-center text-xs">↓</div></div>
+					<div class="rounded-lg border border-[var(--border)] bg-white p-2">
+						<div class="text-[8px] font-semibold uppercase text-[color:var(--muted-fg)]">You receive</div>
+						<div class="flex items-center justify-between">
+							<div class="font-display text-lg font-bold mono tabular">0.00165649</div>
+							<div class="chip" style="background:var(--muted)"><div class="size-3 rounded-full text-white text-[7px] font-bold grid place-items-center" style="background:var(--chain-btc)">₿</div> BTC</div>
+						</div>
+					</div>
+					<div class="rounded-md bg-[var(--muted)] p-1.5 text-[8px] mono tabular">
+						<div class="flex justify-between"><span class="text-[color:var(--muted-fg)]">Rate</span><span>1 BTC = ₦150,872,400</span></div>
+						<div class="flex justify-between"><span class="text-[color:var(--muted-fg)]">Fee 0.75%</span><span>₦1,875</span></div>
+					</div>
+					<div class="h-7 rounded-md grid place-items-center text-white text-[10px] font-semibold" style="background:var(--brand-600)">Buy BTC</div>
+				</div>
+			</div>
+			<p class="mt-2 text-xs text-[color:var(--muted-fg)]">Unified Uniswap‑style control · 10s quote refresh · fee preview · rate lock on confirm</p>
+		</div>
+
+		<!-- Send flow -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between mb-3">
+				<div class="font-semibold text-sm">Send — 4 step flow</div>
+				<code class="text-[10px] text-[color:var(--muted-fg)] mono">/send</code>
+			</div>
+			<div class="relative rounded-lg border border-[var(--border)] bg-[var(--muted)] aspect-[16/10] p-4 flex items-center justify-center">
+				<div class="card p-3 w-full max-w-md space-y-2">
+					<ol class="flex items-center gap-1.5 mb-2">
+						<li class="flex items-center gap-1 flex-1">
+							<div class="size-4 rounded-full grid place-items-center text-white font-semibold text-[8px]" style="background:var(--brand-600)">✓</div>
+							<span class="text-[9px] font-medium">Details</span>
+							<div class="h-px flex-1" style="background:var(--brand-600)"></div>
+						</li>
+						<li class="flex items-center gap-1 flex-1">
+							<div class="size-4 rounded-full grid place-items-center font-semibold text-[8px]" style="background:var(--brand-50); color:var(--brand-600); box-shadow:0 0 0 1.5px var(--brand-600) inset;">2</div>
+							<span class="text-[9px] font-medium">Review</span>
+							<div class="h-px flex-1" style="background:var(--border)"></div>
+						</li>
+						<li class="flex items-center gap-1 flex-1">
+							<div class="size-4 rounded-full grid place-items-center font-semibold text-[8px] bg-[var(--muted)] text-[color:var(--muted-fg)]">3</div>
+							<span class="text-[9px] text-[color:var(--muted-fg)]">Authorize</span>
+							<div class="h-px flex-1" style="background:var(--border)"></div>
+						</li>
+						<li class="flex items-center gap-1">
+							<div class="size-4 rounded-full grid place-items-center font-semibold text-[8px] bg-[var(--muted)] text-[color:var(--muted-fg)]">4</div>
+						</li>
+					</ol>
+					<div class="rounded border border-[var(--border)] p-2">
+						<div class="text-[9px] text-[color:var(--muted-fg)] uppercase">You're sending</div>
+						<div class="mono font-display text-xl font-bold tabular">420 USDT</div>
+						<div class="mono text-[9px] text-[color:var(--muted-fg)]">≈ ₦659,400</div>
+					</div>
+					<div class="rounded border border-[var(--border)] divide-y divide-[var(--border)] text-[9px]">
+						<div class="flex justify-between p-1.5"><span class="text-[color:var(--muted-fg)]">To</span><code class="mono">TXfM9pA2…9J1fA</code></div>
+						<div class="flex justify-between p-1.5"><span class="text-[color:var(--muted-fg)]">Network</span><span class="chip" style="background:color-mix(in oklch, var(--chain-trx) 15%, transparent); color:var(--chain-trx); font-size:8px;">Tron</span></div>
+						<div class="flex justify-between p-1.5"><span class="text-[color:var(--muted-fg)]">Fee</span><span class="mono">1 USDT</span></div>
+					</div>
+					<div class="flex gap-2 rounded border p-1.5 text-[9px]" style="background:var(--warning-bg); color:var(--warning); border-color:color-mix(in oklch, var(--warning) 30%, transparent)">
+						⚠ Double‑check the address. On‑chain sends cannot be reversed.
+					</div>
+				</div>
+			</div>
+			<p class="mt-2 text-xs text-[color:var(--muted-fg)]">Details → Review → 2FA → Submitted · safety checkpoints at every step</p>
+		</div>
+
+		<!-- Receive -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between mb-3">
+				<div class="font-semibold text-sm">Receive</div>
+				<code class="text-[10px] text-[color:var(--muted-fg)] mono">/receive</code>
+			</div>
+			<div class="relative rounded-lg border border-[var(--border)] bg-[var(--muted)] aspect-[16/10] p-4 flex items-center justify-center">
+				<div class="card p-3 w-full max-w-sm space-y-2">
+					<div class="grid grid-cols-2 gap-2 text-[9px]">
+						<div><div class="text-[color:var(--muted-fg)] uppercase font-semibold">Asset</div><div class="mt-0.5 h-6 rounded border border-[var(--border)] px-2 flex items-center gap-1.5"><div class="size-3 rounded-full text-white text-[7px] font-bold grid place-items-center" style="background:var(--chain-usdt)">₮</div> USDT ↓</div></div>
+						<div><div class="text-[color:var(--muted-fg)] uppercase font-semibold">Network</div><div class="mt-0.5 h-6 rounded border border-[var(--border)] px-2 flex items-center">Tron ↓</div></div>
+					</div>
+					<div class="flex flex-col items-center gap-2 py-2">
+						<div class="size-24 rounded grid grid-cols-8 grid-rows-8 gap-[1px] p-1" style="background:var(--fg)">
+							<div class="col-span-3 row-span-3 bg-white"></div>
+							<div class="col-span-3 row-span-3 col-start-6 bg-white"></div>
+							<div class="col-span-2 col-start-3 row-start-4 bg-white"></div>
+							<div class="col-span-3 row-span-3 row-start-6 bg-white"></div>
+							<div class="col-span-3 col-start-5 row-start-7 bg-white"></div>
+							<div class="col-span-1 col-start-5 row-start-5 bg-white"></div>
+						</div>
+						<div class="w-full flex items-center gap-1.5 rounded border border-[var(--border)] bg-[var(--muted)] p-1.5">
+							<code class="mono text-[8px] flex-1 break-all">TXfM9pA2kL8c6D4wQ3rX5zYH8m2bN9J1fA</code>
+							<div class="text-[8px] font-semibold px-1.5 py-0.5 rounded" style="background:white; border:1px solid var(--border)">COPY</div>
+						</div>
+					</div>
+					<div class="flex gap-1.5 rounded p-1.5 text-[8px]" style="background:var(--warning-bg); color:var(--warning);">⚠ Only send USDT on Tron</div>
+				</div>
+			</div>
+			<p class="mt-2 text-xs text-[color:var(--muted-fg)]">Asset + network picker · QR + copyable address · big safety warning</p>
+		</div>
+
+		<!-- KYC -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between mb-3">
+				<div class="font-semibold text-sm">Identity verification</div>
+				<code class="text-[10px] text-[color:var(--muted-fg)] mono">/identity-verification</code>
+			</div>
+			<div class="relative rounded-lg border border-[var(--border)] bg-[var(--muted)] aspect-[16/10] p-3 space-y-2">
+				<div class="grid grid-cols-3 gap-2">
+					<div class="card p-2">
+						<div class="text-[8px] uppercase text-[color:var(--muted-fg)]">Tier 1</div>
+						<div class="font-display text-xs font-bold">Basic ✓</div>
+						<div class="text-[8px] mt-1 mono">₦100K/day</div>
+					</div>
+					<div class="card p-2" style="border-color:var(--brand-500); box-shadow: 0 0 0 2px color-mix(in oklch, var(--brand-500) 30%, transparent);">
+						<div class="flex items-center justify-between">
+							<div class="text-[8px] uppercase text-[color:var(--muted-fg)]">Tier 2</div>
+							<span class="chip" style="background:var(--success-bg); color:var(--success); font-size:7px">Current</span>
+						</div>
+						<div class="font-display text-xs font-bold">Standard</div>
+						<div class="text-[8px] mt-1 mono">₦2M/day</div>
+					</div>
+					<div class="card p-2 opacity-60">
+						<div class="text-[8px] uppercase text-[color:var(--muted-fg)]">Tier 3</div>
+						<div class="font-display text-xs font-bold">Premium 🔒</div>
+						<div class="text-[8px] mt-1 mono">Unlimited</div>
+					</div>
+				</div>
+				<div class="card p-2">
+					<div class="text-[9px] font-semibold mb-1.5">Upgrade wizard</div>
+					<ol class="flex items-center gap-1">
+						<li class="flex items-center gap-0.5 flex-1"><div class="size-3 rounded-full grid place-items-center text-white text-[7px] font-bold" style="background:var(--brand-600)">✓</div><span class="text-[8px]">BVN</span><div class="h-px flex-1" style="background:var(--brand-600)"></div></li>
+						<li class="flex items-center gap-0.5 flex-1"><div class="size-3 rounded-full grid place-items-center text-[7px] font-bold" style="background:var(--brand-50); color:var(--brand-600)">2</div><span class="text-[8px]">Upload</span><div class="h-px flex-1" style="background:var(--border)"></div></li>
+						<li class="flex items-center gap-0.5 flex-1"><div class="size-3 rounded-full bg-[var(--muted)] text-[color:var(--muted-fg)] grid place-items-center text-[7px]">3</div><span class="text-[8px] text-[color:var(--muted-fg)]">Selfie</span><div class="h-px flex-1" style="background:var(--border)"></div></li>
+						<li class="flex items-center gap-0.5"><div class="size-3 rounded-full bg-[var(--muted)] text-[color:var(--muted-fg)] grid place-items-center text-[7px]">4</div></li>
+					</ol>
+					<div class="mt-1.5 border-2 border-dashed border-[var(--border)] rounded p-2 text-center text-[8px] text-[color:var(--muted-fg)]">📄 Upload front of ID · JPG or PDF · max 10MB</div>
+				</div>
+			</div>
+			<p class="mt-2 text-xs text-[color:var(--muted-fg)]">3 tiers · BVN → ID → Selfie wizard · limits ladder</p>
+		</div>
+
+		<!-- Admin overview -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between mb-3">
+				<div class="font-semibold text-sm">Admin · overview</div>
+				<code class="text-[10px] text-[color:var(--muted-fg)] mono">/admin</code>
+			</div>
+			<div class="relative rounded-lg border border-[var(--border)] bg-[var(--muted)] aspect-[16/10] overflow-hidden">
+				<div class="absolute left-0 right-0 top-0 h-7 bg-white border-b border-[var(--border)] flex items-center px-3 gap-2">
+					<div class="dot" style="background:#eee"></div><div class="dot" style="background:#eee"></div>
+					<span class="chip" style="background:var(--warning-bg); color:var(--warning); font-size:7px">ADMIN</span>
+					<div class="mx-auto text-[9px] mono text-[color:var(--muted-fg)]">clusteer.co/admin</div>
+				</div>
+				<div class="absolute left-0 top-7 bottom-0 w-16 bg-[var(--muted)] border-r border-[var(--border)] p-2 flex flex-col gap-1.5">
+					<div class="h-1.5 rounded-full" style="background:var(--brand-600)"></div>
+					<div class="h-1.5 rounded-full bg-white/80"></div>
+					<div class="h-1.5 rounded-full bg-white/80 flex items-center justify-end pr-0.5"><span class="text-[6px] font-bold" style="color:var(--warning)">4</span></div>
+					<div class="h-1.5 rounded-full bg-white/80"></div>
+					<div class="h-1.5 rounded-full bg-white/80 flex items-center justify-end pr-0.5"><span class="text-[6px] font-bold" style="color:var(--warning)">2</span></div>
+					<div class="h-1.5 rounded-full bg-white/80"></div>
+				</div>
+				<div class="absolute left-16 right-0 top-7 bottom-0 p-2 space-y-1.5 bg-white/60">
+					<div class="grid grid-cols-4 gap-1.5">
+						<div class="card p-1.5"><div class="text-[7px] text-[color:var(--muted-fg)]">Users</div><div class="font-display font-bold text-[11px] mono tabular">14,508</div></div>
+						<div class="card p-1.5"><div class="text-[7px] text-[color:var(--muted-fg)]">24h vol</div><div class="font-display font-bold text-[11px] mono tabular">₦1.48B</div></div>
+						<div class="card p-1.5"><div class="text-[7px] text-[color:var(--muted-fg)]">AUM</div><div class="font-display font-bold text-[11px] mono tabular">₦25.5B</div></div>
+						<div class="card p-1.5"><div class="text-[7px] text-[color:var(--muted-fg)]">KYC</div><div class="font-display font-bold text-[11px]" style="color:var(--warning)">4 pending</div></div>
+					</div>
+					<div class="card p-1.5">
+						<div class="text-[8px] font-semibold">Platform volume · 30d</div>
+						<svg viewBox="0 0 240 40" class="w-full h-10">
+							<defs><linearGradient id="g2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--brand-500)" stop-opacity=".3"/><stop offset="1" stop-color="var(--brand-500)" stop-opacity="0"/></linearGradient></defs>
+							<path d="M0,24 L20,22 L40,26 L60,18 L80,20 L100,14 L120,18 L140,10 L160,14 L180,8 L200,10 L220,6 L240,8 L240,40 L0,40 Z" fill="url(#g2)" />
+							<path d="M0,24 L20,22 L40,26 L60,18 L80,20 L100,14 L120,18 L140,10 L160,14 L180,8 L200,10 L220,6 L240,8" stroke="var(--brand-600)" fill="none" stroke-width="1.5" />
+						</svg>
+					</div>
+					<div class="grid grid-cols-2 gap-1.5">
+						<div class="card p-1.5"><div class="text-[8px] font-semibold mb-1">KYC queue</div><div class="space-y-0.5"><div class="h-2 rounded bg-[var(--muted)]"></div><div class="h-2 rounded bg-[var(--muted)]"></div><div class="h-2 rounded bg-[var(--muted)]"></div></div></div>
+						<div class="card p-1.5"><div class="text-[8px] font-semibold mb-1">🚩 Flagged tx</div><div class="space-y-0.5"><div class="h-2 rounded" style="background:var(--warning-bg)"></div><div class="h-2 rounded" style="background:var(--warning-bg)"></div></div></div>
+					</div>
+				</div>
+			</div>
+			<p class="mt-2 text-xs text-[color:var(--muted-fg)]">Stats · 30d volume chart · KYC queue · flagged tx · wallet pool health</p>
+		</div>
+
+		<!-- Admin wallets -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between mb-3">
+				<div class="font-semibold text-sm">Admin · wallet pools</div>
+				<code class="text-[10px] text-[color:var(--muted-fg)] mono">/admin/wallets</code>
+			</div>
+			<div class="relative rounded-lg border border-[var(--border)] bg-[var(--muted)] aspect-[16/10] p-3">
+				<div class="grid grid-cols-3 gap-2">
+					<div class="card p-2">
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-1"><div class="size-3 rounded-full" style="background:var(--chain-btc)"></div><span class="text-[9px] font-semibold">BTC</span></div>
+							<span class="chip" style="background:var(--warning-bg); color:var(--warning); font-size:7px">🔥 Hot</span>
+						</div>
+						<div class="font-display font-bold mono tabular text-xs mt-1">4.22 BTC</div>
+						<div class="text-[8px] mono text-[color:var(--muted-fg)]">$406,554</div>
+						<div class="mt-1.5 h-1 rounded-full bg-[var(--muted)]"><div class="h-full rounded-full" style="width:53%; background:var(--success)"></div></div>
+					</div>
+					<div class="card p-2">
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-1"><div class="size-3 rounded-full" style="background:var(--chain-usdt)"></div><span class="text-[9px] font-semibold">USDT</span></div>
+							<span class="chip" style="background:var(--warning-bg); color:var(--warning); font-size:7px">🔥 Hot</span>
+						</div>
+						<div class="font-display font-bold mono tabular text-xs mt-1">128,400</div>
+						<div class="text-[8px] mono text-[color:var(--muted-fg)]">$128,400</div>
+						<div class="mt-1.5 h-1 rounded-full bg-[var(--muted)]"><div class="h-full rounded-full" style="width:51%; background:var(--success)"></div></div>
+					</div>
+					<div class="card p-2">
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-1"><div class="size-3 rounded-full" style="background:var(--chain-btc)"></div><span class="text-[9px] font-semibold">BTC</span></div>
+							<span class="chip" style="background:var(--info-bg); color:var(--brand-700); font-size:7px">❄ Cold</span>
+						</div>
+						<div class="font-display font-bold mono tabular text-xs mt-1">128.4 BTC</div>
+						<div class="text-[8px] mono text-[color:var(--muted-fg)]">$12.37M</div>
+					</div>
+					<div class="card p-2">
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-1"><div class="size-3 rounded-full" style="background:var(--chain-eth)"></div><span class="text-[9px] font-semibold">ETH</span></div>
+							<span class="chip" style="background:var(--muted); color:var(--fg); font-size:7px">Warm</span>
+						</div>
+						<div class="font-display font-bold mono tabular text-xs mt-1">42.8 ETH</div>
+						<div class="text-[8px] mono text-[color:var(--muted-fg)]">$148,088</div>
+					</div>
+					<div class="card p-2 col-span-2">
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-1"><div class="size-3 rounded-full" style="background:var(--chain-usdc)"></div><span class="text-[9px] font-semibold">USDC Ops</span></div>
+							<span class="chip" style="background:var(--success-bg); color:var(--success); font-size:7px">🛡 3‑of‑5 multisig</span>
+						</div>
+						<div class="font-display font-bold mono tabular text-xs mt-1">2,100,000 USDC</div>
+						<div class="rounded mt-1 bg-[var(--muted)] p-1 text-[8px] mono">0x8aC7…Be12f3a · 3‑of‑5 signers required</div>
+					</div>
+				</div>
+			</div>
+			<p class="mt-2 text-xs text-[color:var(--muted-fg)]">Hot / warm / cold / multi‑sig · threshold bars · rebalance trigger</p>
+		</div>
+	</div>
+</section>
+
+<!-- ======================= DELIVERABLES ======================= -->
+<section>
+	<div class="mb-4">
+		<div class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted-fg)]">06</div>
+		<h2 class="font-display text-3xl font-bold tracking-tight">What you get</h2>
+	</div>
+
+	<div class="grid grid-cols-3 gap-4">
+		<div class="card p-5">
+			<div class="font-display text-5xl font-bold tabular" style="color:var(--brand-600)">27</div>
+			<div class="font-semibold mt-1">Pages</div>
+			<p class="text-[color:var(--muted-fg)] text-xs mt-1">Marketing · 6 auth · 11 customer · 8 admin · 404 · layouts</p>
+		</div>
+		<div class="card p-5">
+			<div class="font-display text-5xl font-bold tabular" style="color:var(--brand-600)">19</div>
+			<div class="font-semibold mt-1">UI primitives</div>
+			<p class="text-[color:var(--muted-fg)] text-xs mt-1">shadcn/ui new‑york · extended badges · tabular Num · asset + chain marks</p>
+		</div>
+		<div class="card p-5">
+			<div class="font-display text-5xl font-bold tabular" style="color:var(--brand-600)">1</div>
+			<div class="font-semibold mt-1">Token layer</div>
+			<p class="text-[color:var(--muted-fg)] text-xs mt-1">OKLCH brand scale · semantic intents · chain accents · dark‑mode ready</p>
+		</div>
+	</div>
+
+	<div class="mt-6 card p-6 bg-[var(--muted)]">
+		<div class="grid grid-cols-[auto_1fr_auto] items-center gap-6">
+			<div class="size-14 rounded-xl grid place-items-center text-white" style="background:var(--brand-600)">
+				<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+			</div>
+			<div>
+				<div class="font-display text-lg font-bold">Everything in <code class="mono">clusteer-frontend/</code></div>
+				<p class="text-[color:var(--muted-fg)] text-sm">Next.js 15 · TypeScript · Tailwind v4 · shadcn/ui · mock data fixtures · HANDOFF.md with page catalog, token reference, and migration notes.</p>
+			</div>
+			<code class="mono text-xs px-3 py-2 rounded bg-white border border-[var(--border)]">npm install &amp;&amp; npm run dev</code>
+		</div>
+	</div>
+</section>
+
+<footer class="border-t border-[var(--border)] mt-12 pt-6 pb-12 text-xs text-[color:var(--muted-fg)] flex items-center justify-between">
+	<div>Clusteer — redesign delivered · Naira‑first crypto exchange</div>
+	<code class="mono">oklch(0.48 0.2 254)</code>
+</footer>
+
+</main>
+</body>
+</html>

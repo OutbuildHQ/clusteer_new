@@ -28,7 +28,7 @@ function FAQ({ q, a }: { q: string; a: string }) {
 			<button
 				onClick={() => setOpen(!open)}
 				aria-expanded={open}
-				className="flex w-full items-center justify-between gap-3 py-4 sm:py-5 text-left font-display font-bold text-[15px] sm:text-base md:text-lg hover:text-brand-700 transition-colors min-h-[44px]"
+				className="flex w-full items-center justify-between gap-3 py-4 sm:py-5 text-left font-display font-bold text-[15px] sm:text-base md:text-lg hover:text-custom-black/70 transition-colors min-h-[44px]"
 			>
 				{q}
 				<ChevronDown className={`size-5 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
@@ -138,7 +138,7 @@ export default function HelpCenter() {
 		<>
 			{/* ─── Hero ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto text-center">
-				<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-3 sm:mb-4">
+				<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70 mb-3 sm:mb-4">
 					◆ HELP CENTER
 				</div>
 				<h1 className="font-display text-[clamp(32px,7vw,72px)] sm:text-[clamp(40px,5.5vw,72px)] font-bold leading-[0.95] tracking-[-0.03em]">
@@ -175,7 +175,7 @@ export default function HelpCenter() {
 							<div className="size-12 rounded-2xl bg-light-green border-[1.5px] border-custom-black inline-flex items-center justify-center">
 								<topic.icon className="size-5" strokeWidth={2.4} />
 							</div>
-							<div className="font-display text-lg sm:text-[22px] font-bold leading-tight tracking-[-0.02em] group-hover:text-brand-700 transition-colors">
+							<div className="font-display text-lg sm:text-[22px] font-bold leading-tight tracking-[-0.02em] group-hover:text-custom-black/70 transition-colors">
 								{topic.title}
 							</div>
 							<p className="text-sm sm:text-[15px] leading-relaxed text-muted-foreground">
@@ -198,7 +198,7 @@ export default function HelpCenter() {
 							<topic.icon className="size-5" strokeWidth={2.4} />
 						</div>
 						<div>
-							<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800">
+							<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70">
 								◆ {topic.title.toUpperCase()}
 							</div>
 							<h2 className="font-display text-xl sm:text-2xl lg:text-3xl font-bold tracking-[-0.03em]">

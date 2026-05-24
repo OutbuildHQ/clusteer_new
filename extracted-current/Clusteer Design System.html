@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Clusteer — Design System & Frontend Plan</title>
+<link rel="stylesheet" href="tokens.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  html,body { margin:0; padding:0; background:#f0eee9; height:100%; }
+  body { font-family: var(--cl-font-sans); }
+  .cl-artboard { background: var(--cl-bg); color: var(--cl-text); border-radius: 8px; overflow:hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="components.jsx"></script>
+<script type="text/babel" src="tokens-page.jsx"></script>
+<script type="text/babel" src="screens-customer.jsx"></script>
+<script type="text/babel" src="screens-admin.jsx"></script>
+<script type="text/babel" src="screens-extended.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "light",
+  "brand": "#0B5FFF",
+  "radius": 10,
+  "density": 1
+}/*EDITMODE-END*/;
+
+/* ========== MOBILE FRAME ========== */
+const MobileFrame = ({ children, label }) => (
+  <div style={{width:320,height:660,background:'#0B1220',borderRadius:36,padding:10,boxShadow:'0 20px 60px rgba(0,0,0,0.18)'}}>
+    <div style={{width:'100%',height:'100%',background:'var(--cl-bg)',borderRadius:28,overflow:'hidden',position:'relative'}}>
+      <div style={{height:32,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 18px',fontSize:11,fontWeight:600,color:'var(--cl-text)'}}>
+        <span>9:41</span>
+        <div style={{width:100,height:22,background:'#0B1220',borderRadius:14,position:'absolute',top:6,left:'50%',transform:'translateX(-50%)'}}/>
+        <span style={{fontFamily:'var(--cl-font-mono)'}}>●●● 5G</span>
+      </div>
+      {children}
+    </div>
+  </div>
+);
+
+/* Mobile dashboard */
+const MobileDashboard = () => (
+  <MobileFrame>
+    <div style={{padding:'12px 16px',height:'calc(100% - 32px)',overflow:'auto'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        <div style={{display:'flex',alignItems:'center',gap:10}}>
+          <Avatar name="Adaeze Okoye" size={32}/>
+          <div>
+            <div style={{fontSize:11,color:'var(--cl-text-3)'}}>Good afternoon</div>
+            <div style={{fontSize:14,fontWeight:600}}>Adaeze</div>
+          </div>
+        </div>
+        <Icon name="bell" size={18}/>
+      </div>
+      <Card style={{marginTop:16,background:'var(--cl-text)',color:'var(--cl-bg)',border:'none'}} pad={18}>
+        <div style={{fontSize:11,opacity:0.7,textTransform:'uppercase',letterSpacing:'0.06em'}}>Total balance</div>
+        <Num size={28} weight={650} style={{marginTop:4,display:'block',color:'inherit'}}>₦ 4,182,550</Num>
+        <div style={{fontSize:11,opacity:0.6,marginTop:2}}>≈ 2,563.20 USDT</div>
+        <div style={{display:'flex',gap:8,marginTop:16}}>
+          {[{i:'arrowDown',l:'Buy'},{i:'arrowUp',l:'Sell'},{i:'send',l:'Send'},{i:'swap',l:'Swap'}].map((a,i)=>(
+            <div key={i} style={{flex:1,textAlign:'center'}}>
+              <div style={{width:36,height:36,borderRadius:999,background:'rgba(255,255,255,0.12)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto'}}>
+                <Icon name={a.i} size={15}/>
+              </div>
+              <div style={{fontSize:10,marginTop:6,opacity:0.8}}>{a.l}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+      <div style={{fontSize:12,fontWeight:500,marginTop:18,marginBottom:8,color:'var(--cl-text-2)'}}>Assets</div>
+      {[
+        {s:'USDT',n:'Tether · TRC-20',b:'1,840.50',f:'₦3,003,799'},
+        {s:'USDT',n:'Tether · BEP-20',b:'520.00',f:'₦848,900'},
+        {s:'USDT',n:'Tether · SOL',b:'202.70',f:'₦330,906'},
+      ].map((r,i)=>(
+        <div key={i} style={{display:'flex',alignItems:'center',gap:10,padding:'12px 0',borderBottom:i<2?'1px solid var(--cl-line)':'none'}}>
+          <AssetLogo symbol="USDT" size={32}/>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:13,fontWeight:500}}>{r.s}</div>
+            <div style={{fontSize:11,color:'var(--cl-text-3)'}}>{r.n}</div>
+          </div>
+          <div style={{textAlign:'right'}}>
+            <Num size={13} weight={500}>{r.b}</Num>
+            <div style={{fontSize:11,color:'var(--cl-text-3)'}}><Num>{r.f}</Num></div>
+          </div>
+        </div>
+      ))}
+      <div style={{fontSize:12,fontWeight:500,marginTop:18,marginBottom:8,color:'var(--cl-text-2)'}}>Recent</div>
+      {[
+        {i:'arrowDownLeft',t:'Received USDT',a:'+120.00',c:'var(--cl-up)'},
+        {i:'arrowUpRight',t:'Sold USDT',a:'-500.00',c:'var(--cl-down)'},
+      ].map((a,i)=>(
+        <div key={i} style={{display:'flex',alignItems:'center',gap:10,padding:'10px 0'}}>
+          <div style={{width:30,height:30,borderRadius:999,background:'var(--cl-surface-2)',color:a.c,display:'flex',alignItems:'center',justifyContent:'center'}}>
+            <Icon name={a.i} size={14}/>
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:13,fontWeight:500}}>{a.t}</div>
+            <div style={{fontSize:11,color:'var(--cl-text-3)'}}>2 min ago</div>
+          </div>
+          <Num size={13} color={a.c}>{a.a}</Num>
+        </div>
+      ))}
+    </div>
+    {/* Tab bar */}
+    <div style={{position:'absolute',bottom:0,left:0,right:0,height:58,background:'var(--cl-surface)',borderTop:'1px solid var(--cl-line)',display:'flex',alignItems:'center',justifyContent:'space-around'}}>
+      {[{i:'dashboard',l:'Home',a:true},{i:'trade',l:'Trade'},{i:'swap',l:'Swap'},{i:'list',l:'Activity'},{i:'user',l:'Profile'}].map((t,i)=>(
+        <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2,color:t.a?'var(--cl-brand-500)':'var(--cl-text-3)'}}>
+          <Icon name={t.i} size={18} stroke={t.a?2:1.75}/>
+          <span style={{fontSize:10,fontWeight:t.a?500:400}}>{t.l}</span>
+        </div>
+      ))}
+    </div>
+  </MobileFrame>
+);
+
+/* Mobile Send */
+const MobileSend = () => (
+  <MobileFrame>
+    <div style={{padding:'12px 16px',height:'calc(100% - 32px)',overflow:'auto'}}>
+      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:20}}>
+        <Icon name="arrowLeft" size={20}/>
+        <div style={{fontSize:16,fontWeight:600}}>Send USDT</div>
+      </div>
+      <Tabs tabs={[{key:'user',label:'To @username'},{key:'addr',label:'External'}]} active="user" onChange={()=>{}} variant="pill"/>
+      <div style={{marginTop:16}}>
+        <Field label="Recipient">
+          <Input icon="user" value="@chidi" onChange={()=>{}} suffix="Chidi E."/>
+        </Field>
+      </div>
+      <div style={{marginTop:14,padding:18,background:'var(--cl-surface-2)',borderRadius:'var(--cl-r-lg)',textAlign:'center'}}>
+        <div style={{fontSize:11,color:'var(--cl-text-3)'}}>You send</div>
+        <Num size={40} weight={650} style={{marginTop:6,display:'block'}}>120.00</Num>
+        <div style={{fontSize:12,color:'var(--cl-text-3)',marginTop:2}}>USDT · ≈ ₦195,900</div>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8,marginTop:12}}>
+        {['1','2','3','4','5','6','7','8','9','.','0','⌫'].map((n,i)=>(
+          <div key={i} style={{height:44,display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,fontFamily:'var(--cl-font-mono)',borderRadius:'var(--cl-r-md)',background:'var(--cl-surface)'}}>{n}</div>
+        ))}
+      </div>
+      <Button full size="lg" style={{marginTop:16}}>Continue</Button>
+    </div>
+  </MobileFrame>
+);
+
+/* Mobile KYC */
+const MobileKYC = () => (
+  <MobileFrame>
+    <div style={{padding:'12px 16px',height:'calc(100% - 32px)',overflow:'auto'}}>
+      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
+        <Icon name="arrowLeft" size={20}/>
+        <div style={{fontSize:16,fontWeight:600}}>Verify identity</div>
+      </div>
+      <Steps steps={['ID','Selfie','Address']} current={1}/>
+      <div style={{marginTop:24}}>
+        <div style={{aspectRatio:'3/4',borderRadius:'var(--cl-r-lg)',background:`radial-gradient(circle at center, var(--cl-surface-2), var(--cl-surface-3))`,border:'2px dashed var(--cl-line-strong)',display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',color:'var(--cl-text-3)',position:'relative'}}>
+          <div style={{width:120,height:160,border:'3px solid var(--cl-brand-500)',borderRadius:'50%',position:'relative'}}>
+            <Icon name="user" size={80} style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',color:'var(--cl-text-3)'}}/>
+          </div>
+          <div style={{fontSize:13,marginTop:16,color:'var(--cl-text-2)',textAlign:'center',padding:'0 30px'}}>Align your face inside the oval, then blink twice.</div>
+        </div>
+      </div>
+      <Card pad={12} style={{marginTop:14,background:'var(--cl-info-soft)',border:'none'}}>
+        <div style={{display:'flex',gap:10,alignItems:'flex-start'}}>
+          <Icon name="shieldCheck" size={16} style={{color:'var(--cl-info)',flexShrink:0,marginTop:1}}/>
+          <div style={{fontSize:12,color:'var(--cl-info)'}}>Powered by Smile ID · your image is encrypted and deleted within 30 days.</div>
+        </div>
+      </Card>
+      <Button full size="lg" icon="eye" style={{marginTop:14}}>Start liveness check</Button>
+    </div>
+  </MobileFrame>
+);
+
+/* ========== ROOT APP ========== */
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const tStr = typeof t === 'object' ? t : TWEAK_DEFAULTS;
+  const setT = typeof setTweak === 'function' ? setTweak : () => {};
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', tStr.theme || 'light');
+    const r = document.documentElement.style;
+    r.setProperty('--cl-brand-500', tStr.brand || '#0B5FFF');
+    r.setProperty('--cl-r-md', (tStr.radius || 10) + 'px');
+    r.setProperty('--cl-r-lg', ((tStr.radius || 10) + 4) + 'px');
+    r.setProperty('--cl-density', tStr.density || 1);
+  }, [tStr.theme, tStr.brand, tStr.radius, tStr.density]);
+
+  return (
+    <div className="cl-root">
+      <DesignCanvas>
+        <DCSection id="intro" title="Clusteer" subtitle="Design system & frontend revamp · for the Clusteer crypto-fiat exchange">
+          <DCArtboard id="cover" label="Cover · System map" width={1280} height={720}>
+            <CoverArtboard/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="foundations" title="Foundations" subtitle="Tokens, type, scale, motion">
+          <DCArtboard id="tokens" label="Tokens · colors, type, spacing, radius" width={1280} height={1600}>
+            <TokensPage/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="marketing" title="Marketing" subtitle="Public surface — acquisition, trust, conversion">
+          <DCArtboard id="landing" label="Landing page" width={1280} height={1780}>
+            <MarketingLanding/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="auth" title="Auth" subtitle="Signup · Login · OTP · 2FA · Password reset">
+          <DCArtboard id="signup" label="Create account" width={520} height={760}><AuthSignup/></DCArtboard>
+          <DCArtboard id="login" label="Sign in" width={520} height={760}><AuthLogin/></DCArtboard>
+          <DCArtboard id="otp" label="Email OTP" width={520} height={680}><AuthOTP/></DCArtboard>
+          <DCArtboard id="2fa" label="2FA login" width={520} height={680}><Auth2FA/></DCArtboard>
+          <DCArtboard id="forgot" label="Forgot password" width={520} height={680}><AuthForgot/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="customer-desktop" title="Customer · Desktop" subtitle="Dashboard, trade, assets, KYC, settings, support">
+          <DCArtboard id="dash" label="Dashboard · Overview" width={1280} height={820}>
+            <AppShell active="dashboard" title="Overview" crumbs="Home"><DashboardOverview/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="trade" label="Trade · Buy/Sell/Swap" width={1280} height={820}>
+            <AppShell active="trade" title="Trade USDT / NGN" crumbs="Trade"><TradeScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="dash-empty" label="Dashboard · New user empty state" width={1280} height={820}>
+            <AppShell active="dashboard" title="Welcome" crumbs="Home"><DashboardEmpty/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="asset-detail" label="Asset detail · USDT" width={1280} height={820}>
+            <AppShell active="assets" title="USDT" crumbs="Assets · USDT"><AssetDetailScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="receive" label="Assets · Receive" width={1280} height={820}>
+            <AppShell active="assets" title="Receive" crumbs="Assets · USDT · Receive"><ReceiveScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="orders" label="Orders" width={1280} height={820}>
+            <AppShell active="orders" title="Orders" crumbs="Orders"><OrdersScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="tx-history" label="Transactions · history" width={1280} height={820}>
+            <AppShell active="tx" title="Transactions" crumbs="Transactions"><TxHistoryScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="tx-detail" label="Transaction detail drawer" width={520} height={720}>
+            <TxDetail/>
+          </DCArtboard>
+          <DCArtboard id="payments" label="Settings · Payment methods" width={1280} height={640}>
+            <AppShell active="settings" title="Settings" crumbs="Settings · Payment methods"><PaymentMethodsScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="sessions" label="Settings · Sessions & devices" width={1280} height={560}>
+            <AppShell active="settings" title="Settings" crumbs="Settings · Security · Sessions"><SessionsScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="help" label="Help center" width={1280} height={820}>
+            <AppShell active="support" title="Help" crumbs="Support · Help center"><HelpScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="kyc" label="KYC · Identity verification" width={1280} height={820}>
+            <AppShell active="settings" title="Identity verification" crumbs="Settings · Identity"><KYCScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="settings" label="Settings · Security" width={1280} height={820}>
+            <AppShell active="settings" title="Settings" crumbs="Settings · Security"><SettingsScreen/></AppShell>
+          </DCArtboard>
+          <DCArtboard id="support" label="Support tickets" width={1280} height={820}>
+            <AppShell active="support" title="Support" crumbs="Support · Ticket"><SupportScreen/></AppShell>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="system-states" title="System states" subtitle="Toasts, errors, empty, loading">
+          <DCArtboard id="toasts" label="Toast stack" width={460} height={480}><ToastStack/></DCArtboard>
+          <DCArtboard id="error-404" label="404 not found" width={880} height={540}><ErrorPage/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="customer-mobile" title="Customer · Mobile" subtitle="Responsive pass of key flows">
+          <DCArtboard id="m-dash" label="Dashboard" width={340} height={680}><div style={{padding:10}}><MobileDashboard/></div></DCArtboard>
+          <DCArtboard id="m-send" label="Send" width={340} height={680}><div style={{padding:10}}><MobileSend/></div></DCArtboard>
+          <DCArtboard id="m-kyc" label="KYC · Selfie" width={340} height={680}><div style={{padding:10}}><MobileKYC/></div></DCArtboard>
+        </DCSection>
+
+        <DCSection id="admin" title="Admin" subtitle="Compliance, ops, wallets, reporting">
+          <DCArtboard id="a-ops" label="Ops overview" width={1280} height={820}>
+            <AdminShell active="dashboard" title="Operations"><AdminOps/></AdminShell>
+          </DCArtboard>
+          <DCArtboard id="a-users" label="Users" width={1280} height={820}>
+            <AdminShell active="users" title="Users"><AdminUsers/></AdminShell>
+          </DCArtboard>
+          <DCArtboard id="a-user-detail" label="User detail · Adaeze" width={1280} height={820}>
+            <AdminShell active="users" title="User · Adaeze Okoye"><AdminUserDetail/></AdminShell>
+          </DCArtboard>
+          <DCArtboard id="a-kyc" label="KYC queue" width={1280} height={820}>
+            <AdminShell active="kyc" title="KYC queue · 24 pending"><AdminKYC/></AdminShell>
+          </DCArtboard>
+          <DCArtboard id="a-tx" label="Transactions" width={1280} height={820}>
+            <AdminShell active="tx" title="Transactions"><AdminTransactions/></AdminShell>
+          </DCArtboard>
+          <DCArtboard id="a-wallets" label="Wallets · custody" width={1280} height={860}>
+            <AdminShell active="wallets" title="Wallets"><AdminWallets/></AdminShell>
+          </DCArtboard>
+          <DCArtboard id="a-reports" label="Reports" width={1280} height={820}>
+            <AdminShell active="reports" title="Reports"><AdminReports/></AdminShell>
+          </DCArtboard>
+          <DCArtboard id="a-audit" label="Audit log" width={1280} height={820}>
+            <AdminShell active="audit" title="Audit log"><AdminAudit/></AdminShell>
+          </DCArtboard>
+          <DCArtboard id="a-cms" label="CMS · content & fees" width={1280} height={820}>
+            <AdminShell active="cms" title="CMS"><AdminCMS/></AdminShell>
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel>
+        <TweakSection label="Theme"/>
+        <TweakRadio label="Mode" value={tStr.theme} options={['light','dark']} onChange={(v)=>setT('theme',v)}/>
+        <TweakColor label="Brand 500" value={tStr.brand} onChange={(v)=>setT('brand',v)}/>
+        <TweakSection label="Shape"/>
+        <TweakSlider label="Corner radius" value={tStr.radius} min={2} max={18} step={1} unit="px" onChange={(v)=>setT('radius',v)}/>
+        <TweakSlider label="Density" value={tStr.density} min={0.85} max={1.15} step={0.05} onChange={(v)=>setT('density',v)}/>
+      </TweaksPanel>
+    </div>
+  );
+}
+
+/* Shell wrappers: sidebar + topbar + body */
+const AppShell = ({ active, title, crumbs, children }) => (
+  <div style={{display:'flex',height:'100%',background:'var(--cl-bg)'}}>
+    <Sidebar active={active}/>
+    <div style={{flex:1,display:'flex',flexDirection:'column',minWidth:0}}>
+      <Topbar title={title} crumbs={crumbs}/>
+      <div style={{flex:1,overflow:'auto'}}>{children}</div>
+    </div>
+  </div>
+);
+const AdminShell = ({ active, title, children }) => (
+  <div style={{display:'flex',height:'100%',background:'var(--cl-bg)'}}>
+    <AdminSidebar active={active}/>
+    <div style={{flex:1,display:'flex',flexDirection:'column',minWidth:0}}>
+      <AdminTopbar title={title}/>
+      <div style={{flex:1,overflow:'auto'}}>{children}</div>
+    </div>
+  </div>
+);
+
+/* Cover artboard */
+const CoverArtboard = () => (
+  <div style={{width:1280,height:720,padding:64,display:'flex',flexDirection:'column',justifyContent:'space-between',background:'linear-gradient(135deg, var(--cl-surface) 0%, var(--cl-bg) 100%)',color:'var(--cl-text)'}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+      <Logo size={36}/>
+      <Badge tone="brand" dot>v1.0 · Apr 2026</Badge>
+    </div>
+    <div>
+      <div style={{fontSize:12,color:'var(--cl-text-3)',textTransform:'uppercase',letterSpacing:'0.1em'}}>Design system & frontend plan</div>
+      <h1 style={{marginTop:8,fontSize:88,letterSpacing:'-0.04em',lineHeight:0.98,maxWidth:960}}>A bank-grade system<br/>for Naira-speed crypto.</h1>
+      <p style={{marginTop:18,fontSize:17,maxWidth:680}}>A single coherent system covering marketing, customer app (desktop + mobile), compliance-first admin, and all supporting infrastructure surfaces defined in the Clusteer PRD.</p>
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}}>
+      {[
+        {i:'dashboard',l:'Foundations',s:'Tokens · type · components'},
+        {i:'globe',l:'Marketing',s:'Landing · trust · pricing'},
+        {i:'wallet',l:'Customer',s:'Dashboard · trade · KYC · settings'},
+        {i:'shieldCheck',l:'Admin',s:'Users · KYC · wallets · reports · audit'},
+      ].map((p,i)=>(
+        <div key={i} style={{padding:20,borderRadius:'var(--cl-r-lg)',background:'var(--cl-surface)',border:'1px solid var(--cl-line)'}}>
+          <div style={{width:36,height:36,borderRadius:'var(--cl-r-md)',background:'var(--cl-brand-50)',color:'var(--cl-brand-500)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+            <Icon name={p.i} size={18}/>
+          </div>
+          <div style={{fontSize:15,fontWeight:600,marginTop:14}}>{p.l}</div>
+          <div style={{fontSize:12,color:'var(--cl-text-3)',marginTop:4}}>{p.s}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

@@ -48,7 +48,7 @@ const SERVICES = [
 
 function StatusBadge({ status }: { status: "operational" | "degraded" | "down" }) {
 	const styles = {
-		operational: "bg-[#EFFCD0] text-brand-800 border-brand-800/20",
+		operational: "bg-[#EFFCD0] text-custom-black/70 border-brand-800/20",
 		degraded: "bg-warning-bg text-warning border-warning/20",
 		down: "bg-danger-bg text-danger border-danger/20",
 	};
@@ -75,7 +75,7 @@ export default function StatusPage() {
 			{/* ─── Hero ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="max-w-[820px]">
-					<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">
+					<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">
 						&#9670; SYSTEM STATUS
 					</div>
 					<div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
@@ -158,7 +158,7 @@ export default function StatusPage() {
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 bg-warm-beige">
 				<div className="max-w-[1280px] mx-auto">
 					<div className="mb-8 sm:mb-14 max-w-[720px]">
-						<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">
+						<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">
 							&#9670; PERFORMANCE
 						</div>
 						<h2 className="font-display text-[clamp(28px,7vw,56px)] sm:text-[clamp(36px,5vw,56px)] font-bold leading-none tracking-[-0.04em]">

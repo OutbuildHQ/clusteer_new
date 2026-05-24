@@ -10,7 +10,7 @@ export default function RateAlertsPage() {
 			{/* ─── Hero ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="max-w-[720px]">
-					<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-3 sm:mb-4">
+					<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70 mb-3 sm:mb-4">
 						&#9670; RATE ALERTS
 					</div>
 					<h1 className="font-display text-[clamp(36px,8vw,80px)] sm:text-[clamp(48px,6vw,80px)] font-bold leading-[0.92] tracking-[-0.045em]">
@@ -30,7 +30,7 @@ export default function RateAlertsPage() {
 			{/* ─── How it works ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="mb-8 sm:mb-16 max-w-[720px]">
-					<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-3 sm:mb-4">
+					<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70 mb-3 sm:mb-4">
 						&#9670; HOW IT WORKS
 					</div>
 					<h2 className="font-display text-[clamp(28px,7vw,68px)] sm:text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">
@@ -84,7 +84,7 @@ export default function RateAlertsPage() {
 			{/* ─── Feature highlights ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="mb-8 sm:mb-16 max-w-[720px]">
-					<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-brand-800 mb-3 sm:mb-4">
+					<div className="font-mono text-[11px] font-semibold tracking-[1.5px] uppercase text-custom-black/70 mb-3 sm:mb-4">
 						&#9670; FEATURES
 					</div>
 					<h2 className="font-display text-[clamp(28px,7vw,68px)] sm:text-[clamp(36px,5vw,68px)] font-bold leading-none tracking-[-0.04em]">

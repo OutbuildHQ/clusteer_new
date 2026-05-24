@@ -51,7 +51,7 @@ export function PixelRain({
 			{cols.map((col, c) => (
 				<div
 					key={c}
-					className={`absolute top-0 flex flex-col items-center gap-4 font-mono ${variant === "dark" ? "text-sm text-brand-700" : "text-xs text-light-green"}`}
+					className={`absolute top-0 flex flex-col items-center gap-4 font-mono ${variant === "dark" ? "text-sm text-custom-black/70" : "text-xs text-light-green"}`}
 					style={{
 						left: `${col.left}%`,
 						opacity: col.opacity,

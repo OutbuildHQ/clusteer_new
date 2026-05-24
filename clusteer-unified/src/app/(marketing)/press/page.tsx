@@ -22,7 +22,7 @@ export default function PressPage() {
 			{/* ─── Hero ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="max-w-[820px]">
-					<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">
+					<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">
 						&#9670; PRESS
 					</div>
 					<h1 className="font-display text-[clamp(36px,9vw,88px)] sm:text-[clamp(48px,7vw,88px)] font-bold leading-[0.92] tracking-[-0.045em]">
@@ -38,7 +38,7 @@ export default function PressPage() {
 			{/* ─── Brand Assets ─── */}
 			<section className="pb-12 sm:pb-20 lg:pb-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="mb-8 sm:mb-14 max-w-[720px]">
-					<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">
+					<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">
 						&#9670; BRAND ASSETS
 					</div>
 					<h2 className="font-display text-[clamp(28px,7vw,56px)] sm:text-[clamp(36px,5vw,56px)] font-bold leading-none tracking-[-0.04em]">
@@ -183,7 +183,7 @@ export default function PressPage() {
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 bg-warm-beige">
 				<div className="max-w-[1280px] mx-auto">
 					<div className="mb-8 sm:mb-14 max-w-[720px]">
-						<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">
+						<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">
 							&#9670; COMPANY FACTS
 						</div>
 						<h2 className="font-display text-[clamp(28px,7vw,56px)] sm:text-[clamp(36px,5vw,56px)] font-bold leading-none tracking-[-0.04em]">
@@ -243,7 +243,7 @@ export default function PressPage() {
 								strokeWidth={2.4}
 							/>
 						</div>
-						<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] uppercase">
+						<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase">
 							Press inquiries
 						</div>
 						<h3 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">
@@ -253,7 +253,7 @@ export default function PressPage() {
 							We are happy to provide quotes, data, and background information.
 							Reach out and we will get back to you within 24 hours.
 						</p>
-						<div className="mt-auto pt-2 font-mono text-sm sm:text-[15px] font-semibold text-brand-800 group-hover:underline">
+						<div className="mt-auto pt-2 font-mono text-sm sm:text-[15px] font-semibold text-custom-black/70 group-hover:underline">
 							press@clusteer.com
 						</div>
 					</a>
@@ -266,7 +266,7 @@ export default function PressPage() {
 								strokeWidth={2.4}
 							/>
 						</div>
-						<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] uppercase">
+						<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase">
 							Media mentions
 						</div>
 						<h3 className="font-display text-xl sm:text-2xl font-bold tracking-[-0.02em]">

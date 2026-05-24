@@ -22,7 +22,7 @@ export default function ContactPage() {
 			{/* ─── Hero ─── */}
 			<section className="py-12 sm:py-20 lg:py-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
 				<div className="max-w-[820px]">
-					<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] mb-3 sm:mb-4">
+					<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">
 						&#9670; CONTACT
 					</div>
 					<h1 className="font-display text-[clamp(36px,9vw,88px)] sm:text-[clamp(48px,7vw,88px)] font-bold leading-[0.92] tracking-[-0.045em]">
@@ -52,7 +52,7 @@ export default function ContactPage() {
 						<p className="text-sm sm:text-[15px] leading-relaxed text-muted-foreground">
 							For partnerships, press, or anything else.
 						</p>
-						<div className="mt-auto pt-2 font-mono text-sm sm:text-[15px] font-semibold text-brand-800 group-hover:underline">
+						<div className="mt-auto pt-2 font-mono text-sm sm:text-[15px] font-semibold text-custom-black/70 group-hover:underline">
 							hello@clusteer.com
 						</div>
 					</a>
@@ -74,7 +74,7 @@ export default function ContactPage() {
 						<p className="text-sm sm:text-[15px] leading-relaxed text-muted-foreground">
 							Need help with a trade, payout, or your account?
 						</p>
-						<div className="mt-auto pt-2 font-mono text-sm sm:text-[15px] font-semibold text-brand-800 group-hover:underline">
+						<div className="mt-auto pt-2 font-mono text-sm sm:text-[15px] font-semibold text-custom-black/70 group-hover:underline">
 							support@clusteer.com
 						</div>
 					</a>
@@ -118,13 +118,13 @@ export default function ContactPage() {
 									strokeWidth={2.4}
 								/>
 							</div>
-							<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] uppercase">
+							<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase">
 								Business hours
 							</div>
 							<h2 className="font-display text-xl sm:text-2xl lg:text-[32px] font-bold leading-tight tracking-[-0.025em]">
 								Monday &ndash; Friday
 							</h2>
-							<div className="font-mono text-2xl sm:text-4xl font-semibold tracking-[-0.02em] text-brand-800">
+							<div className="font-mono text-2xl sm:text-4xl font-semibold tracking-[-0.02em] text-custom-black/70">
 								9:00 AM &ndash; 5:00 PM
 							</div>
 							<p className="text-sm sm:text-[15px] leading-relaxed text-muted-foreground">
@@ -145,7 +145,7 @@ export default function ContactPage() {
 									strokeWidth={2.4}
 								/>
 							</div>
-							<div className="font-mono text-[11px] font-semibold text-brand-800 tracking-[1.5px] uppercase">
+							<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase">
 								Quick answers
 							</div>
 							<h2 className="font-display text-xl sm:text-2xl lg:text-[32px] font-bold leading-tight tracking-[-0.025em]">
