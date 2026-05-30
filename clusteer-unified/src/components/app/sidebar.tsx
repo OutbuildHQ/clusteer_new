@@ -4,22 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Logo } from "@/components/brand/logo";
-import { getUserWallet } from "@/lib/api/wallet/queries";
 import { useUserId } from "@/hooks/use-user-id";
 import { getKYCVerification } from "@/lib/api/settings";
 import {
-	LayoutDashboard, Wallet, ArrowLeftRight, Send, ArrowDownToLine,
-	Banknote, BookOpen, List, ShieldCheck, Bell, Gift, Settings, HelpCircle,
+	LayoutDashboard, ArrowLeftRight, BookOpen, List,
+	ShieldCheck, Bell, Gift, Settings, HelpCircle,
 } from "lucide-react";
 
 const NAV = [
 	{ id: "dashboard",               href: "/dashboard",               label: "Overview",      icon: LayoutDashboard, tab: true },
-	{ id: "assets",                   href: "/assets",                  label: "Wallet",        icon: Wallet, tab: true },
 	{ id: "trade",                    href: "/trade",                   label: "Buy / Sell",    icon: ArrowLeftRight, tab: true },
-	{ id: "send",                     href: "/send",                    label: "Send",          icon: Send, tab: true },
-	{ id: "receive",                  href: "/receive",                 label: "Receive",       icon: ArrowDownToLine },
-	{ id: "withdraw",                 href: "/withdraw",                label: "Withdraw NGN",  icon: Banknote },
-	{ id: "orders",                   href: "/orders",                  label: "Orders",        icon: BookOpen },
+	{ id: "orders",                   href: "/orders",                  label: "Orders",        icon: BookOpen, tab: true },
 	{ id: "transaction-history",      href: "/transaction-history",     label: "Transactions",  icon: List },
 	{ id: "identity-verification",    href: "/identity-verification",   label: "Identity",      icon: ShieldCheck },
 	{ id: "notifications",           href: "/notifications",           label: "Notifications", icon: Bell },
@@ -36,12 +31,6 @@ interface SidebarProps {
 export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 	const pathname = usePathname();
 	const userId = useUserId();
-	const { data: walletData, isLoading } = useQuery({
-		queryKey: ["wallet"],
-		queryFn: getUserWallet,
-		staleTime: 30_000,
-	});
-
 	const { data: kycData } = useQuery({
 		queryKey: ["kyc-status", userId],
 		queryFn: () => getKYCVerification(userId!),
@@ -55,13 +44,6 @@ export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 		if (status === "pending" || status === "under_review") return "Pending";
 		return "Tier 1";
 	})();
-
-	const assets = walletData?.walletAssets ?? [];
-	const total = assets.reduce((s, a) => s + (a.balance ?? 0), 0);
-	// TODO: Replace with real 24h change from API when available
-	const change24h = total > 0 ? 2.84 : 0;
-	const isUp = change24h >= 0;
-	const isEmpty = total === 0 && !isLoading;
 
 	return (
 		<aside
