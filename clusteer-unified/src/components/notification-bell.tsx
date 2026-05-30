@@ -88,7 +88,7 @@ export default function NotificationBell() {
 							>
 								<div className="flex items-start gap-2 w-full">
 									{!notification.read && (
-										<div className="h-2 w-2 rounded-full bg-primary/100 mt-2" />
+										<div className="h-2 w-2 rounded-full bg-[var(--c-lime-500)]/100 mt-2" />
 									)}
 									<div className="flex-1">
 										<p className="font-medium text-sm">{notification.title}</p>
@@ -105,7 +105,7 @@ export default function NotificationBell() {
 						<DropdownMenuSeparator />
 						{unreadCount > 0 && (
 							<DropdownMenuItem
-								className="text-center justify-center text-sm text-primary font-medium"
+								className="text-center justify-center text-sm text-[var(--c-lime-500)] font-medium"
 								onClick={markAllAsRead}
 							>
 								Mark all as read

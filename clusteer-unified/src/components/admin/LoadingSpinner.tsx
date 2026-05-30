@@ -21,7 +21,7 @@ export default function LoadingSpinner({
 
 	const spinner = (
 		<div className="flex flex-col items-center justify-center gap-3">
-			<Loader2 className={`${sizeClasses[size]} animate-spin text-primary`} />
+			<Loader2 className={`${sizeClasses[size]} animate-spin text-[var(--c-lime-500)]`} />
 			{text && <p className="text-sm text-muted-foreground">{text}</p>}
 		</div>
 	);

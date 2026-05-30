@@ -48,13 +48,13 @@ export function AdminSidebar() {
 									href={l.href}
 									className={cn(
 										"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-										active ? "bg-primary text-primary-foreground" : "text-sidebar-foreground hover:bg-sidebar-accent",
+										active ? "bg-primary text-[var(--c-lime-500)]-foreground" : "text-sidebar-foreground hover:bg-sidebar-accent",
 									)}
 								>
 									<l.icon className="size-[18px] shrink-0" />
 									<span className="flex-1">{l.label}</span>
 									{l.badge && (
-										<span className={cn("rounded-full px-1.5 py-0 text-[10px] font-semibold", active ? "bg-primary-foreground/20 text-primary-foreground" : "bg-warning-bg text-warning")}>{l.badge}</span>
+										<span className={cn("rounded-full px-1.5 py-0 text-[10px] font-semibold", active ? "bg-primary-foreground/20 text-[var(--c-lime-500)]-foreground" : "bg-warning-bg text-warning")}>{l.badge}</span>
 									)}
 								</Link>
 							</li>

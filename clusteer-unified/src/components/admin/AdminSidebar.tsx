@@ -284,7 +284,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 												w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
 												${
 													itemIsActive
-														? "bg-primary/10 text-primary"
+														? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]"
 														: "text-muted-foreground hover:bg-background"
 												}
 												${isCollapsed ? 'lg:justify-center' : ''}
@@ -333,7 +333,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 												flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
 												${
 													itemIsActive
-														? "bg-primary/10 text-primary"
+														? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]"
 														: "text-muted-foreground hover:bg-background"
 												}
 												${isCollapsed ? 'lg:justify-center' : ''}
@@ -374,7 +374,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 														block px-3 py-1.5 rounded-lg text-sm transition-colors
 														${
 															isSubItemActive(subItem.href)
-																? "bg-primary/10 text-primary font-medium"
+																? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] font-medium"
 																: "text-muted-foreground hover:bg-background hover:text-foreground"
 														}
 													`}
@@ -394,15 +394,15 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }: Ad
 						<div className="px-4 pb-4 hidden lg:block">
 							<div className="bg-gradient-to-br from-blue-50/50 to-white rounded-lg p-3 border border-blue-100/50">
 								<div className="flex items-center gap-2 mb-3">
-									<div className="w-6 h-6 bg-primary/10 rounded-md flex items-center justify-center">
-										<Activity className="w-3.5 h-3.5 text-primary" />
+									<div className="w-6 h-6 bg-[var(--c-lime-500)]/10 rounded-md flex items-center justify-center">
+										<Activity className="w-3.5 h-3.5 text-[var(--c-lime-500)]" />
 									</div>
 									<span className="text-xs font-semibold text-muted-foreground">Quick Stats</span>
 								</div>
 								<div className="space-y-2.5">
 									<div className="flex items-center justify-between">
 										<div className="flex items-center gap-2">
-											<div className="w-1.5 h-1.5 bg-primary/100 rounded-full"></div>
+											<div className="w-1.5 h-1.5 bg-[var(--c-lime-500)]/100 rounded-full"></div>
 											<span className="text-xs text-muted-foreground">Active Users</span>
 										</div>
 										<span className="text-sm font-bold text-foreground">3,245</span>

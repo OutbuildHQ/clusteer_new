@@ -60,8 +60,8 @@ function getTransactionIcon(type: string) {
 			);
 		case "convert":
 			return (
-				<div className="p-2 rounded-full bg-primary/10">
-					<Repeat className="w-4 h-4 text-primary" />
+				<div className="p-2 rounded-full bg-[var(--c-lime-500)]/10">
+					<Repeat className="w-4 h-4 text-[var(--c-lime-500)]" />
 				</div>
 			);
 		default:
@@ -135,7 +135,7 @@ export default function RecentActivity() {
 				</div>
 				<div className="bg-card rounded-2xl border border-border p-8 text-center">
 					<div className="w-16 h-16 mx-auto bg-pale-green rounded-full flex items-center justify-center mb-4">
-						<Clock className="w-8 h-8 text-primary" />
+						<Clock className="w-8 h-8 text-[var(--c-lime-500)]" />
 					</div>
 					<h3 className="font-semibold text-lg text-foreground mb-2">
 						No transactions yet
@@ -179,7 +179,7 @@ export default function RecentActivity() {
 					</DropdownMenu>
 					<Link
 						href="/transaction-history"
-						className="text-sm font-medium text-primary hover:underline"
+						className="text-sm font-medium text-[var(--c-lime-500)] hover:underline"
 					>
 						View all
 					</Link>

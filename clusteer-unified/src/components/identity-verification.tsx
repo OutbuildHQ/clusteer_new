@@ -122,7 +122,7 @@ export default function IdentityVerfication() {
 										</Label>
 										<Badge
 											variant="secondary"
-											className="h-5 bg-pale-green px-3 text-primary rounded-none font-medium text-sm mt-1"
+											className="h-5 bg-pale-green px-3 text-[var(--c-lime-500)] rounded-none font-medium text-sm mt-1"
 										>
 											Recommended
 										</Badge>

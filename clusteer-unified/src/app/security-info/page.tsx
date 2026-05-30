@@ -147,27 +147,27 @@ export default function SecurityPage() {
 							<h2 className="text-2xl font-bold mb-6 ">Best Practices to Keep Your Account Secure</h2>
 							<ul className="space-y-4 text-reviews-text font-lexend">
 								<li className="flex items-start gap-3">
-									<span className="text-primary font-bold">•</span>
+									<span className="text-light-green font-bold">•</span>
 									<span>Enable 2FA on your account immediately after signup</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-primary font-bold">•</span>
+									<span className="text-light-green font-bold">•</span>
 									<span>Use a strong, unique password that you don't use elsewhere</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-primary font-bold">•</span>
+									<span className="text-light-green font-bold">•</span>
 									<span>Never share your password, 2FA codes, or recovery phrases with anyone</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-primary font-bold">•</span>
+									<span className="text-light-green font-bold">•</span>
 									<span>Verify wallet addresses carefully before sending crypto</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-primary font-bold">•</span>
+									<span className="text-light-green font-bold">•</span>
 									<span>Be cautious of phishing emails or fake websites impersonating Clusteer</span>
 								</li>
 								<li className="flex items-start gap-3">
-									<span className="text-primary font-bold">•</span>
+									<span className="text-light-green font-bold">•</span>
 									<span>Log out of your account when using public or shared devices</span>
 								</li>
 							</ul>

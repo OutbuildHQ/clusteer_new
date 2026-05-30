@@ -190,7 +190,7 @@ export function ConfirmModal({
 	const iconClasses = {
 		danger: "bg-danger/10",
 		warning: "bg-orange-50",
-		info: "bg-primary/10",
+		info: "bg-[var(--c-lime-500)]/10",
 	};
 
 	return (
@@ -230,7 +230,7 @@ function AlertIcon({ variant }: { variant: "danger" | "warning" | "info" }) {
 	const iconClasses = {
 		danger: "text-danger",
 		warning: "text-orange-600",
-		info: "text-primary",
+		info: "text-[var(--c-lime-500)]",
 	};
 
 	return (

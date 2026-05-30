@@ -147,7 +147,7 @@ export default function ChangeEmailForm() {
 											variant="outline"
 											onClick={handleSendOTP}
 											disabled={isSendingOTP || countdown > 0}
-											className="text-primary border-0 bg-transparent hover:bg-transparent"
+											className="text-custom-black/70 border-0 bg-transparent hover:bg-transparent"
 										>
 											{isSendingOTP ? (
 												<Loader2 className="h-4 w-4 animate-spin" />

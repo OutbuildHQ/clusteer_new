@@ -590,7 +590,7 @@ function StepVisualSend() {
 				TR7NHqjeKQxGTCi8q8ZY4pL8…HX9w
 			</div>
 			<div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[var(--button-bg)] border-[1.5px] border-custom-black text-xs font-semibold">
-				<span className="live-dot size-2 rounded-full bg-brand-800" />
+				<span className="live-dot size-2 rounded-full bg-light-green" />
 				Watching mempool
 			</div>
 		</div>

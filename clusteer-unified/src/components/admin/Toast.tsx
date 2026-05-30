@@ -112,14 +112,14 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
 		success: "bg-success/10 border-success text-success",
 		error: "bg-danger/10 border-danger text-danger",
 		warning: "bg-orange-50 border-orange-200 text-orange-800",
-		info: "bg-primary/10 border-primary/30 text-primary",
+		info: "bg-[var(--c-lime-500)]/10 border-[var(--c-lime-500)]/30 text-[var(--c-lime-500)]",
 	};
 
 	const iconStyles = {
 		success: "text-success",
 		error: "text-danger",
 		warning: "text-orange-600",
-		info: "text-primary",
+		info: "text-[var(--c-lime-500)]",
 	};
 
 	return (

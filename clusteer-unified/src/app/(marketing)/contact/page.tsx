@@ -132,7 +132,7 @@ export default function ContactPage() {
 								emails within 4 hours during business hours.
 							</p>
 							<div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#EFFCD0] border-[1.5px] border-custom-black text-xs font-semibold w-fit">
-								<span className="live-dot size-2 rounded-full bg-brand-800" />
+								<span className="live-dot size-2 rounded-full bg-light-green" />
 								Trading is available 24/7
 							</div>
 						</div>

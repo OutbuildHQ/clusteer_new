@@ -11,7 +11,7 @@ export default function NotFound() {
 			</nav>
 			<main className="flex flex-1 items-center justify-center px-6">
 				<div className="max-w-md text-center">
-					<div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-2xl bg-primary/10 font-display text-4xl font-bold text-primary">404</div>
+					<div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-2xl bg-light-green/10 font-display text-4xl font-bold text-light-green">404</div>
 					<h1 className="font-display text-3xl font-bold tracking-tight">Page not found</h1>
 					<p className="mt-3 text-muted-foreground">The page you were looking for doesn't exist or may have been moved.</p>
 					<div className="mt-8 flex flex-wrap justify-center gap-3">

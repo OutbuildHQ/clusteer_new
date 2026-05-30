@@ -114,7 +114,7 @@ export default function LoginForm() {
 					</label>
 					<Link
 						href="/forgot-password"
-						className="text-primary font-medium hover:underline"
+						className="text-custom-black/70 font-medium hover:underline"
 					>
 						Forgot password?
 					</Link>
@@ -138,7 +138,7 @@ export default function LoginForm() {
 
 				<div className="text-center text-[13px] text-muted-foreground">
 					New to Clusteer?{" "}
-					<Link href="/signup" className="text-primary font-medium hover:underline">
+					<Link href="/signup" className="text-custom-black/70 font-medium hover:underline">
 						Create account
 					</Link>
 				</div>

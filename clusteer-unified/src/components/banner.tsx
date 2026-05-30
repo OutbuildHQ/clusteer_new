@@ -18,7 +18,7 @@ export default function Banner({ title, description, link }: BannerProps) {
 					href={link}
 					className="text-start !p-0 mt-3 block !h-fit"
 				>
-					<div className="text-primary font-semibold flex items-center gap-x-2 italic">
+					<div className="text-[var(--c-lime-500)] font-semibold flex items-center gap-x-2 italic">
 						Verify
 						<ArrowRight className="stroke-dark-green" />
 					</div>

@@ -55,10 +55,10 @@ export default function SendTypeSelectionModal({
 							Send to another Clusteer user instantly with zero fees. Just enter their User ID.
 						</p>
 						<div className="mt-3 flex items-center gap-2">
-							<span className="text-xs bg-success/10 text-primary px-2 py-1 rounded">
+							<span className="text-xs bg-success/10 text-[var(--c-lime-500)] px-2 py-1 rounded">
 								Instant
 							</span>
-							<span className="text-xs bg-success/10 text-primary px-2 py-1 rounded">
+							<span className="text-xs bg-success/10 text-[var(--c-lime-500)] px-2 py-1 rounded">
 								No Fees
 							</span>
 						</div>
@@ -84,7 +84,7 @@ export default function SendTypeSelectionModal({
 							<span className="text-xs bg-warning/10 text-warning px-2 py-1 rounded">
 								Network Fees Apply
 							</span>
-							<span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+							<span className="text-xs bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] px-2 py-1 rounded">
 								15 Confirmations
 							</span>
 						</div>

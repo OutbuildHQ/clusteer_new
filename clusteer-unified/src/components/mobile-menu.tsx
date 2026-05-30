@@ -69,7 +69,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="/login"
-												className="block text-lg font-semibold hover:text-primary transition-colors"
+												className="block text-lg font-semibold hover:text-custom-black transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												Log In
@@ -78,7 +78,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="/signup"
-												className="block text-lg font-semibold hover:text-primary transition-colors"
+												className="block text-lg font-semibold hover:text-custom-black transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												Sign Up
@@ -87,7 +87,7 @@ export default function MobileMenu() {
 										<li className="pt-4 border-t">
 											<Link
 												href="#how-it-works"
-												className="block text-base hover:text-primary transition-colors"
+												className="block text-base hover:text-custom-black transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												How It Works
@@ -96,7 +96,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="#features"
-												className="block text-base hover:text-primary transition-colors"
+												className="block text-base hover:text-custom-black transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												Features
@@ -105,7 +105,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="#reviews"
-												className="block text-base hover:text-primary transition-colors"
+												className="block text-base hover:text-custom-black transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												Reviews
@@ -114,7 +114,7 @@ export default function MobileMenu() {
 										<li>
 											<Link
 												href="#faq"
-												className="block text-base hover:text-primary transition-colors"
+												className="block text-base hover:text-custom-black transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
 												FAQ

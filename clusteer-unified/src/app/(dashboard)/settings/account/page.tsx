@@ -156,7 +156,7 @@ export default function Page() {
 								kycStatus?.status === "approved"
 									? "text-success bg-success/10"
 									: kycStatus?.status === "pending" || kycStatus?.status === "under_review"
-									? "text-primary bg-primary/10"
+									? "text-[var(--c-lime-500)] bg-[var(--c-lime-500)]/10"
 									: kycStatus?.status === "rejected"
 									? "text-danger bg-danger/10"
 									: "text-orange-700 bg-orange-100"
@@ -239,19 +239,19 @@ export default function Page() {
 					)}
 
 					{(kycStatus?.status === "pending" || kycStatus?.status === "under_review") && (
-						<div className="mt-4 bg-primary/10 border border-primary/30 rounded-xl p-4">
+						<div className="mt-4 bg-[var(--c-lime-500)]/10 border border-primary/30 rounded-xl p-4">
 							<div className="flex items-start gap-3">
-								<AlertTriangle className="w-5 h-5 text-primary mt-0.5" />
+								<AlertTriangle className="w-5 h-5 text-[var(--c-lime-500)] mt-0.5" />
 								<div className="flex-1">
-									<p className="font-medium text-sm text-primary mb-1">
+									<p className="font-medium text-sm text-[var(--c-lime-500)] mb-1">
 										Verification {kycStatus.status === "pending" ? "Pending" : "Under Review"}
 									</p>
-									<p className="text-sm text-primary">
+									<p className="text-sm text-[var(--c-lime-500)]">
 										Your verification documents have been submitted and are currently being reviewed by our team.
 										This typically takes 24-48 hours. We'll notify you once the review is complete.
 									</p>
 									{kycStatus.submitted_at && (
-										<p className="text-xs text-primary mt-2">
+										<p className="text-xs text-[var(--c-lime-500)] mt-2">
 											Submitted: {new Date(kycStatus.submitted_at).toLocaleDateString("en-US", {
 												month: "long",
 												day: "numeric",
@@ -301,8 +301,8 @@ export default function Page() {
 				{/* Transaction Limits */}
 				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<TrendingUp className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<TrendingUp className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-foreground">
@@ -403,8 +403,8 @@ export default function Page() {
 				{/* Export Transaction History */}
 				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-4">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<Download className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<Download className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-foreground">

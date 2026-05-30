@@ -85,11 +85,11 @@ export default function WalletList() {
 				className="group shrink-0 w-full p-5 lg:p-6 rounded-2xl bg-muted hover:bg-card border-2 border-dashed border-border hover:border-dark-green transition-all duration-200 flex flex-col items-center justify-center min-h-[160px] lg:min-h-[180px]"
 			>
 				<div className="w-12 h-12 flex items-center justify-center bg-card rounded-full shadow-sm group-hover:shadow-md transition-all duration-200 mb-3">
-					<svg className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<svg className="w-6 h-6 text-muted-foreground group-hover:text-[var(--c-lime-500)] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
 					</svg>
 				</div>
-				<span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
+				<span className="text-sm font-medium text-muted-foreground group-hover:text-[var(--c-lime-500)] transition-colors">
 					Add another currency
 				</span>
 			</Link>

@@ -222,8 +222,8 @@ export default function TermsOfServicePage() {
 						For questions about these Terms of Service, please contact us at:
 					</p>
 					<ul className="list-none space-y-2 mb-4">
-						<li><strong>Email:</strong> <a href="mailto:legal@clusteer.com" className="text-primary underline">legal@clusteer.com</a></li>
-						<li><strong>Support:</strong> <a href="mailto:support@clusteer.com" className="text-primary underline">support@clusteer.com</a></li>
+						<li><strong>Email:</strong> <a href="mailto:legal@clusteer.com" className="text-custom-black/70 underline">legal@clusteer.com</a></li>
+						<li><strong>Support:</strong> <a href="mailto:support@clusteer.com" className="text-custom-black/70 underline">support@clusteer.com</a></li>
 					</ul>
 				</section>
 

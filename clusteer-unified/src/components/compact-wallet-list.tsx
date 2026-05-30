@@ -114,7 +114,7 @@ export default function CompactWalletList() {
 				className="group bg-card hover:bg-muted border-2 border-dashed border-border rounded-xl p-5 transition-all flex flex-col items-center justify-center text-center min-h-[140px]"
 			>
 				<div className="w-12 h-12 flex items-center justify-center bg-muted group-hover:bg-pale-green rounded-full mb-3 transition-colors">
-					<Plus className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+					<Plus className="w-6 h-6 text-muted-foreground group-hover:text-[var(--c-lime-500)] transition-colors" />
 				</div>
 				<p className="font-semibold text-foreground text-sm mb-1">
 					Add another currency

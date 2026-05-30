@@ -167,13 +167,13 @@ export default function InternalSendModal({
 									</FormDescription>
 									{recipientInfo && (
 										<div className="flex items-center gap-2 mt-2 p-3 bg-success/10 border border-success rounded-lg">
-											<UserCheck className="h-5 w-5 text-primary" />
+											<UserCheck className="h-5 w-5 text-[var(--c-lime-500)]" />
 											<div>
 												<p className="text-sm font-semibold text-foreground">
 													@{recipientInfo.username}
 												</p>
 												{recipientInfo.verified && (
-													<p className="text-xs text-primary">
+													<p className="text-xs text-[var(--c-lime-500)]">
 														✓ Verified User
 													</p>
 												)}

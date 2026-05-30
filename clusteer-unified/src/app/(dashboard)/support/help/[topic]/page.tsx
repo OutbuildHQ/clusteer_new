@@ -122,7 +122,7 @@ export default function HelpTopicPage({ params }: { params: Promise<{ topic: str
 			<div className="ds-card" style={{ borderRadius: "var(--c-radius, 12px)", border: "1px solid var(--c-border, #e5e5e5)", background: "var(--c-surface, #fff)" }}>
 				<div style={{ padding: "24px 32px" }}>
 					<div className="flex items-center gap-4 mb-8">
-						<div className="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+						<div className="flex size-12 items-center justify-center rounded-lg bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]">
 							<Icon className="size-6" />
 						</div>
 						<h1 className="font-display text-2xl font-bold tracking-tight">{content.title}</h1>
@@ -208,12 +208,12 @@ export default function HelpTopicPage({ params }: { params: Promise<{ topic: str
 										transition: "border-color 0.2s",
 									}}
 								>
-									<div className="rounded-lg bg-primary/10 p-2 text-primary"><t.icon className="size-4" /></div>
+									<div className="rounded-lg bg-[var(--c-lime-500)]/10 p-2 text-[var(--c-lime-500)]"><t.icon className="size-4" /></div>
 									<div className="flex-1 min-w-0">
 										<p className="font-medium text-sm">{t.title}</p>
 										<p className="text-xs text-muted-foreground">{t.sections.length} articles</p>
 									</div>
-									<ChevronRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+									<ChevronRight className="size-4 text-muted-foreground group-hover:text-[var(--c-lime-500)] transition-colors" />
 								</div>
 							</Link>
 						))}

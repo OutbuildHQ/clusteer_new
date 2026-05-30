@@ -38,13 +38,13 @@ export default function StatCard({
 			{/* Change Indicator */}
 			<div className="flex items-center gap-1 flex-wrap">
 				{isPositive ? (
-					<TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
+					<TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--c-lime-500)] flex-shrink-0" />
 				) : (
 					<TrendingDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-danger flex-shrink-0" />
 				)}
 				<span
 					className={`text-xs sm:text-sm font-medium ${
-						isPositive ? "text-primary" : "text-danger"
+						isPositive ? "text-[var(--c-lime-500)]" : "text-danger"
 					}`}
 				>
 					{isPositive ? "+" : ""}

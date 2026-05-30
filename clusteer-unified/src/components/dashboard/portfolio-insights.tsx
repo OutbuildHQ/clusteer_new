@@ -93,7 +93,7 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 
 			<div className="flex items-start gap-4 mb-6">
 				<div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
-					<TrendingUp className="w-6 h-6 text-primary" />
+					<TrendingUp className="w-6 h-6 text-[var(--c-lime-500)]" />
 				</div>
 				<div className="flex-1">
 					<h3 className="text-xl font-bold text-foreground mb-1">Portfolio Insights</h3>
@@ -137,18 +137,18 @@ export default function PortfolioInsights({ onClose }: PortfolioInsightsProps) {
 						className={`flex items-start gap-3 p-4 rounded-xl ${
 							rec.type === "warning"
 								? "bg-warning/10 border border-warning"
-								: "bg-primary/10 border border-primary/30"
+								: "bg-[var(--c-lime-500)]/10 border border-primary/30"
 						}`}
 					>
 						<div
 							className={`w-8 h-8 rounded-full flex items-center justify-center ${
-								rec.type === "warning" ? "bg-warning/10" : "bg-primary/10"
+								rec.type === "warning" ? "bg-warning/10" : "bg-[var(--c-lime-500)]/10"
 							}`}
 						>
 							{rec.type === "warning" ? (
 								<AlertCircle className="w-4 h-4 text-warning" />
 							) : (
-								<TrendingUp className="w-4 h-4 text-primary" />
+								<TrendingUp className="w-4 h-4 text-[var(--c-lime-500)]" />
 							)}
 						</div>
 						<div className="flex-1">

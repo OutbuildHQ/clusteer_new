@@ -118,7 +118,7 @@ function MobileNav() {
 												href={navItem.to}
 												className={`flex gap-x-2 items-center font-medium text-sm capitalize py-2 px-3 rounded-md transition-colors ${
 													isActive
-														? "bg-primary/10 text-primary"
+														? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]"
 														: "text-muted-foreground hover:bg-muted"
 												}`}
 											>
@@ -136,7 +136,7 @@ function MobileNav() {
 										href="/settings"
 										className={`flex gap-x-2 items-center font-medium text-sm py-2 px-3 rounded-md transition-colors ${
 											pathname === "/settings" || pathname.startsWith("/settings/")
-												? "bg-primary/10 text-primary"
+												? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]"
 												: "text-muted-foreground hover:bg-muted"
 										}`}
 									>
@@ -149,7 +149,7 @@ function MobileNav() {
 										href="/support"
 										className={`flex gap-x-2 items-center font-medium text-sm py-2 px-3 rounded-md transition-colors ${
 											pathname === "/support" || pathname.startsWith("/support/")
-												? "bg-primary/10 text-primary"
+												? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]"
 												: "text-muted-foreground hover:bg-muted"
 										}`}
 									>
@@ -232,7 +232,7 @@ function AppSidebar() {
 													href={navItem.to}
 													className={`flex font-medium !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-md transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
 														isActive
-															? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
+															? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] hover:bg-[var(--c-lime-500)]/10 hover:text-[var(--c-lime-500)]"
 															: "text-muted-foreground hover:bg-muted hover:text-foreground"
 													}`}
 												>
@@ -262,7 +262,7 @@ function AppSidebar() {
 													href={navItem.to}
 													className={`flex font-medium !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-md transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
 														isActive
-															? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
+															? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] hover:bg-[var(--c-lime-500)]/10 hover:text-[var(--c-lime-500)]"
 															: "text-muted-foreground hover:bg-muted hover:text-foreground"
 													}`}
 												>
@@ -279,7 +279,7 @@ function AppSidebar() {
 											href="/support"
 											className={`flex font-medium !text-sm capitalize px-2.5 gap-x-2 items-center shrink-0 h-9 rounded-md transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 ${
 												pathname === "/support" || pathname.startsWith("/support/")
-													? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
+													? "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)] hover:bg-[var(--c-lime-500)]/10 hover:text-[var(--c-lime-500)]"
 													: "text-muted-foreground hover:bg-muted hover:text-foreground"
 											}`}
 										>

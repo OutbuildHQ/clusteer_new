@@ -48,7 +48,7 @@ const SERVICES = [
 
 function StatusBadge({ status }: { status: "operational" | "degraded" | "down" }) {
 	const styles = {
-		operational: "bg-[#EFFCD0] text-custom-black/70 border-brand-800/20",
+		operational: "bg-[#EFFCD0] text-custom-black/70 border-light-green/20",
 		degraded: "bg-warning-bg text-warning border-warning/20",
 		down: "bg-danger-bg text-danger border-danger/20",
 	};
@@ -62,7 +62,7 @@ function StatusBadge({ status }: { status: "operational" | "degraded" | "down" }
 			className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${styles[status]}`}
 		>
 			<span
-				className={`size-2 rounded-full ${status === "operational" ? "bg-brand-800 live-dot" : status === "degraded" ? "bg-warning" : "bg-danger"}`}
+				className={`size-2 rounded-full ${status === "operational" ? "bg-light-green live-dot" : status === "degraded" ? "bg-warning" : "bg-danger"}`}
 			/>
 			{labels[status]}
 		</span>

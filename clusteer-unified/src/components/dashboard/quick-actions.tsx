@@ -19,7 +19,7 @@ const quickActions = [
 		icon: Download,
 		href: "/receive",
 		color: "bg-[#E8F5E9] hover:bg-[#D0EBD6]",
-		iconColor: "text-primary",
+		iconColor: "text-[var(--c-lime-500)]",
 	},
 	{
 		title: "Convert",
@@ -27,7 +27,7 @@ const quickActions = [
 		icon: Repeat,
 		href: "/trade",
 		color: "bg-[#E8F5E9] hover:bg-[#D0EBD6]",
-		iconColor: "text-primary",
+		iconColor: "text-[var(--c-lime-500)]",
 	},
 	{
 		title: "QR Code",

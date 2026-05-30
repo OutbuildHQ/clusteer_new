@@ -182,8 +182,8 @@ export default function Page() {
 				{/* Profile Privacy */}
 				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<Eye className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<Eye className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-foreground">
@@ -231,8 +231,8 @@ export default function Page() {
 				{/* Cookie Preferences */}
 				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<Cookie className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<Cookie className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-foreground">
@@ -293,8 +293,8 @@ export default function Page() {
 				{/* Data Sharing */}
 				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<Link2 className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<Link2 className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-foreground">
@@ -328,8 +328,8 @@ export default function Page() {
 				{/* Data Download */}
 				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<Download className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<Download className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-foreground">
@@ -377,20 +377,20 @@ export default function Page() {
 				{/* Privacy Policy Link */}
 				<div className="bg-muted rounded-2xl border border-border p-5">
 					<div className="flex items-center gap-3">
-						<Shield className="w-5 h-5 text-primary" />
+						<Shield className="w-5 h-5 text-[var(--c-lime-500)]" />
 						<div>
 							<p className="text-sm text-muted-foreground">
 								Learn more about how we protect your data in our{" "}
 								<a
 									href="/privacy-policy"
-									className="text-primary font-medium hover:underline"
+									className="text-[var(--c-lime-500)] font-medium hover:underline"
 								>
 									Privacy Policy
 								</a>{" "}
 								and{" "}
 								<a
 									href="/terms"
-									className="text-primary font-medium hover:underline"
+									className="text-[var(--c-lime-500)] font-medium hover:underline"
 								>
 									Terms of Service
 								</a>

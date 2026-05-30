@@ -20,8 +20,8 @@ export function Steps({
 							<div
 								className={cn(
 									"flex size-8 items-center justify-center rounded-full border text-sm font-semibold transition-colors",
-									status === "done" && "bg-primary text-primary-foreground border-primary",
-									status === "active" && "bg-background text-primary border-primary ring-4 ring-primary/15",
+									status === "done" && "bg-[var(--c-lime-500)] text-custom-black border-[var(--c-lime-500)]",
+									status === "active" && "bg-background text-[var(--c-lime-500)] border-[var(--c-lime-500)] ring-4 ring-[var(--c-lime-500)]/15",
 									status === "todo" && "bg-background text-muted-foreground border-border",
 								)}
 							>
@@ -70,8 +70,8 @@ export function StepsHorizontal({
 						<div
 							className={cn(
 								"flex size-7 items-center justify-center rounded-full text-xs font-semibold",
-								status === "done" && "bg-primary text-primary-foreground",
-								status === "active" && "bg-primary/15 text-primary ring-2 ring-primary",
+								status === "done" && "bg-[var(--c-lime-500)] text-custom-black",
+								status === "active" && "bg-[var(--c-lime-500)]/15 text-[var(--c-lime-500)] ring-2 ring-[var(--c-lime-500)]",
 								status === "todo" && "bg-muted text-muted-foreground",
 							)}
 						>

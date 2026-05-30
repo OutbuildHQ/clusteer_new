@@ -126,7 +126,7 @@ export default function PrivacyPolicyPage() {
 						<li><strong>Withdraw Consent:</strong> Revoke consent for data processing (where applicable)</li>
 					</ul>
 					<p className="mt-4">
-						To exercise these rights, please contact us at <a href="mailto:privacy@clusteer.com" className="text-primary underline">privacy@clusteer.com</a>
+						To exercise these rights, please contact us at <a href="mailto:privacy@clusteer.com" className="text-custom-black/70 underline">privacy@clusteer.com</a>
 					</p>
 				</section>
 
@@ -179,9 +179,9 @@ export default function PrivacyPolicyPage() {
 						If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
 					</p>
 					<div className="bg-card border border-border p-6 rounded-lg">
-						<p className="mb-2"><strong>Email:</strong> <a href="mailto:privacy@clusteer.com" className="text-primary underline">privacy@clusteer.com</a></p>
-						<p className="mb-2"><strong>Support:</strong> <a href="mailto:support@clusteer.com" className="text-primary underline">support@clusteer.com</a></p>
-						<p><strong>Data Protection Officer:</strong> <a href="mailto:dpo@clusteer.com" className="text-primary underline">dpo@clusteer.com</a></p>
+						<p className="mb-2"><strong>Email:</strong> <a href="mailto:privacy@clusteer.com" className="text-custom-black/70 underline">privacy@clusteer.com</a></p>
+						<p className="mb-2"><strong>Support:</strong> <a href="mailto:support@clusteer.com" className="text-custom-black/70 underline">support@clusteer.com</a></p>
+						<p><strong>Data Protection Officer:</strong> <a href="mailto:dpo@clusteer.com" className="text-custom-black/70 underline">dpo@clusteer.com</a></p>
 					</div>
 				</section>
 

@@ -51,7 +51,7 @@ export default function TicketDetailPage() {
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case "open": return "bg-primary/10 text-primary";
+			case "open": return "bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]";
 			case "in_progress": return "bg-warning/10 text-warning";
 			case "waiting_response": return "bg-orange-100 text-orange-800";
 			case "resolved": return "bg-success/10 text-success";
@@ -189,10 +189,10 @@ export default function TicketDetailPage() {
 								}`}
 							>
 								<div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-									message.sender_type === "user" ? "bg-primary/10" : "bg-muted"
+									message.sender_type === "user" ? "bg-[var(--c-lime-500)]/10" : "bg-muted"
 								}`}>
 									{message.sender_type === "user" ? (
-										<User className="w-5 h-5 text-primary" />
+										<User className="w-5 h-5 text-[var(--c-lime-500)]" />
 									) : (
 										<Headphones className="w-5 h-5 text-muted-foreground" />
 									)}
@@ -214,7 +214,7 @@ export default function TicketDetailPage() {
 									</div>
 									<div className={`inline-block max-w-[80%] p-3 rounded-lg ${
 										message.sender_type === "user"
-											? "bg-primary/10 text-foreground"
+											? "bg-[var(--c-lime-500)]/10 text-foreground"
 											: "bg-muted text-foreground"
 									}`}>
 										<p className="text-sm whitespace-pre-wrap">{message.message}</p>

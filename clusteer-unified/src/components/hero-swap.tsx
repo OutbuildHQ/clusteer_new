@@ -113,7 +113,7 @@ export function HeroSwap() {
 										onClick={() => setSelected(a.symbol)}
 										className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
 											selected === a.symbol
-												? "border-primary bg-primary/10 text-primary"
+												? "border-primary bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]"
 												: "border-border bg-card text-muted-foreground hover:border-primary/40"
 										}`}
 									>

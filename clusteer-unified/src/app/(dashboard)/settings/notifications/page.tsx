@@ -201,8 +201,8 @@ export default function Page() {
 				{/* Email Notifications */}
 				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<Mail className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<Mail className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-foreground">
@@ -276,8 +276,8 @@ export default function Page() {
 				{/* SMS Notifications */}
 				<div className="bg-card rounded-2xl border border-border p-6">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<MessageSquare className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<MessageSquare className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-foreground">
@@ -336,8 +336,8 @@ export default function Page() {
 				{/* Push Notifications */}
 				<div className="bg-card rounded-2xl border border-border p-6 opacity-60">
 					<div className="flex items-center gap-3 mb-6">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<Smartphone className="w-5 h-5 text-primary" />
+						<div className="p-2 bg-[var(--c-lime-500)]/10 rounded-lg">
+							<Smartphone className="w-5 h-5 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h2 className="font-semibold text-lg text-foreground">

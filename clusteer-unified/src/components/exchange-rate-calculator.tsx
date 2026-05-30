@@ -137,7 +137,7 @@ export default function ExchangeRateCalculator() {
 						stroke="currentColor"
 						strokeWidth="2"
 						fill="none"
-						className="text-primary"
+						className="text-[var(--c-lime-500)]"
 					/>
 				</svg>
 				<div className="absolute inset-0 flex items-center justify-center">

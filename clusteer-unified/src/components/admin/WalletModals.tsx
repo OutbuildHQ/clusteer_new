@@ -41,8 +41,8 @@ export function ManualTopupModal({
 			<div className="bg-card rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center gap-3">
-						<div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-							<Plus className="w-6 h-6 text-primary" />
+						<div className="w-12 h-12 bg-[var(--c-lime-500)]/10 rounded-full flex items-center justify-center">
+							<Plus className="w-6 h-6 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h3 className="text-lg font-semibold text-foreground">Manual Top-up</h3>
@@ -123,7 +123,7 @@ export function ManualTopupModal({
 					</div>
 
 					{/* Send Notification */}
-					<div className="flex items-center gap-3 p-4 bg-primary/10 border border-primary/30 rounded-lg">
+					<div className="flex items-center gap-3 p-4 bg-[var(--c-lime-500)]/10 border border-[var(--c-lime-500)]/30 rounded-lg">
 						<input
 							type="checkbox"
 							id="sendNotification"
@@ -131,7 +131,7 @@ export function ManualTopupModal({
 							onChange={(e) =>
 								setFormData({ ...formData, sendNotification: e.target.checked })
 							}
-							className="w-4 h-4 rounded border-border text-primary focus:ring-ring"
+							className="w-4 h-4 rounded border-border text-[var(--c-lime-500)] focus:ring-ring"
 						/>
 						<label htmlFor="sendNotification" className="flex-1">
 							<span className="text-sm font-medium text-foreground block">
@@ -189,8 +189,8 @@ export function ExportTransactionsModal({
 			<div className="bg-card rounded-lg max-w-lg w-full p-6 animate-in slide-in-from-bottom duration-300">
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center gap-3">
-						<div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-							<Download className="w-6 h-6 text-primary" />
+						<div className="w-12 h-12 bg-[var(--c-lime-500)]/10 rounded-full flex items-center justify-center">
+							<Download className="w-6 h-6 text-[var(--c-lime-500)]" />
 						</div>
 						<div>
 							<h3 className="text-lg font-semibold text-foreground">Export Transactions</h3>
@@ -216,7 +216,7 @@ export function ExportTransactionsModal({
 									onClick={() => setExportConfig({ ...exportConfig, format })}
 									className={`px-4 py-3 border-2 rounded-lg text-sm font-medium transition-all ${
 										exportConfig.format === format
-											? "border-primary bg-primary/10 text-primary"
+											? "border-primary bg-[var(--c-lime-500)]/10 text-[var(--c-lime-500)]"
 											: "border-border bg-card text-muted-foreground hover:bg-background"
 									}`}
 								>
@@ -281,7 +281,7 @@ export function ExportTransactionsModal({
 							onChange={(e) =>
 								setExportConfig({ ...exportConfig, includeFilters: e.target.checked })
 							}
-							className="w-4 h-4 rounded border-border text-primary focus:ring-ring"
+							className="w-4 h-4 rounded border-border text-[var(--c-lime-500)] focus:ring-ring"
 						/>
 						<label htmlFor="includeFilters" className="flex-1">
 							<span className="text-sm font-medium text-foreground block">
@@ -294,12 +294,12 @@ export function ExportTransactionsModal({
 					</div>
 
 					{/* Summary */}
-					<div className="p-4 bg-primary/10 border border-primary/30 rounded-lg">
-						<div className="flex items-center gap-2 text-sm text-primary">
+					<div className="p-4 bg-[var(--c-lime-500)]/10 border border-[var(--c-lime-500)]/30 rounded-lg">
+						<div className="flex items-center gap-2 text-sm text-[var(--c-lime-500)]">
 							<CheckCircle2 className="w-4 h-4" />
 							<span className="font-medium">Ready to export</span>
 						</div>
-						<p className="text-xs text-primary mt-1">
+						<p className="text-xs text-[var(--c-lime-500)] mt-1">
 							Estimated: ~1,234 transactions • File size: ~250 KB
 						</p>
 					</div>
