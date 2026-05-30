@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/primitives/empty-state";
 
 interface Notification {
 	id: string | number;
-	type: "tx" | "price" | "security" | "system";
+	type: "tx" | "price" | "security" | "system" | "orders";
 	title: string;
 	body: string;
 	when: string;
@@ -29,7 +29,7 @@ function notifColors(type: Notification["type"]) {
 	return { bg: "var(--c-surface-2)", color: "var(--c-text-2)" };
 }
 
-type Tab = "All" | "Unread" | "tx" | "price" | "security";
+type Tab = "All" | "Unread" | "orders" | "tx" | "price" | "security";
 
 export default function NotificationsPage() {
 	const [tab, setTab] = useState<Tab>("All");
@@ -115,7 +115,7 @@ export default function NotificationsPage() {
 			{/* Tabs */}
 			<div className="overflow-x-auto -mx-1 px-1">
 				<div className="inline-flex p-1 rounded-[10px] gap-0.5" style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>
-					{(["All", "Unread", "tx", "price", "security"] as Tab[]).map((t) => (
+					{(["All", "Unread", "orders", "tx", "price", "security"] as Tab[]).map((t) => (
 						<button
 							key={t}
 							onClick={() => setTab(t)}
