@@ -1,496 +1,144 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { getAllOrders } from "@/lib/api/user/queries";
-import { formatMoney } from "@/lib/utils";
-import { X, Search, Filter, ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import { AlertTriangle, BookOpen } from "lucide-react";
+import { AssetLogo } from "@/components/primitives/asset-logo";
 import { EmptyState } from "@/components/primitives/empty-state";
-import type { IOrder } from "@/types";
+import { OrderStatusBadge, isActionNeeded } from "@/components/trade/order-status-badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import type { QxOrder, QxOrderStatus } from "@/lib/types";
 
-function StatusBadge({ s }: { s: string }) {
-	const map: Record<string, { bg: string; color: string; border?: string }> = {
-		Filled: { bg: "var(--c-up-soft)", color: "var(--c-up)" },
-		Open: { bg: "var(--c-info-soft)", color: "var(--c-info)" },
-		Partial: { bg: "var(--c-warn-soft)", color: "var(--c-warn)" },
-		Cancelled: { bg: "var(--c-surface-2)", color: "var(--c-text-2)", border: "1px solid var(--c-line)" },
-	};
-	const icons: Record<string, string> = { Filled: "✓", Open: "●", Partial: "◐", Cancelled: "—" };
-	const m = map[s] ?? map.Open;
+function fmt(n: number) { return "₦" + Math.round(n).toLocaleString("en-NG"); }
+
+function timeAgo(dateStr: string) {
+	const diff = Date.now() - new Date(dateStr).getTime();
+	const mins = Math.floor(diff / 60_000);
+	if (mins < 1) return "just now";
+	if (mins < 60) return `${mins}m ago`;
+	const hrs = Math.floor(mins / 60);
+	if (hrs < 24) return `${hrs}h ago`;
+	return `${Math.floor(hrs / 24)}d ago`;
+}
+
+const ACTIVE_STATUSES: QxOrderStatus[] = ["awaiting_payment", "awaiting_deposit", "confirming"];
+const HISTORY_STATUSES: QxOrderStatus[] = ["completed", "expired", "failed"];
+
+function OrderCard({ order }: { order: QxOrder }) {
+	const needsAction = isActionNeeded(order.status);
 	return (
-		<span className="inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium" style={{ background: m.bg, color: m.color, border: m.border }}>
-			<span className="text-[9px]">{icons[s] ?? "●"}</span>{s}
-		</span>
+		<Link
+			href={`/orders/${order.id}`}
+			style={{
+				display: "flex", alignItems: "center", gap: 12, padding: "14px 16px",
+				background: needsAction ? "var(--c-warn-soft)" : "var(--c-surface)",
+				borderBottom: "1px solid var(--c-line)",
+				textDecoration: "none", color: "var(--c-text)",
+			}}
+		>
+			<div style={{ position: "relative" }}>
+				<AssetLogo symbol="USDT" size="sm" />
+				<div style={{
+					position: "absolute", bottom: -2, right: -2, width: 14, height: 14, borderRadius: "50%",
+					background: order.side === "buy" ? "var(--c-up)" : "var(--c-down)",
+					display: "flex", alignItems: "center", justifyContent: "center",
+					fontSize: 8, fontWeight: 700, color: "#fff",
+				}}>
+					{order.side === "buy" ? "B" : "S"}
+				</div>
+			</div>
+			<div style={{ flex: 1, minWidth: 0 }}>
+				<div style={{ fontSize: 14, fontWeight: 600 }}>
+					{order.side === "buy" ? "Buy" : "Sell"} {order.amountUsdt?.toFixed(2) || "—"} USDT
+				</div>
+				<div style={{ fontSize: 12, color: "var(--c-text-3)", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+					{order.id} · {order.channel} · {timeAgo(order.createdAt)}
+				</div>
+			</div>
+			<div style={{ textAlign: "right", flexShrink: 0 }}>
+				<div style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+					{fmt(order.amountNgn || 0)}
+				</div>
+				<div style={{ marginTop: 4 }}>
+					<OrderStatusBadge status={order.status} />
+				</div>
+			</div>
+		</Link>
 	);
 }
-
-type Tab = "Open" | "Filled" | "Cancelled" | "All";
-
-/** Map API IOrder to the shape the UI rows expect */
-function mapOrder(o: IOrder) {
-	const pair = o.crypto && o.fiat ? `${o.crypto}/${o.fiat}` : `${o.crypto ?? "USDT"}/NGN`;
-	const prices: Record<string, number> = { USDT: 1, USDC: 1, BTC: 71240, ETH: 3568, SOL: 182, BNB: 612 };
-	const price = o.rate ?? (prices[o.crypto] ?? 1);
-	return {
-		id: o.number ?? o.id,
-		pair,
-		side: o.type,
-		type: o.paymentMethod ?? "Market",
-		price,
-		amount: o.amount,
-		filled: o.status === "Filled" ? 100 : o.status === "Partial" ? 62 : o.status === "Cancelled" ? 0 : 0,
-		status: o.status,
-		time: o.dateOrdered ? new Date(o.dateOrdered).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : (o.date ?? ""),
-		placed: o.dateOrdered ? new Date(o.dateOrdered).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" }) : o.date,
-		dateSettled: o.dateSettled,
-		chain: o.chain,
-	};
-}
-
-const PAGE_SIZE = 15;
 
 export default function OrdersPage() {
-	const [tab, setTab] = useState<Tab>("Open");
-	const [q, setQ] = useState("");
-	const [page, setPage] = useState(1);
-	const [open, setOpen] = useState<ReturnType<typeof mapOrder> | null>(null);
-	const [cancelLoading, setCancelLoading] = useState<string | null>(null);
-	const [cancelledIds, setCancelledIds] = useState<Set<string>>(new Set());
-	const [filterOpen, setFilterOpen] = useState(false);
-	const [filterSide, setFilterSide] = useState("");
-	const [filterDateFrom, setFilterDateFrom] = useState("");
-	const [filterDateTo, setFilterDateTo] = useState("");
-
-	const { data: response, isLoading, isError } = useQuery({
-		queryKey: ["orders", page],
-		queryFn: () => getAllOrders({ page, size: PAGE_SIZE }),
-	});
-
-	const { data: rateData } = useQuery({
-		queryKey: ["exchange-rate", "NGN"],
+	const { data: ordersData, isLoading } = useQuery({
+		queryKey: ["orders"],
 		queryFn: async () => {
-			const res = await fetch("/api/system/exchange-rate?targetCurrency=NGN&type=sell");
-			if (!res.ok) throw new Error("Rate unavailable");
-			return res.json() as Promise<{ buyRate: number; sellRate: number; rate: number }>;
+			const r = await fetch("/api/order?page=1&size=50");
+			const d = await r.json();
+			return (d.data || []) as QxOrder[];
 		},
-		staleTime: 5 * 60 * 1000,
-		retry: false,
+		refetchInterval: 10_000,
 	});
-	const liveRate = rateData?.sellRate ?? 1_610;
 
-	const orders = useMemo(
-		() => (response?.data ?? []).map(mapOrder).map(
-			(o) => cancelledIds.has(o.id) ? { ...o, status: "Cancelled" as const } : o,
-		),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[response, cancelledIds],
-	);
-	const totalPages = response?.metadata?.totalPages ?? 1;
+	const orders = ordersData || [];
+	const active = useMemo(() => orders.filter((o) => ACTIVE_STATUSES.includes(o.status)), [orders]);
+	const history = useMemo(() => orders.filter((o) => HISTORY_STATUSES.includes(o.status)), [orders]);
+	const needAction = active.filter((o) => isActionNeeded(o.status));
 
-	const activeFilterCount = [filterSide, filterDateFrom, filterDateTo].filter(Boolean).length;
-
-	const list = useMemo(
-		() =>
-			orders.filter(
-				(o) =>
-					(tab === "All" || o.status === tab || (tab === "Open" && ["Open", "Partial"].includes(o.status))) &&
-					(!filterSide || o.side === filterSide) &&
-					(!filterDateFrom || !o.placed || new Date(o.placed) >= new Date(filterDateFrom)) &&
-					(!filterDateTo || !o.placed || new Date(o.placed) <= new Date(filterDateTo + "T23:59:59")) &&
-					(!q || o.id.toUpperCase().includes(q.toUpperCase()) || o.pair.toUpperCase().includes(q.toUpperCase()) || String(o.amount).includes(q)),
-			),
-		[orders, tab, q, filterSide, filterDateFrom, filterDateTo],
-	);
+	if (isLoading) {
+		return (
+			<div style={{ display: "flex", justifyContent: "center", paddingTop: 80 }}>
+				<div style={{ width: 32, height: 32, border: "3px solid var(--c-line)", borderTopColor: "var(--c-lime-500)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+			</div>
+		);
+	}
 
 	return (
-		<div className="space-y-6">
-			{/* Header */}
-			<div className="flex items-center justify-between flex-wrap gap-4">
-				<h1 className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>Orders</h1>
-				<div className="inline-flex p-1 rounded-[10px] gap-0.5" style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>
-					{(["Open", "Filled", "Cancelled", "All"] as Tab[]).map((t) => (
-						<button key={t} onClick={() => { setTab(t); setPage(1); }}
-							className="px-3 py-1.5 rounded-[6px] text-[12.5px] font-medium transition-colors"
-							style={tab === t ? { background: "var(--c-surface)", color: "var(--c-text)", boxShadow: "var(--sh-1)" } : { color: "var(--c-text-2)" }}>
-							{t}
-						</button>
-					))}
-				</div>
-			</div>
+		<div>
+			<h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--c-text)", letterSpacing: "-0.03em", marginBottom: 20 }}>
+				Orders
+			</h1>
 
-			{/* Search */}
-			<div className="flex items-center w-full sm:max-w-[320px] h-9 px-3 rounded-[10px]" style={{ border: "1px solid var(--c-line)", background: "var(--c-surface)" }}>
-				<Search className="size-4 shrink-0" style={{ color: "var(--c-text-3)" }} />
-				<input className="flex-1 bg-transparent outline-none text-[13.5px] ml-2" style={{ color: "var(--c-text)" }} placeholder="Search by ID, pair, amount…" value={q} onChange={(e) => setQ(e.target.value)} />
-			</div>
-
-			{/* Filter button */}
-			<button
-				onClick={() => setFilterOpen(true)}
-				className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[10px] text-[13px] font-medium transition-colors relative shrink-0"
-				style={{ border: "1px solid var(--c-line)", background: "var(--c-surface)", color: "var(--c-text)", cursor: "pointer" }}
-			>
-				<Filter className="size-4" />
-				Filter
-				{activeFilterCount > 0 && (
-					<span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center size-4 rounded-full text-[10px] font-semibold" style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}>
-						{activeFilterCount}
+			{/* Action needed alert */}
+			{needAction.length > 0 && (
+				<div style={{
+					display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 12, marginBottom: 16,
+					background: "var(--c-warn-soft)", border: "1px solid var(--c-warn)",
+				}}>
+					<AlertTriangle size={16} style={{ color: "var(--c-warn)", flexShrink: 0 }} />
+					<span style={{ fontSize: 13, fontWeight: 600, color: "var(--c-text)" }}>
+						{needAction.length} order{needAction.length > 1 ? "s" : ""} need{needAction.length === 1 ? "s" : ""} your action
 					</span>
-				)}
-			</button>
-
-			{/* Loading state */}
-			{isLoading && (
-				<div className="space-y-2">
-					{Array.from({ length: 8 }).map((_, i) => (
-						<div key={i} className="rounded-[12px] p-4" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-							<div className="flex items-center gap-3">
-								<div className="flex-1 space-y-2">
-									<div className="h-3 w-1/3 rounded animate-pulse" style={{ background: "var(--c-surface-2)" }} />
-									<div className="h-3 w-1/4 rounded animate-pulse" style={{ background: "var(--c-surface-2)" }} />
-								</div>
-								<div className="h-4 w-20 rounded animate-pulse" style={{ background: "var(--c-surface-2)" }} />
-							</div>
-						</div>
-					))}
 				</div>
 			)}
 
-			{/* Error state */}
-			{isError && !isLoading && (
-				<div className="rounded-[14px] p-8 text-center" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-					<div className="text-[15px] font-medium" style={{ color: "var(--c-text)" }}>Unable to load orders</div>
-					<div className="text-[13px] mt-1" style={{ color: "var(--c-text-3)" }}>Please check your connection and try again.</div>
-				</div>
-			)}
+			<Tabs defaultValue="active">
+				<TabsList className="mb-4">
+					<TabsTrigger value="active">
+						Active {active.length > 0 && <span style={{ marginLeft: 4, fontSize: 11, fontWeight: 700, background: "var(--c-warn)", color: "#fff", padding: "1px 6px", borderRadius: 99 }}>{active.length}</span>}
+					</TabsTrigger>
+					<TabsTrigger value="history">History</TabsTrigger>
+				</TabsList>
 
-			{/* Empty state */}
-			{!isLoading && !isError && list.length === 0 && (
-				<EmptyState
-					icon={ShoppingCart}
-					variant={q || tab !== "Open" ? "default" : "branded"}
-					title={q || tab !== "Open" ? "No orders found" : "No open orders yet"}
-					description={q || tab !== "Open" ? "Try adjusting your search or filter." : "Place your first buy or sell order and it will appear here."}
-					action={q || tab !== "Open" ? undefined : { label: "Start trading", href: "/trade" }}
-				/>
-			)}
-
-			{/* Table (desktop) */}
-			{!isLoading && !isError && list.length > 0 && (
-				<div className="hidden lg:block rounded-[14px] overflow-hidden" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-					<table className="w-full border-collapse text-[13px]">
-						<thead>
-							<tr>
-								{["Pair", "Side", "Type", "Price", "Amount", "Filled", "Status", "Time"].map((h, i) => (
-									<th key={h} className={`font-medium text-[11.5px] uppercase tracking-[0.05em] px-3.5 py-2.5 ${i === 7 ? "text-right" : "text-left"}`}
-										style={{ color: "var(--c-text-3)", borderBottom: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>{h}</th>
-								))}
-							</tr>
-						</thead>
-						<tbody>
-							{list.map((o) => (
-								<tr key={o.id} className="cursor-pointer transition-colors hover:bg-[var(--c-surface-2)]" onClick={() => setOpen(o)}>
-									<td className="px-3.5 py-3 font-semibold" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", color: "var(--c-text)" }}>{o.pair}</td>
-									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-										<span className="inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium"
-											style={o.side === "Buy" ? { background: "var(--c-up-soft)", color: "var(--c-up)" } : { background: "var(--c-down-soft)", color: "var(--c-down)" }}>
-											{o.side}
-										</span>
-									</td>
-									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", color: "var(--c-text)" }}>{o.type}</td>
-									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-										{formatMoney(o.price * liveRate, "NGN", { decimals: 0 })}
-									</td>
-									<td className="px-3.5 py-3 tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-										{o.amount.toFixed(2)}
-									</td>
-									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-										<div className="flex items-center gap-2">
-											<div className="flex-1 max-w-[80px] h-[6px] rounded-full overflow-hidden" style={{ background: "var(--c-surface-3)" }}>
-												<div className="h-full rounded-full" style={{ width: `${o.filled}%`, background: "var(--c-lime-500)" }} />
-											</div>
-											<span className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>{o.filled}%</span>
-										</div>
-									</td>
-									<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-										<StatusBadge s={o.status} />
-									</td>
-									<td className="px-3.5 py-3 text-right tabular-nums" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-										{o.time}
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			)}
-
-			{/* Card list (mobile) */}
-			{!isLoading && !isError && list.length > 0 && (
-				<div className="lg:hidden space-y-2">
-					{list.map((o) => (
-						<div key={o.id} className="rounded-[12px] p-3 cursor-pointer active:scale-[0.99] transition-transform" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }} onClick={() => setOpen(o)}>
-							<div className="flex items-center justify-between">
-								<div className="flex items-center gap-2">
-									<span className="font-semibold text-[13px]" style={{ color: "var(--c-text)" }}>{o.pair}</span>
-									<span className="inline-flex items-center gap-1 h-[22px] px-2 rounded-full text-[11.5px] font-medium"
-										style={o.side === "Buy" ? { background: "var(--c-up-soft)", color: "var(--c-up)" } : { background: "var(--c-down-soft)", color: "var(--c-down)" }}>
-										{o.side}
-									</span>
-									<span className="text-[12px]" style={{ color: "var(--c-text-2)" }}>{o.type}</span>
-								</div>
-								<StatusBadge s={o.status} />
-							</div>
-							<div className="flex items-center justify-between mt-2">
-								<div>
-									<div className="tabular-nums text-[13px] font-semibold" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>{o.amount.toFixed(2)}</div>
-									<div className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>@ {formatMoney(o.price * liveRate, "NGN", { decimals: 0 })}</div>
-								</div>
-								<div className="flex items-center gap-2">
-									<div className="w-[60px] h-[6px] rounded-full overflow-hidden" style={{ background: "var(--c-surface-3)" }}>
-										<div className="h-full rounded-full" style={{ width: `${o.filled}%`, background: "var(--c-lime-500)" }} />
-									</div>
-									<span className="tabular-nums text-[11px]" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>{o.filled}%</span>
-								</div>
-							</div>
+				<TabsContent value="active">
+					{active.length === 0 ? (
+						<EmptyState icon={BookOpen} title="No active orders" description="Your buy and sell orders will appear here." />
+					) : (
+						<div style={{ borderRadius: 14, border: "1px solid var(--c-line)", overflow: "hidden" }}>
+							{active.map((o) => <OrderCard key={o.id} order={o} />)}
 						</div>
-					))}
-				</div>
-			)}
+					)}
+				</TabsContent>
 
-			{/* Pagination */}
-			{!isLoading && !isError && totalPages > 1 && (
-				<div className="flex items-center justify-center gap-2">
-					<button
-						onClick={() => setPage((p) => Math.max(1, p - 1))}
-						disabled={page <= 1}
-						className="inline-flex items-center justify-center size-9 rounded-[10px] transition-colors disabled:opacity-40"
-						style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}
-					>
-						<ChevronLeft className="size-4" />
-					</button>
-					<span className="text-[13px] tabular-nums px-3" style={{ color: "var(--c-text-2)", fontFamily: "var(--f-mono)" }}>
-						Page {page} of {totalPages}
-					</span>
-					<button
-						onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-						disabled={page >= totalPages}
-						className="inline-flex items-center justify-center size-9 rounded-[10px] transition-colors disabled:opacity-40"
-						style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}
-					>
-						<ChevronRight className="size-4" />
-					</button>
-				</div>
-			)}
-
-			{/* ── Filter Drawer ── */}
-			{filterOpen && (
-				<>
-					<div className="fixed inset-0 z-[90]" style={{ background: "rgba(0,0,0,0.4)" }} onClick={() => setFilterOpen(false)} />
-					<div
-						className="fixed right-0 top-0 bottom-0 z-[100] flex flex-col"
-						style={{ width: "min(100vw, 360px)", background: "var(--c-surface)", borderLeft: "1px solid var(--c-line)", animation: "drawerIn .22s cubic-bezier(.2,.7,.2,1)" }}
-					>
-						<div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
-							<span className="text-[15px] font-semibold" style={{ color: "var(--c-text)" }}>Filters</span>
-							<button onClick={() => setFilterOpen(false)} className="inline-flex items-center justify-center size-8 rounded-[8px]" style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}>
-								<X className="size-4" />
-							</button>
+				<TabsContent value="history">
+					{history.length === 0 ? (
+						<EmptyState icon={BookOpen} title="No order history" description="Completed, expired, and failed orders will show here." />
+					) : (
+						<div style={{ borderRadius: 14, border: "1px solid var(--c-line)", overflow: "hidden" }}>
+							{history.map((o) => <OrderCard key={o.id} order={o} />)}
 						</div>
-						<div className="flex-1 overflow-auto p-5 space-y-6">
-							{/* Side */}
-							<div>
-								<label className="block text-[12px] font-medium uppercase tracking-[0.05em] mb-2.5" style={{ color: "var(--c-text-3)" }}>Side</label>
-								<div className="flex gap-2">
-									{["", "Buy", "Sell"].map((s) => (
-										<button
-											key={s || "all"}
-											onClick={() => setFilterSide(s)}
-											className="h-8 px-4 rounded-[8px] text-[12.5px] font-medium transition-colors"
-											style={{
-												border: "1px solid var(--c-line)",
-												background: filterSide === s ? "var(--c-onyx-900)" : "transparent",
-												color: filterSide === s ? "var(--c-cream)" : "var(--c-text)",
-												borderColor: filterSide === s ? "var(--c-onyx-900)" : "var(--c-line)",
-											}}
-										>
-											{s || "All"}
-										</button>
-									))}
-								</div>
-							</div>
-							{/* Date range */}
-							<div>
-								<label className="block text-[12px] font-medium uppercase tracking-[0.05em] mb-2.5" style={{ color: "var(--c-text-3)" }}>Date range</label>
-								<div className="grid grid-cols-2 gap-2">
-									<div>
-										<label className="block text-[11px] mb-1" style={{ color: "var(--c-text-3)" }}>From</label>
-										<input type="date" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} style={{ width: "100%", height: 36, padding: "0 10px", border: "1px solid var(--c-line)", borderRadius: 8, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13, outline: "none" }} />
-									</div>
-									<div>
-										<label className="block text-[11px] mb-1" style={{ color: "var(--c-text-3)" }}>To</label>
-										<input type="date" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} style={{ width: "100%", height: 36, padding: "0 10px", border: "1px solid var(--c-line)", borderRadius: 8, background: "var(--c-surface)", color: "var(--c-text)", fontSize: 13, outline: "none" }} />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="flex gap-2 p-5" style={{ borderTop: "1px solid var(--c-line)" }}>
-							<button
-								onClick={() => { setFilterSide(""); setFilterDateFrom(""); setFilterDateTo(""); setFilterOpen(false); }}
-								className="flex-1 h-10 rounded-[10px] text-[13.5px] font-medium transition-colors hover:bg-[var(--c-surface-2)]"
-								style={{ border: "1px solid var(--c-line)", color: "var(--c-text)", background: "transparent", cursor: "pointer" }}
-							>
-								Clear all
-							</button>
-							<button
-								onClick={() => setFilterOpen(false)}
-								className="flex-1 h-10 rounded-[10px] text-[13.5px] font-semibold"
-								style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", cursor: "pointer" }}
-							>
-								Apply filters
-							</button>
-						</div>
-					</div>
-				</>
-			)}
-
-			{/* Order detail drawer */}
-			{open && (
-				<>
-					<div className="fixed inset-0 z-[100]" style={{ background: "rgba(0,0,0,0.5)" }} onClick={() => setOpen(null)} />
-					<div
-						className="fixed inset-y-0 right-0 z-[101] w-full sm:max-w-[520px] flex flex-col overflow-auto"
-						style={{ background: "var(--c-surface)", borderRadius: "20px 0 0 20px", border: "1px solid var(--c-line)", boxShadow: "var(--sh-3)", animation: "drawerIn .22s cubic-bezier(.2,.7,.2,1)" }}
-						onClick={(e) => e.stopPropagation()}
-					>
-						<div className="flex items-center justify-between px-[var(--pad)] py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
-							<span className="text-[15px] font-semibold" style={{ color: "var(--c-text)" }}>Order {open.id}</span>
-							<button onClick={() => setOpen(null)} className="inline-flex items-center justify-center size-9 rounded-[10px]" style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}>
-								<X className="size-4" />
-							</button>
-						</div>
-						<div className="flex-1 p-[var(--pad)] space-y-4 overflow-auto">
-							{/* Order summary */}
-							<div className="rounded-[14px] p-3.5" style={{ border: "1px solid var(--c-line)" }}>
-								<div className="flex items-center justify-between">
-									<div>
-										<div className="flex items-center gap-2">
-											<span className="inline-flex items-center h-[22px] px-2 rounded-full text-[11.5px] font-medium"
-												style={open.side === "Buy" ? { background: "var(--c-up-soft)", color: "var(--c-up)" } : { background: "var(--c-down-soft)", color: "var(--c-down)" }}>
-												{open.side}
-											</span>
-											<span className="inline-flex items-center h-[22px] px-2 rounded-full text-[11.5px] font-medium" style={{ background: "var(--c-surface-2)", color: "var(--c-text-2)", border: "1px solid var(--c-line)" }}>{open.pair}</span>
-											<StatusBadge s={open.status} />
-										</div>
-										<div className="tabular-nums text-[24px] font-semibold mt-2" style={{ fontFamily: "var(--f-display)", color: "var(--c-text)", letterSpacing: "-0.025em" }}>
-											{open.amount.toFixed(4)} {open.pair.split("/")[0]}
-										</div>
-										<div className="tabular-nums text-[13px] mt-0.5" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-2)" }}>
-											@ {formatMoney(open.price * liveRate, "NGN", { decimals: 0 })}
-										</div>
-									</div>
-									<div className="text-right">
-										<div className="text-[11px] uppercase" style={{ color: "var(--c-text-3)" }}>Total</div>
-										<div className="tabular-nums text-[18px] font-semibold mt-1" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-											{formatMoney(open.price * open.amount * liveRate, "NGN", { decimals: 0 })}
-										</div>
-									</div>
-								</div>
-								<div className="h-px my-3.5" style={{ background: "var(--c-line)" }} />
-								<div className="flex items-center justify-between text-[12px] mb-1.5">
-									<span style={{ color: "var(--c-text-3)" }}>Filled</span>
-									<span className="tabular-nums" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-										{(open.status === "Filled" ? open.amount : open.status === "Partial" ? open.amount * 0.62 : 0).toFixed(4)} / {open.amount.toFixed(4)} ({open.filled}%)
-									</span>
-								</div>
-								<div className="h-[6px] rounded-[3px] overflow-hidden" style={{ background: "var(--c-surface-2)" }}>
-									<div className="h-full" style={{ width: `${open.filled}%`, background: "var(--c-lime-500)" }} />
-								</div>
-							</div>
-
-							{/* Order details */}
-							<div className="rounded-[14px]" style={{ border: "1px solid var(--c-line)", padding: "4px 14px" }}>
-								{[
-									["Order type", open.type],
-									["Time in force", "Good till cancel"],
-									["Placed", open.placed],
-									["Order ID", open.id],
-									["Estimated fee", `${(open.price * open.amount * liveRate * 0.001).toFixed(2)} NGN`],
-								].map(([k, v]) => (
-									<div key={k} className="flex items-center justify-between py-2.5 text-[13px]" style={{ borderBottom: "1px solid var(--c-line)" }}>
-										<span style={{ color: "var(--c-text-3)" }}>{k}</span>
-										<span className="tabular-nums" style={{ fontFamily: k === "Order ID" || k === "Estimated fee" ? "var(--f-mono)" : "inherit", color: "var(--c-text)" }}>{v}</span>
-									</div>
-								))}
-							</div>
-
-							{/* Fills */}
-							<div className="rounded-[14px] p-[var(--pad)]" style={{ border: "1px solid var(--c-line)" }}>
-								<h4 className="text-[14px] font-semibold mb-3" style={{ color: "var(--c-text)" }}>Fills</h4>
-								{open.status === "Open" ? (
-									<div className="text-center py-6" style={{ color: "var(--c-text-3)" }}>
-										<div>No fills yet</div>
-										<div className="text-[12px] mt-1" style={{ color: "var(--c-text-3)" }}>Order is waiting in the book</div>
-									</div>
-								) : (
-									<div className="space-y-0">
-										{[
-											...(open.status === "Filled" ? [{ amt: open.amount * 0.45, time: "09:42:18", px: open.price }] : []),
-											{ amt: open.status === "Filled" ? open.amount * 0.55 : open.amount * 0.62, time: "09:43:51", px: open.price - 50 / 1610 },
-										].map((f, i) => (
-											<div key={i} className="flex items-center justify-between py-2.5 text-[13px]" style={{ borderBottom: "1px solid var(--c-line)" }}>
-												<div>
-													<div className="tabular-nums" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>{f.amt.toFixed(4)} {open.pair.split("/")[0]}</div>
-													<div className="tabular-nums text-[11px] mt-0.5" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>{f.time}</div>
-												</div>
-												<div className="tabular-nums" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
-													{formatMoney(f.px * liveRate, "NGN", { decimals: 0 })}
-												</div>
-											</div>
-										))}
-									</div>
-								)}
-							</div>
-						</div>
-						<div className="flex items-center justify-end gap-2 px-[var(--pad)] py-3" style={{ borderTop: "1px solid var(--c-line)" }}>
-							{(open.status === "Open" || open.status === "Partial") && (
-								<button
-									disabled={cancelLoading === open.id}
-									className="inline-flex items-center h-9 px-3.5 rounded-[10px] text-[13.5px] font-medium disabled:opacity-60"
-									style={{ color: "var(--c-down)", border: "1px solid var(--c-line)" }}
-									onClick={async () => {
-										if (!confirm("Cancel this order? This cannot be undone.")) return;
-										setCancelLoading(open.id);
-										try {
-											const res = await fetch(`/api/order/${open.id}/cancel`, { method: "POST" });
-											const data = await res.json();
-											if (res.ok) {
-												toast.success("Order cancelled");
-												setCancelledIds((prev) => new Set([...prev, open.id]));
-												setOpen((prev) => prev ? { ...prev, status: "Cancelled" } : null);
-											} else {
-												toast.error(data.message || "Failed to cancel order");
-											}
-										} catch {
-											toast.error("Network error. Please try again.");
-										} finally {
-											setCancelLoading(null);
-										}
-									}}
-								>
-									{cancelLoading === open.id ? "Cancelling…" : "Cancel order"}
-								</button>
-							)}
-							<button className="inline-flex items-center h-9 px-3.5 rounded-[10px] text-[13.5px] font-medium" style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }} onClick={() => setOpen(null)}>
-								Done
-							</button>
-						</div>
-					</div>
-				</>
-			)}
-
-			<style jsx global>{`@keyframes drawerIn { from { transform: translateX(100%); } to { transform: translateX(0); } }`}</style>
+					)}
+				</TabsContent>
+			</Tabs>
 		</div>
 	);
 }
