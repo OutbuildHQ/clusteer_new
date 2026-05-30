@@ -136,7 +136,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 								value={amount}
 								onChange={(e) => setAmount(e.target.value)}
 								placeholder="0.00"
-								className="w-full pl-10 pr-4 py-3 text-lg font-semibold border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870]"
+								className="w-full pl-10 pr-4 py-3 text-lg font-semibold border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-light-green"
 								min="0"
 								step="0.01"
 							/>
@@ -156,7 +156,7 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 							value={note}
 							onChange={(e) => setNote(e.target.value)}
 							placeholder="Add a note for the payer..."
-							className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9FE870] resize-none"
+							className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-light-green resize-none"
 							rows={3}
 							maxLength={200}
 						/>
@@ -223,22 +223,22 @@ export default function RequestAssetClient({ asset }: { asset: string }) {
 					</h3>
 					<ul className="space-y-2 text-sm text-muted-foreground">
 						<li className="flex items-start gap-2">
-							<span className="text-[#9FE870] mt-1">•</span>
+							<span className="text-light-green mt-1">•</span>
 							<span>Enter the amount you want to request</span>
 						</li>
 						<li className="flex items-start gap-2">
-							<span className="text-[#9FE870] mt-1">•</span>
+							<span className="text-light-green mt-1">•</span>
 							<span>Add an optional note to provide context</span>
 						</li>
 						<li className="flex items-start gap-2">
-							<span className="text-[#9FE870] mt-1">•</span>
+							<span className="text-light-green mt-1">•</span>
 							<span>
 								Generate a QR code or share the payment link via email or
 								messaging
 							</span>
 						</li>
 						<li className="flex items-start gap-2">
-							<span className="text-[#9FE870] mt-1">•</span>
+							<span className="text-light-green mt-1">•</span>
 							<span>
 								The payer will be directed to send you the exact amount in{" "}
 								{wallet.currency}

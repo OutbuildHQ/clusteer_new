@@ -435,27 +435,27 @@ export default function Page() {
 					</h3>
 					<ul className="space-y-2 text-sm text-[var(--c-text-3)]">
 						<li className="flex items-start gap-2">
-							<span className="text-[#9FE870] mt-1">•</span>
+							<span className="text-light-green mt-1">•</span>
 							<span>
 								Your bank account name must match your verified identity on
 								Clusteer
 							</span>
 						</li>
 						<li className="flex items-start gap-2">
-							<span className="text-[#9FE870] mt-1">•</span>
+							<span className="text-light-green mt-1">•</span>
 							<span>
 								Withdrawals can only be made to verified bank accounts
 							</span>
 						</li>
 						<li className="flex items-start gap-2">
-							<span className="text-[#9FE870] mt-1">•</span>
+							<span className="text-light-green mt-1">•</span>
 							<span>
 								Changing your default payment method will take effect
 								immediately
 							</span>
 						</li>
 						<li className="flex items-start gap-2">
-							<span className="text-[#9FE870] mt-1">•</span>
+							<span className="text-light-green mt-1">•</span>
 							<span>
 								You can add up to 5 bank accounts to your Clusteer profile
 							</span>

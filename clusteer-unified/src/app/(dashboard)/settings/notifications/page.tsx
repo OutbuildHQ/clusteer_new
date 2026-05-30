@@ -82,7 +82,7 @@ function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange?: 
 				width: "44px",
 				height: "24px",
 				borderRadius: "9999px",
-				background: checked ? "var(--c-accent, #9FE870)" : "var(--c-border, #d1d5db)",
+				background: checked ? "var(--c-lime-500)" : "var(--c-border, #d1d5db)",
 				cursor: disabled ? "not-allowed" : "pointer",
 				opacity: disabled ? 0.5 : 1,
 				position: "relative",
@@ -390,7 +390,7 @@ export default function Page() {
 					onClick={handleSave}
 					disabled={saveMutation.isPending}
 					style={{
-						background: "var(--c-accent, #9FE870)",
+						background: "var(--c-lime-500)",
 						color: "#fff",
 						border: "1px solid rgba(0,0,0,0.05)",
 						height: "40px",

@@ -220,7 +220,7 @@ export default function Page() {
 									</p>
 									<button
 										style={{
-											background: "var(--c-accent, #9FE870)",
+											background: "var(--c-lime-500)",
 											color: "#fff",
 											border: "1px solid rgba(0,0,0,0.05)",
 											height: "32px",
@@ -279,7 +279,7 @@ export default function Page() {
 									</p>
 									<button
 										style={{
-											background: "var(--c-accent, #9FE870)",
+											background: "var(--c-lime-500)",
 											color: "#fff",
 											border: "1px solid rgba(0,0,0,0.05)",
 											height: "32px",

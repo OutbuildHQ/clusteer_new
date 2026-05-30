@@ -65,7 +65,7 @@ export default function Page() {
 							fontWeight: 600,
 							border: "1px solid #000",
 							color: "#111111",
-							background: "var(--c-accent, #9FE870)",
+							background: "var(--c-lime-500)",
 							fontSize: "16px",
 							borderRadius: "8px",
 							cursor: "pointer",
@@ -95,7 +95,7 @@ export default function Page() {
 							fontWeight: 600,
 							border: "1px solid #000",
 							color: "#111111",
-							background: "var(--c-accent, #9FE870)",
+							background: "var(--c-lime-500)",
 							fontSize: "16px",
 							borderRadius: "8px",
 							cursor: "pointer",
@@ -150,8 +150,8 @@ export default function Page() {
 										<div
 											className={`
 												relative flex items-center justify-center w-6 h-6 rounded-full border transition-all duration-300
-												${isCompleted ? 'bg-light-green border-[#9FE870]' : ''}
-												${isActive ? 'bg-card border-[#9FE870] shadow-[0_0_0_2px_rgba(159,232,112,0.15)]' : ''}
+												${isCompleted ? 'bg-light-green border-light-green' : ''}
+												${isActive ? 'bg-card border-light-green shadow-[0_0_0_2px_var(--c-lime-500)/15]' : ''}
 												${!isActive && !isCompleted ? 'bg-card border-border' : ''}
 											`}
 										>
@@ -160,7 +160,7 @@ export default function Page() {
 													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
 												</svg>
 											) : (
-												<span className={`text-[10px] font-semibold ${isActive ? 'text-[#9FE870]' : 'text-muted-foreground'}`}>
+												<span className={`text-[10px] font-semibold ${isActive ? 'text-light-green' : 'text-muted-foreground'}`}>
 													{stepNumber}
 												</span>
 											)}

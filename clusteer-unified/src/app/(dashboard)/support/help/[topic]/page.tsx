@@ -78,7 +78,7 @@ export default function HelpTopicPage({ params }: { params: Promise<{ topic: str
 							style={{
 								display: "inline-block",
 								marginTop: "16px",
-								background: "var(--c-accent, #9FE870)",
+								background: "var(--c-lime-500)",
 								color: "#fff",
 								border: "none",
 								height: "36px",
@@ -148,7 +148,7 @@ export default function HelpTopicPage({ params }: { params: Promise<{ topic: str
 									display: "inline-flex",
 									alignItems: "center",
 									justifyContent: "center",
-									background: "var(--c-accent, #9FE870)",
+									background: "var(--c-lime-500)",
 									color: "#fff",
 									border: "none",
 									height: "40px",

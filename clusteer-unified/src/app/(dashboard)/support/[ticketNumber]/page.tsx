@@ -245,7 +245,7 @@ export default function TicketDetailPage() {
 								type="submit"
 								disabled={addMessageMutation.isPending || !newMessage.trim()}
 								style={{
-									background: "var(--c-accent, #9FE870)",
+									background: "var(--c-lime-500)",
 									color: "#fff",
 									border: "none",
 									padding: "0 24px",
