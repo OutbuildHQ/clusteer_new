@@ -113,7 +113,7 @@ export default function SecurityPage() {
 				</p>
 				<div className="flex flex-col lg:flex-row flex-wrap gap-4">
 					<SecurityCard
-						href="/security/google-auth"
+						href="/settings/security/google-auth"
 						icon={<Image src="/assets/images/google-auth.png" alt="Google Authenticator" width={28} height={28} />}
 						title="Google Authenticator"
 						description="Use Google Authenticator codes to secure your account and transactions. Recommended method."
@@ -121,7 +121,7 @@ export default function SecurityPage() {
 						actionLabel={is2FAEnabled ? "Manage →" : "Set up →"}
 					/>
 					<SecurityCard
-						href="/security/change-email"
+						href="/settings/security/change-email"
 						icon={<Mail className="size-5" />}
 						title="Email verification"
 						description="Receive a one-time code to your email to confirm sensitive account actions."
@@ -146,7 +146,7 @@ export default function SecurityPage() {
 				</p>
 				<div className="flex flex-col lg:flex-row flex-wrap gap-4">
 					<SecurityCard
-						href="/security/change-password"
+						href="/settings/security/change-password"
 						icon={<Lock className="size-5" />}
 						title="Login password"
 						description="Your login password protects account access. Changing it disables payments and withdrawals for 24 hours."
