@@ -91,7 +91,7 @@ export function BuyEntry({ state, updateState, onOrderCreated, onSwitchSide }: P
 
 			{/* Live rate */}
 			<div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 10, background: "var(--c-surface-2)" }}>
-				<AssetLogo symbol="USDT" size={20} />
+				<AssetLogo symbol="USDT" size="sm" />
 				<span style={{ fontSize: 13, fontWeight: 600, color: "var(--c-text-2)" }}>USDT / NGN</span>
 				<span style={{ marginLeft: "auto", fontWeight: 700, fontSize: 14, color: "var(--c-text)", fontVariantNumeric: "tabular-nums" }}>
 					₦{rate.toLocaleString("en-NG", { minimumFractionDigits: 2 })}

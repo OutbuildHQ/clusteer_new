@@ -102,7 +102,7 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 
 			{/* Live rate */}
 			<div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 10, background: "var(--c-surface-2)" }}>
-				<AssetLogo symbol="USDT" size={20} />
+				<AssetLogo symbol="USDT" size="sm" />
 				<span style={{ fontSize: 13, fontWeight: 600, color: "var(--c-text-2)" }}>USDT / NGN</span>
 				<span style={{ marginLeft: "auto", fontWeight: 700, fontSize: 14, color: "var(--c-text)", fontVariantNumeric: "tabular-nums" }}>
 					₦{rate.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
@@ -116,7 +116,7 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 					You sell (USDT)
 				</label>
 				<div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 14px", height: 52, borderRadius: 12, border: "1.5px solid var(--c-line)", background: "var(--c-surface)" }}>
-					<AssetLogo symbol="USDT" size={20} />
+					<AssetLogo symbol="USDT" size="sm" />
 					<input
 						type="text"
 						inputMode="decimal"
