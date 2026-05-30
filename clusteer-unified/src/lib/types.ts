@@ -1,5 +1,6 @@
 export type AssetSymbol = "USDT" | "USDC" | "NGN";
 export type Chain = "Bitcoin" | "Ethereum" | "Tron" | "Solana" | "BSC" | "Polygon";
+export type QxChannel = "TRC20" | "BEP20" | "ERC20";
 
 export type Asset = {
 	symbol: AssetSymbol;
@@ -12,6 +13,72 @@ export type Asset = {
 	balance: number;
 	balanceNgn: number;
 };
+
+// ── Quidax order model (PRD v2.0) ────────────────────────────
+
+export type QxOrderStatus =
+	| "awaiting_payment"
+	| "awaiting_deposit"
+	| "confirming"
+	| "completed"
+	| "expired"
+	| "failed";
+
+export type QxOrderSide = "buy" | "sell";
+
+export type QxPaymentDetails = {
+	bankName: string;
+	accountNumber: string;
+	accountName: string;
+	reference: string;
+	amountNgn: number;
+	expiresAt: string;
+};
+
+export type QxDepositDetails = {
+	address: string;
+	chain: QxChannel;
+	amountUsdt: number;
+	qrValue: string;
+	expiresAt: string;
+};
+
+export type QxOrder = {
+	id: string;
+	side: QxOrderSide;
+	asset: "USDT";
+	channel: QxChannel;
+	amountUsdt: number;
+	amountNgn: number;
+	rate: number;
+	fee: number;
+	status: QxOrderStatus;
+	destination?: string;
+	paymentDetails?: QxPaymentDetails;
+	depositDetails?: QxDepositDetails;
+	createdAt: string;
+	updatedAt?: string;
+};
+
+export type QxCreateOrderRequest = {
+	side: QxOrderSide;
+	amount: number;
+	channel: QxChannel;
+	destinationAddress?: string;
+	bankCode?: string;
+	accountNumber?: string;
+};
+
+export type QxOtpPayload = {
+	orderId: string;
+	otpCode: string;
+};
+
+export type QxOrderTimeline = {
+	label: string;
+	status: "done" | "active" | "pending";
+	timestamp?: string;
+}[];
 
 export type Order = {
 	id: string;
