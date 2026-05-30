@@ -117,7 +117,7 @@ export function BuyEntry({ state, updateState, onOrderCreated, onSwitchSide }: P
 				</div>
 				{ngn > 0 && (
 					<div style={{ fontSize: 13, color: "var(--c-text-2)", marginTop: 6 }}>
-						≈ <Num size={13} weight="600" color="var(--c-text)">{usdt.toFixed(2)}</Num> USDT
+						≈ <span style={{ fontSize: 13, fontWeight: 600, color: "var(--c-text)", fontVariantNumeric: "tabular-nums" }}>{usdt.toFixed(2)}</span> USDT
 					</div>
 				)}
 			</div>

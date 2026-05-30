@@ -85,56 +85,17 @@ export function Sidebar({ mobile, onNavClick }: SidebarProps) {
 				})}
 			</nav>
 
-			{/* Portfolio summary card */}
-			<div style={{ marginTop: "auto", padding: 20, background: "var(--c-onyx-900)", color: "var(--c-cream)", borderRadius: 14 }}>
-				<div style={{ fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.06em" }}>Portfolio</div>
-
-				{isLoading ? (
-					<>
-						<div className="animate-pulse rounded-md mt-1" style={{ background: "rgba(255,255,255,0.1)", height: 28, width: 140 }} />
-						<div className="animate-pulse rounded-md mt-3" style={{ background: "rgba(255,255,255,0.1)", height: 60, width: 80 }} />
-					</>
-				) : isEmpty ? (
-					<>
-						<div style={{ fontSize: 22, fontWeight: 600, marginTop: 2, fontFamily: "var(--f-display)", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.025em", opacity: 0.5 }}>
-							₦0.00
-						</div>
-						<div style={{ fontSize: 12, opacity: 0.4, marginTop: 10, lineHeight: 1.4 }}>
-							No assets yet.<br />Buy or deposit to get started.
-						</div>
-					</>
-				) : (
-					<>
-						<div style={{ fontSize: 22, fontWeight: 600, marginTop: 2, fontFamily: "var(--f-display)", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.025em" }}>
-							₦{total.toLocaleString("en-NG")}
-						</div>
-						<div style={{ display: "flex", alignItems: "flex-end", gap: 10, marginTop: 10 }}>
-							{/* Arrow: up (lime) when positive, down (red) when negative */}
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke={isUp ? "var(--c-lime-500)" : "var(--c-down)"}
-								strokeWidth="2"
-								width="100"
-								height="100"
-								style={{
-									flexShrink: 0,
-									transform: isUp ? "none" : "rotate(180deg)",
-								}}
-							>
-								<path d="M12 19V5M5 12l7-7 7 7" />
-							</svg>
-							<div style={{
-								fontSize: 13,
-								color: isUp ? "var(--c-lime-500)" : "var(--c-down)",
-								fontWeight: 600,
-								lineHeight: 1.3,
-							}}>
-								{isUp ? "+" : ""}{change24h.toFixed(2)}%<br />today
-							</div>
-						</div>
-					</>
-				)}
+			{/* Tier + version */}
+			<div style={{ marginTop: "auto", padding: 16, background: "var(--c-onyx-900)", color: "var(--c-cream)", borderRadius: 14 }}>
+				<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+					<div style={{ width: 32, height: 32, borderRadius: 8, background: "var(--c-lime-500)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+						<svg viewBox="0 0 24 24" fill="none" stroke="var(--c-onyx-900)" strokeWidth="2" width="16" height="16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+					</div>
+					<div>
+						<div style={{ fontSize: 14, fontWeight: 600 }}>{tierLabel}</div>
+						<div style={{ fontSize: 11, opacity: 0.5 }}>Clusteer v2.0</div>
+					</div>
+				</div>
 			</div>
 		</aside>
 	);

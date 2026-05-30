@@ -39,7 +39,7 @@ export default function DashboardPage() {
 	});
 
 	const rate = rateData?.buyRate || 1614.5;
-	const firstName = user?.name?.split(" ")[0] || "there";
+	const firstName = user?.firstName || "there";
 	const orders = ordersData || [];
 	const activeOrders = orders.filter((o: QxOrder) => isActionNeeded(o.status));
 	const recentOrders = orders.slice(0, 5);
@@ -134,7 +134,7 @@ export default function DashboardPage() {
 							data={[1580, 1590, 1585, 1600, 1610, 1605, 1614, 1612, 1618, 1614]}
 							width={400}
 							height={60}
-							color="var(--c-up)"
+							tone="positive"
 						/>
 					</div>
 					<div style={{ display: "flex", gap: 8, marginTop: 16 }}>

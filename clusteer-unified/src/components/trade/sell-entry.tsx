@@ -128,7 +128,7 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 				</div>
 				{usdt > 0 && (
 					<div style={{ fontSize: 13, color: "var(--c-text-2)", marginTop: 6 }}>
-						You receive ≈ <Num size={13} weight="600" color="var(--c-text)">₦{ngnNet.toLocaleString("en-NG", { minimumFractionDigits: 2 })}</Num>
+						You receive ≈ <span style={{ fontSize: 13, fontWeight: 600, color: "var(--c-text)", fontVariantNumeric: "tabular-nums" }}>₦{ngnNet.toLocaleString("en-NG", { minimumFractionDigits: 2 })}</span>
 					</div>
 				)}
 			</div>
