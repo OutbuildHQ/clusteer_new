@@ -85,10 +85,14 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 							onChange={(e) => setUsdtAmount(e.target.value.replace(/[^0-9.]/g, ""))}
 							style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 28, fontWeight: 600, color: "var(--c-text)", fontVariantNumeric: "tabular-nums", fontFamily: "var(--f-display)" }}
 						/>
-						<div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--c-surface)", cursor: "default" }}>
-							<AssetLogo symbol="USDT" size="sm" />
-							<span style={{ fontWeight: 600, fontSize: 13 }}>USDT</span>
-						</div>
+						<select style={{
+							height: 36, padding: "0 14px", borderRadius: 10, border: "1px solid var(--c-line)",
+							background: "transparent", color: "var(--c-text)", fontWeight: 500, fontSize: 13.5,
+							fontFamily: "var(--f-sans)", cursor: "pointer", outline: "none",
+						}}>
+							<option>USDT</option>
+							<option>USDC</option>
+						</select>
 					</div>
 				</div>
 
@@ -117,10 +121,12 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 						{CHANNELS.map((ch) => (
 							<button key={ch.id} onClick={() => updateState({ channel: ch.id })}
 								style={{
-									display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
-									padding: "8px 4px", borderRadius: 10, cursor: "pointer",
-									border: state.channel === ch.id ? "2px solid var(--c-onyx-900)" : "1px solid var(--c-line)",
-									background: state.channel === ch.id ? "var(--c-surface-2)" : "var(--c-surface)",
+									display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2,
+									height: "auto", padding: "8px 4px", borderRadius: 10, cursor: "pointer",
+									border: "1px solid var(--c-line)", background: "transparent",
+									fontFamily: "var(--f-sans)",
+									outline: state.channel === ch.id ? "2px solid var(--c-onyx-900)" : "none",
+									outlineOffset: -1,
 								}}>
 								<span style={{ fontWeight: 600, fontSize: 12, color: "var(--c-text)" }}>{ch.label}</span>
 								<span style={{ fontSize: 10, color: "var(--c-text-3)" }}>{ch.net}</span>
@@ -139,7 +145,7 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 							</span>
 							<select value={bankCode + "|" + accountNumber}
 								onChange={(e) => { const [bc, an] = e.target.value.split("|"); setBankCode(bc); setAccountNumber(an); }}
-								style={{ border: "none", background: "transparent", color: "var(--c-text-2)", fontSize: 12, fontWeight: 600, cursor: "pointer", outline: "none" }}>
+								style={{ height: 30, padding: "0 10px", borderRadius: 10, border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text)", fontSize: 12.5, fontWeight: 500, fontFamily: "var(--f-sans)", cursor: "pointer", outline: "none" }}>
 								<option value="|">Change</option>
 								{banks.map((b: { bankName: string; bankCode: string; accountNumber: string }) => (
 									<option key={b.accountNumber} value={b.bankCode + "|" + b.accountNumber}>{b.bankName} · ••{b.accountNumber.slice(-4)}</option>
@@ -158,11 +164,11 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 				{usdt > 0 && (
 					<div style={{ padding: 14, borderRadius: 12, background: "var(--c-surface-2)" }}>
 						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
-							<span style={{ color: "var(--c-text-3)" }}>Rate</span>
+							<span style={{ color: "var(--c-text-2)" }}>Rate</span>
 							<span style={{ fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>1 USDT = ₦{fmt(rate)}</span>
 						</div>
 						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
-							<span style={{ color: "var(--c-text-3)" }}>Service fee ({(feePct * 100).toFixed(2)}%)</span>
+							<span style={{ color: "var(--c-text-2)" }}>Service fee ({(feePct * 100).toFixed(2)}%)</span>
 							<span style={{ fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>₦{fmt(fee)}</span>
 						</div>
 					</div>

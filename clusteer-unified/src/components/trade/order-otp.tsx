@@ -117,16 +117,22 @@ export function OrderOtp({ order, onVerified, onBack }: Props) {
 				)}
 			</div>
 
-			{/* CTA */}
-			<Button
-				size="lg"
-				className="w-full"
+			{/* CTA — design uses opacity 0.45 for disabled, not bg change */}
+			<button
 				disabled={code.length < 6 || verify.isPending}
 				onClick={() => verify.mutate()}
-				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, fontSize: 15 }}
+				style={{
+					width: "100%", height: 48, borderRadius: 10, border: "none",
+					background: "var(--c-lime-500)", color: "var(--c-onyx-900)",
+					fontWeight: 600, fontSize: 15, fontFamily: "var(--f-sans)",
+					cursor: code.length < 6 ? "not-allowed" : "pointer",
+					opacity: code.length < 6 ? 0.45 : verify.isPending ? 0.7 : 1,
+					pointerEvents: code.length < 6 ? "none" as const : "auto" as const,
+					transition: "opacity .15s",
+				}}
 			>
 				{verify.isPending ? "Verifying…" : `Authorise ${sideLabel} order`}
-			</Button>
+			</button>
 		</div>
 	);
 }
