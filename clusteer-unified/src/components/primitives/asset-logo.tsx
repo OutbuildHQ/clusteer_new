@@ -29,7 +29,7 @@ export function AssetLogo({
 	size?: "sm" | "md" | "lg" | "xl";
 	className?: string;
 }) {
-	const meta = ASSETS[symbol.toUpperCase()] ?? { bg: "oklch(0.7 0.02 254)", fg: "white", label: symbol.slice(0, 1) };
+	const meta = ASSETS[symbol.toUpperCase()] ?? { bg: "#7C8278", fg: "white", label: symbol.slice(0, 1) };
 	return (
 		<span
 			className={cn(

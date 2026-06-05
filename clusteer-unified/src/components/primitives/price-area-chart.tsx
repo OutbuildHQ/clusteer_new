@@ -28,8 +28,8 @@ export function PriceAreaChart({
 				<AreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
 					<defs>
 						<linearGradient id="price-area" x1="0" y1="0" x2="0" y2="1">
-							<stop offset="0%" stopColor="var(--clusteer-blue-500)" stopOpacity={0.35} />
-							<stop offset="100%" stopColor="var(--clusteer-blue-500)" stopOpacity={0} />
+							<stop offset="0%" stopColor="var(--c-lime-500)" stopOpacity={0.35} />
+							<stop offset="100%" stopColor="var(--c-lime-500)" stopOpacity={0} />
 						</linearGradient>
 					</defs>
 					<CartesianGrid stroke="var(--border)" vertical={false} />
@@ -51,7 +51,7 @@ export function PriceAreaChart({
 						}}
 						formatter={(v: number) => [formatMoney(v, currency), "Price"]}
 					/>
-					<Area type="monotone" dataKey="v" stroke="var(--clusteer-blue-600)" strokeWidth={2} fill={lineOnly ? "none" : "url(#price-area)"} />
+					<Area type="monotone" dataKey="v" stroke="var(--c-lime-500)" strokeWidth={2} fill={lineOnly ? "none" : "url(#price-area)"} />
 				</AreaChart>
 			</ResponsiveContainer>
 		</div>
