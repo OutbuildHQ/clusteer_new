@@ -65,12 +65,12 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 
 	return (
 		<div style={{ background: "var(--c-surface)", borderRadius: 14, border: "1px solid var(--c-line)", padding: 24 }}>
-			{/* Buy/Sell segmented control */}
-			<div style={{ display: "flex", gap: 0, padding: 3, borderRadius: 10, background: "var(--c-surface-2)", marginBottom: 18 }}>
-				<button onClick={onSwitchSide} style={{ flex: 1, padding: "10px 0", borderRadius: 8, fontWeight: 600, fontSize: 14, border: "none", cursor: "pointer", background: "transparent", color: "var(--c-text-2)" }}>
+			{/* Buy/Sell segmented control — dark onyx bg, lime active */}
+			<div style={{ display: "flex", gap: 2, padding: 3, borderRadius: 10, background: "var(--c-onyx-900)", marginBottom: 18 }}>
+				<button onClick={onSwitchSide} style={{ flex: 1, padding: "8px 14px", borderRadius: 7, fontWeight: 600, fontSize: 13, border: "none", cursor: "pointer", background: "transparent", color: "var(--c-cream)" }}>
 					Buy
 				</button>
-				<button style={{ flex: 1, padding: "10px 0", borderRadius: 8, fontWeight: 600, fontSize: 14, border: "none", cursor: "pointer", background: "var(--c-surface)", color: "var(--c-text)", boxShadow: "var(--sh-1)" }}>
+				<button style={{ flex: 1, padding: "8px 14px", borderRadius: 7, fontWeight: 600, fontSize: 13, border: "none", cursor: "pointer", background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}>
 					Sell
 				</button>
 			</div>
