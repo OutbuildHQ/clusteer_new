@@ -101,10 +101,14 @@ export function BuyEntry({ state, updateState, onOrderCreated, onSwitchSide }: P
 						<div style={{ flex: 1, fontSize: 28, fontWeight: 600, color: "var(--c-text)", fontVariantNumeric: "tabular-nums", fontFamily: "var(--f-display)" }}>
 							{usdt > 0 ? usdt.toFixed(6) : "0"}
 						</div>
-						<div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--c-surface)", cursor: "default" }}>
-							<AssetLogo symbol="USDT" size="sm" />
-							<span style={{ fontWeight: 600, fontSize: 13 }}>USDT</span>
-						</div>
+						<select style={{
+							height: 36, padding: "0 10px", borderRadius: 8, border: "1px solid var(--c-line)",
+							background: "var(--c-surface)", color: "var(--c-text)", fontWeight: 600, fontSize: 13,
+							fontFamily: "var(--f-sans)", cursor: "pointer", outline: "none",
+						}}>
+							<option>USDT</option>
+							<option>USDC</option>
+						</select>
 					</div>
 				</div>
 
@@ -136,7 +140,13 @@ export function BuyEntry({ state, updateState, onOrderCreated, onSwitchSide }: P
 					<input
 						type="text" placeholder={`Your USDT address`} value={address}
 						onChange={(e) => setAddress(e.target.value)}
-						style={{ width: "100%", height: 44, borderRadius: 12, border: "1px solid var(--c-line)", padding: "0 14px", fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)", fontFamily: "var(--f-mono)", marginTop: 4 }}
+						style={{
+							width: "100%", height: 38, borderRadius: 10, border: "1px solid var(--c-line)",
+							padding: "0 12px", fontSize: 13.5, color: "var(--c-text)", background: "var(--c-surface)",
+							fontFamily: "var(--f-mono)", marginTop: 4, outline: "none",
+						}}
+						onFocus={(e) => { e.currentTarget.style.boxShadow = "0 0 0 3px rgba(201,245,66,0.45)"; e.currentTarget.style.borderColor = "var(--c-line-strong)"; }}
+						onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = "var(--c-line)"; }}
 					/>
 					<div style={{ fontSize: 11, color: "var(--c-text-3)", marginTop: 4 }}>
 						Quidax sends the USDT straight here — Clusteer never holds it.

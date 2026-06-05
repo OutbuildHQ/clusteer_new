@@ -8,7 +8,7 @@ export default function TradePage() {
 			<h1
 				className="font-display"
 				style={{
-					fontSize: 28,
+					fontSize: 32,
 					fontWeight: 600,
 					color: "var(--c-text)",
 					letterSpacing: "-0.03em",
