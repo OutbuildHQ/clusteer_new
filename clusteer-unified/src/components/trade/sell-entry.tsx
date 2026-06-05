@@ -160,19 +160,24 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 					)}
 				</div>
 
-				{/* Summary */}
-				{usdt > 0 && (
-					<div style={{ padding: 14, borderRadius: 12, background: "var(--c-surface-2)" }}>
-						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
-							<span style={{ color: "var(--c-text-2)" }}>Rate</span>
-							<span style={{ fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>1 USDT = ₦{fmt(rate)}</span>
-						</div>
-						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
-							<span style={{ color: "var(--c-text-2)" }}>Service fee ({(feePct * 100).toFixed(2)}%)</span>
-							<span style={{ fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>₦{fmt(fee)}</span>
-						</div>
+				{/* Rate + fee summary — always visible (design: card card-pad) */}
+				<div style={{
+					padding: 14, borderRadius: 14, background: "var(--c-surface-2)",
+					border: "1px solid var(--c-line)",
+				}}>
+					<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
+						<span style={{ color: "var(--c-text-2)" }}>Rate</span>
+						<span style={{ fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>
+							1 USDT = ₦{fmt(rate)}
+						</span>
 					</div>
-				)}
+					<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginTop: 6 }}>
+						<span style={{ color: "var(--c-text-2)" }}>Service fee ({(feePct * 100).toFixed(2)}%)</span>
+						<span style={{ fontFamily: "var(--f-mono)", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>
+							₦{fmt(fee)}
+						</span>
+					</div>
+				</div>
 
 				{/* CTA */}
 				<button disabled={!valid || createOrder.isPending} onClick={() => createOrder.mutate()}
