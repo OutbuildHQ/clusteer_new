@@ -1,297 +1,294 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getUserInfo } from "@/lib/api/user/queries";
 import { AssetLogo } from "@/components/primitives/asset-logo";
 import { Sparkline } from "@/components/primitives/sparkline";
 import { OrderStatusBadge, isActionNeeded } from "@/components/trade/order-status-badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
-	ArrowLeftRight, ReceiptText, AlertTriangle, Plus, ArrowUp, ArrowDown,
-	ChevronRight, Shield,
+	Plus, ArrowUp, ArrowDown, BookOpen, TrendingUp,
 } from "lucide-react";
 import type { QxOrder, QxOrderStatus } from "@/lib/types";
 
 function fmt(n: number) { return "₦" + Math.round(n).toLocaleString("en-NG"); }
-function ago(ts: string) {
-	const h = (Date.now() - new Date(ts).getTime()) / 3_600_000;
-	return h < 1 ? "just now" : h < 24 ? `${Math.round(h)}h ago` : `${Math.round(h / 24)}d ago`;
-}
+function fmtShort(n: number) { return n >= 1e9 ? (n / 1e9).toFixed(1) + "B" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(0) + "K" : String(n); }
+function fmtPct(n: number) { return (n >= 0 ? "+" : "") + n.toFixed(2) + "%"; }
 
-const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-	awaiting_payment: { label: "Pay now", variant: "secondary" },
-	awaiting_deposit: { label: "Send now", variant: "secondary" },
-	confirming: { label: "Confirming", variant: "outline" },
-	completed: { label: "Completed", variant: "default" },
-	expired: { label: "Expired", variant: "destructive" },
-	failed: { label: "Failed", variant: "destructive" },
-};
+const MOCK_MARKETS = [
+	{ sym: "USDT", name: "Tether", chain: "Multi-chain", price: 1, change: 0.01, mcap: 120e9 },
+	{ sym: "BTC", name: "Bitcoin", chain: "Bitcoin", price: 67_420, change: 2.34, mcap: 1.32e12 },
+	{ sym: "ETH", name: "Ethereum", chain: "Ethereum", price: 3_812, change: -0.87, mcap: 458e9 },
+	{ sym: "BNB", name: "BNB", chain: "BSC", price: 612, change: 1.12, mcap: 94e9 },
+	{ sym: "SOL", name: "Solana", chain: "Solana", price: 172, change: 4.52, mcap: 78e9 },
+];
 
 export default function DashboardPage() {
 	const { data: user } = useQuery({ queryKey: ["user-info"], queryFn: getUserInfo });
-
 	const { data: rateData } = useQuery({
 		queryKey: ["exchange-rate"],
-		queryFn: async () => {
-			const r = await fetch("/api/system/exchange-rate?targetCurrency=NGN&amount=1&type=buy");
-			return r.json();
-		},
-		refetchInterval: 30_000,
-		staleTime: 10_000,
+		queryFn: async () => { const r = await fetch("/api/system/exchange-rate?targetCurrency=NGN&amount=1&type=buy"); return r.json(); },
+		refetchInterval: 30_000, staleTime: 10_000,
 	});
-
 	const { data: ordersData } = useQuery({
 		queryKey: ["orders"],
-		queryFn: async () => {
-			const r = await fetch("/api/order?page=1&size=10");
-			const d = await r.json();
-			return (d.data || []) as QxOrder[];
-		},
+		queryFn: async () => { const r = await fetch("/api/order?page=1&size=10"); const d = await r.json(); return (d.data || []) as QxOrder[]; },
 		refetchInterval: 15_000,
 	});
 
 	const rate = rateData?.buyRate || 1614.5;
-	const firstName = user?.firstName || "there";
 	const orders = ordersData || [];
-	const activeOrders = orders.filter((o) => isActionNeeded(o.status));
+	const activeOrders = orders.filter((o) => ["awaiting_payment", "awaiting_deposit", "confirming"].includes(o.status));
 	const recentOrders = orders.slice(0, 5);
-	const needAction = activeOrders.length;
-
-	const dailyUsed = 2_450_000;
-	const dailyCap = 10_000_000;
-	const dailyPct = Math.round((dailyUsed / dailyCap) * 100);
+	const [mktTab, setMktTab] = useState("All");
 
 	return (
-		<div className="space-y-6">
-			{/* Header */}
-			<header className="flex flex-wrap items-end justify-between gap-4">
-				<div>
-					<p className="text-sm" style={{ color: "var(--c-text-2)" }}>Welcome back, {firstName}</p>
-					<h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: "var(--c-text)" }}>Home</h1>
+		<div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+			{/* ── Hero row: rate card + verification ── */}
+			<div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+				{/* Dark hero rate card */}
+				<div style={{
+					flex: "2 1 480px", background: "var(--c-onyx-900)", color: "var(--c-cream)",
+					borderRadius: 20, padding: 28, position: "relative", overflow: "hidden",
+				}}>
+					<div style={{ position: "absolute", right: -40, top: -40, width: 240, height: 240, borderRadius: "50%", background: "var(--c-lime-500)", opacity: 0.15 }} />
+					<div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+						<span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--c-lime-500)", animation: "pulse 1.4s ease-in-out infinite" }} />
+						USDT / NGN · live
+					</div>
+					<div style={{ fontSize: 56, fontWeight: 600, lineHeight: 1, marginTop: 10, fontFamily: "var(--f-display, Sora, sans-serif)", fontVariantNumeric: "tabular-nums" }}>
+						₦{rate.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
+					</div>
+					<div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 10, fontSize: 13 }}>
+						<span style={{ color: "var(--c-lime-500)", display: "flex", alignItems: "center", gap: 4 }}>
+							<ArrowUp size={14} />+0.4% today
+						</span>
+						<span style={{ opacity: 0.5 }}>Best rate this week</span>
+					</div>
+					<div style={{ display: "flex", gap: 10, marginTop: 24, flexWrap: "wrap" }}>
+						<Link href="/trade" style={{
+							display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px",
+							borderRadius: 10, fontWeight: 600, fontSize: 13, textDecoration: "none",
+							background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none",
+						}}>
+							<Plus size={14} /> Buy
+						</Link>
+						<Link href="/trade?side=sell" style={{
+							display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px",
+							borderRadius: 10, fontWeight: 600, fontSize: 13, textDecoration: "none",
+							background: "transparent", color: "var(--c-cream)",
+							border: "1px solid rgba(255,255,255,0.2)",
+						}}>
+							Sell
+						</Link>
+						<Link href="/orders" style={{
+							display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px",
+							borderRadius: 10, fontWeight: 600, fontSize: 13, textDecoration: "none",
+							background: "transparent", color: "var(--c-cream)",
+							border: "1px solid rgba(255,255,255,0.2)",
+						}}>
+							Orders
+						</Link>
+					</div>
 				</div>
-				<div className="flex gap-2">
-					<Button asChild variant="outline" size="sm">
-						<Link href="/orders"><ReceiptText className="size-4" />Orders</Link>
-					</Button>
-					<Button asChild size="sm" style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}>
-						<Link href="/trade"><ArrowLeftRight className="size-4" />Trade</Link>
-					</Button>
+
+				{/* Verification card */}
+				<div style={{
+					flex: "1 1 280px", background: "var(--c-surface)", borderRadius: 14,
+					border: "1px solid var(--c-line)", padding: 20,
+				}}>
+					<div style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)", marginBottom: 14 }}>Verification</div>
+					<div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+						<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+							<span style={{ fontSize: 12, color: "var(--c-text-2)" }}>Tier</span>
+							<span style={{ fontSize: 12, fontWeight: 600, padding: "2px 10px", borderRadius: 99, background: "var(--c-surface-2)", color: "var(--c-text)" }}>
+								Tier 1 · Verified
+							</span>
+						</div>
+						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
+							<span style={{ color: "var(--c-text-2)" }}>Daily limit</span>
+							<span style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>₦10,000,000</span>
+						</div>
+						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
+							<span style={{ color: "var(--c-text-2)" }}>Used today</span>
+							<span style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>₦2,450,000</span>
+						</div>
+						<div style={{ height: 6, borderRadius: 99, background: "var(--c-surface-2)", overflow: "hidden", marginTop: 2 }}>
+							<div style={{ height: "100%", width: "24.5%", background: "var(--c-lime-500)" }} />
+						</div>
+						<Link href="/identity-verification" style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textDecoration: "none", marginTop: 4 }}>
+							Manage verification →
+						</Link>
+					</div>
 				</div>
-			</header>
-
-			{/* Action needed alert */}
-			{needAction > 0 && (
-				<Card style={{ borderColor: "var(--c-warn)", background: "var(--c-warn-soft)" }}>
-					<CardContent className="flex items-center gap-3 p-4">
-						<AlertTriangle className="size-5" style={{ color: "var(--c-warn)" }} />
-						<div className="flex-1">
-							<div className="font-medium" style={{ color: "var(--c-text)" }}>
-								{needAction} order{needAction > 1 ? "s" : ""} need your action
-							</div>
-							<div className="text-xs" style={{ color: "var(--c-text-2)" }}>
-								Complete the bank transfer or crypto deposit before the window expires.
-							</div>
-						</div>
-						<Button asChild size="sm" variant="outline">
-							<Link href="/orders">Review</Link>
-						</Button>
-					</CardContent>
-				</Card>
-			)}
-
-			{/* Rate card + Limits — 2-column grid on desktop */}
-			<div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-				{/* Live rate + trade hero */}
-				<Card className="lg:col-span-2">
-					<CardHeader>
-						<div className="flex items-start justify-between">
-							<div>
-								<CardDescription className="inline-flex items-center gap-2">
-									<span className="inline-flex items-center gap-1.5">
-										<span className="size-1.5 animate-pulse rounded-full" style={{ background: "var(--c-lime-500)" }} />
-										USDT / NGN · live
-									</span>
-								</CardDescription>
-								<div className="mt-1 font-display text-3xl font-bold tracking-tight" style={{ color: "var(--c-text)", fontVariantNumeric: "tabular-nums" }}>
-									₦{rate.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
-								</div>
-								<div className="mt-1 flex items-center gap-2 text-sm">
-									<span style={{ color: "var(--c-up)", fontWeight: 600 }}>+0.4%</span>
-									<span style={{ color: "var(--c-text-2)" }}>· best rate this week</span>
-								</div>
-							</div>
-							<div className="flex gap-2">
-								<Button asChild size="sm" style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}>
-									<Link href="/trade"><Plus className="size-4" />Buy</Link>
-								</Button>
-								<Button asChild size="sm" variant="outline">
-									<Link href="/trade"><ArrowUp className="size-4" />Sell</Link>
-								</Button>
-							</div>
-						</div>
-					</CardHeader>
-					<CardContent className="pt-0">
-						<div style={{ height: 200 }}>
-							<Sparkline
-								data={[1580, 1590, 1585, 1600, 1610, 1605, 1614, 1612, 1618, 1614, 1610, 1616, 1620, 1615, 1618, 1614, 1612, 1617, 1620, 1615]}
-								width={600}
-								height={200}
-								tone="positive"
-							/>
-						</div>
-					</CardContent>
-				</Card>
-
-				{/* Limits snapshot */}
-				<Card>
-					<CardHeader>
-						<CardTitle>Your limits</CardTitle>
-						<CardDescription>Tier 1 · Starter</CardDescription>
-					</CardHeader>
-					<CardContent className="space-y-4">
-						<div>
-							<div className="mb-1.5 flex items-baseline justify-between text-sm">
-								<span style={{ color: "var(--c-text-2)" }}>Daily used</span>
-								<span className="font-medium tabular-nums" style={{ color: "var(--c-text)" }}>{fmt(dailyUsed)}</span>
-							</div>
-							<Progress value={dailyPct} />
-							<div className="mt-1 text-xs" style={{ color: "var(--c-text-2)" }}>
-								{fmt(dailyCap - dailyUsed)} left of {fmt(dailyCap)}
-							</div>
-						</div>
-						<Button asChild variant="outline" size="sm" className="w-full">
-							<Link href="/settings/limits">View limits</Link>
-						</Button>
-					</CardContent>
-				</Card>
 			</div>
 
-			{/* Active orders */}
-			{activeOrders.length > 0 && (
-				<Card>
-					<CardHeader className="flex-row items-center justify-between">
-						<CardTitle>Active orders</CardTitle>
-						<Button asChild variant="ghost" size="sm">
-							<Link href="/orders">See all</Link>
-						</Button>
-					</CardHeader>
-					<CardContent className="space-y-2.5">
-						{activeOrders.map((o) => {
-							const needs = isActionNeeded(o.status);
-							return (
-								<Link
-									key={o.id}
-									href={`/orders/${o.id}`}
-									className={`flex items-center gap-4 rounded-lg border p-3 transition hover:border-foreground/30 ${needs ? "border-foreground" : "border-border"}`}
-									style={{ textDecoration: "none", color: "var(--c-text)" }}
-								>
-									<div className="relative">
-										<AssetLogo symbol="USDT" size="md" />
-										<span className={`absolute -bottom-1 -right-1 grid size-4 place-items-center rounded-full border-2`}
-											style={{
-												background: o.side === "buy" ? "var(--c-lime-500)" : "var(--c-text)",
-												color: o.side === "buy" ? "var(--c-onyx-900)" : "var(--c-surface)",
-												borderColor: "var(--c-surface)",
-											}}>
-											{o.side === "buy" ? <ArrowDown className="size-2.5" /> : <ArrowUp className="size-2.5" />}
-										</span>
-									</div>
-									<div className="min-w-0 flex-1">
-										<div className="font-medium">{o.side === "buy" ? "Buy" : "Sell"} {o.amountUsdt?.toFixed(2) || "—"} USDT</div>
-										<div className="text-xs" style={{ color: "var(--c-text-2)" }}>{o.id} · {o.channel}</div>
-									</div>
-									<div className="text-right">
-										<div className="tabular-nums font-medium">{fmt(o.amountNgn || 0)}</div>
-										<div className="mt-1">
-											<OrderStatusBadge status={o.status as QxOrderStatus} />
-										</div>
-									</div>
-									<ChevronRight className="size-4 shrink-0" style={{ color: "var(--c-text-2)" }} />
-								</Link>
-							);
-						})}
-					</CardContent>
-				</Card>
-			)}
-
-			{/* Recent activity table */}
-			{recentOrders.length > 0 && (
-				<Card>
-					<CardHeader className="flex-row items-center justify-between">
-						<CardTitle>Recent activity</CardTitle>
-						<Button asChild variant="ghost" size="sm">
-							<Link href="/orders">View all</Link>
-						</Button>
-					</CardHeader>
-					<CardContent className="p-0">
-						{/* Desktop table */}
-						<div className="hidden md:block overflow-x-auto">
-							<table className="w-full text-sm">
+			{/* ── Active orders + Recent orders row ── */}
+			<div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "flex-start" }}>
+				{/* Active orders table */}
+				<div style={{ flex: "1 1 420px", minWidth: 0 }}>
+					<div style={{ background: "var(--c-surface)", borderRadius: 14, border: "1px solid var(--c-line)", overflow: "hidden" }}>
+						<div style={{ padding: "14px 20px", fontWeight: 600, fontSize: 15, color: "var(--c-text)", borderBottom: "1px solid var(--c-line)" }}>
+							Active orders
+						</div>
+						{activeOrders.length === 0 ? (
+							<div style={{ padding: "32px 20px", textAlign: "center", color: "var(--c-text-3)", fontSize: 13 }}>
+								No active orders right now.
+							</div>
+						) : (
+							<table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
 								<thead>
 									<tr style={{ borderBottom: "1px solid var(--c-line)" }}>
-										<th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: "var(--c-text-2)" }}>Order</th>
-										<th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: "var(--c-text-2)" }}>Network</th>
-										<th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: "var(--c-text-2)" }}>Amount</th>
-										<th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: "var(--c-text-2)" }}>Status</th>
-										<th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: "var(--c-text-2)" }}>When</th>
+										<th style={{ padding: "10px 20px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Order</th>
+										<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Network</th>
+										<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Amount</th>
+										<th style={{ padding: "10px 20px", textAlign: "right", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Status</th>
 									</tr>
 								</thead>
 								<tbody>
-									{recentOrders.map((o) => (
-										<tr key={o.id} style={{ borderBottom: "1px solid var(--c-line)" }} className="hover:bg-[var(--c-surface-2)] transition-colors">
-											<td className="px-4 py-3">
-												<Link href={`/orders/${o.id}`} className="flex items-center gap-2" style={{ textDecoration: "none", color: "var(--c-text)" }}>
+									{activeOrders.map((o) => (
+										<tr key={o.id} style={{ borderBottom: "1px solid var(--c-line)", cursor: "pointer" }}>
+											<td style={{ padding: "12px 20px" }}>
+												<Link href={`/orders/${o.id}`} style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "var(--c-text)" }}>
 													<AssetLogo symbol="USDT" size="sm" />
-													<span className="font-medium capitalize">{o.side} <span style={{ color: "var(--c-text-2)" }}>· {o.id}</span></span>
+													<div>
+														<div style={{ fontWeight: 600, fontSize: 13, textTransform: "capitalize" }}>{o.side} {o.amountUsdt?.toFixed(2)} USDT</div>
+														<div style={{ fontSize: 11, color: "var(--c-text-3)" }}>{o.id}</div>
+													</div>
 												</Link>
 											</td>
-											<td className="px-4 py-3" style={{ color: "var(--c-text)" }}>{o.channel || "—"}</td>
-											<td className="px-4 py-3">
-												<div className="tabular-nums font-medium" style={{ color: "var(--c-text)" }}>{o.amountUsdt?.toFixed(2) || "—"} USDT</div>
-												<div className="text-xs tabular-nums" style={{ color: "var(--c-text-2)" }}>{fmt(o.amountNgn || 0)}</div>
-											</td>
-											<td className="px-4 py-3">
+											<td style={{ padding: "12px", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>{o.channel || "—"}</td>
+											<td style={{ padding: "12px", fontVariantNumeric: "tabular-nums", fontWeight: 600, color: "var(--c-text)" }}>{fmt(o.amountNgn || 0)}</td>
+											<td style={{ padding: "12px 20px", textAlign: "right" }}>
 												<OrderStatusBadge status={o.status as QxOrderStatus} />
-											</td>
-											<td className="px-4 py-3 text-right" style={{ color: "var(--c-text-2)" }}>
-												{o.createdAt ? ago(o.createdAt) : "—"}
 											</td>
 										</tr>
 									))}
 								</tbody>
 							</table>
+						)}
+					</div>
+				</div>
+
+				{/* Recent orders */}
+				<div style={{ flex: "1 1 420px", minWidth: 0 }}>
+					<div style={{ background: "var(--c-surface)", borderRadius: 14, border: "1px solid var(--c-line)", overflow: "hidden" }}>
+						<div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--c-line)" }}>
+							<span style={{ fontWeight: 600, fontSize: 15, color: "var(--c-text)" }}>Recent orders</span>
+							<Link href="/transaction-history" style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textDecoration: "none" }}>View all →</Link>
 						</div>
-						{/* Mobile card list */}
-						<div className="md:hidden">
-							{recentOrders.map((o, i) => (
+						{recentOrders.length === 0 ? (
+							<div style={{ padding: "32px 20px", textAlign: "center", color: "var(--c-text-3)", fontSize: 13 }}>
+								No orders yet. Start trading to see activity here.
+							</div>
+						) : (
+							recentOrders.map((o, i) => (
 								<Link
 									key={o.id}
 									href={`/orders/${o.id}`}
-									className="flex items-center gap-3 p-4"
 									style={{
-										borderTop: i > 0 ? "1px solid var(--c-line)" : "none",
-										textDecoration: "none", color: "var(--c-text)",
+										display: "flex", justifyContent: "space-between", alignItems: "center",
+										padding: "12px 20px", borderBottom: i < recentOrders.length - 1 ? "1px solid var(--c-line)" : "none",
+										cursor: "pointer", textDecoration: "none", color: "var(--c-text)",
 									}}
 								>
-									<AssetLogo symbol="USDT" size="sm" />
-									<div className="flex-1 min-w-0">
-										<div className="font-medium text-sm capitalize">{o.side} {o.amountUsdt?.toFixed(2)} USDT</div>
-										<div className="text-xs" style={{ color: "var(--c-text-2)" }}>{o.id} · {o.channel}</div>
+									<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+										<div style={{
+											width: 32, height: 32, borderRadius: 10, background: "var(--c-surface-2)",
+											display: "flex", alignItems: "center", justifyContent: "center",
+										}}>
+											{o.side === "buy"
+												? <ArrowDown size={14} style={{ color: "var(--c-up)" }} />
+												: <ArrowUp size={14} style={{ color: "var(--c-down)" }} />}
+										</div>
+										<div>
+											<div style={{ fontWeight: 600, fontSize: 13, textTransform: "capitalize" }}>{o.side} USDT</div>
+											<div style={{ fontSize: 11, color: "var(--c-text-3)" }}>{o.id} · {o.channel}</div>
+										</div>
 									</div>
-									<div className="text-right">
-										<div className="text-sm tabular-nums font-medium">{fmt(o.amountNgn || 0)}</div>
-										<div className="mt-1"><OrderStatusBadge status={o.status as QxOrderStatus} /></div>
+									<div style={{ textAlign: "right" }}>
+										<div style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{o.amountUsdt?.toFixed(2)} USDT</div>
+										<div style={{ fontSize: 11, color: "var(--c-text-3)", fontVariantNumeric: "tabular-nums" }}>{fmt(o.amountNgn || 0)}</div>
 									</div>
 								</Link>
-							))}
-						</div>
-					</CardContent>
-				</Card>
-			)}
+							))
+						)}
+					</div>
+				</div>
+			</div>
+
+			{/* ── Markets table ── */}
+			<div style={{ background: "var(--c-surface)", borderRadius: 14, border: "1px solid var(--c-line)", overflow: "hidden" }}>
+				<div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--c-line)" }}>
+					<span style={{ fontWeight: 600, fontSize: 15, color: "var(--c-text)" }}>Markets</span>
+					<div style={{ display: "flex", gap: 2, padding: 3, borderRadius: 8, background: "var(--c-surface-2)" }}>
+						{["All", "Watchlist", "Gainers", "Losers"].map((t) => (
+							<button
+								key={t}
+								onClick={() => setMktTab(t)}
+								style={{
+									padding: "5px 12px", borderRadius: 6, fontSize: 12, fontWeight: 600,
+									border: "none", cursor: "pointer",
+									background: mktTab === t ? "var(--c-surface)" : "transparent",
+									color: mktTab === t ? "var(--c-text)" : "var(--c-text-3)",
+									boxShadow: mktTab === t ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
+								}}
+							>
+								{t}
+							</button>
+						))}
+					</div>
+				</div>
+				<table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+					<thead>
+						<tr style={{ borderBottom: "1px solid var(--c-line)" }}>
+							<th style={{ padding: "10px 20px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Asset</th>
+							<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Price</th>
+							<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>24h</th>
+							<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>7d</th>
+							<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Market cap</th>
+							<th style={{ padding: "10px 20px" }}></th>
+						</tr>
+					</thead>
+					<tbody>
+						{MOCK_MARKETS
+							.filter((a) => mktTab === "All" || (mktTab === "Gainers" && a.change >= 0) || (mktTab === "Losers" && a.change < 0))
+							.map((a) => (
+							<tr key={a.sym} style={{ borderBottom: "1px solid var(--c-line)" }}>
+								<td style={{ padding: "12px 20px" }}>
+									<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+										<AssetLogo symbol={a.sym as any} size="sm" />
+										<div>
+											<div style={{ fontWeight: 600, fontSize: 13, color: "var(--c-text)" }}>{a.name}</div>
+											<div style={{ fontSize: 11, color: "var(--c-text-3)" }}>{a.sym}</div>
+										</div>
+									</div>
+								</td>
+								<td style={{ padding: "12px", fontVariantNumeric: "tabular-nums", fontWeight: 600, color: "var(--c-text)" }}>{fmt(a.price * 1610)}</td>
+								<td style={{ padding: "12px" }}>
+									<span style={{ color: a.change >= 0 ? "var(--c-up)" : "var(--c-down)", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+										{fmtPct(a.change)}
+									</span>
+								</td>
+								<td style={{ padding: "12px" }}>
+									<Sparkline data={[1, 1.02, 0.98, 1.01, 1.03, 0.99, 1.04, 1.02, 1.05, 1.03].map(v => v * a.price)} width={56} height={22} tone={a.change >= 0 ? "positive" : "negative"} />
+								</td>
+								<td style={{ padding: "12px", fontVariantNumeric: "tabular-nums", color: "var(--c-text-2)" }}>${fmtShort(a.mcap)}</td>
+								<td style={{ padding: "12px 20px" }}>
+									<Link href="/trade" style={{
+										padding: "5px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600,
+										border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text-2)",
+										textDecoration: "none",
+									}}>
+										Trade
+									</Link>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	);
 }
