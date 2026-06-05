@@ -7,15 +7,17 @@ import { Logo } from "@/components/brand/logo";
 import { useUserId } from "@/hooks/use-user-id";
 import { getKYCVerification } from "@/lib/api/settings";
 import {
-	LayoutDashboard, ArrowLeftRight, BookOpen, List,
-	ShieldCheck, Bell, Gift, Settings, HelpCircle,
+	LayoutDashboard, ArrowLeftRight, BookOpen, TrendingUp, List,
+	Receipt, ShieldCheck, Bell, Gift, Settings, HelpCircle,
 } from "lucide-react";
 
 const NAV = [
 	{ id: "dashboard",               href: "/dashboard",               label: "Overview",      icon: LayoutDashboard, tab: true },
 	{ id: "trade",                    href: "/trade",                   label: "Buy / Sell",    icon: ArrowLeftRight, tab: true },
 	{ id: "orders",                   href: "/orders",                  label: "Orders",        icon: BookOpen, tab: true },
+	{ id: "markets",                  href: "/markets",                 label: "Markets",       icon: TrendingUp },
 	{ id: "transaction-history",      href: "/transaction-history",     label: "Transactions",  icon: List },
+	{ id: "billing",                  href: "/billing",                 label: "Billing",       icon: Receipt },
 	{ id: "identity-verification",    href: "/identity-verification",   label: "Identity",      icon: ShieldCheck },
 	{ id: "notifications",           href: "/notifications",           label: "Notifications", icon: Bell },
 	{ id: "referrals",               href: "/referrals",               label: "Referrals",     icon: Gift },

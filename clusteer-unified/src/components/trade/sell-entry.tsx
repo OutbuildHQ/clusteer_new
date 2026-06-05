@@ -16,7 +16,7 @@ const CHANNELS: { id: QxChannel; label: string; chain: string; fee: string; spee
 	{ id: "BEP20", label: "BEP-20", chain: "BNB Smart Chain", fee: "Low fee", speed: "~1 min" },
 	{ id: "ERC20", label: "ERC-20", chain: "Ethereum", fee: "Higher fee", speed: "~3 min" },
 ];
-const FEE_PCT = 0.005;
+const DEFAULT_FEE_PCT = 0.005;
 
 type Props = {
 	state: TradeState;
@@ -52,7 +52,8 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 	const rate = rateData?.sellRate || rateData?.buyRate || 1614.5;
 	const usdt = parseFloat(usdtAmount) || 0;
 	const ngnGross = usdt * rate;
-	const fee = ngnGross * FEE_PCT;
+	const feePct = rateData?.feePercent ? rateData.feePercent / 100 : DEFAULT_FEE_PCT;
+	const fee = ngnGross * feePct;
 	const ngnNet = ngnGross - fee;
 
 	const createOrder = useMutation({
@@ -204,7 +205,7 @@ export function SellEntry({ state, updateState, onOrderCreated, onSwitchSide }: 
 						<span style={{ fontWeight: 600, color: "var(--c-text)", fontVariantNumeric: "tabular-nums" }}>₦{rate.toLocaleString("en-NG", { minimumFractionDigits: 2 })}</span>
 					</div>
 					<div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "var(--c-text-2)" }}>
-						<span>Service fee (0.5%)</span>
+						<span>Service fee ({(feePct * 100).toFixed(1)}%)</span>
 						<span style={{ fontWeight: 600, color: "var(--c-text)", fontVariantNumeric: "tabular-nums" }}>₦{fee.toLocaleString("en-NG", { minimumFractionDigits: 2 })}</span>
 					</div>
 					<div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "var(--c-text-2)" }}>

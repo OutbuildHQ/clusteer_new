@@ -8,6 +8,7 @@ import { DashboardContent } from "@/components/app/dashboard-content";
 
 const MobileTabBar = dynamic(() => import("@/components/app/mobile-tab-bar").then(m => m.MobileTabBar), { ssr: false });
 const CommandPalette = dynamic(() => import("@/components/app/command-palette").then(m => m.CommandPalette), { ssr: false });
+const FlowHost = dynamic(() => import("@/components/flow-host").then(m => m.FlowHost), { ssr: false });
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
 	return (
@@ -22,6 +23,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 				</div>
 				<MobileTabBar />
 				<CommandPalette />
+				<FlowHost />
 			</div>
 		</ThemeProvider>
 	);
