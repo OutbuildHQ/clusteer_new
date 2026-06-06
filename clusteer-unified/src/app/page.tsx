@@ -208,7 +208,7 @@ export default function Home() {
 								</Button>
 							</div>
 							<div className="mt-6 sm:mt-11 flex flex-wrap gap-x-4 gap-y-2 sm:gap-5 lg:gap-7 text-[12px] sm:text-[13px] text-muted-foreground">
-								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">2FA</strong> protected</span>
+								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">NDPR</strong> compliant</span>
 								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">92,000+</strong> Nigerians</span>
 								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">5-min</strong> payouts</span>
 							</div>
@@ -326,7 +326,7 @@ export default function Home() {
 					{[
 						{ n: "01", kicker: "Lock your rate", title: "Pick the amount, see exactly what hits your bank.", copy: "No hidden spread, no \"we'll figure it out\". The number you see is the number you get.", bg: "bg-warm-beige" },
 						{ n: "02", kicker: "Send your stables", title: "USDT or USDC, on TRON, BSC, Solana, or Ethereum.", copy: "Scan the QR or copy the address. We watch the chain so you don't have to.", bg: "bg-[var(--button-bg)]" },
-						{ n: "03", kicker: "Get paid", title: "Naira lands in your bank in under 5 minutes.", copy: "Average payout time is 4 min 12 sec. Slowest day this year was 11 min.", bg: "bg-custom-black", dark: true },
+						{ n: "03", kicker: "Get paid", title: "Naira lands in your bank in under 5 minutes.", copy: "Average payout time is 4 min 12 sec. Slowest day this year was 11 min. We promise nothing — we just keep ours.", bg: "bg-custom-black", dark: true },
 					].map((s, i) => (
 						<FadeUp key={s.n} delay={i * 0.1}>
 							<div className={`grid grid-cols-1 md:grid-cols-2 ${s.bg} rounded-[20px] sm:rounded-[32px] border-2 border-custom-black overflow-hidden min-h-0 sm:min-h-[400px]`}>
@@ -388,9 +388,9 @@ export default function Home() {
 				</FadeUp>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
 					{[
-						{ icon: Shield, title: "Bank-grade encryption", copy: "All data encrypted at rest and in transit with AES-256. Your credentials and financial data are protected end-to-end." },
-						{ icon: Lock, title: "BVN-verified accounts", copy: "Every user is verified via BVN before they can trade. This keeps your account safe and our platform fraud-free." },
-						{ icon: ShieldCheck, title: "Two-factor authentication", copy: "Protect your account with 2FA on every login and withdrawal. Your funds stay locked even if someone gets your password." },
+						{ icon: Shield, title: "Non-custodial by design", copy: "We never hold your crypto. Every order settles through our licensed, regulated payments partner and lands straight in your own wallet or bank." },
+						{ icon: Lock, title: "NDPR aligned, NITDA registered", copy: "Your data is encrypted at rest and in transit. We disclose nothing without legal compulsion." },
+						{ icon: ShieldCheck, title: "Redundant identity checks", copy: "Two independent KYC providers run in parallel. If one is down, the other catches your verification." },
 					].map((it, i) => (
 						<FadeUp key={i} delay={i * 0.08}>
 							<div className="bg-background border-2 border-custom-black rounded-[18px] sm:rounded-3xl p-5 sm:p-8 flex flex-col gap-3 sm:gap-4 h-full">
@@ -672,7 +672,7 @@ function PhoneMockup({ rate }: { rate: number }) {
 								{[
 									{ label: "Buy", bg: "bg-light-green text-custom-black" },
 									{ label: "Sell", bg: "bg-white/[0.08] text-white" },
-									{ label: "Swap", bg: "bg-white/[0.08] text-white" },
+									{ label: "Orders", bg: "bg-white/[0.08] text-white" },
 								].map((b) => (
 									<div key={b.label} className={`flex-1 py-2 sm:py-2.5 rounded-xl ${b.bg} font-display font-bold text-xs sm:text-[13px] text-center`}>{b.label}</div>
 								))}

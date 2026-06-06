@@ -674,7 +674,7 @@ export default function AdminKycPage() {
 			{/* ─── Header ─── */}
 			<div className="flex items-center justify-between gap-4 flex-wrap">
 				<div>
-					<h1 className="text-[22px] font-semibold tracking-tight text-[var(--c-text)]">KYC queue</h1>
+					<h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display text-[var(--c-text)]">KYC queue</h1>
 					<p className="mt-1 text-[13px] text-[var(--c-text-3)]">
 						{queue.length} submissions awaiting review &middot; SLA: 24h
 					</p>

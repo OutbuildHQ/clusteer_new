@@ -2,7 +2,6 @@
 
 import { DotIcon, Mail, ShieldCheck, Lock } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useUser } from "@/store/user";
 
 function StatusBadge({ enabled }: { enabled: boolean }) {
@@ -31,7 +30,7 @@ function StatusBadge({ enabled }: { enabled: boolean }) {
 }
 
 function SecurityCard({
-	href,
+	onClick,
 	icon,
 	title,
 	description,
@@ -39,7 +38,7 @@ function SecurityCard({
 	actionLabel,
 	disabled,
 }: {
-	href?: string;
+	onClick?: () => void;
 	icon: React.ReactNode;
 	title: string;
 	description: string;
@@ -47,13 +46,18 @@ function SecurityCard({
 	actionLabel: string;
 	disabled?: boolean;
 }) {
-	const card = (
+	return (
 		<div
+			role={onClick && !disabled ? "button" : undefined}
+			tabIndex={onClick && !disabled ? 0 : undefined}
+			onClick={!disabled ? onClick : undefined}
+			onKeyDown={onClick && !disabled ? (e) => { if (e.key === "Enter") onClick(); } : undefined}
 			className="rounded-[14px] p-5 w-full xl:max-w-[435px] shrink-0 space-y-3 transition-colors"
 			style={{
 				background: "var(--c-surface)",
 				border: "1px solid var(--c-line)",
 				opacity: disabled ? 0.55 : 1,
+				cursor: onClick && !disabled ? "pointer" : "default",
 			}}
 		>
 			<div className="flex items-center justify-between">
@@ -81,13 +85,6 @@ function SecurityCard({
 			</span>
 		</div>
 	);
-
-	if (!href || disabled) return card;
-	return (
-		<Link href={href} className="block hover:no-underline">
-			{card}
-		</Link>
-	);
 }
 
 export default function SecurityPage() {
@@ -113,7 +110,7 @@ export default function SecurityPage() {
 				</p>
 				<div className="flex flex-col lg:flex-row flex-wrap gap-4">
 					<SecurityCard
-						href="/settings/security/google-auth"
+						onClick={() => window.openFlow("twoFa")}
 						icon={<Image src="/assets/images/google-auth.png" alt="Google Authenticator" width={28} height={28} />}
 						title="Google Authenticator"
 						description="Use Google Authenticator codes to secure your account and transactions. Recommended method."
@@ -121,7 +118,7 @@ export default function SecurityPage() {
 						actionLabel={is2FAEnabled ? "Manage →" : "Set up →"}
 					/>
 					<SecurityCard
-						href="/settings/security/change-email"
+						onClick={() => window.openFlow("changeEmail")}
 						icon={<Mail className="size-5" />}
 						title="Email verification"
 						description="Receive a one-time code to your email to confirm sensitive account actions."
@@ -146,7 +143,7 @@ export default function SecurityPage() {
 				</p>
 				<div className="flex flex-col lg:flex-row flex-wrap gap-4">
 					<SecurityCard
-						href="/settings/security/change-password"
+						onClick={() => window.openFlow("changePassword")}
 						icon={<Lock className="size-5" />}
 						title="Login password"
 						description="Your login password protects account access. Changing it disables payments and withdrawals for 24 hours."

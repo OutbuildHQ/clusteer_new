@@ -75,8 +75,8 @@ export default function AdminStaff() {
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 600, color: "var(--c-text)", letterSpacing: "-0.02em" }}>Staff &amp; roles</h1>
-        <button onClick={() => setShowInvite(true)} className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:opacity-90 transition-opacity">
+        <h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display" style={{ color: "var(--c-text)" }}>Staff &amp; roles</h1>
+        <button onClick={() => window.openFlow("inviteStaff")} className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:opacity-90 transition-opacity">
           <Plus className="size-3.5" />Invite staff
         </button>
       </div>

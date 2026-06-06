@@ -44,7 +44,7 @@ export default function AdminAuditLog() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 600, color: "var(--c-text)", letterSpacing: "-0.02em" }}>Audit log</h1>
+          <h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display" style={{ color: "var(--c-text)" }}>Audit log</h1>
           <p style={{ marginTop: 6, fontSize: 13, color: "var(--c-text-3)" }}>Immutable record of admin &amp; system actions</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -90,7 +90,7 @@ export default function AdminAuditLog() {
           </thead>
           <tbody>
             {filtered.slice(0, 20).map((a) => (
-              <tr key={a.id} style={{ borderBottom: "1px solid var(--c-line)" }} className="hover:bg-[var(--c-surface-2)] transition-colors">
+              <tr key={a.id} style={{ borderBottom: "1px solid var(--c-line)", cursor: "pointer" }} className="hover:bg-[var(--c-surface-2)] transition-colors" onClick={() => window.openFlow("auditDetail", { entry: a })}>
                 <td style={{ padding: "10px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>{a.id}</td>
                 <td style={{ padding: "10px 16px", fontFamily: "monospace", fontSize: 12, color: "var(--c-text)" }}>{a.actor}</td>
                 <td style={{ padding: "10px 16px" }}>{a.action}</td>

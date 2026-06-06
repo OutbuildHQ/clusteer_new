@@ -185,7 +185,6 @@
 }
 
 /* ---- Dashboard form focus states ---- */
-/* Only bordered form fields get the lime focus ring — not bare inputs inside wrappers */
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
@@ -196,14 +195,19 @@ select:focus,
 textarea:focus {
 	outline: none;
 }
-/* Fields that have their own visible border */
+/* Standalone bordered fields get the lime focus ring */
 input.input:focus,
 select.input:focus,
-textarea.input:focus,
-input[style*="border"]:focus,
-select[style*="border"]:focus,
-textarea[style*="border"]:focus {
+textarea.input:focus {
 	box-shadow: var(--focus);
+}
+/* Suppress focus ring on inputs inside wrapper containers */
+.auth-input-wrap input:focus,
+.auth-input-wrap select:focus,
+.auth-input-wrap textarea:focus,
+[style*="border-radius"] > input:focus,
+[style*="borderRadius"] > input:focus {
+	box-shadow: none !important;
 }
 /* Buttons: active press state */
 button:active:not(:disabled) {

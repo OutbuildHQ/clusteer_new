@@ -39,7 +39,7 @@ export default function AdminReports() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 600, color: "var(--c-text)", letterSpacing: "-0.02em" }}>Reports</h1>
+          <h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display" style={{ color: "var(--c-text)" }}>Reports</h1>
           <p style={{ marginTop: 6, fontSize: 13, color: "var(--c-text-3)" }}>Daily, weekly, monthly business &amp; regulatory reports</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -58,15 +58,7 @@ export default function AdminReports() {
             ))}
           </div>
           <button
-            onClick={() => {
-              const rows = [["Metric","Value","Change"], ...KPI.map(k=>[k.label,k.val,k.sub])];
-              const csv = rows.map(r=>r.join(",")).join("\n");
-              const blob = new Blob([csv], { type: "text/csv" });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url; a.download = `clusteer-report-${period}-${new Date().toISOString().split("T")[0]}.csv`; a.click();
-              URL.revokeObjectURL(url);
-            }}
+            onClick={() => window.openFlow("report")}
             className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:opacity-90 transition-opacity">
             <Download className="size-3.5" />Generate report
           </button>

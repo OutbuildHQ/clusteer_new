@@ -44,17 +44,17 @@ export function ChangeEmailFlow({ onClose }: { onClose: () => void }) {
 			<div>
 				<label style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, display: "block" }}>New email</label>
 				<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com"
-					style={{ width: "100%", height: 42, borderRadius: 10, border: "1.5px solid var(--c-line)", padding: "0 12px", fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)" }} />
+					style={{ width: "100%", height: 38, borderRadius: 10, border: "1px solid var(--c-line)", padding: "0 12px", fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)" }} />
 			</div>
 
 			<div>
 				<label style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, display: "block" }}>Confirm password</label>
 				<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your current password"
-					style={{ width: "100%", height: 42, borderRadius: 10, border: "1.5px solid var(--c-line)", padding: "0 12px", fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)" }} />
+					style={{ width: "100%", height: 38, borderRadius: 10, border: "1px solid var(--c-line)", padding: "0 12px", fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)" }} />
 			</div>
 
 			<Button onClick={submit} disabled={!email.includes("@") || !password || loading}
-				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 44 }}>
+				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 36 }}>
 				{loading ? "Sending..." : "Send verification link"}
 			</Button>
 		</div>

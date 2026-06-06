@@ -5,15 +5,17 @@ import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { useUserId } from "@/hooks/use-user-id";
 
+const STATUS_CLASSES: Record<string, string> = {
+	Verified: "bg-up-soft text-up",
+	Completed: "bg-up-soft text-up",
+	Pending: "bg-warn-soft text-warn",
+};
+
 function StatusBadge({ s }: { s: string }) {
-	const style = s === "Completed" || s === "Verified"
-		? { background: "var(--c-up-soft)", color: "var(--c-up)" }
-		: s === "Pending"
-		? { background: "var(--c-warn-soft)", color: "var(--c-warn)" }
-		: { background: "var(--c-surface-2)", color: "var(--c-text-2)", border: "1px solid var(--c-line)" };
+	const cls = STATUS_CLASSES[s] ?? "bg-ds-surface-2 text-ds-text-2 border border-ds-line";
 	const icon = s === "Completed" || s === "Verified" ? "✓" : s === "Pending" ? "◐" : "—";
 	return (
-		<span className="inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium" style={style}>
+		<span className={`inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium ${cls}`}>
 			<span className="text-[9px]">{icon}</span>{s}
 		</span>
 	);
@@ -32,11 +34,11 @@ const MOCK_REFERRALS = [
 
 export default function ReferralsPage() {
 	const userId = useUserId();
-	const referralLink = `https://clusteer.io/join?ref=${userId ?? "ADAEZE2K"}`;
+	const referralLink = `clusteer.ng/r/${userId ?? "ADAEZE2K"}`;
 
 	const handleCopy = () => {
-		navigator.clipboard.writeText(referralLink);
-		toast.success("Referral link copied!");
+		navigator.clipboard.writeText("https://" + referralLink);
+		toast.success("Referral link copied");
 	};
 
 	const { data: referralData } = useQuery({
@@ -50,108 +52,110 @@ export default function ReferralsPage() {
 		staleTime: 60_000,
 	});
 
-	// Fall back to mock data when the API returns null (stub) or errors
 	const REFERRALS = referralData?.data ?? MOCK_REFERRALS;
 
 	return (
-		<div className="space-y-6">
-			<h1 className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>Referrals &amp; rewards</h1>
+		<div className="flex flex-col gap-6">
+			<h1 className="text-[32px] font-semibold text-ds-text tracking-[-0.03em] m-0 font-display">
+				Referrals &amp; rewards
+			</h1>
 
+			{/* Hero + Stats grid */}
 			<div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4">
 				{/* Hero card */}
-				<div className="rounded-[14px] p-5 lg:p-8 relative overflow-hidden" style={{ background: "var(--c-onyx-900)", color: "var(--c-cream)", border: "none" }}>
-					<div className="text-[13px] uppercase tracking-[0.08em]" style={{ opacity: 0.7, fontFamily: "var(--f-display)" }}>Earn ₦2,000 per referral</div>
-					<div className="text-[28px] lg:text-[42px] font-semibold leading-[1] mt-2" style={{ fontFamily: "var(--f-display)", letterSpacing: "-0.025em" }}>
+				<div className="bg-onyx-900 text-cream rounded-[14px] border-none p-8">
+					<div className="font-display text-[13px] opacity-70 uppercase tracking-[0.08em]">
+						Earn ₦2,000 per referral
+					</div>
+					<div className="font-display text-[42px] font-semibold leading-none mt-2 tracking-[-0.025em]">
 						Invite friends.<br />Both get rewarded.
 					</div>
-					<div className="mt-6 rounded-[14px] p-3.5" style={{ background: "var(--c-onyx-700)", border: "1px dashed rgba(244,241,234,0.2)" }}>
-						<div className="text-[11px] uppercase" style={{ color: "rgba(244,241,234,0.5)" }}>Your referral link</div>
+					<div className="mt-6 rounded-[14px] p-3.5 bg-[var(--c-onyx-700)] border border-dashed border-cream/20">
+						<div className="text-[11px] uppercase text-cream/50">Your referral link</div>
 						<div className="flex items-center gap-2 mt-1.5">
-							<div className="flex-1 tabular-nums text-[13px] truncate" style={{ fontFamily: "var(--f-mono)" }}>{referralLink}</div>
+							<div className="flex-1 font-mono text-[13px] truncate tabular-nums">{referralLink}</div>
 							<button
 								onClick={handleCopy}
-								className="inline-flex items-center gap-2 h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium shrink-0"
-								style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}
+								className="inline-flex items-center gap-1.5 h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium shrink-0 bg-lime-500 text-onyx-900 border-none cursor-pointer"
 							>
-								<Copy className="size-3.5" />Copy
+								<Copy size={14} />Copy
 							</button>
 						</div>
 					</div>
 				</div>
 
 				{/* Stats */}
-				<div className="space-y-3">
+				<div className="flex flex-col gap-3">
 					{[["Total referred", "24"], ["Reward earned", "₦48,000"], ["Pending payout", "₦4,000"]].map(([k, v]) => (
-						<div key={k} className="rounded-[14px] p-[var(--pad)]" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-							<div className="text-[12px]" style={{ color: "var(--c-text-3)" }}>{k}</div>
-							<div className="tabular-nums text-[28px] font-semibold leading-none mt-1" style={{ fontFamily: "var(--f-display)", color: "var(--c-text)", letterSpacing: "-0.025em" }}>{v}</div>
+						<div key={k} className="bg-ds-surface border border-ds-line rounded-[14px] p-5">
+							<div className="text-[12px] text-ds-text-3">{k}</div>
+							<div className="font-mono tabular-nums text-[28px] font-semibold text-ds-text mt-1">{v}</div>
 						</div>
 					))}
 				</div>
 			</div>
 
-			{/* Referrals table (desktop) */}
-			<div className="hidden lg:block rounded-[14px] overflow-hidden" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-				<div className="px-[var(--pad)] py-4" style={{ borderBottom: "1px solid var(--c-line)" }}>
-					<h3 className="text-[15px] font-semibold" style={{ color: "var(--c-text)" }}>Referrals</h3>
+			{/* Referrals table */}
+			<div className="bg-ds-surface border border-ds-line rounded-[14px] overflow-hidden">
+				<div className="px-5 py-4 border-b border-ds-line">
+					<h3 className="text-[15px] font-semibold text-ds-text m-0">Referrals</h3>
 				</div>
-				<table className="w-full border-collapse text-[13px]">
+
+				{/* Desktop table */}
+				<table className="w-full border-collapse text-[13px] hidden lg:table">
 					<thead>
 						<tr>
 							{["Friend", "Joined", "KYC", "First trade", "Reward"].map((h, i) => (
-								<th key={h} className={`font-medium text-[11.5px] uppercase tracking-[0.05em] px-3.5 py-2.5 ${i === 4 ? "text-right" : "text-left"}`}
-									style={{ color: "var(--c-text-3)", borderBottom: "1px solid var(--c-line)", background: "var(--c-surface-2)" }}>{h}</th>
+								<th
+									key={h}
+									className={`${i === 4 ? "text-right" : "text-left"} font-medium text-ds-text-3 text-[11.5px] uppercase tracking-[0.05em] px-3.5 py-2.5 border-b border-ds-line bg-ds-surface-2`}
+								>
+									{h}
+								</th>
 							))}
 						</tr>
 					</thead>
 					<tbody>
 						{REFERRALS.map((u: typeof MOCK_REFERRALS[number]) => (
-							<tr key={u.name} className="transition-colors hover:bg-[var(--c-surface-2)]">
-								<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>
-									<div className="flex items-center gap-2.5">
-										<div className="size-8 rounded-full flex items-center justify-center text-[12px] font-semibold shrink-0" style={{ background: "linear-gradient(135deg, var(--c-lime-500), var(--c-onyx-700))", color: "var(--c-onyx-900)" }}>
+							<tr key={u.name} className="hover:bg-ds-surface-2">
+								<td className="px-3.5 py-3 border-b border-ds-line">
+									<div className="flex items-center gap-2">
+										<div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0 bg-ds-surface-3 text-ds-text">
 											{u.name.split(" ").map((n) => n[0]).join("")}
 										</div>
-										<span style={{ color: "var(--c-text)" }}>{u.name}</span>
+										<span className="text-ds-text">{u.name}</span>
 									</div>
 								</td>
-								<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", color: "var(--c-text)" }}>{u.joined}</td>
-								<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}><StatusBadge s={u.kyc} /></td>
-								<td className="px-3.5 py-3" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)" }}>{u.traded ? <StatusBadge s="Completed" /> : "—"}</td>
-								<td className="px-3.5 py-3 text-right tabular-nums font-semibold" style={{ borderBottom: "1px solid var(--c-line)", height: "var(--row-h)", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+								<td className="px-3.5 py-3 border-b border-ds-line text-ds-text">{u.joined}</td>
+								<td className="px-3.5 py-3 border-b border-ds-line"><StatusBadge s={u.kyc} /></td>
+								<td className="px-3.5 py-3 border-b border-ds-line">{u.traded ? <StatusBadge s="Completed" /> : <span className="text-ds-text-3">—</span>}</td>
+								<td className="px-3.5 py-3 border-b border-ds-line text-right font-semibold font-mono tabular-nums text-ds-text">
 									{u.traded ? "₦2,000" : "—"}
 								</td>
 							</tr>
 						))}
 					</tbody>
 				</table>
-			</div>
 
-			{/* Referrals card list (mobile) */}
-			<div className="lg:hidden space-y-2">
-				<h3 className="text-[15px] font-semibold" style={{ color: "var(--c-text)" }}>Referrals</h3>
-				{REFERRALS.map((u: typeof MOCK_REFERRALS[number]) => (
-					<div key={u.name} className="rounded-[12px] p-3" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-						<div className="flex items-center justify-between">
+				{/* Mobile card list */}
+				<div className="lg:hidden flex flex-col">
+					{REFERRALS.map((u: typeof MOCK_REFERRALS[number], i: number) => (
+						<div key={u.name} className={`flex items-center justify-between px-5 py-3.5 ${i < REFERRALS.length - 1 ? "border-b border-ds-line" : ""}`}>
 							<div className="flex items-center gap-2.5">
-								<div className="size-8 rounded-full flex items-center justify-center text-[12px] font-semibold shrink-0" style={{ background: "linear-gradient(135deg, var(--c-lime-500), var(--c-onyx-700))", color: "var(--c-onyx-900)" }}>
+								<div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0 bg-ds-surface-3 text-ds-text">
 									{u.name.split(" ").map((n: string) => n[0]).join("")}
 								</div>
 								<div>
-									<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>{u.name}</div>
-									<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>{u.joined}</div>
+									<div className="text-[13px] font-semibold text-ds-text">{u.name}</div>
+									<div className="text-[11px] text-ds-text-3">{u.joined}</div>
 								</div>
 							</div>
-							<div className="text-right tabular-nums text-[13px] font-semibold" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+							<div className="text-right font-mono tabular-nums text-[13px] font-semibold text-ds-text">
 								{u.traded ? "₦2,000" : "—"}
 							</div>
 						</div>
-						<div className="flex items-center gap-2 mt-2 pt-2" style={{ borderTop: "1px solid var(--c-line)" }}>
-							<StatusBadge s={u.kyc} />
-							{u.traded ? <StatusBadge s="Completed" /> : <span className="text-[11px]" style={{ color: "var(--c-text-3)" }}>No trade yet</span>}
-						</div>
-					</div>
-				))}
+					))}
+				</div>
 			</div>
 		</div>
 	);

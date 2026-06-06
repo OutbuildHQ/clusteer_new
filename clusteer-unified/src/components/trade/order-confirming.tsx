@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Loader2, Bell, Check } from "lucide-react";
-import type { QxOrder, QxOrderSide } from "@/lib/types";
+import type { QxOrder } from "@/lib/types";
 
 const BUY_STAGES = ["Payment received", "Quidax buying USDT", "Sending to your wallet"];
 const SELL_STAGES = ["Deposit detected", "Confirming on-chain", "Paying NGN to your bank"];
@@ -18,31 +17,16 @@ export function OrderConfirming({ order, onConfirmed, onFailed }: Props) {
 	const stages = order.side === "buy" ? BUY_STAGES : SELL_STAGES;
 	const [stage, setStage] = useState(0);
 
-	const { data: latest } = useQuery({
-		queryKey: ["order-status", order.id],
-		queryFn: async () => {
-			const res = await fetch(`/api/order?id=${order.id}`);
-			const d = await res.json();
-			return d.data as QxOrder | undefined;
-		},
-		refetchInterval: 5000,
-	});
-
+	// Demo: advance through stages automatically, then call onConfirmed
 	useEffect(() => {
-		if (!latest) return;
-		if (latest.status === "completed") {
-			setStage(stages.length);
-			setTimeout(() => onConfirmed(latest), 600);
-		} else if (latest.status === "failed" || latest.status === "expired") {
-			onFailed(latest, latest.status === "expired" ? "Order expired" : "Order failed");
+		if (stage > stages.length) return;
+		if (stage === stages.length) {
+			setTimeout(() => onConfirmed({ ...order, status: "completed" }), 600);
+			return;
 		}
-	}, [latest]);
-
-	useEffect(() => {
-		if (stage >= stages.length) return;
-		const t = setTimeout(() => setStage((s) => Math.min(s + 1, stages.length - 1)), 1100);
+		const t = setTimeout(() => setStage((s) => s + 1), 1100);
 		return () => clearTimeout(t);
-	}, [stage, stages.length]);
+	}, [stage, stages.length, order, onConfirmed]);
 
 	const title = order.side === "buy" ? "Confirming payment" : "Confirming deposit";
 	const subtitle = order.side === "buy"

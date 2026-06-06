@@ -44,80 +44,60 @@ export default function DashboardPage() {
 	const [mktTab, setMktTab] = useState("All");
 
 	return (
-		<div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+		<div className="flex flex-col gap-6">
 			{/* ── Hero row: rate card + verification ── */}
-			<div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+			<div className="flex gap-4 flex-wrap">
 				{/* Dark hero rate card */}
-				<div style={{
-					flex: "2 1 480px", background: "var(--c-onyx-900)", color: "var(--c-cream)",
-					borderRadius: 20, padding: 28, position: "relative", overflow: "hidden",
-				}}>
-					<div style={{ position: "absolute", right: -40, top: -40, width: 240, height: 240, borderRadius: "50%", background: "var(--c-lime-500)", opacity: 0.15 }} />
-					<div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-						<span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--c-lime-500)", animation: "pulse 1.4s ease-in-out infinite" }} />
+				<div className="flex-[2_1_480px] bg-onyx-900 text-cream rounded-[20px] p-7 relative overflow-hidden">
+					<div className="absolute -right-10 -top-10 w-[240px] h-[240px] rounded-full bg-lime-500 opacity-15" />
+					<div className="flex items-center gap-2 text-[12px] opacity-70 uppercase tracking-[0.08em]">
+						<span className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
 						USDT / NGN · live
 					</div>
-					<div style={{ fontSize: 56, fontWeight: 600, lineHeight: 1, marginTop: 10, fontFamily: "var(--f-display, Sora, sans-serif)", fontVariantNumeric: "tabular-nums" }}>
+					<div className="text-[56px] font-semibold leading-none mt-2.5 font-display tabular-nums">
 						₦{rate.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
 					</div>
-					<div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 10, fontSize: 13 }}>
-						<span style={{ color: "var(--c-lime-500)", display: "flex", alignItems: "center", gap: 4 }}>
+					<div className="flex items-center gap-3.5 mt-2.5 text-[13px]">
+						<span className="text-lime-500 flex items-center gap-1">
 							<ArrowUp size={14} />+0.4% today
 						</span>
-						<span style={{ opacity: 0.5 }}>Best rate this week</span>
+						<span className="opacity-50">Best rate this week</span>
 					</div>
-					<div style={{ display: "flex", gap: 10, marginTop: 24, flexWrap: "wrap" }}>
-						<Link href="/trade" style={{
-							display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px",
-							borderRadius: 10, fontWeight: 600, fontSize: 13, textDecoration: "none",
-							background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none",
-						}}>
+					<div className="flex gap-2.5 mt-6 flex-wrap">
+						<Link href="/trade" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-[10px] font-semibold text-[13px] no-underline bg-lime-500 text-onyx-900 border-none">
 							<Plus size={14} /> Buy
 						</Link>
-						<Link href="/trade?side=sell" style={{
-							display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px",
-							borderRadius: 10, fontWeight: 600, fontSize: 13, textDecoration: "none",
-							background: "transparent", color: "var(--c-cream)",
-							border: "1px solid rgba(255,255,255,0.2)",
-						}}>
+						<Link href="/trade?side=sell" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-[10px] font-semibold text-[13px] no-underline bg-transparent text-cream border border-white/20">
 							Sell
 						</Link>
-						<Link href="/orders" style={{
-							display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px",
-							borderRadius: 10, fontWeight: 600, fontSize: 13, textDecoration: "none",
-							background: "transparent", color: "var(--c-cream)",
-							border: "1px solid rgba(255,255,255,0.2)",
-						}}>
+						<Link href="/orders" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-[10px] font-semibold text-[13px] no-underline bg-transparent text-cream border border-white/20">
 							Orders
 						</Link>
 					</div>
 				</div>
 
 				{/* Verification card */}
-				<div style={{
-					flex: "1 1 280px", background: "var(--c-surface)", borderRadius: 14,
-					border: "1px solid var(--c-line)", padding: 20,
-				}}>
-					<div style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)", marginBottom: 14 }}>Verification</div>
-					<div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-						<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-							<span style={{ fontSize: 12, color: "var(--c-text-2)" }}>Tier</span>
-							<span style={{ fontSize: 12, fontWeight: 600, padding: "2px 10px", borderRadius: 99, background: "var(--c-surface-2)", color: "var(--c-text)" }}>
+				<div className="flex-[1_1_280px] bg-ds-surface rounded-[14px] border border-ds-line p-5">
+					<div className="text-[15px] font-semibold text-ds-text mb-3.5">Verification</div>
+					<div className="flex flex-col gap-2.5">
+						<div className="flex justify-between items-center">
+							<span className="text-[12px] text-ds-text-2">Tier</span>
+							<span className="text-[12px] font-semibold px-2.5 py-0.5 rounded-full bg-ds-surface-2 text-ds-text">
 								Tier 1 · Verified
 							</span>
 						</div>
-						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
-							<span style={{ color: "var(--c-text-2)" }}>Daily limit</span>
-							<span style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>₦10,000,000</span>
+						<div className="flex justify-between text-[12.5px]">
+							<span className="text-ds-text-2">Daily limit</span>
+							<span className="font-semibold tabular-nums text-ds-text">₦10,000,000</span>
 						</div>
-						<div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
-							<span style={{ color: "var(--c-text-2)" }}>Used today</span>
-							<span style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>₦2,450,000</span>
+						<div className="flex justify-between text-[12.5px]">
+							<span className="text-ds-text-2">Used today</span>
+							<span className="font-semibold tabular-nums text-ds-text">₦2,450,000</span>
 						</div>
-						<div style={{ height: 6, borderRadius: 99, background: "var(--c-surface-2)", overflow: "hidden", marginTop: 2 }}>
-							<div style={{ height: "100%", width: "24.5%", background: "var(--c-lime-500)" }} />
+						<div className="h-1.5 rounded-full bg-ds-surface-2 overflow-hidden mt-0.5">
+							<div className="h-full w-[24.5%] bg-lime-500" />
 						</div>
-						<Link href="/identity-verification" style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textDecoration: "none", marginTop: 4 }}>
+						<Link href="/identity-verification" className="text-[12px] font-semibold text-ds-text-2 no-underline mt-1">
 							Manage verification →
 						</Link>
 					</div>
@@ -125,42 +105,42 @@ export default function DashboardPage() {
 			</div>
 
 			{/* ── Active orders + Recent orders row ── */}
-			<div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "flex-start" }}>
+			<div className="flex gap-4 flex-wrap items-start">
 				{/* Active orders table */}
-				<div style={{ flex: "1 1 420px", minWidth: 0 }}>
-					<div style={{ background: "var(--c-surface)", borderRadius: 14, border: "1px solid var(--c-line)", overflow: "hidden" }}>
-						<div style={{ padding: "14px 20px", fontWeight: 600, fontSize: 15, color: "var(--c-text)", borderBottom: "1px solid var(--c-line)" }}>
+				<div className="flex-[1_1_420px] min-w-0">
+					<div className="bg-ds-surface rounded-[14px] border border-ds-line overflow-hidden">
+						<div className="px-5 py-3.5 font-semibold text-[15px] text-ds-text border-b border-ds-line">
 							Active orders
 						</div>
 						{activeOrders.length === 0 ? (
-							<div style={{ padding: "32px 20px", textAlign: "center", color: "var(--c-text-3)", fontSize: 13 }}>
+							<div className="px-5 py-8 text-center text-ds-text-3 text-[13px]">
 								No active orders right now.
 							</div>
 						) : (
-							<table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+							<table className="w-full border-collapse text-[13px]">
 								<thead>
-									<tr style={{ borderBottom: "1px solid var(--c-line)" }}>
-										<th style={{ padding: "10px 20px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Order</th>
-										<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Network</th>
-										<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Amount</th>
-										<th style={{ padding: "10px 20px", textAlign: "right", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Status</th>
+									<tr className="border-b border-ds-line">
+										<th className="px-5 py-2.5 text-left text-[11px] font-semibold text-ds-text-3 uppercase tracking-[0.04em]">Order</th>
+										<th className="px-3 py-2.5 text-left text-[11px] font-semibold text-ds-text-3 uppercase tracking-[0.04em]">Network</th>
+										<th className="px-3 py-2.5 text-left text-[11px] font-semibold text-ds-text-3 uppercase tracking-[0.04em]">Amount</th>
+										<th className="px-5 py-2.5 text-right text-[11px] font-semibold text-ds-text-3 uppercase tracking-[0.04em]">Status</th>
 									</tr>
 								</thead>
 								<tbody>
 									{activeOrders.map((o) => (
-										<tr key={o.id} style={{ borderBottom: "1px solid var(--c-line)", cursor: "pointer" }}>
-											<td style={{ padding: "12px 20px" }}>
-												<Link href={`/orders/${o.id}`} style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "var(--c-text)" }}>
+										<tr key={o.id} className="border-b border-ds-line cursor-pointer">
+											<td className="px-5 py-3">
+												<Link href={`/orders/${o.id}`} className="flex items-center gap-2.5 no-underline text-ds-text">
 													<AssetLogo symbol="USDT" size="sm" />
 													<div>
-														<div style={{ fontWeight: 600, fontSize: 13, textTransform: "capitalize" }}>{o.side} {o.amountUsdt?.toFixed(2)} USDT</div>
-														<div style={{ fontSize: 11, color: "var(--c-text-3)" }}>{o.id}</div>
+														<div className="font-semibold text-[13px] capitalize">{o.side} {o.amountUsdt?.toFixed(2)} USDT</div>
+														<div className="text-[11px] text-ds-text-3">{o.id}</div>
 													</div>
 												</Link>
 											</td>
-											<td style={{ padding: "12px", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>{o.channel || "—"}</td>
-											<td style={{ padding: "12px", fontVariantNumeric: "tabular-nums", fontWeight: 600, color: "var(--c-text)" }}>{fmt(o.amountNgn || 0)}</td>
-											<td style={{ padding: "12px 20px", textAlign: "right" }}>
+											<td className="px-3 py-3 tabular-nums text-ds-text">{o.channel || "—"}</td>
+											<td className="px-3 py-3 tabular-nums font-semibold text-ds-text">{fmt(o.amountNgn || 0)}</td>
+											<td className="px-5 py-3 text-right">
 												<OrderStatusBadge status={o.status as QxOrderStatus} />
 											</td>
 										</tr>
@@ -172,14 +152,14 @@ export default function DashboardPage() {
 				</div>
 
 				{/* Recent orders */}
-				<div style={{ flex: "1 1 420px", minWidth: 0 }}>
-					<div style={{ background: "var(--c-surface)", borderRadius: 14, border: "1px solid var(--c-line)", overflow: "hidden" }}>
-						<div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--c-line)" }}>
-							<span style={{ fontWeight: 600, fontSize: 15, color: "var(--c-text)" }}>Recent orders</span>
-							<Link href="/transaction-history" style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textDecoration: "none" }}>View all →</Link>
+				<div className="flex-[1_1_420px] min-w-0">
+					<div className="bg-ds-surface rounded-[14px] border border-ds-line overflow-hidden">
+						<div className="px-5 py-3.5 flex justify-between items-center border-b border-ds-line">
+							<span className="font-semibold text-[15px] text-ds-text">Recent orders</span>
+							<Link href="/transaction-history" className="text-[12px] font-semibold text-ds-text-2 no-underline">View all →</Link>
 						</div>
 						{recentOrders.length === 0 ? (
-							<div style={{ padding: "32px 20px", textAlign: "center", color: "var(--c-text-3)", fontSize: 13 }}>
+							<div className="px-5 py-8 text-center text-ds-text-3 text-[13px]">
 								No orders yet. Start trading to see activity here.
 							</div>
 						) : (
@@ -187,29 +167,22 @@ export default function DashboardPage() {
 								<Link
 									key={o.id}
 									href={`/orders/${o.id}`}
-									style={{
-										display: "flex", justifyContent: "space-between", alignItems: "center",
-										padding: "12px 20px", borderBottom: i < recentOrders.length - 1 ? "1px solid var(--c-line)" : "none",
-										cursor: "pointer", textDecoration: "none", color: "var(--c-text)",
-									}}
+									className={`flex justify-between items-center px-5 py-3 cursor-pointer no-underline text-ds-text ${i < recentOrders.length - 1 ? "border-b border-ds-line" : ""}`}
 								>
-									<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-										<div style={{
-											width: 32, height: 32, borderRadius: 10, background: "var(--c-surface-2)",
-											display: "flex", alignItems: "center", justifyContent: "center",
-										}}>
+									<div className="flex items-center gap-2.5">
+										<div className="w-8 h-8 rounded-[10px] bg-ds-surface-2 flex items-center justify-center">
 											{o.side === "buy"
-												? <ArrowDown size={14} style={{ color: "var(--c-up)" }} />
-												: <ArrowUp size={14} style={{ color: "var(--c-down)" }} />}
+												? <ArrowDown size={14} className="text-up" />
+												: <ArrowUp size={14} className="text-down" />}
 										</div>
 										<div>
-											<div style={{ fontWeight: 600, fontSize: 13, textTransform: "capitalize" }}>{o.side} USDT</div>
-											<div style={{ fontSize: 11, color: "var(--c-text-3)" }}>{o.id} · {o.channel}</div>
+											<div className="font-semibold text-[13px] capitalize">{o.side} USDT</div>
+											<div className="text-[11px] text-ds-text-3">{o.id} · {o.channel}</div>
 										</div>
 									</div>
-									<div style={{ textAlign: "right" }}>
-										<div style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{o.amountUsdt?.toFixed(2)} USDT</div>
-										<div style={{ fontSize: 11, color: "var(--c-text-3)", fontVariantNumeric: "tabular-nums" }}>{fmt(o.amountNgn || 0)}</div>
+									<div className="text-right">
+										<div className="font-semibold tabular-nums">{o.amountUsdt?.toFixed(2)} USDT</div>
+										<div className="text-[11px] text-ds-text-3 tabular-nums">{fmt(o.amountNgn || 0)}</div>
 									</div>
 								</Link>
 							))
@@ -219,68 +192,62 @@ export default function DashboardPage() {
 			</div>
 
 			{/* ── Markets table ── */}
-			<div style={{ background: "var(--c-surface)", borderRadius: 14, border: "1px solid var(--c-line)", overflow: "hidden" }}>
-				<div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--c-line)" }}>
-					<span style={{ fontWeight: 600, fontSize: 15, color: "var(--c-text)" }}>Markets</span>
-					<div style={{ display: "flex", gap: 2, padding: 3, borderRadius: 8, background: "var(--c-surface-2)" }}>
+			<div className="bg-ds-surface rounded-[14px] border border-ds-line overflow-hidden">
+				<div className="px-5 py-3.5 flex justify-between items-center border-b border-ds-line">
+					<span className="font-semibold text-[15px] text-ds-text">Markets</span>
+					<div className="flex gap-0.5 p-[3px] rounded-lg bg-ds-surface-2">
 						{["All", "Watchlist", "Gainers", "Losers"].map((t) => (
 							<button
 								key={t}
 								onClick={() => setMktTab(t)}
-								style={{
-									padding: "5px 12px", borderRadius: 6, fontSize: 12, fontWeight: 600,
-									border: "none", cursor: "pointer",
-									background: mktTab === t ? "var(--c-surface)" : "transparent",
-									color: mktTab === t ? "var(--c-text)" : "var(--c-text-3)",
-									boxShadow: mktTab === t ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
-								}}
+								className={`px-3 py-[5px] rounded-md text-[12px] font-semibold border-none cursor-pointer ${
+									mktTab === t
+										? "bg-ds-surface text-ds-text shadow-sm"
+										: "bg-transparent text-ds-text-3"
+								}`}
 							>
 								{t}
 							</button>
 						))}
 					</div>
 				</div>
-				<table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+				<table className="w-full border-collapse text-[13px]">
 					<thead>
-						<tr style={{ borderBottom: "1px solid var(--c-line)" }}>
-							<th style={{ padding: "10px 20px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Asset</th>
-							<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Price</th>
-							<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>24h</th>
-							<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>7d</th>
-							<th style={{ padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Market cap</th>
-							<th style={{ padding: "10px 20px" }}></th>
+						<tr className="border-b border-ds-line">
+							<th className="px-5 py-2.5 text-left text-[11px] font-semibold text-ds-text-3 uppercase tracking-[0.04em]">Asset</th>
+							<th className="px-3 py-2.5 text-left text-[11px] font-semibold text-ds-text-3 uppercase tracking-[0.04em]">Price</th>
+							<th className="px-3 py-2.5 text-left text-[11px] font-semibold text-ds-text-3 uppercase tracking-[0.04em]">24h</th>
+							<th className="px-3 py-2.5 text-left text-[11px] font-semibold text-ds-text-3 uppercase tracking-[0.04em]">7d</th>
+							<th className="px-3 py-2.5 text-left text-[11px] font-semibold text-ds-text-3 uppercase tracking-[0.04em]">Market cap</th>
+							<th className="px-5 py-2.5"></th>
 						</tr>
 					</thead>
 					<tbody>
 						{MOCK_MARKETS
 							.filter((a) => mktTab === "All" || (mktTab === "Gainers" && a.change >= 0) || (mktTab === "Losers" && a.change < 0))
 							.map((a) => (
-							<tr key={a.sym} style={{ borderBottom: "1px solid var(--c-line)" }}>
-								<td style={{ padding: "12px 20px" }}>
-									<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+							<tr key={a.sym} className="border-b border-ds-line">
+								<td className="px-5 py-3">
+									<div className="flex items-center gap-2.5">
 										<AssetLogo symbol={a.sym as any} size="sm" />
 										<div>
-											<div style={{ fontWeight: 600, fontSize: 13, color: "var(--c-text)" }}>{a.name}</div>
-											<div style={{ fontSize: 11, color: "var(--c-text-3)" }}>{a.sym}</div>
+											<div className="font-semibold text-[13px] text-ds-text">{a.name}</div>
+											<div className="text-[11px] text-ds-text-3">{a.sym}</div>
 										</div>
 									</div>
 								</td>
-								<td style={{ padding: "12px", fontVariantNumeric: "tabular-nums", fontWeight: 600, color: "var(--c-text)" }}>{fmt(a.price * 1610)}</td>
-								<td style={{ padding: "12px" }}>
-									<span style={{ color: a.change >= 0 ? "var(--c-up)" : "var(--c-down)", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+								<td className="px-3 py-3 tabular-nums font-semibold text-ds-text">{fmt(a.price * 1610)}</td>
+								<td className="px-3 py-3">
+									<span className={`font-semibold tabular-nums ${a.change >= 0 ? "text-up" : "text-down"}`}>
 										{fmtPct(a.change)}
 									</span>
 								</td>
-								<td style={{ padding: "12px" }}>
+								<td className="px-3 py-3">
 									<Sparkline data={[1, 1.02, 0.98, 1.01, 1.03, 0.99, 1.04, 1.02, 1.05, 1.03].map(v => v * a.price)} width={56} height={22} tone={a.change >= 0 ? "positive" : "negative"} />
 								</td>
-								<td style={{ padding: "12px", fontVariantNumeric: "tabular-nums", color: "var(--c-text-2)" }}>${fmtShort(a.mcap)}</td>
-								<td style={{ padding: "12px 20px" }}>
-									<Link href="/trade" style={{
-										padding: "5px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600,
-										border: "1px solid var(--c-line)", background: "transparent", color: "var(--c-text-2)",
-										textDecoration: "none",
-									}}>
+								<td className="px-3 py-3 tabular-nums text-ds-text-2">${fmtShort(a.mcap)}</td>
+								<td className="px-5 py-3">
+									<Link href="/trade" className="px-3.5 py-[5px] rounded-lg text-[12px] font-semibold border border-ds-line bg-transparent text-ds-text-2 no-underline">
 										Trade
 									</Link>
 								</td>

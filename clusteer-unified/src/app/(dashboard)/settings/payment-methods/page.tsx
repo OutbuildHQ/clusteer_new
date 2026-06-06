@@ -1,13 +1,11 @@
 "use client";
 
 import { CreditCard, Plus, Trash2, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useUserId } from "@/hooks/use-user-id";
 import {
 	getBankAccounts,
-	createBankAccount,
 	updateBankAccount,
 	deleteBankAccount,
 	type BankAccount as APIBankAccount,
@@ -46,28 +44,6 @@ export default function Page() {
 		enabled: !!userId,
 	});
 
-	const [showAddForm, setShowAddForm] = useState(false);
-	const [newAccount, setNewAccount] = useState({
-		bankName: "",
-		accountNumber: "",
-		accountName: "",
-	});
-	const [showDeleteModal, setShowDeleteModal] = useState(false);
-	const [accountToDelete, setAccountToDelete] = useState<number | null>(null);
-
-	const addMutation = useMutation({
-		mutationFn: (data: { bank_name: string; account_number: string; account_name: string }) =>
-			createBankAccount(userId!, data),
-		onSuccess: () => {
-			toast.success("Bank account added successfully");
-			setNewAccount({ bankName: "", accountNumber: "", accountName: "" });
-			setShowAddForm(false);
-			queryClient.invalidateQueries({ queryKey: ["bank-accounts", userId] });
-		},
-		onError: () => {
-			toast.error("Failed to add bank account");
-		},
-	});
 
 	const setDefaultMutation = useMutation({
 		mutationFn: (accountId: number) => updateBankAccount(userId!, accountId, { is_default: true }),
@@ -84,8 +60,6 @@ export default function Page() {
 		mutationFn: (accountId: number) => deleteBankAccount(userId!, accountId),
 		onSuccess: () => {
 			toast.success("Bank account deleted successfully");
-			setShowDeleteModal(false);
-			setAccountToDelete(null);
 			queryClient.invalidateQueries({ queryKey: ["bank-accounts", userId] });
 		},
 		onError: () => {
@@ -93,43 +67,19 @@ export default function Page() {
 		},
 	});
 
-	const handleAddAccount = () => {
-		if (!userId) return;
-
-		if (
-			!newAccount.bankName ||
-			!newAccount.accountNumber ||
-			!newAccount.accountName
-		) {
-			toast.error("Please fill in all fields");
-			return;
-		}
-
-		if (newAccount.accountNumber.length !== 10) {
-			toast.error("Account number must be 10 digits");
-			return;
-		}
-
-		addMutation.mutate({
-			bank_name: newAccount.bankName,
-			account_number: newAccount.accountNumber,
-			account_name: newAccount.accountName,
-		});
-	};
-
 	const openDeleteDialog = (id: number) => {
 		const account = accounts.find((a) => a.id === id);
 		if (account?.isDefault) {
 			toast.error("Cannot delete default account. Set another as default first.");
 			return;
 		}
-		setAccountToDelete(id);
-		setShowDeleteModal(true);
-	};
-
-	const handleDelete = () => {
-		if (accountToDelete === null) return;
-		deleteMutation.mutate(accountToDelete);
+		window.openFlow("confirm", {
+			title: "Delete bank account?",
+			message: `Remove ${account?.bankName} ·· ${account?.accountNumber.slice(-4)} from your payment methods? This action cannot be undone.`,
+			confirmLabel: "Delete",
+			danger: true,
+			onConfirm: () => deleteMutation.mutate(id),
+		});
 	};
 
 	if (isLoading) {
@@ -174,131 +124,30 @@ export default function Page() {
 			</header>
 
 			<div className="space-y-6">
-				{/* Add New Account Button/Form */}
-				{!showAddForm ? (
-					<button
-						onClick={() => setShowAddForm(true)}
-						disabled={accounts.length >= 5}
-						style={{
-							background: "transparent",
-							color: "var(--c-text)",
-							border: "2px dashed var(--c-border, #e5e5e5)",
-							height: "auto",
-							padding: "16px 24px",
-							borderRadius: "12px",
-							fontWeight: 500,
-							fontSize: "14px",
-							cursor: accounts.length >= 5 ? "not-allowed" : "pointer",
-							opacity: accounts.length >= 5 ? 0.5 : 1,
-							display: "inline-flex",
-							alignItems: "center",
-							gap: "8px",
-						}}
-					>
-						<Plus className="w-5 h-5" />
-						Add Bank Account {accounts.length >= 5 && "(Maximum reached)"}
-					</button>
-				) : (
-					<div className="ds-card p-6">
-						<h3 className="font-semibold text-lg text-[var(--c-text)] mb-4">
-							Add New Bank Account
-						</h3>
-						<div className="space-y-4">
-							<div>
-								<label className="text-sm font-medium text-[var(--c-text)] mb-2 block">
-									Bank Name
-								</label>
-								<input
-									type="text"
-									value={newAccount.bankName}
-									onChange={(e) =>
-										setNewAccount({ ...newAccount, bankName: e.target.value })
-									}
-									className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-lime-500)]"
-									placeholder="e.g., GTBank"
-								/>
-							</div>
-							<div>
-								<label className="text-sm font-medium text-[var(--c-text)] mb-2 block">
-									Account Number
-								</label>
-								<input
-									type="text"
-									value={newAccount.accountNumber}
-									onChange={(e) =>
-										setNewAccount({
-											...newAccount,
-											accountNumber: e.target.value,
-										})
-									}
-									maxLength={10}
-									className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-lime-500)]"
-									placeholder="0123456789"
-								/>
-							</div>
-							<div>
-								<label className="text-sm font-medium text-[var(--c-text)] mb-2 block">
-									Account Name
-								</label>
-								<input
-									type="text"
-									value={newAccount.accountName}
-									onChange={(e) =>
-										setNewAccount({
-											...newAccount,
-											accountName: e.target.value,
-										})
-									}
-									className="w-full px-4 py-2 border border-[var(--c-line)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-lime-500)]"
-									placeholder="John Doe"
-								/>
-							</div>
-							<div className="flex gap-3">
-								<button
-									onClick={handleAddAccount}
-									disabled={addMutation.isPending}
-									style={{
-										background: "var(--c-lime-500)",
-										color: "#fff",
-										border: "1px solid rgba(0,0,0,0.05)",
-										height: "40px",
-										padding: "0 24px",
-										borderRadius: "9999px",
-										fontWeight: 600,
-										fontSize: "14px",
-										cursor: addMutation.isPending ? "not-allowed" : "pointer",
-										opacity: addMutation.isPending ? 0.5 : 1,
-									}}
-								>
-									{addMutation.isPending ? "Adding..." : "Add Account"}
-								</button>
-								<button
-									onClick={() => {
-										setShowAddForm(false);
-										setNewAccount({
-											bankName: "",
-											accountNumber: "",
-											accountName: "",
-										});
-									}}
-									style={{
-										background: "transparent",
-										color: "var(--c-text)",
-										border: "1px solid var(--c-border, #e5e5e5)",
-										height: "40px",
-										padding: "0 24px",
-										borderRadius: "9999px",
-										fontWeight: 500,
-										fontSize: "14px",
-										cursor: "pointer",
-									}}
-								>
-									Cancel
-								</button>
-							</div>
-						</div>
-					</div>
-				)}
+				{/* Add New Account Button */}
+				<button
+					onClick={() => window.openFlow("addBank")}
+					disabled={accounts.length >= 5}
+					style={{
+						background: "transparent",
+						color: "var(--c-text)",
+						border: "2px dashed var(--c-line)",
+						height: "auto",
+						padding: "16px 24px",
+						borderRadius: "12px",
+						fontWeight: 500,
+						fontSize: "14px",
+						cursor: accounts.length >= 5 ? "not-allowed" : "pointer",
+						opacity: accounts.length >= 5 ? 0.5 : 1,
+						display: "inline-flex",
+						alignItems: "center",
+						gap: "8px",
+						fontFamily: "inherit",
+					}}
+				>
+					<Plus className="w-5 h-5" />
+					Add Bank Account {accounts.length >= 5 && "(Maximum reached)"}
+				</button>
 
 				{/* Bank Accounts List */}
 				<div className="space-y-4">
@@ -406,7 +255,7 @@ export default function Page() {
 							Add a bank account to start making deposits and withdrawals
 						</p>
 						<button
-							onClick={() => setShowAddForm(true)}
+							onClick={() => window.openFlow("addBank")}
 							style={{
 								background: "var(--c-lime-500)",
 								color: "#fff",
@@ -464,82 +313,6 @@ export default function Page() {
 				</div>
 			</div>
 
-			{/* Delete Confirmation Modal */}
-			{showDeleteModal && (
-				<div
-					style={{
-						position: "fixed",
-						inset: 0,
-						zIndex: 50,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						background: "rgba(0,0,0,0.5)",
-					}}
-					onClick={() => {
-						setShowDeleteModal(false);
-						setAccountToDelete(null);
-					}}
-				>
-					<div
-						style={{
-							background: "var(--c-surface)",
-							borderRadius: "16px",
-							padding: "24px",
-							maxWidth: "480px",
-							width: "90%",
-							boxShadow: "0 25px 50px rgba(0,0,0,0.25)",
-						}}
-						onClick={(e) => e.stopPropagation()}
-					>
-						<h3 style={{ fontSize: "18px", fontWeight: 600, marginBottom: "8px" }}>
-							Delete Bank Account
-						</h3>
-						<p style={{ fontSize: "14px", color: "var(--c-text-3)", marginBottom: "24px" }}>
-							Are you sure you want to delete this bank account? This action cannot be undone.
-						</p>
-						<div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-							<button
-								onClick={() => {
-									setShowDeleteModal(false);
-									setAccountToDelete(null);
-								}}
-								style={{
-									background: "transparent",
-									color: "var(--c-text)",
-									border: "1px solid var(--c-border, #e5e5e5)",
-									height: "40px",
-									padding: "0 16px",
-									borderRadius: "8px",
-									fontWeight: 500,
-									fontSize: "14px",
-									cursor: "pointer",
-								}}
-							>
-								Cancel
-							</button>
-							<button
-								onClick={handleDelete}
-								disabled={deleteMutation.isPending}
-								style={{
-									background: "var(--danger)",
-									color: "#fff",
-									border: "none",
-									height: "40px",
-									padding: "0 16px",
-									borderRadius: "8px",
-									fontWeight: 500,
-									fontSize: "14px",
-									cursor: deleteMutation.isPending ? "not-allowed" : "pointer",
-									opacity: deleteMutation.isPending ? 0.5 : 1,
-								}}
-							>
-								{deleteMutation.isPending ? "Deleting..." : "Delete"}
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
 		</section>
 	);
 }

@@ -18,7 +18,7 @@ const WALLETS = [
 const SERVICES: [string, string, "operational" | "degraded"][] = [
 	["API gateway", "99.99%", "operational"],
 	["BVN/NIN service", "99.94%", "operational"],
-	["Paystack", "99.81%", "operational"],
+	["Quidax ramp", "99.81%", "operational"],
 	["Tron RPC", "98.40%", "degraded"],
 	["BTC node", "99.99%", "operational"],
 ];
@@ -131,16 +131,15 @@ export default function AdminOpsOverview() {
 	const [period, setPeriod] = useState("Today");
 	const [chartCurrency, setChartCurrency] = useState("NGN");
 
-	const totalAum = WALLETS.reduce((a, b) => a + b.hotNgn + b.coldNgn, 0);
-	const last24hVol = 1_482_300_000;
-	const txnCount = 60;
-	const revenue = last24hVol * 0.005;
+	const last24hVol = 642_000_000;
+	const orderCount = 1_284;
+	const revenue = last24hVol * 0.0075;
 
 	const kpis: { label: string; val: string; sub: string; up: boolean | null }[] = [
-		{ label: "Total AUM", val: "\u20A6" + fmtShort(totalAum), sub: "+\u20A6284M (24h)", up: true },
-		{ label: "24h Volume", val: "\u20A6" + fmtShort(last24hVol), sub: `${txnCount} transactions`, up: null },
-		{ label: "Active users (24h)", val: "8,421", sub: "+12.4% WoW", up: true },
-		{ label: "Revenue (24h)", val: "\u20A6" + fmtShort(revenue), sub: "0.5% effective fee", up: null },
+		{ label: "Settlement volume", val: "\u20A6" + fmtShort(last24hVol), sub: "via Quidax", up: true },
+		{ label: "Orders", val: orderCount.toLocaleString(), sub: `${60} processed`, up: null },
+		{ label: "Active users", val: "8,421", sub: "+12.4% WoW", up: true },
+		{ label: "Revenue", val: "\u20A6" + fmtShort(revenue), sub: "0.75% effective fee", up: null },
 	];
 
 	return (
@@ -148,7 +147,7 @@ export default function AdminOpsOverview() {
 			{/* ── header ─────────────────────────────────── */}
 			<header className="flex flex-wrap items-end justify-between gap-4">
 				<div>
-					<h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: "var(--c-text)" }}>Operations</h1>
+					<h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display" style={{ color: "var(--c-text)" }}>Operations</h1>
 					<p className="mt-1.5 text-sm" style={{ color: "var(--c-text-3)" }}>
 						Live snapshot &middot; last refresh just now
 					</p>

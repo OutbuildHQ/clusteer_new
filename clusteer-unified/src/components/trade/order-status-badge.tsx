@@ -2,32 +2,31 @@
 
 import type { QxOrderStatus } from "@/lib/types";
 
-const STATUS_MAP: Record<QxOrderStatus, { bg: string; color: string; label: string }> = {
-	awaiting_payment: { bg: "var(--c-warn-soft)", color: "var(--c-warn)", label: "Awaiting payment" },
-	awaiting_deposit: { bg: "var(--c-warn-soft)", color: "var(--c-warn)", label: "Awaiting deposit" },
-	confirming: { bg: "var(--c-info-soft)", color: "var(--c-info)", label: "Confirming" },
-	completed: { bg: "var(--c-up-soft)", color: "var(--c-up)", label: "Completed" },
-	expired: { bg: "var(--c-surface-2)", color: "var(--c-text-2)", label: "Expired" },
-	failed: { bg: "var(--c-down-soft)", color: "var(--c-down)", label: "Failed" },
+const STATUS_MAP: Record<QxOrderStatus, { variant: string; icon: string; label: string }> = {
+	awaiting_payment: { variant: "warn", icon: "◐", label: "Pay now" },
+	awaiting_deposit: { variant: "warn", icon: "◐", label: "Send now" },
+	confirming: { variant: "warn", icon: "◐", label: "Confirming" },
+	completed: { variant: "up", icon: "✓", label: "Completed" },
+	expired: { variant: "down", icon: "—", label: "Expired" },
+	failed: { variant: "down", icon: "✕", label: "Failed" },
+};
+
+const VARIANT_CLASSES: Record<string, string> = {
+	default: "bg-ds-surface-2 text-ds-text-2 border border-ds-line",
+	up: "bg-up-soft text-up border border-transparent",
+	down: "bg-down-soft text-down border border-transparent",
+	warn: "bg-warn-soft text-warn border border-transparent",
+	info: "bg-info-soft text-[var(--c-info)] border border-transparent",
 };
 
 export function OrderStatusBadge({ status }: { status: QxOrderStatus }) {
 	const s = STATUS_MAP[status] ?? STATUS_MAP.failed;
+	const variantClass = VARIANT_CLASSES[s.variant] ?? VARIANT_CLASSES.default;
 	return (
 		<span
-			style={{
-				display: "inline-flex",
-				alignItems: "center",
-				gap: 5,
-				padding: "3px 10px",
-				borderRadius: 999,
-				fontSize: 12,
-				fontWeight: 600,
-				background: s.bg,
-				color: s.color,
-			}}
+			className={`inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium ${variantClass}`}
 		>
-			<span style={{ width: 6, height: 6, borderRadius: "50%", background: s.color }} />
+			<span className="text-[9px]">{s.icon}</span>
 			{s.label}
 		</span>
 	);

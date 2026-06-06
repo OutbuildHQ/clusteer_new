@@ -52,21 +52,21 @@ export function NewTicketFlow({ onClose }: { onClose: () => void }) {
 			<div>
 				<label style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, display: "block" }}>Subject</label>
 				<input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="What do you need help with?"
-					style={{ width: "100%", height: 42, borderRadius: 10, border: "1.5px solid var(--c-line)", padding: "0 12px", fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)" }} />
+					style={{ width: "100%", height: 38, borderRadius: 10, border: "1px solid var(--c-line)", padding: "0 12px", fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)" }} />
 			</div>
 
 			<div style={{ display: "flex", gap: 12 }}>
 				<div style={{ flex: 1 }}>
 					<label style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, display: "block" }}>Category</label>
 					<select value={category} onChange={(e) => setCategory(e.target.value)}
-						style={{ width: "100%", height: 42, borderRadius: 10, border: "1.5px solid var(--c-line)", padding: "0 12px", fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)" }}>
+						style={{ width: "100%", height: 38, borderRadius: 10, border: "1px solid var(--c-line)", padding: "0 12px", fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)" }}>
 						{CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
 					</select>
 				</div>
 				<div style={{ flex: 1 }}>
 					<label style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, display: "block" }}>Priority</label>
 					<select value={priority} onChange={(e) => setPriority(e.target.value)}
-						style={{ width: "100%", height: 42, borderRadius: 10, border: "1.5px solid var(--c-line)", padding: "0 12px", fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)" }}>
+						style={{ width: "100%", height: 38, borderRadius: 10, border: "1px solid var(--c-line)", padding: "0 12px", fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)" }}>
 						{PRIORITIES.map((p) => <option key={p} value={p}>{p}</option>)}
 					</select>
 				</div>
@@ -75,11 +75,11 @@ export function NewTicketFlow({ onClose }: { onClose: () => void }) {
 			<div>
 				<label style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, display: "block" }}>Message</label>
 				<textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={4} placeholder="Describe your issue in detail..."
-					style={{ width: "100%", borderRadius: 10, border: "1.5px solid var(--c-line)", padding: 12, fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)", resize: "vertical" }} />
+					style={{ width: "100%", borderRadius: 10, border: "1px solid var(--c-line)", padding: 12, fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)", resize: "vertical" }} />
 			</div>
 
 			<Button onClick={() => submit.mutate()} disabled={!subject.trim() || !message.trim() || submit.isPending}
-				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 44 }}>
+				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 36 }}>
 				{submit.isPending ? "Submitting..." : "Submit ticket"}
 			</Button>
 		</div>

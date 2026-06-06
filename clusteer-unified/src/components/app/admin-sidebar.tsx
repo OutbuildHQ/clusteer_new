@@ -2,77 +2,165 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { Logo } from "@/components/brand/logo";
 import {
 	LayoutDashboard,
 	Users,
 	ShieldCheck,
-	Wallet,
 	ArrowLeftRight,
-	FileBarChart2,
-	ScrollText,
+	Percent,
+	Flag,
+	Clock,
 	FileEdit,
-	LogOut,
+	BarChart3,
+	UsersRound,
+	Settings,
 	ExternalLink,
+	LogOut,
 } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 
-const LINKS = [
-	{ href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+const NAV = [
+	{ href: "/admin", label: "Operations", icon: LayoutDashboard, exact: true },
 	{ href: "/admin/users", label: "Users", icon: Users },
-	{ href: "/admin/kyc", label: "KYC queue", icon: ShieldCheck, badge: "4" },
-	{ href: "/admin/wallets", label: "Wallets", icon: Wallet },
-	{ href: "/admin/transactions", label: "Transactions", icon: ArrowLeftRight, badge: "2" },
-	{ href: "/admin/reports", label: "Reports", icon: FileBarChart2 },
-	{ href: "/admin/audit", label: "Audit log", icon: ScrollText },
-	{ href: "/admin/cms", label: "CMS & alerts", icon: FileEdit },
+	{ href: "/admin/kyc", label: "KYC queue", icon: ShieldCheck, badge: "4", badgeColor: "var(--c-warn)" },
+	{ href: "/admin/transactions", label: "Tx monitor", icon: ArrowLeftRight },
+	{ href: "/admin/orders", label: "Orders", icon: ArrowLeftRight },
+	{ href: "/admin/fees", label: "Fees", icon: Percent },
+	{ href: "/admin/compliance", label: "Compliance", icon: Flag, badge: "4", badgeColor: "var(--c-down)" },
+	{ href: "/admin/audit", label: "Audit log", icon: Clock },
+	{ href: "/admin/cms", label: "CMS", icon: FileEdit },
+	{ href: "/admin/reports", label: "Reports", icon: BarChart3 },
+	{ href: "/admin/staff", label: "Staff", icon: UsersRound },
+	{ href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 export function AdminSidebar() {
 	const pathname = usePathname();
+
 	return (
-		<aside className="hidden lg:flex lg:w-[260px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
-			<div className="flex items-center justify-between px-5 py-5">
-				<Link href="/admin"><Logo /></Link>
-				<Badge variant="warning" className="text-[10px]">ADMIN</Badge>
+		<aside
+			className="hidden lg:flex shrink-0 flex-col overflow-y-auto"
+			style={{
+				width: 248,
+				height: "100vh",
+				background: "var(--c-onyx-900)",
+				color: "var(--c-cream)",
+				padding: "18px 14px",
+				gap: 6,
+				borderRight: "1px solid var(--c-line)",
+			}}
+		>
+			{/* Logo */}
+			<div
+				style={{
+					display: "flex", alignItems: "center", gap: 10,
+					padding: "4px 8px 14px",
+					borderBottom: "1px solid rgba(244,241,234,0.1)",
+					marginBottom: 8,
+				}}
+			>
+				<Link href="/admin"><Logo monogramOnly className="h-6 w-6" /></Link>
+				<span style={{ fontWeight: 600, fontSize: 15, letterSpacing: "-0.02em", color: "var(--c-cream)" }}>Clusteer</span>
+				<span
+					style={{
+						marginLeft: "auto", fontSize: 10,
+						padding: "2px 8px", borderRadius: 6,
+						background: "var(--c-lime-500)", color: "var(--c-onyx-900)",
+						fontWeight: 700, letterSpacing: "0.04em",
+					}}
+				>
+					ADMIN
+				</span>
 			</div>
-			<nav className="flex-1 px-3 pb-4">
-				<ul className="space-y-0.5">
-					{LINKS.map((l) => {
-						const active = l.exact ? pathname === l.href : pathname === l.href || pathname.startsWith(l.href + "/");
-						return (
-							<li key={l.href}>
-								<Link
-									href={l.href}
-									className={cn(
-										"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-										active ? "bg-primary text-[var(--c-lime-500)]-foreground" : "text-sidebar-foreground hover:bg-sidebar-accent",
-									)}
+
+			{/* Nav */}
+			<nav style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
+				{NAV.map((n) => {
+					const active = n.exact
+						? pathname === n.href
+						: pathname === n.href || pathname.startsWith(n.href + "/");
+					return (
+						<Link
+							key={n.href}
+							href={n.href}
+							style={{
+								display: "flex", alignItems: "center", gap: 10,
+								padding: "8px 12px", borderRadius: 10,
+								fontSize: 13.5, fontWeight: 500,
+								textDecoration: "none",
+								color: active ? "var(--c-onyx-900)" : "rgba(244,241,234,0.7)",
+								background: active ? "var(--c-lime-500)" : "transparent",
+								transition: "background 0.15s, color 0.15s",
+							}}
+						>
+							<n.icon size={18} />
+							<span style={{ flex: 1 }}>{n.label}</span>
+							{n.badge && (
+								<span
+									style={{
+										fontSize: 10, padding: "1px 6px", borderRadius: 999,
+										background: n.badgeColor || "var(--c-warn)",
+										color: "#fff", fontWeight: 600,
+									}}
 								>
-									<l.icon className="size-[18px] shrink-0" />
-									<span className="flex-1">{l.label}</span>
-									{l.badge && (
-										<span className={cn("rounded-full px-1.5 py-0 text-[10px] font-semibold", active ? "bg-primary-foreground/20 text-[var(--c-lime-500)]-foreground" : "bg-warning-bg text-warning")}>{l.badge}</span>
-									)}
-								</Link>
-							</li>
-						);
-					})}
-				</ul>
+									{n.badge}
+								</span>
+							)}
+						</Link>
+					);
+				})}
 			</nav>
-			<div className="border-t border-sidebar-border p-3">
-				<Link href="/dashboard" className="mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-sidebar-accent">
-					<ExternalLink className="size-3.5" />Switch to customer view
+
+			{/* System health footer */}
+			<div
+				style={{
+					marginTop: "auto",
+					padding: 14, borderRadius: 14,
+					background: "rgba(255,255,255,0.04)",
+					border: "1px solid rgba(255,255,255,0.06)",
+				}}
+			>
+				<div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+					<span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--c-up)" }} />
+					System healthy
+				</div>
+				<div style={{ fontSize: 13, marginTop: 4, color: "var(--c-cream)", fontVariantNumeric: "tabular-nums" }}>
+					99.98% uptime · 42ms p50
+				</div>
+			</div>
+
+			{/* Bottom */}
+			<div style={{ borderTop: "1px solid rgba(244,241,234,0.1)", paddingTop: 12, marginTop: 8 }}>
+				<Link
+					href="/dashboard"
+					style={{
+						display: "flex", alignItems: "center", gap: 6,
+						padding: "6px 8px", borderRadius: 8,
+						fontSize: 12, fontWeight: 500, textDecoration: "none",
+						color: "rgba(244,241,234,0.5)",
+					}}
+				>
+					<ExternalLink size={14} />
+					Switch to customer view
 				</Link>
-				<div className="flex items-center gap-3 rounded-lg px-2 py-2">
-					<Avatar className="size-9"><AvatarFallback className="bg-warning/10 text-warning text-sm font-semibold">DA</AvatarFallback></Avatar>
-					<div className="min-w-0 flex-1">
-						<div className="truncate text-sm font-medium">Dayo Adegoke</div>
-						<div className="truncate text-xs text-muted-foreground">Ops lead</div>
+				<div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 8px 0", marginTop: 4 }}>
+					<div
+						style={{
+							width: 36, height: 36, borderRadius: "50%",
+							background: "rgba(244,241,234,0.1)",
+							display: "flex", alignItems: "center", justifyContent: "center",
+							fontSize: 13, fontWeight: 600, color: "var(--c-cream)",
+						}}
+					>
+						EN
 					</div>
-					<Link href="/login" className="rounded-md p-1.5 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><LogOut className="size-4" /></Link>
+					<div style={{ flex: 1, minWidth: 0 }}>
+						<div style={{ fontSize: 13, fontWeight: 600, color: "var(--c-cream)" }}>Emeka N.</div>
+						<div style={{ fontSize: 11, color: "rgba(244,241,234,0.5)" }}>Compliance Lead</div>
+					</div>
+					<Link href="/login" style={{ color: "rgba(244,241,234,0.4)", display: "flex" }}>
+						<LogOut size={16} />
+					</Link>
 				</div>
 			</div>
 		</aside>

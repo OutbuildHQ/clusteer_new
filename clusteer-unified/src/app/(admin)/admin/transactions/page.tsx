@@ -50,7 +50,7 @@ export default function AdminTxMonitor() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 600, color: "var(--c-text)", letterSpacing: "-0.02em" }}>Transaction monitor</h1>
+          <h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display" style={{ color: "var(--c-text)" }}>Transaction monitor</h1>
           <p style={{ marginTop: 6, fontSize: 13, color: "var(--c-text-3)" }}>Live feed of customer transactions</p>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -90,7 +90,7 @@ export default function AdminTxMonitor() {
               const flagged = t.ngn > 3_000_000;
               const ss = statusStyle(t.status);
               return (
-                <tr key={t.id} style={{ borderBottom: "1px solid var(--c-line)", background: flagged ? "color-mix(in srgb, var(--c-warn-soft) 30%, transparent)" : "transparent" }} className="hover:bg-[var(--c-surface-2)] transition-colors">
+                <tr key={t.id} style={{ borderBottom: "1px solid var(--c-line)", background: flagged ? "color-mix(in srgb, var(--c-warn-soft) 30%, transparent)" : "transparent", cursor: "pointer" }} className="hover:bg-[var(--c-surface-2)] transition-colors" onClick={() => window.openFlow("txnDetail", { txn: t })}>
                   <td style={{ padding: "10px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>{t.id}</td>
                   <td style={{ padding: "10px 16px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

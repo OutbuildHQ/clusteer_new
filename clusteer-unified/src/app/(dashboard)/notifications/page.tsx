@@ -3,12 +3,12 @@
 import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Bell, ShieldAlert, TrendingUp, ArrowDownLeft, Loader2 } from "lucide-react";
+import { Bell, ShieldAlert, TrendingUp, ArrowDownLeft, ChevronRight } from "lucide-react";
 import { EmptyState } from "@/components/primitives/empty-state";
 
 interface Notification {
 	id: string | number;
-	type: "tx" | "price" | "security" | "system" | "orders";
+	type: "tx" | "price" | "security" | "system" | "promo" | "news";
 	title: string;
 	body: string;
 	when: string;
@@ -16,20 +16,18 @@ interface Notification {
 }
 
 function notifIcon(type: Notification["type"]) {
-	if (type === "security") return <ShieldAlert className="size-5" />;
-	if (type === "price") return <TrendingUp className="size-5" />;
-	if (type === "tx") return <ArrowDownLeft className="size-5" />;
-	return <Bell className="size-5" />;
+	if (type === "security") return <ShieldAlert size={18} />;
+	if (type === "price") return <TrendingUp size={18} />;
+	if (type === "tx") return <ArrowDownLeft size={18} />;
+	return <Bell size={18} />;
 }
 
-function notifColors(type: Notification["type"]) {
-	if (type === "security") return { bg: "var(--c-warn-soft)", color: "var(--c-warn)" };
-	if (type === "price") return { bg: "var(--c-up-soft)", color: "var(--c-up)" };
-	if (type === "tx") return { bg: "color-mix(in oklab, var(--c-lime-500) 12%, transparent)", color: "var(--c-lime-500)" };
-	return { bg: "var(--c-surface-2)", color: "var(--c-text-2)" };
+function notifIconClasses(type: Notification["type"]) {
+	if (type === "security") return "bg-warn-soft text-warn";
+	return "bg-ds-surface-2 text-ds-text";
 }
 
-type Tab = "All" | "Unread" | "orders" | "tx" | "price" | "security";
+type Tab = "All" | "Unread" | "tx" | "price" | "security";
 
 export default function NotificationsPage() {
 	const [tab, setTab] = useState<Tab>("All");
@@ -45,7 +43,6 @@ export default function NotificationsPage() {
 		staleTime: 30_000,
 	});
 
-	// Optimistic local read state (avoids refetch for mark-read)
 	const [readIds, setReadIds] = useState<Set<string | number>>(new Set());
 
 	const enriched = useMemo(
@@ -59,15 +56,20 @@ export default function NotificationsPage() {
 				(n) =>
 					tab === "All" ||
 					(tab === "Unread" && !n.read) ||
-					n.type === (tab.toLowerCase() as Notification["type"]),
+					n.type === tab,
 			),
 		[enriched, tab],
 	);
 
 	const unreadCount = enriched.filter((n) => !n.read).length;
 
-	async function markRead(id: string | number) {
+	function markRead(id: string | number) {
 		setReadIds((prev) => new Set([...prev, id]));
+	}
+
+	function openNotif(n: typeof enriched[number]) {
+		markRead(n.id);
+		window.openFlow("notifDetail", { notification: n });
 	}
 
 	async function handleMarkAllRead() {
@@ -75,76 +77,65 @@ export default function NotificationsPage() {
 		if (res.ok) {
 			setReadIds(new Set(enriched.map((n) => n.id)));
 			queryClient.invalidateQueries({ queryKey: ["notifications"] });
-			toast.success("All notifications marked as read");
+			toast.success("All notifications marked read");
 		} else {
 			toast.error("Failed to mark notifications as read");
 		}
 	}
 
 	return (
-		<div className="space-y-6">
-			{/* Header */}
+		<div className="flex flex-col gap-6">
+			{/* Header — title + badge left, mark-all + tabs right */}
 			<div className="flex items-center justify-between flex-wrap gap-4">
-				<div className="flex items-center gap-3">
-					<h1
-						className="text-[22px] lg:text-[32px] font-semibold leading-tight"
-						style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}
-					>
+				<div className="flex items-baseline gap-2">
+					<h1 className="text-[32px] font-semibold text-ds-text tracking-[-0.03em] m-0 font-display">
 						Notifications
 					</h1>
 					{unreadCount > 0 && (
-						<span
-							className="inline-flex items-center justify-center h-5 px-1.5 rounded-full text-[11px] font-semibold"
-							style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", minWidth: 20 }}
-						>
-							{unreadCount}
+						<span className="inline-flex items-center h-[22px] px-2 rounded-full text-[11.5px] font-medium bg-lime-500 text-onyx-900">
+							{unreadCount} unread
 						</span>
 					)}
 				</div>
-				{unreadCount > 0 && (
+				<div className="flex items-center gap-3">
 					<button
 						onClick={handleMarkAllRead}
-						className="inline-flex items-center h-[30px] px-3 rounded-[10px] text-[12.5px] font-medium transition-colors hover:bg-[var(--c-surface-2)]"
-						style={{ color: "var(--c-text)", border: "1px solid var(--c-line)", background: "transparent", cursor: "pointer" }}
+						disabled={unreadCount === 0}
+						className="inline-flex items-center h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium border border-ds-line bg-transparent text-ds-text cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
 					>
 						Mark all read
 					</button>
-				)}
-			</div>
-
-			{/* Tabs */}
-			<div className="overflow-x-auto -mx-1 px-1">
-				<div className="inline-flex p-1 rounded-[10px] gap-0.5" style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>
-					{(["All", "Unread", "orders", "tx", "price", "security"] as Tab[]).map((t) => (
-						<button
-							key={t}
-							onClick={() => setTab(t)}
-							className="px-3 py-1.5 rounded-[6px] text-[12.5px] font-medium transition-colors capitalize whitespace-nowrap"
-							style={
-								tab === t
-									? { background: "var(--c-surface)", color: "var(--c-text)", boxShadow: "var(--sh-1)" }
-									: { color: "var(--c-text-2)", background: "transparent", border: "none", cursor: "pointer" }
-							}
-						>
-							{t === "tx" ? "Transactions" : t === "price" ? "Prices" : t}
-						</button>
-					))}
+					<div className="inline-flex p-1 bg-ds-surface-2 rounded-[10px] border border-ds-line gap-0.5">
+						{(["All", "Unread", "tx", "price", "security"] as Tab[]).map((t) => (
+							<button
+								key={t}
+								onClick={() => setTab(t)}
+								className={`px-3 py-1.5 rounded-[8px] text-[12.5px] font-medium cursor-pointer border-none font-sans capitalize whitespace-nowrap ${
+									tab === t
+										? "bg-ds-surface text-ds-text shadow-[var(--sh-1)]"
+										: "bg-transparent text-ds-text-2"
+								}`}
+							>
+								{t}
+							</button>
+						))}
+					</div>
 				</div>
 			</div>
 
 			{/* Loading */}
 			{isLoading && (
-				<div className="flex items-center justify-center py-16">
-					<Loader2 className="size-6 animate-spin" style={{ color: "var(--c-text-3)" }} />
+				<div className="flex justify-center pt-20">
+					<div className="w-8 h-8 border-[3px] border-ds-line border-t-lime-500 rounded-full animate-spin" />
 				</div>
 			)}
 
-			{/* Empty state */}
+			{/* Empty */}
 			{!isLoading && list.length === 0 && (
 				<EmptyState
 					icon={Bell}
-					variant={tab !== "All" ? "default" : "branded"}
-					title={tab === "Unread" ? "All caught up!" : "No notifications yet"}
+					variant="branded"
+					title={tab === "Unread" ? "You're all caught up" : "No notifications yet"}
 					description={
 						tab === "Unread"
 							? "You have no unread notifications."
@@ -155,55 +146,39 @@ export default function NotificationsPage() {
 
 			{/* Notification list */}
 			{!isLoading && list.length > 0 && (
-				<div
-					className="rounded-[14px] overflow-hidden"
-					style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}
-				>
-					{list.map((n, i) => {
-						const { bg, color } = notifColors(n.type);
-						return (
-							<button
-								key={n.id}
-								onClick={() => markRead(n.id)}
-								className="w-full text-left flex items-center gap-3 px-3 lg:px-5 py-3.5 transition-colors hover:bg-[var(--c-surface-2)]"
-								style={{
-									borderBottom: i < list.length - 1 ? "1px solid var(--c-line)" : undefined,
-									background: !n.read
-										? "color-mix(in oklab, var(--c-lime-500) 5%, transparent)"
-										: "transparent",
-									border: "none",
-									cursor: "pointer",
-									display: "flex",
-								}}
-							>
-								<div
-									className="size-10 rounded-full flex items-center justify-center shrink-0"
-									style={{ background: bg, color }}
-								>
+				<div className="bg-ds-surface border border-ds-line rounded-[14px] overflow-hidden">
+					{list.map((n, i) => (
+						<div
+							key={n.id}
+							role="button"
+							tabIndex={0}
+							onClick={() => openNotif(n)}
+							onKeyDown={(e) => { if (e.key === "Enter") openNotif(n); }}
+							className={`flex items-center justify-between px-5 py-3.5 cursor-pointer hover:bg-ds-surface-2 ${
+								!n.read ? "bg-[rgba(201,245,66,0.07)]" : "bg-transparent"
+							}`}
+							style={i < list.length - 1 ? { borderBottom: "1px solid var(--c-line)" } : undefined}
+						>
+							<div className="flex items-center gap-3 min-w-0">
+								<div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-semibold ${notifIconClasses(n.type)}`}>
 									{notifIcon(n.type)}
 								</div>
-								<div className="flex-1 min-w-0">
+								<div className="min-w-0">
 									<div className="flex items-center gap-1.5">
-										<span className="text-[13.5px] font-semibold" style={{ color: "var(--c-text)" }}>
-											{n.title}
-										</span>
+										<span className="text-[13.5px] font-semibold text-ds-text">{n.title}</span>
 										{!n.read && (
-											<span
-												className="inline-block size-[6px] rounded-full shrink-0"
-												style={{ background: "var(--c-lime-500)" }}
-											/>
+											<span className="inline-block size-[6px] rounded-full bg-lime-500 shrink-0" />
 										)}
 									</div>
-									<div className="text-[12.5px] truncate" style={{ color: "var(--c-text-3)" }}>
-										{n.body}
-									</div>
+									<div className="text-[12.5px] text-ds-text-3 truncate">{n.body}</div>
 								</div>
-								<div className="text-[12px] shrink-0 ml-2" style={{ color: "var(--c-text-3)" }}>
-									{n.when}
-								</div>
-							</button>
-						);
-					})}
+							</div>
+							<div className="flex items-center gap-2 shrink-0 ml-2">
+								<span className="text-[12px] text-ds-text-3">{n.when}</span>
+								<ChevronRight size={14} className="text-ds-text-3 opacity-45" />
+							</div>
+						</div>
+					))}
 				</div>
 			)}
 		</div>

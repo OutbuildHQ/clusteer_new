@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export function EmptyState({
 	icon: Icon,
@@ -25,34 +24,26 @@ export function EmptyState({
 		return (
 			<div
 				className={cn(
-					"flex flex-col items-center justify-center rounded-2xl px-6 py-14 text-center relative overflow-hidden bg-grid",
+					"flex flex-col items-center justify-center rounded-[14px] px-6 py-14 text-center relative overflow-hidden bg-grid bg-ds-surface border border-ds-line",
 					className,
 				)}
-				style={{ border: "1px solid var(--c-line)", background: "var(--c-surface)" }}
 			>
-				{/* Subtle lime radial glow */}
-				<div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -60%)", width: 320, height: 200, borderRadius: "50%", background: "var(--c-lime-500)", opacity: 0.04, filter: "blur(40px)", pointerEvents: "none" }} />
+				<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] w-[320px] h-[200px] rounded-[50%] bg-lime-500 opacity-[0.04] blur-[40px] pointer-events-none" />
 				{Icon && (
-					<div
-						className="mb-5 flex items-center justify-center"
-						style={{ width: 64, height: 64, borderRadius: 18, background: "var(--c-lime-500)", boxShadow: "0 4px 20px rgba(201,245,66,0.3)" }}
-					>
-						<Icon className="size-7" style={{ color: "var(--c-onyx-900)" }} />
+					<div className="mb-5 flex items-center justify-center w-16 h-16 rounded-[18px] bg-lime-500 shadow-[0_4px_20px_rgba(201,245,66,0.3)]">
+						<Icon className="size-7 text-onyx-900" />
 					</div>
 				)}
-				<h3
-					className="text-[20px] font-semibold tracking-tight"
-					style={{ fontFamily: "var(--f-display)", color: "var(--c-text)", letterSpacing: "-0.02em" }}
-				>
+				<h3 className="text-[20px] font-semibold tracking-[-0.02em] font-display text-ds-text">
 					{title}
 				</h3>
 				{description && (
-					<p className="mt-2 max-w-[280px] text-[13.5px] leading-relaxed" style={{ color: "var(--c-text-2)" }}>
+					<p className="mt-2 max-w-[280px] text-[13.5px] leading-relaxed text-ds-text-2">
 						{description}
 					</p>
 				)}
 				{subtitle && (
-					<p className="mt-1 text-[12px]" style={{ color: "var(--c-text-3)" }}>
+					<p className="mt-1 text-[12px] text-ds-text-3">
 						{subtitle}
 					</p>
 				)}
@@ -62,16 +53,14 @@ export function EmptyState({
 							action.href ? (
 								<a
 									href={action.href}
-									className="inline-flex items-center justify-center h-9 px-5 rounded-full text-[13.5px] font-semibold"
-									style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", textDecoration: "none" }}
+									className="inline-flex items-center justify-center h-9 px-5 rounded-full text-[13.5px] font-semibold bg-lime-500 text-onyx-900 no-underline"
 								>
 									{action.label}
 								</a>
 							) : (
 								<button
 									onClick={action.onClick}
-									className="inline-flex items-center justify-center h-9 px-5 rounded-full text-[13.5px] font-semibold"
-									style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", cursor: "pointer" }}
+									className="inline-flex items-center justify-center h-9 px-5 rounded-full text-[13.5px] font-semibold bg-lime-500 text-onyx-900 border-none cursor-pointer"
 								>
 									{action.label}
 								</button>
@@ -81,16 +70,14 @@ export function EmptyState({
 							secondaryAction.href ? (
 								<a
 									href={secondaryAction.href}
-									className="inline-flex items-center justify-center h-9 px-5 rounded-full text-[13.5px] font-medium"
-									style={{ border: "1px solid var(--c-line)", color: "var(--c-text-2)", textDecoration: "none" }}
+									className="inline-flex items-center justify-center h-9 px-5 rounded-full text-[13.5px] font-medium border border-ds-line text-ds-text-2 no-underline"
 								>
 									{secondaryAction.label}
 								</a>
 							) : (
 								<button
 									onClick={secondaryAction.onClick}
-									className="inline-flex items-center justify-center h-9 px-5 rounded-full text-[13.5px] font-medium"
-									style={{ border: "1px solid var(--c-line)", color: "var(--c-text-2)", background: "transparent", cursor: "pointer" }}
+									className="inline-flex items-center justify-center h-9 px-5 rounded-full text-[13.5px] font-medium border border-ds-line text-ds-text-2 bg-transparent cursor-pointer"
 								>
 									{secondaryAction.label}
 								</button>
@@ -105,30 +92,32 @@ export function EmptyState({
 	return (
 		<div
 			className={cn(
-				"flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/30 px-6 py-12 text-center",
+				"flex flex-col items-center justify-center rounded-[14px] border border-ds-line bg-ds-surface px-6 py-12 text-center",
 				className,
 			)}
 		>
 			{Icon && (
-				<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-background shadow-sm">
-					<Icon className="size-5 text-muted-foreground" />
+				<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-ds-surface-2">
+					<Icon className="size-5 text-ds-text-3" />
 				</div>
 			)}
-			<h3 className="text-base font-semibold text-foreground">{title}</h3>
+			<h3 className="text-[15px] font-semibold text-ds-text">{title}</h3>
 			{description && (
-				<p className="mt-1 max-w-sm text-sm text-muted-foreground">{description}</p>
+				<p className="mt-1 max-w-sm text-[13px] text-ds-text-2">{description}</p>
 			)}
 			{subtitle && (
-				<p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
+				<p className="mt-1 text-[12px] text-ds-text-3">{subtitle}</p>
 			)}
 			{action && (
 				<div className="mt-5">
 					{action.href ? (
-						<Button asChild>
-							<a href={action.href}>{action.label}</a>
-						</Button>
+						<a href={action.href} className="inline-flex items-center justify-center h-9 px-4 rounded-[10px] text-[13.5px] font-medium bg-lime-500 text-onyx-900 no-underline">
+							{action.label}
+						</a>
 					) : (
-						<Button onClick={action.onClick}>{action.label}</Button>
+						<button onClick={action.onClick} className="inline-flex items-center justify-center h-9 px-4 rounded-[10px] text-[13.5px] font-medium bg-lime-500 text-onyx-900 border-none cursor-pointer">
+							{action.label}
+						</button>
 					)}
 				</div>
 			)}

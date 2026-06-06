@@ -59,7 +59,7 @@ export function AddBankFlow({ onClose }: { onClose: () => void }) {
 			<div>
 				<label style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, display: "block" }}>Bank</label>
 				<select value={bankCode} onChange={(e) => { setBankCode(e.target.value); setResolved(null); }}
-					style={{ width: "100%", height: 42, borderRadius: 10, border: "1.5px solid var(--c-line)", padding: "0 12px", fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)" }}>
+					style={{ width: "100%", height: 38, borderRadius: 10, border: "1px solid var(--c-line)", padding: "0 12px", fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)" }}>
 					<option value="">Select bank</option>
 					{BANKS.map((b) => <option key={b.code} value={b.code}>{b.name}</option>)}
 				</select>
@@ -70,7 +70,7 @@ export function AddBankFlow({ onClose }: { onClose: () => void }) {
 				<input type="text" inputMode="numeric" maxLength={10} value={accountNumber}
 					onChange={(e) => { setAccountNumber(e.target.value.replace(/\D/g, "")); setResolved(null); }}
 					placeholder="0123456789"
-					style={{ width: "100%", height: 42, borderRadius: 10, border: "1.5px solid var(--c-line)", padding: "0 12px", fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)", fontVariantNumeric: "tabular-nums" }} />
+					style={{ width: "100%", height: 38, borderRadius: 10, border: "1px solid var(--c-line)", padding: "0 12px", fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)", fontVariantNumeric: "tabular-nums" }} />
 				<p style={{ fontSize: 11, color: "var(--c-text-3)", marginTop: 4 }}>10-digit NUBAN account number</p>
 			</div>
 
@@ -91,7 +91,7 @@ export function AddBankFlow({ onClose }: { onClose: () => void }) {
 			</label>
 
 			<Button onClick={submit} disabled={!resolved}
-				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 44 }}>
+				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 36 }}>
 				Add bank account
 			</Button>
 		</div>

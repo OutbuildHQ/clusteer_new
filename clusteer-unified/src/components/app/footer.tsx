@@ -47,10 +47,10 @@ export function Footer() {
 						</div>
 						<div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
 						{[
-							{ t: "Product", l: [{ label: "Buy stables", href: "/trade" }, { label: "Sell stables", href: "/trade" }, { label: "Swap", href: "/trade" }, { label: "Mobile app", href: "#app" }, { label: "Pricing", href: "#rates" }] },
-							{ t: "Company", l: [{ label: "About", href: "/about" }, { label: "Press", href: "/press" }, { label: "Contact", href: "/contact" }, { label: "Status", href: "/status" }] },
-							{ t: "Resources", l: [{ label: "Help center", href: "/help" }, { label: "Rate alerts", href: "/rate-alerts" }, { label: "Security", href: "#trust" }, { label: "FAQ", href: "/faq" }] },
-							{ t: "Legal", l: [{ label: "Terms", href: "/terms-of-service" }, { label: "Privacy", href: "/privacy-policy" }, { label: "AML/CFT", href: "/aml-cft" }] },
+							{ t: "Product", l: [{ label: "Buy stables", href: "/trade" }, { label: "Sell stables", href: "/trade" }, { label: "Orders", href: "/orders" }, { label: "Mobile app", href: "#app" }, { label: "Pricing", href: "#rates" }] },
+							{ t: "Company", l: [{ label: "About", href: "/about" }, { label: "Careers", href: "/careers" }, { label: "Press", href: "/press" }, { label: "Contact", href: "/contact" }, { label: "Status", href: "/status" }] },
+							{ t: "Resources", l: [{ label: "Help center", href: "/help" }, { label: "Rate alerts", href: "/rate-alerts" }, { label: "Developer API", href: "/developer" }, { label: "System status", href: "/status" }, { label: "Security", href: "#trust" }] },
+							{ t: "Legal", l: [{ label: "Terms", href: "/terms-of-service" }, { label: "Privacy", href: "/privacy-policy" }, { label: "AML/CFT", href: "/aml-cft" }, { label: "NDPR", href: "/ndpr" }, { label: "Cookie policy", href: "/cookie-policy" }] },
 						].map((c) => (
 							<div key={c.t}>
 								<div className="font-mono text-[11px] font-semibold text-white/40 tracking-[1.5px] mb-4">{c.t.toUpperCase()}</div>
@@ -63,7 +63,7 @@ export function Footer() {
 					</div>
 					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 pt-6 sm:pt-7 border-t border-white/10 text-[11px] sm:text-xs text-white/50">
 						<span>&copy; {new Date().getFullYear()} Clusteer. All rights reserved.</span>
-						<span className="font-mono">v3.2.1</span>
+						<span className="font-mono">v3.2.1 · build 4f8a92</span>
 					</div>
 				</div>
 			</footer>

@@ -661,7 +661,7 @@ export default function AdminUsersPage() {
 		<div className="space-y-5">
 			{/* ─── Header ─── */}
 			<div className="flex items-center justify-between gap-4 flex-wrap">
-				<h1 className="text-[22px] font-semibold tracking-tight text-[var(--c-text)]">Users</h1>
+				<h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display text-[var(--c-text)]">Users</h1>
 				<div className="flex items-center gap-2">
 					<button className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-[var(--c-line)] text-[13px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors">
 						<Filter className="size-3.5 text-[var(--c-text-3)]" />Filters
@@ -672,6 +672,7 @@ export default function AdminUsersPage() {
 					<button
 						className="flex items-center gap-1.5 h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors"
 						style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}
+						onClick={() => window.openFlow("newUser")}
 					>
 						<Plus className="size-3.5" />New user
 					</button>

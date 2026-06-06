@@ -7,10 +7,10 @@ import { Download, Plus, MoreHorizontal } from "lucide-react";
 
 /* ── fallback mock data ── */
 const FALLBACK_FEE_SCHEDULE = [
-  { type: "Buy",      asset: "USDT", method: "Bank transfer", fee: "0.50%", min: "\u20A6500" },
-  { type: "Sell",     asset: "USDT", method: "Bank transfer", fee: "0.50%", min: "\u20A6500" },
-  { type: "Buy",      asset: "BTC",  method: "On-chain",      fee: "0.60%", min: "\u20A61,000" },
-  { type: "Sell",     asset: "BTC",  method: "On-chain",      fee: "0.60%", min: "\u20A61,000" },
+  { type: "Buy",      asset: "USDT", method: "Bank transfer", fee: "0.75%", min: "\u20A6500" },
+  { type: "Sell",     asset: "USDT", method: "Bank transfer", fee: "0.75%", min: "\u20A6500" },
+  { type: "Buy",      asset: "BTC",  method: "On-chain",      fee: "0.75%", min: "\u20A61,000" },
+  { type: "Sell",     asset: "BTC",  method: "On-chain",      fee: "0.75%", min: "\u20A61,000" },
   { type: "Withdraw", asset: "NGN",  method: "Bank transfer", fee: "Flat \u20A650", min: "\u20A650" },
   { type: "Withdraw", asset: "USDT", method: "TRC-20",        fee: "1 USDT",  min: "1 USDT" },
   { type: "Send",     asset: "All",  method: "Internal",      fee: "Free",    min: "\u20A60" },
@@ -100,14 +100,14 @@ export default function AdminFees() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 600, color: "var(--c-text)", letterSpacing: "-0.02em" }}>Fee schedule</h1>
+          <h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display" style={{ color: "var(--c-text)" }}>Fee schedule</h1>
           <p style={{ marginTop: 6, fontSize: 13, color: "var(--c-text-3)" }}>Live fees applied to user transactions</p>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-[var(--c-line)] text-[13px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors">
             <Download className="size-3.5 text-[var(--c-text-3)]" />Export
           </button>
-          <button className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:opacity-90 transition-opacity">
+          <button onClick={() => window.openFlow("feeRule")} className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[var(--c-lime-500)] text-[var(--c-onyx-900)] text-[13px] font-semibold hover:opacity-90 transition-opacity">
             <Plus className="size-3.5" />New rule
           </button>
         </div>
@@ -116,9 +116,9 @@ export default function AdminFees() {
       {/* KPI cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
         {([
-          ["Effective fee (24h)", "0.51%", "+0.02% vs 7d avg"],
+          ["Effective fee (24h)", "0.75%", "Flat across orders"],
           ["Fee revenue (24h)", "\u20A64.82M", "+12% WoW"],
-          ["Active rules", String(feeSchedule.length), "Last edit 3d ago"],
+          ["Active rules", String(feeSchedule.length), `${feeSchedule.length} total`],
         ] as const).map(([k, v, s]) => (
           <div key={k} className="ds-card" style={{ padding: "20px 20px 16px" }}>
             <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--c-text-3)" }}>{k}</div>
@@ -225,7 +225,7 @@ export default function AdminFees() {
         <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--c-text)", marginBottom: 16 }}>Spread &amp; price oracles</h3>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
           {SPREAD_ORACLES.map(([k, v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", background: "var(--c-surface-2)", borderRadius: 8 }}>
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", background: "var(--c-surface-2)", borderRadius: 14 }}>
               <span style={{ fontSize: 13, color: "var(--c-text)" }}>{k}</span>
               <span style={{ fontVariantNumeric: "tabular-nums", fontWeight: 600, color: "var(--c-text)" }}>{v}</span>
             </div>

@@ -1,8 +1,12 @@
+"use client";
+
+import dynamic from "next/dynamic";
 import { AdminSidebar } from "@/components/app/admin-sidebar";
-import { TopBar } from "@/components/app/topbar";
-import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { AdminHeader } from "@/components/app/admin-header";
 import { ToastProvider } from "@/components/admin/Toast";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+
+const FlowHost = dynamic(() => import("@/components/flow-host").then(m => m.FlowHost), { ssr: false });
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
 	return (
@@ -10,13 +14,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 		<ToastProvider>
 			<div className="flex h-screen overflow-hidden" style={{ background: "var(--c-bg)" }}>
 				<AdminSidebar />
-				<div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-					<TopBar />
-					<main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-12 pt-6 md:px-6 lg:px-8">
-						<Breadcrumbs />
-						<div className="mt-3">{children}</div>
-					</main>
+				<div className="flex min-w-0 flex-1 flex-col" style={{ height: "100vh", overflow: "hidden" }}>
+					<AdminHeader />
+					<div className="flex-1 overflow-y-auto" style={{ padding: "24px 24px 48px" }}>
+						<div className="mx-auto w-full max-w-[1400px]">
+							{children}
+						</div>
+					</div>
 				</div>
+				<FlowHost />
 			</div>
 		</ToastProvider>
 		</ThemeProvider>

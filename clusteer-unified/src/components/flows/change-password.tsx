@@ -80,7 +80,7 @@ export function ChangePasswordFlow({ onClose }: { onClose: () => void }) {
 			</div>
 
 			<Button onClick={() => submit.mutate()} disabled={!valid || submit.isPending}
-				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 44 }}>
+				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 36 }}>
 				{submit.isPending ? "Updating..." : "Update password"}
 			</Button>
 		</div>
@@ -93,7 +93,7 @@ function PasswordField({ label, value, onChange, show, toggle, error }: {
 	return (
 		<div>
 			<label style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, display: "block" }}>{label}</label>
-			<div style={{ display: "flex", alignItems: "center", height: 42, borderRadius: 10, border: `1.5px solid ${error ? "var(--c-down)" : "var(--c-line)"}`, background: "var(--c-surface)", paddingRight: 8 }}>
+			<div style={{ display: "flex", alignItems: "center", height: 38, borderRadius: 10, border: `1px solid ${error ? "var(--c-down)" : "var(--c-line)"}`, background: "var(--c-surface)", paddingRight: 8 }}>
 				<input type={show ? "text" : "password"} value={value} onChange={(e) => onChange(e.target.value)}
 					style={{ flex: 1, border: "none", outline: "none", background: "transparent", padding: "0 12px", fontSize: 14, color: "var(--c-text)" }} />
 				<button onClick={toggle} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", padding: 4 }}>

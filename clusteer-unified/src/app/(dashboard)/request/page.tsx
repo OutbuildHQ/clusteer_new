@@ -24,48 +24,42 @@ export default function RequestPage() {
 	};
 
 	return (
-		<div style={{ maxWidth: 680, margin: "0 auto", width: "100%" }}>
-			<div style={{ marginBottom: 24 }}>
-				<h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--c-text)", letterSpacing: "-0.03em", margin: 0 }}>
+		<div className="max-w-[680px] mx-auto w-full">
+			<div className="mb-6">
+				<h1 className="text-[32px] font-semibold text-ds-text tracking-[-0.03em] m-0 font-display">
 					Request payment
 				</h1>
-				<p style={{ fontSize: 14, color: "var(--c-text-2)", marginTop: 6 }}>
+				<p className="text-[13.5px] text-ds-text-2 mt-1.5">
 					Create a request anyone can pay — by QR or a link you share.
 				</p>
 			</div>
 
 			{stage === "form" ? (
-				<div style={{ background: "var(--c-surface)", borderRadius: 14, border: "1px solid var(--c-line)", padding: 24 }}>
-					<div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+				<div className="bg-ds-surface rounded-[14px] border border-ds-line p-5">
+					<div className="flex flex-col gap-4">
 						{/* Amount + currency */}
 						<div>
-							<label style={{ fontSize: 12, color: "var(--c-text-3)" }}>Amount</label>
-							<div style={{ display: "flex", gap: 8, marginTop: 6, alignItems: "stretch" }}>
+							<label className="text-[12px] text-ds-text-3">Amount</label>
+							<div className="flex gap-2 mt-1.5 items-stretch">
 								<input
 									type="number" min="0" placeholder="50" value={amt}
 									onChange={(e) => setAmt(e.target.value)}
-									style={{
-										flex: 1, height: 48, borderRadius: 10, border: "1px solid var(--c-line)",
-										padding: "0 14px", fontSize: 20, fontWeight: 600, color: "var(--c-text)",
-										background: "var(--c-surface)", fontVariantNumeric: "tabular-nums",
-									}}
+									className="flex-1 h-[38px] rounded-[10px] border border-ds-line px-3 text-[20px] font-semibold text-ds-text bg-ds-surface font-mono tabular-nums"
 								/>
-								<div style={{ display: "flex", gap: 0, padding: 3, borderRadius: 10, background: "var(--c-surface-2)", width: 180 }}>
+								<div className="inline-flex gap-0.5 p-[3px] rounded-[10px] bg-onyx-900 w-[180px]">
 									{["USDT", "USDC", "NGN"].map((c) => (
-										<button key={c} onClick={() => setCur(c)} style={{
-											flex: 1, padding: "8px 0", borderRadius: 7, fontSize: 12, fontWeight: 600,
-											border: "none", cursor: "pointer",
-											background: cur === c ? "var(--c-surface)" : "transparent",
-											color: cur === c ? "var(--c-text)" : "var(--c-text-3)",
-											boxShadow: cur === c ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
-										}}>
+										<button key={c} onClick={() => setCur(c)} className={`flex-1 py-1.5 px-3.5 rounded-[6px] text-[12.5px] font-medium border-none cursor-pointer ${
+											cur === c
+												? "bg-lime-500 text-onyx-900"
+												: "bg-transparent text-cream"
+										}`}>
 											{c}
 										</button>
 									))}
 								</div>
 							</div>
 							{cur !== "NGN" && parseFloat(amt) > 0 && (
-								<div style={{ fontSize: 12, color: "var(--c-text-3)", marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
+								<div className="text-[12px] text-ds-text-3 mt-1.5 font-mono tabular-nums">
 									≈ ₦{ngnEquiv.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
 								</div>
 							)}
@@ -73,14 +67,11 @@ export default function RequestPage() {
 
 						{/* Note */}
 						<div>
-							<label style={{ fontSize: 12, color: "var(--c-text-3)" }}>Note (optional)</label>
+							<label className="text-[12px] text-ds-text-3">Note (optional)</label>
 							<input
 								placeholder="What's it for?" value={note}
 								onChange={(e) => setNote(e.target.value)}
-								style={{
-									width: "100%", height: 44, borderRadius: 10, border: "1px solid var(--c-line)",
-									padding: "0 14px", fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)", marginTop: 6,
-								}}
+								className="w-full h-[38px] rounded-[10px] border border-ds-line px-3 text-[13.5px] text-ds-text bg-ds-surface mt-1.5"
 							/>
 						</div>
 
@@ -88,69 +79,48 @@ export default function RequestPage() {
 						<button
 							onClick={() => setStage("share")}
 							disabled={!amt || parseFloat(amt) <= 0}
-							style={{
-								display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-								width: "100%", height: 46, borderRadius: 12, border: "none", cursor: "pointer",
-								background: amt && parseFloat(amt) > 0 ? "var(--c-lime-500)" : "var(--c-surface-3)",
-								color: amt && parseFloat(amt) > 0 ? "var(--c-onyx-900)" : "var(--c-text-3)",
-								fontWeight: 600, fontSize: 14,
-							}}
+							className="flex items-center justify-center gap-2 w-full h-[46px] rounded-[10px] border-none cursor-pointer font-medium text-[13.5px] bg-lime-500 text-onyx-900 disabled:opacity-45 disabled:pointer-events-none"
 						>
 							<QrCode size={16} /> Create request
 						</button>
 					</div>
 				</div>
 			) : (
-				<div style={{ background: "var(--c-surface)", borderRadius: 14, border: "1px solid var(--c-line)", padding: 24 }}>
-					<div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 16 }}>
+				<div className="bg-ds-surface rounded-[14px] border border-ds-line p-6">
+					<div className="flex flex-col items-center text-center gap-4">
 						{/* Header */}
-						<div style={{ fontSize: 12, color: "var(--c-text-3)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Requesting</div>
-						<div style={{ fontSize: 34, fontWeight: 600, color: "var(--c-text)", fontVariantNumeric: "tabular-nums", fontFamily: "var(--f-display)" }}>
+						<div className="text-[12px] text-ds-text-3 uppercase tracking-[0.06em]">Requesting</div>
+						<div className="text-[34px] font-semibold text-ds-text tabular-nums font-display">
 							{amt} {cur}
 						</div>
 						{cur !== "NGN" && (
-							<div style={{ fontSize: 13, color: "var(--c-text-2)", marginTop: -8, fontVariantNumeric: "tabular-nums" }}>
+							<div className="text-[13px] text-ds-text-2 -mt-2 font-mono tabular-nums">
 								≈ ₦{ngnEquiv.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
 							</div>
 						)}
-						{note && <div style={{ fontSize: 13.5, color: "var(--c-text)" }}>{note}</div>}
+						{note && <div className="text-[13.5px] text-ds-text">{note}</div>}
 
 						{/* QR Code */}
-						<div style={{ padding: 14, background: "#fff", borderRadius: 16, border: "1px solid var(--c-line)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", display: "inline-block" }}>
+						<div className="p-3.5 bg-white rounded-2xl border border-ds-line shadow-[0_2px_12px_rgba(0,0,0,0.06)] inline-block leading-[0]">
 							<QR value={"https://" + link} size={160} />
 						</div>
 
 						{/* Link */}
-						<div style={{
-							padding: "10px 14px", width: "100%", maxWidth: 420,
-							display: "flex", alignItems: "center", gap: 10,
-							background: "var(--c-surface-2)", borderRadius: 10,
-						}}>
-							<span style={{ flex: 1, fontSize: 12.5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textAlign: "left", fontFamily: "var(--f-mono)", color: "var(--c-text)" }}>
+						<div className="px-3.5 py-2.5 w-full max-w-[420px] flex items-center gap-2.5 bg-ds-surface-2 rounded-[14px] border border-ds-line">
+							<span className="flex-1 text-[12.5px] overflow-hidden text-ellipsis whitespace-nowrap text-left font-mono text-ds-text">
 								{link}
 							</span>
-							<button onClick={copy} style={{
-								display: "flex", alignItems: "center", gap: 4, padding: "4px 10px",
-								borderRadius: 6, border: "1px solid var(--c-line)", background: "var(--c-surface)",
-								fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", cursor: "pointer",
-							}}>
-								{copied ? <Check size={12} /> : <Copy size={12} />} {copied ? "Copied" : "Copy"}
+							<button onClick={copy} className="inline-flex items-center gap-1.5 h-[30px] px-2.5 rounded-[10px] border border-ds-line bg-transparent text-[12.5px] font-medium text-ds-text cursor-pointer">
+								{copied ? <Check size={14} /> : <Copy size={14} />} {copied ? "Copied" : "Copy"}
 							</button>
 						</div>
 
 						{/* Actions */}
-						<div style={{ display: "flex", gap: 8, width: "100%", maxWidth: 420 }}>
-							<button onClick={() => setStage("form")} style={{
-								flex: 1, height: 42, borderRadius: 10, border: "1px solid var(--c-line)",
-								background: "var(--c-surface)", color: "var(--c-text-2)", fontWeight: 600, fontSize: 13, cursor: "pointer",
-							}}>
+						<div className="flex gap-2 w-full max-w-[420px]">
+							<button onClick={() => setStage("form")} className="flex-1 h-[36px] rounded-[10px] border border-ds-line bg-transparent text-ds-text font-medium text-[13.5px] cursor-pointer flex items-center justify-center">
 								New request
 							</button>
-							<button onClick={() => toast.success("Share sheet opened")} style={{
-								flex: 1, height: 42, borderRadius: 10, border: "none",
-								background: "var(--c-lime-500)", color: "var(--c-onyx-900)", fontWeight: 600, fontSize: 13,
-								cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-							}}>
+							<button onClick={() => toast.success("Share sheet opened")} className="flex-1 h-[36px] rounded-[10px] border border-transparent bg-lime-500 text-onyx-900 font-medium text-[13.5px] cursor-pointer flex items-center justify-center gap-1.5">
 								<ExternalLink size={14} /> Share request
 							</button>
 						</div>

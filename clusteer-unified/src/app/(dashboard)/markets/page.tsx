@@ -85,7 +85,7 @@ export default function MarketsPage() {
 			{/* Header */}
 			<div className="flex items-start justify-between gap-4 flex-wrap">
 				<div>
-					<h1 style={{ fontSize: 32, fontWeight: 600, letterSpacing: "-0.03em", color: "var(--c-text)" }}>Markets</h1>
+					<h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display" style={{ color: "var(--c-text)" }}>Markets</h1>
 					{lastUpdated && (
 						<p style={{ fontSize: 12, color: "var(--c-text-3)", marginTop: 2 }}>
 							Updated {lastUpdated.toLocaleTimeString()}

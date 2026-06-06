@@ -7,21 +7,25 @@ import { toast } from "sonner";
 import { useUserId } from "@/hooks/use-user-id";
 import { getKYCVerification, type KYCVerification } from "@/lib/api/settings";
 
+const STATUS_BADGE_CLASSES: Record<string, string> = {
+	Verified: "bg-up-soft text-up",
+	"Under Review": "bg-warn-soft text-warn",
+};
+
 function StatusBadge({ s }: { s: string }) {
-	const style = s === "Verified"
-		? { background: "var(--c-up-soft)", color: "var(--c-up)" }
-		: { background: "var(--c-surface-2)", color: "var(--c-text-2)", border: "1px solid var(--c-line)" };
+	const cls = STATUS_BADGE_CLASSES[s] ?? "bg-ds-surface-2 text-ds-text-2 border border-ds-line";
+	const icon = s === "Verified" ? "✓" : "◐";
 	return (
-		<span className="inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium" style={style}>
-			<span className="text-[9px]">{s === "Verified" ? "\u2713" : "\u25CF"}</span>{s}
+		<span className={`inline-flex items-center gap-1.5 h-[22px] px-2 rounded-full text-[11.5px] font-medium ${cls}`}>
+			<span className="text-[9px]">{icon}</span>{s}
 		</span>
 	);
 }
 
 const FALLBACK_TIERS = [
-	{ tier: "Tier 1", limit: "\u20A6300K/day", status: "Pending", items: ["Email", "Phone"], current: false },
-	{ tier: "Tier 2", limit: "\u20A65M/day", status: "Pending", items: ["BVN", "NIN", "Selfie"], current: false },
-	{ tier: "Tier 3", limit: "\u20A620M/day", status: "Available", items: ["Address proof", "Source of funds"], current: false },
+	{ tier: "Tier 1", limit: "₦300K/day", status: "Pending", items: ["Email", "Phone"], current: false },
+	{ tier: "Tier 2", limit: "₦5M/day", status: "Pending", items: ["BVN", "NIN", "Selfie"], current: false },
+	{ tier: "Tier 3", limit: "₦20M/day", status: "Available", items: ["Address proof", "Source of funds"], current: false },
 ];
 
 const FALLBACK_DOCS: [string, string, string][] = [
@@ -38,27 +42,9 @@ function deriveTiers(kyc: KYCVerification | null | undefined) {
 	const isPendingOrReview = kyc.status === "pending" || kyc.status === "under_review";
 
 	return [
-		{
-			tier: "Tier 1",
-			limit: "\u20A6300K/day",
-			status: "Verified",
-			items: ["Email", "Phone"],
-			current: false,
-		},
-		{
-			tier: "Tier 2",
-			limit: "\u20A65M/day",
-			status: isApproved ? "Verified" : isPendingOrReview ? "Pending" : "Available",
-			items: ["BVN", "NIN", "Selfie"],
-			current: isApproved,
-		},
-		{
-			tier: "Tier 3",
-			limit: "\u20A620M/day",
-			status: "Available",
-			items: ["Address proof", "Source of funds"],
-			current: false,
-		},
+		{ tier: "Tier 1", limit: "₦300K/day", status: "Verified", items: ["Email", "Phone"], current: false },
+		{ tier: "Tier 2", limit: "₦5M/day", status: isApproved ? "Verified" : isPendingOrReview ? "Pending" : "Available", items: ["BVN", "NIN", "Selfie"], current: isApproved },
+		{ tier: "Tier 3", limit: "₦20M/day", status: "Available", items: ["Address proof", "Source of funds"], current: false },
 	];
 }
 
@@ -87,16 +73,9 @@ export default function IdentityVerificationPage() {
 		setUploadingDoc(docType);
 		try {
 			const formData = new FormData();
-			// Map UI doc type to API field names
 			if (docType === "Selfie") {
 				formData.append("documentType", "id_card");
 				formData.append("selfie", file);
-			} else if (docType === "NIN") {
-				formData.append("documentType", "id_card");
-				formData.append("documentFront", file);
-			} else if (docType === "BVN") {
-				formData.append("documentType", "id_card");
-				formData.append("documentFront", file);
 			} else {
 				formData.append("documentType", "id_card");
 				formData.append("documentFront", file);
@@ -124,10 +103,13 @@ export default function IdentityVerificationPage() {
 
 	if (isLoading) {
 		return (
-			<div className="space-y-6" style={{ maxWidth: 780, margin: "0 auto", width: "100%" }}>
+			<div className="flex flex-col gap-6 max-w-[780px] mx-auto w-full">
 				<div>
-					<h1 className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>Identity verification</h1>
-					<p className="mt-1.5 text-[14px]" style={{ color: "var(--c-text-2)" }}>Loading your verification status...</p>
+					<h1 className="text-[32px] font-semibold text-ds-text tracking-[-0.03em] m-0 font-display">Identity verification</h1>
+					<p className="mt-1.5 text-ds-text-2 text-[13.5px]">Loading your verification status…</p>
+				</div>
+				<div className="flex justify-center pt-10">
+					<div className="w-8 h-8 border-[3px] border-ds-line border-t-lime-500 rounded-full animate-spin" />
 				</div>
 			</div>
 		);
@@ -135,26 +117,27 @@ export default function IdentityVerificationPage() {
 
 	if (isError) {
 		return (
-			<div className="space-y-6" style={{ maxWidth: 780, margin: "0 auto", width: "100%" }}>
+			<div className="flex flex-col gap-6 max-w-[780px] mx-auto w-full">
 				<div>
-					<h1 className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>Identity verification</h1>
-					<p className="mt-1.5 text-[14px]" style={{ color: "var(--c-text-2)" }}>Failed to load verification status. Please refresh the page.</p>
+					<h1 className="text-[32px] font-semibold text-ds-text tracking-[-0.03em] m-0 font-display">Identity verification</h1>
+					<p className="mt-1.5 text-ds-text-2 text-[13.5px]">Failed to load verification status. Please refresh the page.</p>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="space-y-6" style={{ maxWidth: 780, margin: "0 auto", width: "100%" }}>
+		<div className="flex flex-col gap-6 max-w-[780px] mx-auto w-full">
+			{/* Header */}
 			<div>
-				<h1 className="text-[22px] lg:text-[32px] font-semibold leading-tight tracking-tight" style={{ color: "var(--c-text)", letterSpacing: "-0.03em" }}>Identity verification</h1>
-				<p className="mt-1.5 text-[14px]" style={{ color: "var(--c-text-2)" }}>Upgrade your tier to lift transaction limits and unlock features.</p>
+				<h1 className="text-[32px] font-semibold text-ds-text tracking-[-0.03em] m-0 font-display">Identity verification</h1>
+				<p className="mt-1.5 text-ds-text-2 text-[13.5px]">Upgrade your tier to lift transaction limits and unlock features.</p>
 			</div>
 
 			{/* Rejection banner */}
 			{kycData?.status === "rejected" && (
-				<div className="rounded-[14px] p-4" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.3)" }}>
-					<p className="text-[13px] font-medium" style={{ color: "var(--c-danger, #ef4444)" }}>
+				<div className="rounded-[14px] p-4 bg-down-soft border border-down/30">
+					<p className="text-[13px] font-medium text-down">
 						Your verification was rejected: {kycData.rejection_reason || "Please review your documents and try again."}
 					</p>
 				</div>
@@ -165,31 +148,34 @@ export default function IdentityVerificationPage() {
 				{TIERS.map((t) => (
 					<div
 						key={t.tier}
-						className="rounded-[14px] p-[var(--pad)] relative"
-						style={{
-							background: "var(--c-surface)",
-							border: `${t.current ? 2 : 1}px solid ${t.current ? "var(--c-lime-500)" : "var(--c-line)"}`,
-						}}
+						className={`bg-ds-surface rounded-[14px] p-5 relative ${
+							t.current
+								? "border-2 border-lime-500"
+								: "border border-ds-line"
+						}`}
 					>
 						{t.current && (
-							<span className="absolute -top-2.5 right-3.5 inline-flex items-center h-[22px] px-2 rounded-full text-[11.5px] font-medium"
-								style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}>Current</span>
+							<span className="absolute -top-2.5 right-3.5 inline-flex items-center h-[22px] px-2 rounded-full text-[11.5px] font-medium bg-lime-500 text-onyx-900">
+								Current
+							</span>
 						)}
-						<h3 className="text-[17px] font-semibold" style={{ color: "var(--c-text)" }}>{t.tier}</h3>
-						<div className="tabular-nums text-[22px] font-semibold mt-1.5" style={{ fontFamily: "var(--f-display)", color: "var(--c-text)", letterSpacing: "-0.025em" }}>
+						<h3 className="text-[15px] font-semibold text-ds-text m-0">{t.tier}</h3>
+						<div className="text-[22px] font-semibold mt-1.5 font-mono tabular-nums text-ds-text tracking-[-0.025em]">
 							{t.limit}
 						</div>
-						<div className="text-[12px] mt-0.5" style={{ color: "var(--c-text-3)" }}>Daily withdrawal limit</div>
-						<div className="mt-3.5 space-y-2">
+						<div className="text-[12px] mt-0.5 text-ds-text-3">Daily limit</div>
+						<div className="flex flex-col gap-2 mt-3.5">
 							{t.items.map((item) => (
-								<div key={item} className="flex items-center gap-2 text-[13px]" style={{ color: "var(--c-text)" }}>
-									<span style={{ color: "var(--c-up)" }}><Check className="size-3.5" /></span>{item}
+								<div key={item} className="flex items-center gap-2 text-[13px] text-ds-text">
+									<span className="text-up"><Check size={14} /></span>{item}
 								</div>
 							))}
 						</div>
 						{!t.current && (
-							<button className="w-full mt-3.5 inline-flex items-center justify-center h-9 rounded-[10px] text-[13.5px] font-medium"
-								style={{ background: "var(--c-onyx-900)", color: "var(--c-cream)" }}>
+							<button
+								disabled={t.status === "Verified"}
+								className="w-full mt-3.5 inline-flex items-center justify-center h-[36px] rounded-[10px] text-[13.5px] font-medium border-none cursor-pointer bg-onyx-900 text-cream dark:bg-cream dark:text-onyx-900 disabled:opacity-50 disabled:pointer-events-none"
+							>
 								{t.status === "Verified" ? "Completed" : t.status === "Pending" ? "Under Review" : "Upgrade"}
 							</button>
 						)}
@@ -198,14 +184,16 @@ export default function IdentityVerificationPage() {
 			</div>
 
 			{/* Verification documents */}
-			<div className="rounded-[14px] p-[var(--pad)]" style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)" }}>
-				<h3 className="text-[17px] font-semibold mb-4" style={{ color: "var(--c-text)" }}>Verification documents</h3>
-				<div className="space-y-3">
+			<div className="bg-ds-surface border border-ds-line rounded-[14px] overflow-hidden">
+				<div className="px-5 py-4 border-b border-ds-line">
+					<h3 className="text-[15px] font-semibold text-ds-text m-0">Verification documents</h3>
+				</div>
+				<div className="flex flex-col gap-3 p-5">
 					{DOCS.map(([k, v, s]) => (
-						<div key={k} className="flex items-center justify-between p-3.5 rounded-[10px]" style={{ border: "1px solid var(--c-line)" }}>
+						<div key={k} className="flex items-center justify-between p-3.5 rounded-[10px] border border-ds-line">
 							<div>
-								<div className="font-semibold text-[13px]" style={{ color: "var(--c-text)" }}>{k}</div>
-								<div className="tabular-nums text-[12px] mt-0.5" style={{ fontFamily: "var(--f-mono)", color: "var(--c-text-3)" }}>{v}</div>
+								<div className="font-semibold text-[13px] text-ds-text">{k}</div>
+								<div className="tabular-nums text-[12px] mt-0.5 font-mono text-ds-text-3">{v}</div>
 							</div>
 							{s === "Verified" ? (
 								<StatusBadge s="Verified" />
@@ -214,8 +202,7 @@ export default function IdentityVerificationPage() {
 							) : (
 								<button
 									disabled={uploadingDoc === k}
-									className="inline-flex items-center h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium disabled:opacity-60"
-									style={{ color: "var(--c-text)", border: "1px solid var(--c-line)" }}
+									className="inline-flex items-center h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium border border-ds-line bg-transparent text-ds-text cursor-pointer disabled:opacity-60"
 									onClick={() => {
 										pendingDocType.current = k;
 										fileInputRef.current?.click();
@@ -228,7 +215,7 @@ export default function IdentityVerificationPage() {
 					))}
 				</div>
 			</div>
-			{/* Hidden file input shared across all upload buttons */}
+
 			<input
 				type="file"
 				accept="image/*,.pdf"

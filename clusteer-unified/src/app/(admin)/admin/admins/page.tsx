@@ -25,7 +25,7 @@ interface Admin {
 /* ─── color helpers ─── */
 function roleStyle(r: string) {
 	return r === "Super Admin"
-		? { background: "var(--c-info-soft)", color: "var(--c-info)" }
+		? { background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }
 		: r === "Admin"
 		? { background: "var(--c-up-soft)", color: "var(--c-up)" }
 		: r === "Moderator"
@@ -280,7 +280,7 @@ export default function AdminsPage() {
 			{/* ─── Header ─── */}
 			<div className="flex items-center justify-between gap-4 flex-wrap">
 				<div>
-					<h1 className="text-[22px] font-semibold tracking-tight text-[var(--c-text)]">Staff</h1>
+					<h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display text-[var(--c-text)]">Staff</h1>
 					<p className="text-[13px] text-[var(--c-text-3)] mt-0.5">
 						{admins.length} admin accounts
 					</p>
@@ -288,7 +288,7 @@ export default function AdminsPage() {
 				<button
 					onClick={() => setShowCreateDrawer(true)}
 					className="flex items-center gap-1.5 h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors"
-					style={{ background: "#84cc16", color: "#1a2e05" }}
+					style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}
 				>
 					<Plus className="size-3.5" />
 					Add admin
@@ -325,7 +325,7 @@ export default function AdminsPage() {
 					<div className="relative">
 						<Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[var(--c-text-3)]" />
 						<input
-							className="h-8 pl-8 pr-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent w-[200px]"
+							className="h-[38px] pl-8 pr-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[var(--c-lime-500)] focus:border-transparent w-[200px]"
 							placeholder="Name or email…"
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
@@ -338,7 +338,7 @@ export default function AdminsPage() {
 					<select
 						value={selectedRole}
 						onChange={(e) => setSelectedRole(e.target.value)}
-						className="h-8 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
+						className="h-[38px] px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[var(--c-lime-500)] focus:border-transparent"
 					>
 						{roles.map((role) => (
 							<option key={role} value={role}>{role}</option>
@@ -349,7 +349,7 @@ export default function AdminsPage() {
 					<select
 						value={selectedStatus}
 						onChange={(e) => setSelectedStatus(e.target.value)}
-						className="h-8 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
+						className="h-[38px] px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[var(--c-lime-500)] focus:border-transparent"
 					>
 						{statuses.map((status) => (
 							<option key={status} value={status}>{status}</option>
@@ -537,7 +537,7 @@ export default function AdminsPage() {
 									value={formData.name}
 									onChange={(e) => setFormData({ ...formData, name: e.target.value })}
 									placeholder="e.g. John Doe"
-									className="w-full h-9 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
+									className="w-full h-9 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[var(--c-lime-500)] focus:border-transparent"
 								/>
 							</div>
 
@@ -553,7 +553,7 @@ export default function AdminsPage() {
 										value={formData.email}
 										onChange={(e) => setFormData({ ...formData, email: e.target.value })}
 										placeholder="admin@clusteer.com"
-										className="w-full h-9 pl-9 pr-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
+										className="w-full h-9 pl-9 pr-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[var(--c-lime-500)] focus:border-transparent"
 									/>
 								</div>
 							</div>
@@ -570,7 +570,7 @@ export default function AdminsPage() {
 										value={formData.phone}
 										onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
 										placeholder="+234 801 234 5678"
-										className="w-full h-9 pl-9 pr-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
+										className="w-full h-9 pl-9 pr-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[var(--c-lime-500)] focus:border-transparent"
 									/>
 								</div>
 							</div>
@@ -583,7 +583,7 @@ export default function AdminsPage() {
 								<select
 									value={formData.role}
 									onChange={(e) => setFormData({ ...formData, role: e.target.value as Admin["role"] })}
-									className="w-full h-9 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[#84cc16] focus:border-transparent"
+									className="w-full h-9 px-3 rounded-lg border border-[var(--c-line)] bg-[var(--c-surface)] text-[13px] text-[var(--c-text)] outline-none focus:ring-2 focus:ring-[var(--c-lime-500)] focus:border-transparent"
 								>
 									<option value="Admin">Admin</option>
 									<option value="Super Admin">Super Admin</option>
@@ -641,7 +641,7 @@ export default function AdminsPage() {
 									formData.permissions.length === 0
 								}
 								className="h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-								style={{ background: "#84cc16", color: "#1a2e05" }}
+								style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}
 							>
 								{isEditing ? "Update" : "Create"}
 							</button>

@@ -47,7 +47,7 @@ export function CreateApiKeyFlow({ onClose }: { onClose: () => void }) {
 					<CopyButton value={createdKey} />
 				</div>
 
-				<Button onClick={onClose} style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 44 }}>Done</Button>
+				<Button onClick={onClose} style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 36 }}>Done</Button>
 			</div>
 		);
 	}
@@ -64,7 +64,7 @@ export function CreateApiKeyFlow({ onClose }: { onClose: () => void }) {
 			<div>
 				<label style={{ fontSize: 12, fontWeight: 600, color: "var(--c-text-2)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, display: "block" }}>Key name</label>
 				<input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Trading bot"
-					style={{ width: "100%", height: 42, borderRadius: 10, border: "1.5px solid var(--c-line)", padding: "0 12px", fontSize: 14, color: "var(--c-text)", background: "var(--c-surface)" }} />
+					style={{ width: "100%", height: 38, borderRadius: 10, border: "1px solid var(--c-line)", padding: "0 12px", fontSize: 13, color: "var(--c-text)", background: "var(--c-surface)" }} />
 			</div>
 
 			<div>
@@ -82,7 +82,7 @@ export function CreateApiKeyFlow({ onClose }: { onClose: () => void }) {
 			</div>
 
 			<Button onClick={() => create.mutate()} disabled={!name.trim() || create.isPending}
-				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 44 }}>
+				style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 36 }}>
 				{create.isPending ? "Creating..." : "Create API key"}
 			</Button>
 		</div>

@@ -8,20 +8,47 @@ import { ChangeEmailFlow } from "./flows/change-email";
 import { TwoFaFlow } from "./flows/two-fa";
 import { AddBankFlow } from "./flows/add-bank";
 import { CreateApiKeyFlow } from "./flows/create-api-key";
+import { OrderDetailDrawer } from "./flows/order-detail";
+import { ConfirmDialog } from "./flows/confirm-dialog";
+import { NotificationDetailFlow } from "./flows/notification-detail";
+import { NewUserFlow } from "./flows/new-user";
+import { FeeRuleFlow } from "./flows/fee-rule";
+import { CmsContentFlow } from "./flows/cms-content";
+import { GenerateReportFlow } from "./flows/generate-report";
+import { InviteStaffFlow } from "./flows/invite-staff";
+import { CaseReviewDrawer } from "./flows/case-review";
+import { AuditDetailDrawer } from "./flows/audit-detail";
+import { TxnDetailAdminDrawer } from "./flows/txn-detail-admin";
 
 type FlowEntry = {
 	type: string;
 	props: Record<string, unknown>;
 };
 
-const FLOW_REGISTRY: Record<string, React.ComponentType<{ onClose: () => void; [k: string]: unknown }>> = {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const MODAL_FLOWS: Record<string, React.ComponentType<any>> = {
 	newTicket: NewTicketFlow,
 	changePassword: ChangePasswordFlow,
 	changeEmail: ChangeEmailFlow,
 	twoFa: TwoFaFlow,
 	addBank: AddBankFlow,
 	createApiKey: CreateApiKeyFlow,
+	confirm: ConfirmDialog,
+	notifDetail: NotificationDetailFlow,
+	newUser: NewUserFlow,
+	feeRule: FeeRuleFlow,
+	cmsContent: CmsContentFlow,
+	report: GenerateReportFlow,
+	inviteStaff: InviteStaffFlow,
 };
+
+const DRAWER_FLOWS: Record<string, React.ComponentType<any>> = {
+	orderDetail: OrderDetailDrawer,
+	caseReview: CaseReviewDrawer,
+	auditDetail: AuditDetailDrawer,
+	txnDetail: TxnDetailAdminDrawer,
+};
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 declare global {
 	interface WindowEventMap {
@@ -48,6 +75,7 @@ export function FlowHost() {
 
 	useEffect(() => {
 		if (!active) return;
+		if (DRAWER_FLOWS[active.type]) return;
 		const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
 		document.addEventListener("keydown", onKey);
 		return () => document.removeEventListener("keydown", onKey);
@@ -55,8 +83,13 @@ export function FlowHost() {
 
 	if (!active) return null;
 
-	const Flow = FLOW_REGISTRY[active.type];
-	if (!Flow) {
+	const DrawerFlow = DRAWER_FLOWS[active.type];
+	if (DrawerFlow) {
+		return <DrawerFlow onClose={close} {...active.props} />;
+	}
+
+	const ModalFlow = MODAL_FLOWS[active.type];
+	if (!ModalFlow) {
 		console.warn(`[FlowHost] Unknown flow type: ${active.type}`);
 		return null;
 	}
@@ -102,7 +135,7 @@ export function FlowHost() {
 				>
 					<X size={16} style={{ color: "var(--c-text-2)" }} />
 				</button>
-				<Flow onClose={close} {...active.props} />
+				<ModalFlow onClose={close} {...active.props} />
 			</div>
 		</div>
 	);

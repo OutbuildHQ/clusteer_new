@@ -7,14 +7,14 @@ import { Logo } from "@/components/brand/logo";
 import { useUserId } from "@/hooks/use-user-id";
 import { getKYCVerification } from "@/lib/api/settings";
 import {
-	LayoutDashboard, ArrowLeftRight, QrCode, BookOpen, List,
+	LayoutDashboard, ArrowLeftRight, BookOpen, List,
 	Receipt, ShieldCheck, Bell, Gift, Settings, HelpCircle,
 } from "lucide-react";
 
 const NAV = [
 	{ id: "dashboard",               href: "/dashboard",               label: "Overview",      icon: LayoutDashboard, tab: true },
 	{ id: "trade",                    href: "/trade",                   label: "Buy / Sell",    icon: ArrowLeftRight, tab: true },
-	{ id: "request",                  href: "/request",                 label: "Request",       icon: QrCode },
+	// { id: "request", href: "/request", label: "Request", icon: QrCode }, // hidden — requires own crypto license (post-Quidax)
 	{ id: "orders",                   href: "/orders",                  label: "Orders",        icon: BookOpen, tab: true },
 	{ id: "transaction-history",      href: "/transaction-history",     label: "History",       icon: List },
 	{ id: "billing",                  href: "/billing",                 label: "Billing",       icon: Receipt },

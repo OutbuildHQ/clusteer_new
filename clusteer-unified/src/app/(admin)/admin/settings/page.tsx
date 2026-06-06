@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 
 /* ── inline mock data for the 2x2 grid ── */
 const WITHDRAWAL_LIMITS = [
@@ -42,7 +43,16 @@ export default function AdminSettings() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 600, color: "var(--c-text)", letterSpacing: "-0.02em" }}>System settings</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display" style={{ color: "var(--c-text)" }}>System settings</h1>
+        <button
+          onClick={() => toast.success("Settings saved")}
+          className="flex items-center h-9 px-4 rounded-lg text-[13px] font-semibold transition-colors"
+          style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)" }}
+        >
+          Save changes
+        </button>
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* Withdrawal limits */}

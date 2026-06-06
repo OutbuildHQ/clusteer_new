@@ -65,7 +65,7 @@ export default function AdminCompliance() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 600, color: "var(--c-text)", letterSpacing: "-0.02em" }}>Compliance</h1>
+          <h1 className="text-[32px] font-semibold tracking-[-0.03em] font-display" style={{ color: "var(--c-text)" }}>Compliance</h1>
           <p style={{ marginTop: 6, fontSize: 13, color: "var(--c-text-3)" }}>AML cases, sanctions screening, regulatory reporting</p>
         </div>
         <div style={{ display: "flex", gap: 4, padding: 4, borderRadius: 10, background: "var(--c-surface-2)", border: "1px solid var(--c-line)" }}>
@@ -118,7 +118,7 @@ export default function AdminCompliance() {
               {CASES.map((c, i) => {
                 const ss = sevStyle(c.sev);
                 return (
-                  <tr key={c.id} style={{ borderBottom: "1px solid var(--c-line)", cursor: "pointer" }} className="hover:bg-[var(--c-surface-2)] transition-colors">
+                  <tr key={c.id} style={{ borderBottom: "1px solid var(--c-line)", cursor: "pointer" }} className="hover:bg-[var(--c-surface-2)] transition-colors" onClick={() => window.openFlow("caseReview", { kase: { ...c, user: USERS[i].name, opened: `${i + 1}d ago` } })}>
                     <td style={{ padding: "10px 16px", fontFamily: "monospace", fontSize: 11, color: "var(--c-text-3)" }}>{c.id}</td>
                     <td style={{ padding: "10px 16px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -140,7 +140,7 @@ export default function AdminCompliance() {
                       </span>
                     </td>
                     <td style={{ padding: "10px 16px" }}>
-                      <button className="h-7 px-3 rounded-md border border-[var(--c-line)] text-[12px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors">Review</button>
+                      <button className="h-7 px-3 rounded-md border border-[var(--c-line)] text-[12px] font-medium text-[var(--c-text)] hover:bg-[var(--c-surface-2)] transition-colors" onClick={(e) => { e.stopPropagation(); window.openFlow("caseReview", { kase: { ...c, user: USERS[i].name, opened: `${i + 1}d ago` } }); }}>Review</button>
                     </td>
                   </tr>
                 );

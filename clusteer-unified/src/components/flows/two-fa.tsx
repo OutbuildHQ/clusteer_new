@@ -54,7 +54,7 @@ export function TwoFaFlow({ onClose }: { onClose: () => void }) {
 						<Copy size={14} /> Copy all
 					</Button>
 				</div>
-				<Button onClick={onClose} style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 44 }}>Done</Button>
+				<Button onClick={onClose} style={{ background: "var(--c-lime-500)", color: "var(--c-onyx-900)", border: "none", fontWeight: 700, height: 36 }}>Done</Button>
 			</div>
 		);
 	}
