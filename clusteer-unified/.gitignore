@@ -44,4 +44,4 @@ next-env.d.ts
 .vercel
 
 # service-worker
-firebase-messaging-sw.js
+firebase-messaging-sw.js.turbo
