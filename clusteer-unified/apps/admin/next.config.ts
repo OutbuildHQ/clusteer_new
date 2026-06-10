@@ -9,7 +9,6 @@ const nextConfig: NextConfig = {
 	},
 
 	turbopack: {
-		root: path.resolve(__dirname, "../.."),
 		resolveAlias: {
 			"@clusteer/ui/*": path.resolve(__dirname, "../../packages/ui/src/*"),
 		},
