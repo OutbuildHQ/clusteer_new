@@ -47,10 +47,10 @@ export function Footer() {
 						</div>
 						<div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
 						{[
-							{ t: "Product", l: [{ label: "Buy stables", href: "/trade" }, { label: "Sell stables", href: "/trade" }, { label: "Orders", href: "/orders" }, { label: "Mobile app", href: "#app" }, { label: "Pricing", href: "#rates" }] },
+							{ t: "Product", l: [{ label: "Buy stables", href: "/buy" }, { label: "Sell stables", href: "/sell" }, { label: "Payments", href: "/payments" }, { label: "Markets", href: "/live-markets" }, { label: "Mobile app", href: "/mobile" }] },
 							{ t: "Company", l: [{ label: "About", href: "/about" }, { label: "Careers", href: "/careers" }, { label: "Press", href: "/press" }, { label: "Contact", href: "/contact" }, { label: "Status", href: "/status" }] },
-							{ t: "Resources", l: [{ label: "Help center", href: "/help" }, { label: "Rate alerts", href: "/rate-alerts" }, { label: "Developer API", href: "/developer" }, { label: "System status", href: "/status" }, { label: "Security", href: "#trust" }] },
-							{ t: "Legal", l: [{ label: "Terms", href: "/terms-of-service" }, { label: "Privacy", href: "/privacy-policy" }, { label: "AML/CFT", href: "/aml-cft" }, { label: "NDPR", href: "/ndpr" }, { label: "Cookie policy", href: "/cookie-policy" }] },
+							{ t: "Resources", l: [{ label: "Help center", href: "/help" }, { label: "Rate alerts", href: "/rate-alerts" }, { label: "Trust", href: "#trust" }] },
+							{ t: "Legal", l: [{ label: "Terms", href: "/terms-of-service" }, { label: "Privacy", href: "/privacy-policy" }, { label: "AML/CFT", href: "/aml-cft" }, { label: "Cookie policy", href: "/cookie-policy" }] },
 						].map((c) => (
 							<div key={c.t}>
 								<div className="font-mono text-[11px] font-semibold text-white/40 tracking-[1.5px] mb-4">{c.t.toUpperCase()}</div>
@@ -61,9 +61,14 @@ export function Footer() {
 						))}
 						</div>
 					</div>
-					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 pt-6 sm:pt-7 border-t border-white/10 text-[11px] sm:text-xs text-white/50">
-						<span>&copy; {new Date().getFullYear()} Clusteer. All rights reserved.</span>
-						<span className="font-mono">v3.2.1 · build 4f8a92</span>
+					<div className="pt-6 sm:pt-7 border-t border-white/10">
+						<p className="text-[11px] sm:text-xs text-white/40 leading-relaxed max-w-3xl mb-4 sm:mb-5">
+							Clusteer is a financial technology product of Outbuild Ltd (RC 8076384), not a bank. We operate a non-custodial model — your funds are always yours — and process transactions through partnerships with fully licensed, nationally regulated payment and digital-asset partners.
+						</p>
+						<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 text-[11px] sm:text-xs text-white/50">
+							<span>&copy; {new Date().getFullYear()} Clusteer. All rights reserved.</span>
+							<span className="font-mono">v3.2.1 · build 4f8a92</span>
+						</div>
 					</div>
 				</div>
 			</footer>

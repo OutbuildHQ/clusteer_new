@@ -46,7 +46,6 @@ export async function middleware(request: NextRequest) {
 		"/change-password",
 		"/verify-otp",
 		"/verify-email",
-		"/security-info",
 		"/privacy-policy",
 		"/terms-of-service",
 		"/auth/callback",
