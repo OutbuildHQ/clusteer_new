@@ -40,7 +40,7 @@ export default function CookiePolicyPage() {
 									<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
 									<path d="m9 12 2 2 4-4"></path>
 								</svg>{" "}
-								Last updated · 18 June 2026
+								Last updated · 19 June 2026
 							</span>
 							<span className="f-mono inline-flex items-center gap-[6px] text-[11.5px] font-semibold py-[5px] px-[11px] rounded-full bg-[#ffffff] text-[#21241d] border-[1.5px] border-[#21241d]">
 								<svg
@@ -171,22 +171,19 @@ export default function CookiePolicyPage() {
 									<strong>Performance and analytics</strong> — help us understand usage and improve
 									the Platform. These are used only with your consent where required.
 								</li>
+								<li>
+									<strong>Marketing</strong> — measure the performance of our ads and campaigns.
+									These are set only with your consent.
+								</li>
 							</ul>
 							<p className="lg-p">
-								We do not use cookies to sell your personal data. *
-								<span className="legal-ph" title="To be completed before launch">
-									If you add advertising or marketing cookies in future, update this section and
-									your consent banner accordingly.
-								</span>
-								*
+								We do not use cookies to sell your personal data. Analytics and marketing cookies
+								are only ever set after you opt in.
 							</p>
 							<div className="lg-callout">
-								<strong>Cookies we use.</strong> *
-								<span className="legal-ph" title="To be completed before launch">
-									Complete this table once your technical stack is finalised — informed consent
-									under the NDPA requires this level of detail.
-								</span>
-								*
+								<strong>Cookies we use.</strong> The table below lists the cookies and similar
+								storage we use today, grouped by category. Analytics and marketing entries are only
+								active with your consent.
 							</div>
 							<div className="lg-table-wrap">
 								<table className="lg-table">
@@ -201,73 +198,39 @@ export default function CookiePolicyPage() {
 									</thead>
 									<tbody>
 										<tr>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													name
-												</span>
-											</td>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													provider
-												</span>
-											</td>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													e.g. authentication / session
-												</span>
-											</td>
+											<td>auth_token</td>
+											<td>Clusteer (first-party)</td>
+											<td>Keeps you securely signed in to your session</td>
 											<td>Strictly necessary</td>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													session
-												</span>
-											</td>
+											<td>Session (up to 30 days with keep-me-signed-in)</td>
 										</tr>
 										<tr>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													name
-												</span>
-											</td>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													provider
-												</span>
-											</td>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													e.g. usage analytics
-												</span>
-											</td>
-											<td>Performance / analytics</td>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													period
-												</span>
-											</td>
+											<td>clusteer-cookie-consent</td>
+											<td>Clusteer (first-party)</td>
+											<td>Stores your cookie preferences so we do not ask again</td>
+											<td>Strictly necessary</td>
+											<td>Persistent (local storage)</td>
 										</tr>
 										<tr>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													name
-												</span>
-											</td>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													provider
-												</span>
-											</td>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													e.g. remembering preferences
-												</span>
-											</td>
+											<td>theme</td>
+											<td>Clusteer (first-party)</td>
+											<td>Remembers your light / dark display preference</td>
 											<td>Functional</td>
-											<td>
-												<span className="legal-ph" title="To be completed before launch">
-													period
-												</span>
-											</td>
+											<td>Persistent (local storage)</td>
+										</tr>
+										<tr>
+											<td>_ga, _gid</td>
+											<td>Google Analytics</td>
+											<td>Measures site traffic and usage so we can improve the product</td>
+											<td>Analytics</td>
+											<td>_ga: 2 years; _gid: 24 hours</td>
+										</tr>
+										<tr>
+											<td>_fbp</td>
+											<td>Meta (Facebook)</td>
+											<td>Measures the performance of our ads and campaigns</td>
+											<td>Marketing</td>
+											<td>90 days</td>
 										</tr>
 									</tbody>
 								</table>
@@ -330,11 +293,7 @@ export default function CookiePolicyPage() {
 							<div className="lg-kv">
 								<div className="lg-kv-row">
 									<span className="lg-kv-k">Outbuild Ltd (Clusteer)</span>
-									<span className="lg-kv-v">
-										<span className="legal-ph" title="To be completed before launch">
-											privacy@clusteer.com
-										</span>
-									</span>
+									<span className="lg-kv-v">legal@clusteer.com</span>
 								</div>
 							</div>
 							<p className="lg-p">Clusteer is a product operated by Outbuild Ltd (RC 8076384).</p>

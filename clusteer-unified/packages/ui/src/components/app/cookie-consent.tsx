@@ -28,6 +28,8 @@ function loadPrefs(): CookiePrefs | null {
 function persistLocally(prefs: CookiePrefs) {
 	try {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+		// Let ConsentScripts react immediately (no reload) when consent changes.
+		window.dispatchEvent(new CustomEvent("clusteer-consent-change", { detail: prefs }));
 	} catch {
 		// ignore
 	}
