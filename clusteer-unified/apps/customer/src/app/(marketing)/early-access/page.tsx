@@ -8,7 +8,7 @@ import { ArrowRight, Check, Bolt, ShieldCheck, Lock, Sparkles } from "lucide-rea
 type FormState = "idle" | "loading" | "success" | "error";
 
 const PERKS = [
-	{ icon: Bolt, title: "First in line", body: "Skip the queue when access opens — early-access members get in before public launch." },
+	{ icon: Bolt, title: "First in line", body: "Skip the queue when access opens — waitlist members get in before public launch." },
 	{ icon: ShieldCheck, title: "Best launch rates", body: "Founding members get our sharpest USDT/USDC → naira rates, locked in at go-live." },
 	{ icon: Lock, title: "Non-custodial", body: "You always hold your own keys. We never take custody of your crypto." },
 ];
@@ -60,7 +60,7 @@ export default function EarlyAccessPage() {
 						Be first to{" "}<span className="lime-highlight">cash out.</span>
 					</h1>
 					<p className="mx-auto mt-5 sm:mt-6 max-w-[520px] text-[15px] sm:text-[18px] text-muted-foreground leading-[1.55]">
-						We&apos;re putting the finishing touches on Clusteer. Join the early-access list and we&apos;ll let you know the moment you can off-ramp <strong className="text-foreground">USDT &amp; USDC</strong> straight to your Nigerian bank.
+						We&apos;re putting the finishing touches on Clusteer. Join the waitlist and we&apos;ll let you know the moment you can off-ramp <strong className="text-foreground">USDT &amp; USDC</strong> straight to your Nigerian bank.
 					</p>
 
 					{/* Form / success */}
@@ -96,7 +96,7 @@ export default function EarlyAccessPage() {
 									disabled={state === "loading"}
 									className="btn-shine shadow-brutal w-full sm:w-auto text-base sm:text-[17px] disabled:opacity-70"
 								>
-									{state === "loading" ? "Joining…" : <>Get Early Access <ArrowRight className="size-5" /></>}
+									{state === "loading" ? "Joining…" : <>Join the waitlist <ArrowRight className="size-5" /></>}
 								</Button>
 							</form>
 						)}

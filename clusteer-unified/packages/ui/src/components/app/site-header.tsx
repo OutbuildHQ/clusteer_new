@@ -184,7 +184,7 @@ export function SiteHeader() {
 
 				<div className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: 10 }}>
 					<Link href="/login" className="nav-signin" style={{ fontSize: 14, fontWeight: 600, color: "#21241D", padding: "9px 16px", borderRadius: 999 }}>Sign in</Link>
-					<Link href={AUTH} className="btn-shine" style={{ fontSize: 14, fontWeight: 600, color: "#21241D", padding: "10px 18px", borderRadius: 999, background: "#9FE870", border: "1.5px solid #21241D", boxShadow: "3px 3px 0 0 #21241D", display: "inline-flex", alignItems: "center", gap: 6 }}>Get early access <Ic name="arrow" size={14} /></Link>
+					<Link href={AUTH} className="btn-shine" style={{ fontSize: 14, fontWeight: 600, color: "#21241D", padding: "10px 18px", borderRadius: 999, background: "#9FE870", border: "1.5px solid #21241D", boxShadow: "3px 3px 0 0 #21241D", display: "inline-flex", alignItems: "center", gap: 6 }}>Join the waitlist <Ic name="arrow" size={14} /></Link>
 				</div>
 
 				<button className="nav-burger" onClick={() => setMobile((m) => !m)} aria-label="Menu" aria-expanded={mobile} style={{ width: 44, height: 44, borderRadius: 12, background: "#fff", border: "1.5px solid #21241D", boxShadow: "2px 2px 0 0 #21241D", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -203,7 +203,7 @@ export function SiteHeader() {
 					<MobileSection title="Resources" id="resources" acc={acc} setAcc={setAcc} items={RESOURCES} onClick={close} />
 					<div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 20 }}>
 						<Link href="/login" onClick={close} style={{ width: "100%", textAlign: "center", fontSize: 15, fontWeight: 600, color: "#21241D", padding: "13px", borderRadius: 999, background: "#fff", border: "1.5px solid #21241D" }}>Sign in</Link>
-						<Link href={AUTH} onClick={close} className="btn-shine" style={{ width: "100%", fontSize: 15, fontWeight: 600, color: "#21241D", padding: "14px", borderRadius: 999, background: "#9FE870", border: "1.5px solid #21241D", boxShadow: "3px 3px 0 0 #21241D", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}>Get early access <Ic name="arrow" size={15} /></Link>
+						<Link href={AUTH} onClick={close} className="btn-shine" style={{ width: "100%", fontSize: 15, fontWeight: 600, color: "#21241D", padding: "14px", borderRadius: 999, background: "#9FE870", border: "1.5px solid #21241D", boxShadow: "3px 3px 0 0 #21241D", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}>Join the waitlist <Ic name="arrow" size={15} /></Link>
 					</div>
 				</div>
 			)}

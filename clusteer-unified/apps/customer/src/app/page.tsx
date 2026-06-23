@@ -162,7 +162,7 @@ export default function Home() {
 							</p>
 							<div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-start">
 								<Button size="xl" asChild className="btn-shine shadow-brutal w-full sm:w-auto text-base sm:text-[17px]">
-									<Link href="/early-access">Get early access <ArrowRight className="size-5" /></Link>
+									<Link href="/early-access">Join the waitlist <ArrowRight className="size-5" /></Link>
 								</Button>
 								<Button size="xl" variant="ghost" asChild className="w-full sm:w-auto text-base sm:text-[17px] gap-3">
 									<Link href="#how">
@@ -453,7 +453,7 @@ export default function Home() {
 							</p>
 							<div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
 								<Button size="xl" asChild className="btn-shine bg-custom-black text-light-green hover:bg-custom-black/90 border-2 border-custom-black shadow-brutal w-full sm:w-auto text-base sm:text-[17px]">
-									<Link href="/early-access">Get early access <ArrowRight className="size-5" /></Link>
+									<Link href="/early-access">Join the waitlist <ArrowRight className="size-5" /></Link>
 								</Button>
 								<Button size="xl" variant="outline" asChild className="border-2 border-custom-black w-full sm:w-auto text-base sm:text-[17px]">
 									<Link href="/support">Talk to us</Link>
@@ -502,7 +502,7 @@ function MobileSwap({ rate }: { rate: number }) {
 				</div>
 			</div>
 			<Button asChild size="lg" className="btn-shine mt-4 w-full shadow-brutal-sm">
-				<Link href="/early-access">Get early access</Link>
+				<Link href="/early-access">Join the waitlist</Link>
 			</Button>
 		</div>
 	);
