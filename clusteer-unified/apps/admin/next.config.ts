@@ -4,11 +4,20 @@ import path from "path";
 const nextConfig: NextConfig = {
 	transpilePackages: ["@clusteer/ui"],
 
+	// Standalone output for Firebase App Hosting. The monorepo lives in a
+	// subdirectory of the deploy repo, and a stray lockfile at the repo root
+	// makes Next infer the wrong workspace root — pin it to the monorepo root
+	// so the standalone bundle nests at .next/standalone/apps/admin/.next/
+	// where the App Hosting adapter expects it.
+	output: "standalone",
+	outputFileTracingRoot: path.resolve(__dirname, "../../"),
+
 	typescript: {
 		ignoreBuildErrors: false,
 	},
 
 	turbopack: {
+		root: path.resolve(__dirname, "../../"),
 		resolveAlias: {
 			"@clusteer/ui/*": path.resolve(__dirname, "../../packages/ui/src/*"),
 		},
