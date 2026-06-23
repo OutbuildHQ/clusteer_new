@@ -37,9 +37,17 @@ export async function middleware(request: NextRequest) {
 
 	if (PUBLIC_FILE.test(pathname)) return NextResponse.next();
 
+	// Pre-launch gate: account creation is closed. Send /signup to the
+	// early-access waitlist. /login stays open for internal testing.
+	// Remove this block to re-open public signup.
+	if (pathname === "/signup" || pathname.startsWith("/signup/")) {
+		return NextResponse.redirect(new URL("/early-access", request.url));
+	}
+
 	const publicPaths = [
 		"/",
 		"/login",
+		"/early-access",
 		"/signup",
 		"/forgot-password",
 		"/reset-password",
