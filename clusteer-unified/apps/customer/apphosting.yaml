@@ -1,3 +1,10 @@
+# Firebase App Hosting — Clusteer customer app (clusteer.com)
+#
+# Secret values live in Secret Manager. For each `secret:` below, run:
+#   firebase apphosting:secrets:set <SECRET_NAME>
+# (grant access when prompted). NEXT_PUBLIC_* vars are baked into the client
+# bundle, so they must be available at BUILD.
+
 runConfig:
   cpu: 1
   memoryMiB: 512
@@ -6,33 +13,107 @@ runConfig:
   maxInstances: 4
 
 env:
-  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    secret: NEXT_PUBLIC_FIREBASE_API_KEY
-  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    secret: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    secret: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    secret: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    secret: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    secret: NEXT_PUBLIC_FIREBASE_APP_ID
-  - variable: NEXT_PUBLIC_API_URL
-    secret: NEXT_PUBLIC_API_URL
-  - variable: NEXT_PUBLIC_SPRING_BOOT_API_KEY
-    secret: NEXT_PUBLIC_SPRING_BOOT_API_KEY
+  # ── App config ──
   - variable: NEXT_PUBLIC_APP_URL
     value: https://clusteer.com
+    availability: [BUILD, RUNTIME]
+  - variable: MAX_TRADE_AMOUNT
+    secret: MAX_TRADE_AMOUNT
+
+  # ── Firebase (client config — public) ──
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    secret: NEXT_PUBLIC_FIREBASE_API_KEY
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    secret: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    secret: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    secret: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    secret: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    secret: NEXT_PUBLIC_FIREBASE_APP_ID
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_DATABASE_URL
+    secret: NEXT_PUBLIC_FIREBASE_DATABASE_URL
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    secret: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    availability: [BUILD, RUNTIME]
+
+  # ── Firebase Admin (server) ──
+  - variable: FIREBASE_CLIENT_EMAIL
+    secret: FIREBASE_CLIENT_EMAIL
+  - variable: FIREBASE_PRIVATE_KEY
+    secret: FIREBASE_PRIVATE_KEY
+
+  # ── Backend APIs (Spring Boot + blockchain engine) ──
+  - variable: SPRING_BOOT_URL
+    secret: SPRING_BOOT_URL
+  - variable: SPRING_BOOT_API_KEY
+    secret: SPRING_BOOT_API_KEY
+  - variable: NEXT_PUBLIC_API_URL
+    secret: NEXT_PUBLIC_API_URL
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_SPRING_BOOT_API_KEY
+    secret: NEXT_PUBLIC_SPRING_BOOT_API_KEY
+    availability: [BUILD, RUNTIME]
   - variable: BLOCKCHAIN_ENGINE_URL
     secret: BLOCKCHAIN_ENGINE_URL
   - variable: BLOCKCHAIN_ENGINE_API_KEY
     secret: BLOCKCHAIN_ENGINE_API_KEY
   - variable: NEXT_PUBLIC_BLOCKCHAIN_ENGINE_URL
     secret: NEXT_PUBLIC_BLOCKCHAIN_ENGINE_URL
+    availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_BLOCKCHAIN_ENGINE_API_KEY
     secret: NEXT_PUBLIC_BLOCKCHAIN_ENGINE_API_KEY
-  - variable: SPRING_BOOT_API_URL
-    secret: SPRING_BOOT_API_URL
-  - variable: FIREBASE_SERVICE_ACCOUNT_KEY
-    secret: FIREBASE_SERVICE_ACCOUNT_KEY
+    availability: [BUILD, RUNTIME]
+
+  # ── Auth ──
+  - variable: JWT_SECRET
+    secret: JWT_SECRET
+
+  # ── KYC providers ──
+  - variable: KYC_PROVIDER
+    secret: KYC_PROVIDER
+  - variable: SMILE_IDENTITY_API_KEY
+    secret: SMILE_IDENTITY_API_KEY
+  - variable: SMILE_IDENTITY_PARTNER_ID
+    secret: SMILE_IDENTITY_PARTNER_ID
+  - variable: YOUVERIFY_API_KEY
+    secret: YOUVERIFY_API_KEY
+
+  # ── Email / OTP ──
+  - variable: RESEND_API_KEY
+    secret: RESEND_API_KEY
+  - variable: EMAIL_FROM
+    secret: EMAIL_FROM
+  - variable: SENDGRID_API_KEY
+    secret: SENDGRID_API_KEY
+  - variable: SENDGRID_FROM_EMAIL
+    secret: SENDGRID_FROM_EMAIL
+
+  # ── Payments ──
+  - variable: PAYSTACK_SECRET_KEY
+    secret: PAYSTACK_SECRET_KEY
+
+  # ── Rate limiting (Upstash Redis) ──
+  - variable: USE_REDIS_RATE_LIMITING
+    secret: USE_REDIS_RATE_LIMITING
+  - variable: UPSTASH_REDIS_REST_URL
+    secret: UPSTASH_REDIS_REST_URL
+  - variable: UPSTASH_REDIS_REST_TOKEN
+    secret: UPSTASH_REDIS_REST_TOKEN
+
+  # ── Analytics (optional · consent-gated; only set if actually used) ──
+  - variable: NEXT_PUBLIC_GA_ID
+    secret: NEXT_PUBLIC_GA_ID
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_META_PIXEL_ID
+    secret: NEXT_PUBLIC_META_PIXEL_ID
+    availability: [BUILD, RUNTIME]

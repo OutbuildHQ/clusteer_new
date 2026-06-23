@@ -2,6 +2,9 @@
   "name": "@clusteer/customer",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22"
+  },
   "scripts": {
     "dev": "next dev --turbopack --port 3000",
     "build": "next build",

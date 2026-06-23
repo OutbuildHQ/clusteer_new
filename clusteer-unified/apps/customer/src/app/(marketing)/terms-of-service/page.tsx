@@ -39,7 +39,7 @@ export default function TermsOfServicePage() {
 									<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
 									<path d="m9 12 2 2 4-4"></path>
 								</svg>{" "}
-								Last updated · 18 June 2026
+								Last updated · 21 June 2026
 							</span>
 							<span className="f-mono inline-flex items-center gap-[6px] text-[11.5px] font-semibold py-[5px] px-[11px] rounded-full bg-[#ffffff] text-[#21241d] border-[1.5px] border-[#21241d]">
 								<svg
@@ -635,13 +635,13 @@ export default function TermsOfServicePage() {
 								<div className="lg-kv-row">
 									<span className="lg-kv-k">Outbuild Ltd (Clusteer)</span>
 									<span className="lg-kv-v">
-										<span className="legal-ph" title="To be completed before launch">
+										<a href="mailto:support@clusteer.com" className="underline">
 											support@clusteer.com
-										</span>{" "}
+										</a>{" "}
 										·{" "}
-										<span className="legal-ph" title="To be completed before launch">
-											phone
-										</span>
+										<a href="tel:+2347048696558" className="underline">
+											+234 704 869 6558
+										</a>
 									</span>
 								</div>
 							</div>

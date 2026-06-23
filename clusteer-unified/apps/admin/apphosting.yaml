@@ -1,3 +1,12 @@
+# Firebase App Hosting — Clusteer admin app (admin.clusteer.com)
+#
+# Secret values live in Secret Manager. For each `secret:` below, run:
+#   firebase apphosting:secrets:set <SECRET_NAME>
+# (grant access when prompted). NEXT_PUBLIC_* vars are baked into the client
+# bundle, so they must be available at BUILD.
+#
+# Admin needs the backend infra only — no KYC / email / payments / analytics.
+
 runConfig:
   cpu: 1
   memoryMiB: 512
@@ -6,25 +15,61 @@ runConfig:
   maxInstances: 2
 
 env:
-  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    secret: NEXT_PUBLIC_FIREBASE_API_KEY
-  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    secret: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    secret: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    secret: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    secret: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    secret: NEXT_PUBLIC_FIREBASE_APP_ID
+  # ── App config ──
   - variable: NEXT_PUBLIC_APP_URL
     value: https://admin.clusteer.com
+    availability: [BUILD, RUNTIME]
+
+  # ── Firebase (client config — public) ──
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    secret: NEXT_PUBLIC_FIREBASE_API_KEY
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    secret: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    secret: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    secret: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    secret: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    secret: NEXT_PUBLIC_FIREBASE_APP_ID
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_DATABASE_URL
+    secret: NEXT_PUBLIC_FIREBASE_DATABASE_URL
+    availability: [BUILD, RUNTIME]
+
+  # ── Firebase Admin (server) ──
+  - variable: FIREBASE_CLIENT_EMAIL
+    secret: FIREBASE_CLIENT_EMAIL
+  - variable: FIREBASE_PRIVATE_KEY
+    secret: FIREBASE_PRIVATE_KEY
+
+  # ── Backend APIs (Spring Boot + blockchain engine) ──
+  - variable: NEXT_PUBLIC_API_URL
+    secret: NEXT_PUBLIC_API_URL
+    availability: [BUILD, RUNTIME]
+  - variable: SPRING_BOOT_URL
+    secret: SPRING_BOOT_URL
+  - variable: SPRING_BOOT_API_KEY
+    secret: SPRING_BOOT_API_KEY
   - variable: BLOCKCHAIN_ENGINE_URL
     secret: BLOCKCHAIN_ENGINE_URL
   - variable: BLOCKCHAIN_ENGINE_API_KEY
     secret: BLOCKCHAIN_ENGINE_API_KEY
-  - variable: SPRING_BOOT_API_URL
-    secret: SPRING_BOOT_API_URL
-  - variable: FIREBASE_SERVICE_ACCOUNT_KEY
-    secret: FIREBASE_SERVICE_ACCOUNT_KEY
+
+  # ── Auth ──
+  - variable: JWT_SECRET
+    secret: JWT_SECRET
+
+  # ── Rate limiting (Upstash Redis) ──
+  - variable: USE_REDIS_RATE_LIMITING
+    secret: USE_REDIS_RATE_LIMITING
+  - variable: UPSTASH_REDIS_REST_URL
+    secret: UPSTASH_REDIS_REST_URL
+  - variable: UPSTASH_REDIS_REST_TOKEN
+    secret: UPSTASH_REDIS_REST_TOKEN

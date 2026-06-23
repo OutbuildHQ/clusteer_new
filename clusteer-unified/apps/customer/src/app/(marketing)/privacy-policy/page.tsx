@@ -40,7 +40,7 @@ export default function PrivacyPolicyPage() {
 									<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
 									<path d="m9 12 2 2 4-4"></path>
 								</svg>{" "}
-								Last updated · 19 June 2026
+								Last updated · 21 June 2026
 							</span>
 							<span className="f-mono inline-flex items-center gap-[6px] text-[11.5px] font-semibold py-[5px] px-[11px] rounded-full bg-[#ffffff] text-[#21241d] border-[1.5px] border-[#21241d]">
 								<svg
@@ -182,9 +182,9 @@ export default function PrivacyPolicyPage() {
 								<div className="lg-kv-row">
 									<span className="lg-kv-k">Contact</span>
 									<span className="lg-kv-v">
-										<span className="legal-ph" title="To be completed before launch">
+										<a href="mailto:legal@clusteer.com" className="underline">
 											legal@clusteer.com
-										</span>
+										</a>
 									</span>
 								</div>
 								<div className="lg-kv-row">
@@ -194,11 +194,7 @@ export default function PrivacyPolicyPage() {
 							</div>
 							<p className="lg-p">
 								As a processor of identity, biometric, and financial data, Outbuild Ltd is a{" "}
-								<strong>data controller of major importance</strong> under the NDPA/GAID and is{" "}
-								<span className="legal-ph" title="To be completed before launch">
-									registered / in the process of registering
-								</span>{" "}
-								with the NDPC.
+								<strong>data controller of major importance</strong> under the NDPA/GAID.
 							</p>
 							<hr className="lg-divider" />
 						</section>
@@ -548,9 +544,9 @@ export default function PrivacyPolicyPage() {
 							</ul>
 							<p className="lg-p">
 								To exercise any right, contact us at{" "}
-								<span className="legal-ph" title="To be completed before launch">
+								<a href="mailto:legal@clusteer.com" className="underline">
 									legal@clusteer.com
-								</span>
+								</a>
 								. We will respond within the timeframe required by law. We may need to verify your
 								identity before acting on a request. Where a right relates to data held by our
 								exchange and custody partner or a verification provider, we will direct or assist
@@ -602,22 +598,13 @@ export default function PrivacyPolicyPage() {
 								<div className="lg-kv-row">
 									<span className="lg-kv-k">Outbuild Ltd (Clusteer)</span>
 									<span className="lg-kv-v">
-										<span className="legal-ph" title="To be completed before launch">
+										<a href="mailto:legal@clusteer.com" className="underline">
 											legal@clusteer.com
-										</span>{" "}
+										</a>{" "}
 										·{" "}
-										<span className="legal-ph" title="To be completed before launch">
-											phone
-										</span>
-									</span>
-								</div>
-								<div className="lg-kv-row">
-									<span className="lg-kv-k">Data protection authority</span>
-									<span className="lg-kv-v">
-										Nigeria Data Protection Commission (NDPC) —{" "}
-										<span className="legal-ph" title="To be completed before launch">
-											NDPC contact / website
-										</span>
+										<a href="tel:+2347048696558" className="underline">
+											+234 704 869 6558
+										</a>
 									</span>
 								</div>
 							</div>
