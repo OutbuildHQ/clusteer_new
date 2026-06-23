@@ -6,6 +6,9 @@
 # bundle, so they must be available at BUILD.
 #
 # Admin needs the backend infra only — no KYC / email / payments / analytics.
+# Only secrets we hold values for are referenced; the Spring Boot backend is
+# reached via NEXT_PUBLIC_API_URL + NEXT_PUBLIC_SPRING_BOOT_API_KEY, and rate
+# limiting falls back to in-memory (Upstash omitted).
 
 runConfig:
   cpu: 1
@@ -53,10 +56,9 @@ env:
   - variable: NEXT_PUBLIC_API_URL
     secret: NEXT_PUBLIC_API_URL
     availability: [BUILD, RUNTIME]
-  - variable: SPRING_BOOT_URL
-    secret: SPRING_BOOT_URL
-  - variable: SPRING_BOOT_API_KEY
-    secret: SPRING_BOOT_API_KEY
+  - variable: NEXT_PUBLIC_SPRING_BOOT_API_KEY
+    secret: NEXT_PUBLIC_SPRING_BOOT_API_KEY
+    availability: [BUILD, RUNTIME]
   - variable: BLOCKCHAIN_ENGINE_URL
     secret: BLOCKCHAIN_ENGINE_URL
   - variable: BLOCKCHAIN_ENGINE_API_KEY
@@ -65,11 +67,3 @@ env:
   # ── Auth ──
   - variable: JWT_SECRET
     secret: JWT_SECRET
-
-  # ── Rate limiting (Upstash Redis) ──
-  - variable: USE_REDIS_RATE_LIMITING
-    secret: USE_REDIS_RATE_LIMITING
-  - variable: UPSTASH_REDIS_REST_URL
-    secret: UPSTASH_REDIS_REST_URL
-  - variable: UPSTASH_REDIS_REST_TOKEN
-    secret: UPSTASH_REDIS_REST_TOKEN
