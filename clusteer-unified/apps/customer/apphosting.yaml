@@ -109,11 +109,6 @@ env:
     secret: UPSTASH_REDIS_REST_URL
   - variable: UPSTASH_REDIS_REST_TOKEN
     secret: UPSTASH_REDIS_REST_TOKEN
-
-  # ── Analytics (optional · consent-gated; only set if actually used) ──
-  - variable: NEXT_PUBLIC_GA_ID
-    secret: NEXT_PUBLIC_GA_ID
-    availability: [BUILD, RUNTIME]
-  - variable: NEXT_PUBLIC_META_PIXEL_ID
-    secret: NEXT_PUBLIC_META_PIXEL_ID
-    availability: [BUILD, RUNTIME]
+  # ── Analytics (NEXT_PUBLIC_GA_ID / NEXT_PUBLIC_META_PIXEL_ID) — add here,
+  #    consent-gated, when GA / Meta Pixel go live. ConsentScripts no-ops
+  #    without them. ──
