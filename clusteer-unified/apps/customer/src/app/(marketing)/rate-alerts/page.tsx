@@ -21,7 +21,7 @@ export default function RateAlertsPage() {
 					</p>
 					<div className="mt-6 sm:mt-8">
 						<Button size="xl" asChild className="btn-shine shadow-brutal w-full sm:w-auto text-base sm:text-[17px]">
-							<Link href="/signup">Create account to set alerts <ArrowRight className="size-5" /></Link>
+							<Link href="/early-access">Join the waitlist <ArrowRight className="size-5" /></Link>
 						</Button>
 					</div>
 				</div>
@@ -155,7 +155,7 @@ export default function RateAlertsPage() {
 						</p>
 						<div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
 							<Button size="xl" asChild className="btn-shine bg-custom-black text-light-green hover:bg-custom-black/90 border-2 border-custom-black shadow-brutal w-full sm:w-auto text-base sm:text-[17px]">
-								<Link href="/signup">Create account <ArrowRight className="size-5" /></Link>
+								<Link href="/early-access">Join the waitlist <ArrowRight className="size-5" /></Link>
 							</Button>
 							<Button size="xl" variant="outline" asChild className="border-2 border-custom-black w-full sm:w-auto text-base sm:text-[17px]">
 								<Link href="/">Back to home</Link>

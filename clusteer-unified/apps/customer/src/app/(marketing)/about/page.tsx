@@ -235,8 +235,8 @@ export default function AboutPage() {
 								asChild
 								className="btn-shine bg-custom-black text-light-green hover:bg-custom-black/90 border-2 border-custom-black shadow-brutal w-full sm:w-auto text-base sm:text-[17px]"
 							>
-								<Link href="/signup">
-									Create account <ArrowRight className="size-5" />
+								<Link href="/early-access">
+									Join the waitlist <ArrowRight className="size-5" />
 								</Link>
 							</Button>
 							<Button

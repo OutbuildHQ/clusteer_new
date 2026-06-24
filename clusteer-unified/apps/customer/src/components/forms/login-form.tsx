@@ -138,8 +138,8 @@ export default function LoginForm() {
 
 				<div className="text-center text-[13px] text-muted-foreground">
 					New to Clusteer?{" "}
-					<Link href="/signup" className="text-custom-black/70 font-medium hover:underline">
-						Create account
+					<Link href="/early-access" className="text-custom-black/70 font-medium hover:underline">
+						Join the waitlist
 					</Link>
 				</div>
 			</form>

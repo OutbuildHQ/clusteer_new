@@ -26,10 +26,10 @@ export default function MarketingMobilePage() {
 						</p>
 						<div className="flex gap-[12px] flex-wrap mt-[28px]">
 							<Link
-								href="/signup"
+								href="/early-access"
 								className="btn-shine lift inline-flex items-center gap-[8px] font-semibold text-[14px] text-[#21241d] py-[11px] px-[20px] rounded-full bg-[#9fe870] border-[1.5px] border-[#21241d] shadow-[3px_3px_0px_0px_#21241d]"
 							>
-								Get started{" "}
+								Join the waitlist{" "}
 								<svg
 									width="14"
 									height="14"
@@ -44,7 +44,7 @@ export default function MarketingMobilePage() {
 								</svg>
 							</Link>
 							<Link
-								href="/signup"
+								href="/early-access"
 								className="lift inline-flex items-center gap-[8px] font-semibold text-[14px] text-[#21241d] py-[11px] px-[18px] rounded-full bg-[#ffffff] border-[1.5px] border-[#21241d]"
 							>
 								Explore products

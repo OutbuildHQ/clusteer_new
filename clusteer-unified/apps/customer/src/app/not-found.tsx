@@ -13,8 +13,8 @@ export default function NotFound() {
 						<Logo />
 					</Link>
 					<Button asChild size="sm" className="btn-shine shadow-brutal-sm">
-						<Link href="/signup">
-							Get started <ArrowRight className="size-4" />
+						<Link href="/early-access">
+							Join the waitlist <ArrowRight className="size-4" />
 						</Link>
 					</Button>
 				</div>

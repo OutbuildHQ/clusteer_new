@@ -77,11 +77,11 @@ export default function MobileMenu() {
 										</li>
 										<li>
 											<Link
-												href="/signup"
+												href="/early-access"
 												className="block text-lg font-semibold hover:text-custom-black transition-colors"
 												onClick={() => setIsOpen(false)}
 											>
-												Sign Up
+												Join the waitlist
 											</Link>
 										</li>
 										<li className="pt-4 border-t">
@@ -126,11 +126,11 @@ export default function MobileMenu() {
 								{/* Footer */}
 								<div className="p-6 border-t space-y-3">
 									<Link
-										href="/signup"
+										href="/early-access"
 										className="block w-full text-center py-3 px-4 bg-light-green border-2 border-black rounded-full font-semibold hover:bg-light-green/80 transition-colors"
 										onClick={() => setIsOpen(false)}
 									>
-										Get Started
+										Join the waitlist
 									</Link>
 								</div>
 							</div>

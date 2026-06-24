@@ -69,8 +69,8 @@ export default function LoginPage() {
 			{/* Top-right link (positioned via layout) */}
 			<div className="flex items-center justify-end gap-2 mb-6 -mt-2" style={{ fontSize: 13 }}>
 				New here?{" "}
-				<Link href="/signup" style={{ color: "var(--c-onyx-900)", fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2 }}>
-					Create account
+				<Link href="/early-access" style={{ color: "var(--c-onyx-900)", fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2 }}>
+					Join the waitlist
 				</Link>
 			</div>
 

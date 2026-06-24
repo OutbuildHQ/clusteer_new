@@ -34,10 +34,10 @@ export default function MarketingPaymentsPage() {
 					<div className="opacity-100">
 						<div className="flex gap-[12px] flex-wrap mt-[30px]">
 							<Link
-								href="/signup"
+								href="/early-access"
 								className="btn-shine lift inline-flex items-center gap-[8px] font-semibold text-[16px] text-[#21241d] py-[15px] px-[26px] rounded-full bg-[#9fe870] border-[1.5px] border-[#21241d] shadow-[3px_3px_0px_0px_#21241d]"
 							>
-								Create a request{" "}
+								Join the waitlist{" "}
 								<svg
 									width="17"
 									height="17"
@@ -52,7 +52,7 @@ export default function MarketingPaymentsPage() {
 								</svg>
 							</Link>
 							<Link
-								href="/signup"
+								href="/mobile"
 								className="lift inline-flex items-center gap-[8px] font-semibold text-[16px] text-[#21241d] py-[15px] px-[24px] rounded-full bg-[#ffffff] border-[1.5px] border-[#21241d]"
 							>
 								See it on mobile
@@ -1608,10 +1608,10 @@ export default function MarketingPaymentsPage() {
 						</p>
 						<div className="flex gap-[12px] justify-center flex-wrap mt-[28px]">
 							<Link
-								href="/signup"
+								href="/early-access"
 								className="btn-shine lift inline-flex items-center gap-[8px] font-semibold text-[16px] text-[#9fe870] py-[15px] px-[28px] rounded-full bg-[#21241d] border-[1.5px] border-[#21241d]"
 							>
-								Create free account{" "}
+								Join the waitlist{" "}
 								<svg
 									width="16"
 									height="16"
@@ -1626,7 +1626,7 @@ export default function MarketingPaymentsPage() {
 								</svg>
 							</Link>
 							<Link
-								href="/signup"
+								href="/#how"
 								className="lift font-semibold text-[16px] text-[#21241d] py-[15px] px-[26px] rounded-full bg-transparent border-[1.5px] border-[#21241d]"
 							>
 								See how it works

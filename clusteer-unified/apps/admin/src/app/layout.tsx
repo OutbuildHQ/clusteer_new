@@ -26,6 +26,12 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
 	title: "Clusteer Admin",
 	description: "Clusteer administration dashboard",
+	icons: {
+		icon: [
+			{ url: "/favicon.svg", type: "image/svg+xml" },
+		],
+		apple: "/apple-icon.svg",
+	},
 	robots: { index: false, follow: false },
 };
 

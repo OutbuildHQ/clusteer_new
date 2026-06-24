@@ -154,8 +154,8 @@ export function HeroSwap() {
 
 				{/* CTA */}
 				<Button asChild className="mt-5 w-full" size="lg">
-					<Link href="/signup">
-						{mode === "buy" ? "Buy" : "Sell"} {selected} <ArrowRight className="size-4" />
+					<Link href="/early-access">
+						Join the waitlist <ArrowRight className="size-4" />
 					</Link>
 				</Button>
 			</CardContent>

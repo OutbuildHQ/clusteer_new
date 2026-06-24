@@ -467,10 +467,10 @@ export default function AmlCftPolicyPage() {
 						<h2 className="f-display text-[clamp(28px,4vw,46px)] font-extrabold tracking-[-1.5px] leading-[1.05] m-0 max-w-[720px] mx-auto"></h2>
 						<div className="flex gap-[12px] justify-center flex-wrap mt-[28px]">
 							<Link
-								href="/signup"
+								href="/early-access"
 								className="btn-shine lift inline-flex items-center gap-[8px] font-semibold text-[16px] text-[#9fe870] py-[15px] px-[28px] rounded-full bg-[#21241d] border-[1.5px] border-[#21241d]"
 							>
-								Create free account{" "}
+								Join the waitlist{" "}
 								<svg
 									width="16"
 									height="16"
@@ -485,7 +485,7 @@ export default function AmlCftPolicyPage() {
 								</svg>
 							</Link>
 							<Link
-								href="/signup"
+								href="/#how"
 								className="lift font-semibold text-[16px] text-[#21241d] py-[15px] px-[26px] rounded-full bg-transparent border-[1.5px] border-[#21241d]"
 							>
 								See how it works

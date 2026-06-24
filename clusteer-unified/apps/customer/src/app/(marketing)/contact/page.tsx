@@ -185,8 +185,8 @@ export default function ContactPage() {
 								asChild
 								className="btn-shine bg-light-green text-custom-black hover:bg-light-green/90 border-2 border-custom-black shadow-brutal w-full sm:w-auto text-base sm:text-[17px]"
 							>
-								<Link href="/signup">
-									Get started <ArrowRight className="size-5" />
+								<Link href="/early-access">
+									Join the waitlist <ArrowRight className="size-5" />
 								</Link>
 							</Button>
 						</div>
