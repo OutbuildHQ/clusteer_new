@@ -4,9 +4,12 @@
  * Mirrors the djangoFetch() pattern in api-helpers.ts.
  */
 
+// Prefer the absolute server-side backend URL (SPRING_BOOT_URL → Cloud Run).
+// NEXT_PUBLIC_API_URL is "/api" for the browser→Next routes and is only a
+// last-resort fallback here, since a relative base can't be fetched server-side.
 const SPRING_BASE =
-	process.env.NEXT_PUBLIC_API_URL ||
 	process.env.SPRING_BOOT_URL ||
+	process.env.NEXT_PUBLIC_API_URL ||
 	"http://localhost:8080/api";
 
 const SPRING_API_KEY =

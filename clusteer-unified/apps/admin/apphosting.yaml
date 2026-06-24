@@ -53,6 +53,9 @@ env:
     secret: FIREBASE_PRIVATE_KEY
 
   # ── Backend APIs (Spring Boot + blockchain engine) ──
+  # Absolute server-side base for the deployed Clusteer-Api on Cloud Run.
+  - variable: SPRING_BOOT_URL
+    secret: SPRING_BOOT_URL
   - variable: NEXT_PUBLIC_API_URL
     secret: NEXT_PUBLIC_API_URL
     availability: [BUILD, RUNTIME]

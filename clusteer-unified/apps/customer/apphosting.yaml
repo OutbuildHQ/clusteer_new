@@ -60,6 +60,11 @@ env:
     secret: FIREBASE_PRIVATE_KEY
 
   # ── Backend APIs (Spring Boot + blockchain engine) ──
+  # SPRING_BOOT_URL is the absolute server-side base for the deployed
+  # Clusteer-Api on Cloud Run (springFetch uses it). NEXT_PUBLIC_API_URL ("/api")
+  # stays for the browser → Next API routes.
+  - variable: SPRING_BOOT_URL
+    secret: SPRING_BOOT_URL
   - variable: NEXT_PUBLIC_API_URL
     secret: NEXT_PUBLIC_API_URL
     availability: [BUILD, RUNTIME]

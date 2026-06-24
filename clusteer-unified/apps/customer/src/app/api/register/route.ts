@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { registerWithFirebase } from "@/lib/auth-firebase";
 import { isFirebaseConfigured } from "@/lib/firebase";
-import { djangoFetch } from "@/lib/api-helpers";
+import { springFetch } from "@/lib/spring-boot-server";
 
 export async function POST(request: NextRequest) {
   // Rate limiting
@@ -47,14 +47,20 @@ export async function POST(request: NextRequest) {
       password,
     });
 
-    // Fire-and-forget: create wallets in Django
+    // Create the user record in the Clusteer-Api backend. Firebase holds the
+    // credential; the backend holds the profile/KYC, linked by email. Legal
+    // name is collected later at KYC, so register only needs the basics.
     try {
-      await djangoFetch("/wallet/create/", {
+      const res = await springFetch("/user/register", {
         method: "POST",
-        body: JSON.stringify({ user_id: user.id || user.firebaseUid }),
+        body: JSON.stringify({ username, email, phone, password }),
       });
+      if (!res.ok) {
+        const detail = await res.text().catch(() => "");
+        console.error("[register] backend record creation failed:", res.status, detail);
+      }
     } catch (e) {
-      console.error("Wallet creation failed (non-blocking):", e);
+      console.error("[register] backend register error (non-blocking):", e);
     }
 
     return NextResponse.json({
