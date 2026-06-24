@@ -173,7 +173,7 @@ export default function Home() {
 							</div>
 							<div className="mt-6 sm:mt-11 flex flex-wrap gap-x-4 gap-y-2 sm:gap-5 lg:gap-7 text-[12px] sm:text-[13px] text-muted-foreground">
 								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">NDPR</strong> compliant</span>
-								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">92,000+</strong> Nigerians</span>
+								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">Non-custodial</strong> by design</span>
 								<span className="inline-flex items-center gap-2"><Check className="size-3.5 text-custom-black/70" strokeWidth={2.6} /> <strong className="text-foreground">5-min</strong> payouts</span>
 							</div>
 						</FadeUp>
@@ -290,7 +290,7 @@ export default function Home() {
 					{[
 						{ n: "01", kicker: "Lock your rate", title: "Pick the amount, see exactly what hits your bank.", copy: "No hidden spread, no \"we'll figure it out\". The number you see is the number you get.", bg: "bg-warm-beige" },
 						{ n: "02", kicker: "Send your stables", title: "USDT or USDC, on TRON, BSC, Solana, or Ethereum.", copy: "Scan the QR or copy the address. We watch the chain so you don't have to.", bg: "bg-[var(--button-bg)]" },
-						{ n: "03", kicker: "Get paid", title: "Naira lands in your bank in under 5 minutes.", copy: "Average payout time is 4 min 12 sec. Slowest day this year was 11 min. We promise nothing — we just keep ours.", bg: "bg-custom-black", dark: true },
+						{ n: "03", kicker: "Get paid", title: "Naira lands in your bank in minutes.", copy: "Most payouts land in minutes, not days, via NIP instant transfer. We promise nothing — we just keep ours.", bg: "bg-custom-black", dark: true },
 					].map((s, i) => (
 						<FadeUp key={s.n} delay={i * 0.1}>
 							<div className={`grid grid-cols-1 md:grid-cols-2 ${s.bg} rounded-[20px] sm:rounded-[32px] border-2 border-custom-black overflow-hidden min-h-0 sm:min-h-[400px]`}>
@@ -326,10 +326,10 @@ export default function Home() {
 				<FadeUp>
 					<div className="grid grid-cols-2 lg:grid-cols-4 border-2 border-custom-black rounded-[16px] sm:rounded-[28px] overflow-hidden">
 						{[
-							{ v: "₦42B+", l: "paid out to Nigerians", bg: "bg-background" },
-							{ v: "4:12", l: "avg payout time, minutes", bg: "bg-light-green" },
-							{ v: "92,000", l: "verified KYC users", bg: "bg-warm-beige" },
-							{ v: "0.0%", l: "spread on the rate", bg: "bg-background" },
+							{ v: "0.75%", l: "flat fee, every order", bg: "bg-background" },
+							{ v: "0%", l: "spread on the rate", bg: "bg-light-green" },
+							{ v: "3", l: "networks — Tron, BSC, Ethereum", bg: "bg-warm-beige" },
+							{ v: "100%", l: "non-custodial — your keys", bg: "bg-background" },
 						].map((s, i) => (
 							<div key={i} className={`${s.bg} p-4 sm:p-7 lg:p-9 flex flex-col gap-1.5 sm:gap-2 ${i < 3 ? "border-r-2 border-custom-black" : ""} ${i < 2 ? "border-b-2 lg:border-b-0 border-custom-black" : ""}`}>
 								<div className="font-mono text-2xl sm:text-4xl lg:text-[56px] font-semibold leading-[0.95] tracking-[-0.03em] text-custom-black">{s.v}</div>
@@ -421,7 +421,7 @@ export default function Home() {
 					<div>
 						{[
 							{ q: "What stablecoins do you support?", a: "USDT and USDC on Tron (TRC-20), BSC (BEP-20), Ethereum (ERC-20), Solana (SPL), and Polygon. We auto-detect the chain." },
-							{ q: "How long do payouts take?", a: "Average 4 minutes 12 seconds. Naira hits your bank account via NIP instant transfer. No manual review for verified users." },
+							{ q: "How long do payouts take?", a: "Usually within minutes — naira hits your bank account via NIP instant transfer as soon as your order is confirmed on-chain. Same-day at the latest." },
 							{ q: "What are your fees?", a: "0.75% flat fee on all buy/sell orders. No hidden spread — the rate you see is the rate you get. Internal Clusteer-to-Clusteer sends are free." },
 							{ q: "Is my money safe?", a: "We use bank-grade AES-256 encryption, BVN verification for every account, and two-factor authentication on all withdrawals. Your data and funds are protected at every layer." },
 							{ q: "What KYC documents do I need?", a: "Tier 1: BVN only (2 minutes). Tier 2: NIN + government ID + selfie. Tier 3: proof of address + source of funds for high-volume traders." },

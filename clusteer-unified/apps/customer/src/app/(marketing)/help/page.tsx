@@ -82,7 +82,7 @@ const TOPICS = [
 		description: "How orders work, rates, fees, and supported stablecoins.",
 		faqs: [
 			{ q: "How do I buy USDT or USDC?", a: "Go to Trade, select Buy, choose USDT or USDC and the network, enter the amount, and confirm. You'll get a bank account to transfer Naira to. Once we confirm your deposit (usually within minutes), the stablecoins are settled on-chain to your own wallet address." },
-			{ q: "How do I sell stablecoins for Naira?", a: "Go to Trade, select Sell, enter the amount, and confirm the rate. You'll get a one-time deposit address to send your stablecoins to. Once the transfer confirms on-chain (1-2 confirmations), Naira is sent to your linked bank account. Average payout time is about 4 minutes." },
+			{ q: "How do I sell stablecoins for Naira?", a: "Go to Trade, select Sell, enter the amount, and confirm the rate. You'll get a one-time deposit address to send your stablecoins to. Once the transfer confirms on-chain (1-2 confirmations), Naira is sent to your linked bank account, usually within minutes." },
 			{ q: "What are the fees?", a: "We charge a flat 0.75% fee on every buy and sell order. There is no hidden spread — the rate you see on screen is exactly the rate you get." },
 			{ q: "What determines the exchange rate?", a: "Rates reflect real-time market conditions and refresh every 30 seconds. When you confirm an order, the rate is locked for a short window so there are no surprises between quote and settlement." },
 			{ q: "Are there minimum or maximum order amounts?", a: "The minimum order is 5 USDT/USDC equivalent. Maximums depend on your KYC tier — Tier 1 has a daily cap, while Tier 2 and Tier 3 unlock progressively higher daily limits. You can see your current limits on the Settings → Limits page." },

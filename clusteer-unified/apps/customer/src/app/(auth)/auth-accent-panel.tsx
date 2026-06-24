@@ -112,7 +112,7 @@ export function AuthAccentPanel() {
 					className="flex items-center gap-4"
 					style={{ marginTop: 32, paddingTop: 24, borderTop: "1px solid rgba(244,241,234,.1)" }}
 				>
-					{[["92k+", "Verified users"], ["\u20A642B", "Volume settled"], ["4.9\u2605", "App rating"]].map(([v, l]) => (
+					{[["0.75%", "Flat fee"], ["100%", "Non-custodial"], ["3", "Networks"]].map(([v, l]) => (
 						<div key={l}>
 							<div className="font-display tabular-nums" style={{ fontSize: 20, fontWeight: 600, color: "var(--c-cream)" }}>{v}</div>
 							<div style={{ fontSize: 11, color: "rgba(244,241,234,.5)" }}>{l}</div>

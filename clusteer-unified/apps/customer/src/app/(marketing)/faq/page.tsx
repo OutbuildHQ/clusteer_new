@@ -58,9 +58,9 @@ const CATEGORIES = [
 		icon: Globe,
 		label: "General",
 		faqs: [
-			{ q: "What is Clusteer?", a: "Clusteer is a stablecoin-to-Naira exchange built specifically for Nigerians. We let you buy and sell USDT and USDC directly with your Nigerian bank account. Our average payout time is 4 minutes 12 seconds, with no hidden spreads or surprise fees." },
+			{ q: "What is Clusteer?", a: "Clusteer is a stablecoin-to-Naira exchange built specifically for Nigerians. We let you buy and sell USDT and USDC directly with your Nigerian bank account. Payouts usually land within minutes, with no hidden spreads or surprise fees." },
 			{ q: "What stablecoins do you support?", a: "We support USDT (Tether) and USDC (USD Coin) on five blockchains: Tron (TRC-20), BNB Smart Chain (BEP-20), Ethereum (ERC-20), Solana (SPL), and Polygon. We auto-detect the chain when you send a deposit." },
-			{ q: "How is Clusteer different from other exchanges?", a: "Three things set us apart: (1) Zero spread -- the rate you see is the rate you get, with a flat 0.75% fee. (2) Speed -- our average payout is under 5 minutes via NIP instant transfer. (3) Simplicity -- no order books, no complicated trading interfaces. Just enter an amount, confirm, and get paid." },
+			{ q: "How is Clusteer different from other exchanges?", a: "Three things set us apart: (1) Zero spread -- the rate you see is the rate you get, with a flat 0.75% fee. (2) Speed -- payouts usually land within minutes via NIP instant transfer. (3) Simplicity -- no order books, no complicated trading interfaces. Just enter an amount, confirm, and get paid." },
 			{ q: "Who can use Clusteer?", a: "Anyone with a Nigerian bank account and a valid BVN (Bank Verification Number) can use Clusteer. You must be at least 18 years old. We serve freelancers, traders, diaspora Nigerians, remote workers, and anyone who needs to convert stablecoins to and from Naira." },
 			{ q: "Is Clusteer a wallet?", a: "Clusteer includes a custodial wallet for holding stablecoins on the platform, but we are primarily an exchange. You can deposit stablecoins, trade them for Naira, and withdraw to your bank. We recommend not storing large amounts long-term -- use a personal hardware or software wallet for that." },
 		],
@@ -74,7 +74,7 @@ const CATEGORIES = [
 			{ q: "How do I sell stablecoins for Naira?", a: "Go to Trade, select Sell, enter the stablecoin amount, and confirm the rate. Send the stablecoins to the wallet address we provide. Once confirmed on the blockchain (1-2 blocks), Naira is sent to your linked bank account via NIP instant transfer." },
 			{ q: "What are the fees?", a: "We charge a flat 0.75% fee on all buy and sell orders. There is no hidden spread, no withdrawal fee, and no deposit fee. Internal Clusteer-to-Clusteer transfers are completely free. The fee is clearly shown before you confirm any trade." },
 			{ q: "What is the minimum trade amount?", a: "The minimum trade amount is 5 USDT (or equivalent in USDC). There is no maximum for Tier 2 and Tier 3 verified accounts. Tier 1 (BVN-only) accounts have a daily limit of $500 equivalent." },
-			{ q: "How long do trades take?", a: "Sell orders (stablecoin to Naira): Average 4 minutes 12 seconds from blockchain confirmation to Naira landing in your bank. Buy orders (Naira to stablecoin): After we confirm your bank transfer, stablecoins are credited within 2-5 minutes." },
+			{ q: "How long do trades take?", a: "Sell orders (stablecoin to Naira): usually within minutes from blockchain confirmation to Naira landing in your bank — same-day at the latest. Buy orders (Naira to stablecoin): after we confirm your bank transfer, stablecoins are credited within minutes." },
 		],
 	},
 	{
@@ -83,7 +83,7 @@ const CATEGORIES = [
 		label: "Payments",
 		faqs: [
 			{ q: "How do I deposit Naira?", a: "When you place a buy order, we provide a dedicated bank account to transfer to. Use your banking app or USSD to send the exact amount shown. We monitor incoming transfers in real time and process your order once the funds arrive. Transfers from most banks arrive within 1-3 minutes via NIP." },
-			{ q: "How long do withdrawals take?", a: "Naira withdrawals (sell payouts) are sent via NIP instant transfer. The average payout time is 4 minutes 12 seconds. During rare bank maintenance windows (typically late at night), it can take up to 30 minutes. You receive a push notification when funds land." },
+			{ q: "How long do withdrawals take?", a: "Naira withdrawals (sell payouts) are sent via NIP instant transfer and usually land within minutes. During rare bank maintenance windows (typically late at night), it can take up to 30 minutes. You receive a push notification when funds land." },
 			{ q: "Which banks are supported?", a: "We support all Nigerian banks connected to the NIBSS instant payment network -- that is over 25 banks including GTBank, Access Bank, Zenith Bank, UBA, First Bank, Kuda, OPay, PalmPay, Stanbic IBTC, Wema Bank, Fidelity Bank, Sterling Bank, FCMB, Ecobank, and more." },
 			{ q: "Can I use a debit card to buy stablecoins?", a: "No, not at this time. Clusteer only supports bank transfers for Naira deposits. This is intentional -- bank transfers are faster, cheaper (no card processing fees), and more reliable for the amounts our users typically trade. We may add card payments in a future update." },
 		],

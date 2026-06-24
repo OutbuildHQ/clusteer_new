@@ -193,13 +193,13 @@ export default function PressPage() {
 					<div className="grid grid-cols-2 lg:grid-cols-4 border-2 border-custom-black rounded-[16px] sm:rounded-[28px] overflow-hidden bg-background">
 						{[
 							{
-								v: "92,000+",
-								l: "verified users",
+								v: "0.75%",
+								l: "flat fee, no spread",
 								bg: "bg-background",
 							},
 							{
-								v: "₦42B+",
-								l: "paid out to Nigerians",
+								v: "3",
+								l: "networks supported",
 								bg: "bg-light-green",
 							},
 							{

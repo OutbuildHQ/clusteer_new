@@ -2,10 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
 	ArrowRight,
-	Target,
-	Eye,
 	Banknote,
-	Globe,
 	Zap,
 	ShieldCheck,
 	Users,
@@ -41,43 +38,55 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* ─── Mission & Vision ─── */}
+			{/* ─── Our story ─── */}
 			<section className="pb-12 sm:pb-20 lg:pb-28 px-4 sm:px-8 max-w-[1280px] mx-auto">
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-					{/* Mission */}
-					<div className="bg-light-green border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-6 sm:p-10 lg:p-12 flex flex-col gap-4 sm:gap-5">
-						<div className="size-12 sm:size-[52px] rounded-2xl bg-custom-black text-light-green inline-flex items-center justify-center">
-							<Target className="size-5 sm:size-[22px]" strokeWidth={2.4} />
-						</div>
-						<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase">
-							Our mission
-						</div>
-						<h2 className="font-display text-xl sm:text-2xl lg:text-[32px] font-bold leading-tight tracking-[-0.025em]">
-							Make stablecoins as easy to use as mobile money for every
-							Nigerian.
-						</h2>
-						<p className="text-sm sm:text-[15px] leading-relaxed text-custom-black/70">
-							We believe everyone deserves access to stable, dollar-denominated
-							value &mdash; regardless of which bank they use or how much
-							crypto they understand.
+				<div className="mb-8 sm:mb-12 max-w-[720px]">
+					<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] mb-3 sm:mb-4">
+						&#9670; OUR STORY
+					</div>
+					<h2 className="font-display text-[clamp(28px,7vw,56px)] sm:text-[clamp(36px,5vw,56px)] font-bold leading-none tracking-[-0.04em]">
+						We got tired of losing money in the gap.
+					</h2>
+					<p className="mt-4 sm:mt-6 text-[15px] sm:text-[17px] text-muted-foreground max-w-[560px] leading-[1.55]">
+						Clusteer was built by people who lived the problem &mdash; and
+						decided the rails deserved better.
+					</p>
+				</div>
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+					{/* Story */}
+					<div className="lg:col-span-7 bg-warm-beige border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-6 sm:p-9 lg:p-10 flex flex-col justify-center gap-4 sm:gap-5">
+						<p className="text-[15px] sm:text-[16.5px] leading-[1.6] text-custom-black">
+							To turn stablecoins back into spendable naira, you used to have one
+							of three bad options: trust a P2P stranger, swallow a spread you
+							couldn&apos;t see, or park your money on a platform that could
+							freeze it without warning.
+						</p>
+						<p className="text-[15px] sm:text-[16.5px] leading-[1.6] text-muted-foreground">
+							We thought moving between stables and the naira should feel like
+							sending a text &mdash; instant, transparent, and entirely yours. So
+							we built a non-custodial rail: you keep your keys, a licensed
+							partner settles each order, and the price you&apos;re quoted is the
+							price you get.
+						</p>
+						<p className="text-[15px] sm:text-[16.5px] leading-[1.6] text-muted-foreground">
+							We&apos;re building Clusteer for freelancers pricing in dollars,
+							businesses paying suppliers, and families protecting their savings.
+							We&apos;re early &mdash; and building in the open.
 						</p>
 					</div>
-
-					{/* Vision */}
-					<div className="bg-warm-beige border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-6 sm:p-10 lg:p-12 flex flex-col gap-4 sm:gap-5">
-						<div className="size-12 sm:size-[52px] rounded-2xl bg-light-green border-[1.5px] border-custom-black inline-flex items-center justify-center">
-							<Eye className="size-5 sm:size-[22px]" strokeWidth={2.4} />
+					{/* Mission quote */}
+					<div className="lg:col-span-5 bg-custom-black text-white border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-6 sm:p-9 lg:p-10 flex flex-col justify-between gap-6 min-h-[260px]">
+						<div className="font-mono text-[11px] font-semibold text-light-green tracking-[1.5px] uppercase">
+							Our mission
 						</div>
-						<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase">
-							Our vision
+						<div className="font-display font-extrabold text-[clamp(22px,2.8vw,32px)] leading-[1.15] tracking-[-0.02em]">
+							&ldquo;Money should move at the speed of Nigeria &mdash; instantly,
+							transparently, and on terms you own.&rdquo;
 						</div>
-						<h2 className="font-display text-xl sm:text-2xl lg:text-[32px] font-bold leading-tight tracking-[-0.025em]">
-							The default way Africans move between local and global money.
-						</h2>
-						<p className="text-sm sm:text-[15px] leading-relaxed text-muted-foreground">
-							Starting with Nigeria, we are building the financial bridge that
-							connects naira to the world &mdash; one stablecoin at a time.
-						</p>
+						<div className="flex items-center gap-2 text-[13px] text-white/60">
+							<span className="size-2 rounded-full bg-light-green" />
+							Founding principle, day one
+						</div>
 					</div>
 				</div>
 			</section>
@@ -87,33 +96,33 @@ export default function AboutPage() {
 				<div className="max-w-[1280px] mx-auto">
 					<div className="mb-8 sm:mb-14 max-w-[720px]">
 						<div className="font-mono text-[11px] font-semibold text-light-green tracking-[1.5px] mb-3 sm:mb-4">
-							&#9670; WHAT MAKES US DIFFERENT
+							&#9670; WHAT WE BELIEVE
 						</div>
 						<h2 className="font-display text-[clamp(28px,7vw,56px)] sm:text-[clamp(36px,5vw,56px)] font-bold leading-none tracking-[-0.04em]">
-							We bridge the gap between naira and stablecoins.
+							Four things we won&apos;t compromise on.
 						</h2>
 					</div>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
 						{[
 							{
-								icon: Banknote,
-								title: "Bank-transfer only",
-								copy: "No debit cards, no crypto wallets required. Transfer from any Nigerian bank account and start trading in minutes.",
+								icon: ShieldCheck,
+								title: "Non-custodial, always",
+								copy: "Your funds are never ours to hold, freeze, or lose. Every order settles to your own wallet or bank — we route, we never custody.",
 							},
 							{
 								icon: Zap,
-								title: "5-minute payouts",
-								copy: "Average settlement time is 4 minutes 12 seconds. Your naira hits your bank via NIP instant transfer.",
+								title: "Same-day or it failed",
+								copy: "We measure ourselves in minutes, not business days. Most payouts land before you've closed the app.",
 							},
 							{
-								icon: Globe,
-								title: "Multi-chain support",
-								copy: "USDT and USDC on Tron, BSC, Ethereum, Solana, and Polygon. We auto-detect the chain you send on.",
+								icon: Banknote,
+								title: "One honest price",
+								copy: "A flat 0.75%, shown before you confirm. No spread, no markup buried in the rate, no surprises at settlement.",
 							},
 							{
-								icon: ShieldCheck,
-								title: "Zero spread, flat fee",
-								copy: "The rate you see is the rate you get. 0.75% flat fee, no hidden markups, no surprises.",
+								icon: Users,
+								title: "Built with Nigerians",
+								copy: "Every feature starts with how money actually moves here — bank transfers, BVN, NIP — not a template borrowed from somewhere else.",
 							},
 						].map((item, i) => (
 							<div
@@ -226,8 +235,8 @@ export default function AboutPage() {
 							Ready to trade stablecoins the easy way?
 						</h2>
 						<p className="mt-4 sm:mt-6 text-[15px] sm:text-[17px] lg:text-[18px] text-custom-black/75 max-w-[480px] leading-[1.5]">
-							Join 92,000+ Nigerians who trust Clusteer to move between naira
-							and stablecoins.
+							Be among the first to move between naira and stablecoins
+							&mdash; non-custodial, transparent, and entirely yours.
 						</p>
 						<div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
 							<Button

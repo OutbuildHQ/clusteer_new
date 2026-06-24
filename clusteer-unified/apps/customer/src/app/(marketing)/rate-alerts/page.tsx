@@ -1,10 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Bell, Eye, Zap, Mail, MessageSquare, SlidersHorizontal, BarChart3 } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Bell, Eye, Zap, Mail, MessageSquare, SlidersHorizontal, BarChart3, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AssetLogo } from "@/components/primitives/asset-logo";
+
+/* Example alerts shown in the builder preview (illustrative). */
+const ALERT_ROWS: { coin: string; cond: "Above" | "Below"; target: string; chans: string[]; on: boolean }[] = [
+	{ coin: "USDT", cond: "Above", target: "₦1,650", chans: ["Email", "Push"], on: true },
+	{ coin: "USDC", cond: "Below", target: "₦1,600", chans: ["Push"], on: true },
+	{ coin: "USDT", cond: "Above", target: "₦1,700", chans: ["SMS"], on: false },
+];
 
 export default function RateAlertsPage() {
+	const [cond, setCond] = useState<"above" | "below">("above");
+	const [target, setTarget] = useState("1650");
+	const [ch, setCh] = useState({ email: true, push: true, sms: false });
+	const toggleCh = (k: "email" | "push" | "sms") => setCh((c) => ({ ...c, [k]: !c[k] }));
+
 	return (
 		<>
 			{/* ─── Hero ─── */}
@@ -23,6 +37,119 @@ export default function RateAlertsPage() {
 						<Button size="xl" asChild className="btn-shine shadow-brutal w-full sm:w-auto text-base sm:text-[17px]">
 							<Link href="/early-access">Join the waitlist <ArrowRight className="size-5" /></Link>
 						</Button>
+					</div>
+				</div>
+			</section>
+
+			{/* ─── Alert builder (mockup) ─── */}
+			<section className="pb-4 sm:pb-8 px-4 sm:px-8 max-w-[1280px] mx-auto">
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+					{/* Builder */}
+					<div className="lg:col-span-7 bg-background border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-5 sm:p-8">
+						<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase mb-5">
+							&#9670; New alert
+						</div>
+
+						{/* Pair */}
+						<div className="text-[11.5px] font-semibold text-muted-foreground mb-2">Pair</div>
+						<div className="flex items-center gap-2 px-3.5 py-3 bg-warm-beige border-2 border-custom-black rounded-xl mb-5">
+							<AssetLogo symbol="USDT" size="sm" />
+							<span className="font-semibold text-sm">USDT</span>
+							<ArrowRight className="size-3.5" />
+							<AssetLogo symbol="NGN" size="sm" />
+							<span className="font-semibold text-sm">NGN</span>
+							<BarChart3 className="size-4 ml-auto text-[#0F4F26]" />
+						</div>
+
+						{/* Condition */}
+						<div className="text-[11.5px] font-semibold text-muted-foreground mb-2">Notify me when the rate goes</div>
+						<div className="flex border-2 border-custom-black rounded-full overflow-hidden mb-5">
+							{(["above", "below"] as const).map((v) => (
+								<button
+									key={v}
+									type="button"
+									onClick={() => setCond(v)}
+									className={`flex-1 py-2.5 text-[13.5px] font-semibold capitalize transition-colors ${cond === v ? "bg-custom-black text-light-green" : "bg-transparent text-custom-black hover:bg-warm-beige"}`}
+								>
+									{v}
+								</button>
+							))}
+						</div>
+
+						{/* Target */}
+						<div className="text-[11.5px] font-semibold text-muted-foreground mb-2">Target rate (₦ per USDT)</div>
+						<div className="flex items-center gap-1.5 px-3.5 py-2.5 bg-[#EFFCD0] border-2 border-custom-black rounded-xl mb-5">
+							<span className="font-mono text-[22px] font-bold leading-none">₦</span>
+							<input
+								value={target}
+								onChange={(e) => setTarget(e.target.value.replace(/[^0-9]/g, ""))}
+								inputMode="numeric"
+								aria-label="Target rate"
+								className="flex-1 w-full font-mono text-[22px] font-bold bg-transparent outline-none text-custom-black"
+							/>
+						</div>
+
+						{/* Channels */}
+						<div className="text-[11.5px] font-semibold text-muted-foreground mb-2">Send it via</div>
+						<div className="flex gap-2 flex-wrap mb-6">
+							{([["email", "Email", Mail], ["push", "Push", Bell], ["sms", "SMS", MessageSquare]] as const).map(([k, l, Icon]) => (
+								<button
+									key={k}
+									type="button"
+									onClick={() => toggleCh(k)}
+									className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full border-2 border-custom-black transition-colors ${ch[k] ? "bg-light-green" : "bg-white hover:bg-warm-beige"}`}
+								>
+									{ch[k] && <Check className="size-3" strokeWidth={3} />}
+									<Icon className="size-3.5" />
+									{l}
+								</button>
+							))}
+						</div>
+
+						<Button size="lg" asChild className="btn-shine shadow-brutal-sm w-full">
+							<Link href="/early-access">Join the waitlist <ArrowRight className="size-4" /></Link>
+						</Button>
+					</div>
+
+					{/* Right column: rate + alerts list */}
+					<div className="lg:col-span-5 flex flex-col gap-4 sm:gap-5">
+						{/* Right now */}
+						<div className="bg-custom-black text-white border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-5 sm:p-7">
+							<div className="font-mono text-[11px] font-semibold text-light-green tracking-[1.5px] uppercase mb-3 flex items-center gap-2">
+								<span className="live-dot size-2 rounded-full bg-light-green" /> Right now
+							</div>
+							<div className="font-mono text-[clamp(32px,5vw,48px)] font-semibold leading-none tracking-[-0.03em]">₦1,652</div>
+							<div className="mt-2 text-[13px] text-white/60 flex items-center gap-2">
+								per <span className="font-mono">1 USDT</span>
+								<span className="text-light-green font-mono font-semibold">&uarr; 0.18%</span>
+							</div>
+							<p className="mt-4 text-[12.5px] text-white/45 leading-snug">Illustrative rate &mdash; live pricing shows in the app.</p>
+						</div>
+
+						{/* Your alerts */}
+						<div className="bg-warm-beige border-2 border-custom-black rounded-[20px] sm:rounded-3xl p-5 sm:p-7 flex-1">
+							<div className="font-mono text-[11px] font-semibold text-custom-black/70 tracking-[1.5px] uppercase mb-4">Your alerts</div>
+							<div className="flex flex-col gap-2.5">
+								{ALERT_ROWS.map((r, i) => (
+									<div key={i} className="flex items-center gap-3 px-3.5 py-3 bg-white border-2 border-custom-black rounded-2xl">
+										<div className="size-8 shrink-0 rounded-full bg-custom-black text-white flex items-center justify-center font-display font-bold text-[11px]">{r.coin[0]}</div>
+										<div className="flex-1 min-w-0">
+											<div className="text-[13px] font-semibold">
+												{r.coin}/NGN · <span className={r.cond === "Above" ? "text-[#0F4F26]" : "text-muted-foreground"}>{r.cond}</span> <span className="font-mono">{r.target}</span>
+											</div>
+											<div className="flex gap-1.5 mt-1">
+												{r.chans.map((c) => (
+													<span key={c} className="font-mono text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[#EFFCD0] text-[#0F4F26] border border-custom-black/15">{c}</span>
+												))}
+											</div>
+										</div>
+										<span className={`shrink-0 w-11 h-[26px] rounded-full border-[1.5px] border-custom-black relative ${r.on ? "bg-light-green" : "bg-white"}`}>
+											<span className={`absolute top-[2px] size-5 rounded-full bg-custom-black transition-all ${r.on ? "left-[20px]" : "left-[2px]"}`} />
+										</span>
+									</div>
+								))}
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
