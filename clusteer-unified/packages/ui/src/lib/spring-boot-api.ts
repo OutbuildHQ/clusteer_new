@@ -18,12 +18,6 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     try {
-      // Add API key if available
-      const apiKey = process.env.NEXT_PUBLIC_SPRING_BOOT_API_KEY;
-      if (apiKey) {
-        config.headers['X-API-KEY'] = apiKey;
-      }
-
       // Add Firebase ID token if user is authenticated
       if (auth?.currentUser) {
         const token = await auth.currentUser.getIdToken();

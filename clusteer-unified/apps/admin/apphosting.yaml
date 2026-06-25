@@ -59,9 +59,12 @@ env:
   - variable: NEXT_PUBLIC_API_URL
     secret: NEXT_PUBLIC_API_URL
     availability: [BUILD, RUNTIME]
+  # Server-side only — availability RUNTIME (not BUILD) so it is never inlined into the
+  # client bundle. The Spring backend doesn't enforce X-API-KEY today; the key is kept
+  # pending the gateway-enforcement decision. (Rename off NEXT_PUBLIC_ if dropped/enforced.)
   - variable: NEXT_PUBLIC_SPRING_BOOT_API_KEY
     secret: NEXT_PUBLIC_SPRING_BOOT_API_KEY
-    availability: [BUILD, RUNTIME]
+    availability: [RUNTIME]
   - variable: BLOCKCHAIN_ENGINE_URL
     secret: BLOCKCHAIN_ENGINE_URL
   - variable: BLOCKCHAIN_ENGINE_API_KEY
