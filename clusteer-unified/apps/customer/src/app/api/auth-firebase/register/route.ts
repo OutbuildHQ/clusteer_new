@@ -11,6 +11,16 @@ export async function POST(request: NextRequest) {
     return rateLimitResponse;
   }
 
+  // Pre-launch waitlist gate — mirror the /signup → /early-access page gate at the API
+  // layer so registration can't be driven by a direct POST while signup is closed.
+  // Set SIGNUP_OPEN=true at public launch to lift this.
+  if (process.env.SIGNUP_OPEN !== "true") {
+    return NextResponse.json(
+      { status: false, message: "Signups aren't open yet — join the waitlist at /early-access." },
+      { status: 403 }
+    );
+  }
+
   // Check if Firebase is configured
   if (!isFirebaseConfigured) {
     return NextResponse.json(

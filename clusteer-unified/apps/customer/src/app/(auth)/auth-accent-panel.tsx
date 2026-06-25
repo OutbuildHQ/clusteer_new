@@ -6,10 +6,9 @@ import { formatNumber } from "@/lib/utils";
 type RateData = {
 	rate: string;
 	change: string;
-	volume: string;
 };
 
-const FALLBACK: RateData = { rate: "1,610.50", change: "+0.32%", volume: "3.8M" };
+const FALLBACK: RateData = { rate: "1,610.50", change: "+0.32%" };
 
 export function AuthAccentPanel() {
 	const [data, setData] = useState<RateData>(FALLBACK);
@@ -35,7 +34,6 @@ export function AuthAccentPanel() {
 				setData({
 					rate: formatNumber(rate),
 					change: changeStr,
-					volume: FALLBACK.volume,
 				});
 			} catch {
 				// keep fallback — includes AbortError on unmount
@@ -92,7 +90,7 @@ export function AuthAccentPanel() {
 					&#8358;{data.rate}
 				</h2>
 				<div style={{ color: "rgba(244,241,234,.6)", marginTop: 8, fontSize: 13 }}>
-					{data.change} (24h) &middot; {data.volume} USDT volume today
+					{data.change} (24h)
 				</div>
 
 				{/* Tagline */}

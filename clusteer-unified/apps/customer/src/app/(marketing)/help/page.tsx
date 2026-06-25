@@ -119,7 +119,7 @@ const TOPICS = [
 		description: "Adding bank accounts, Naira payouts, and supported banks.",
 		faqs: [
 			{ q: "How do I add a bank account?", a: "Go to Settings → Bank Accounts and tap Add Account. Enter your bank, account number, and account name — we verify the details via NIBSS to confirm the account is yours. You can add multiple accounts and set a default for payouts." },
-			{ q: "How long do Naira payouts take?", a: "Payouts are sent via NIP instant transfer, averaging about 4 minutes. In rare cases during bank maintenance windows it may take up to 30 minutes. You'll get a notification as soon as the funds land." },
+			{ q: "How long do Naira payouts take?", a: "Payouts are sent via NIP instant transfer, usually within minutes. In rare cases during bank maintenance windows it may take up to 30 minutes. You'll get a notification as soon as the funds land." },
 			{ q: "Which banks are supported?", a: "All Nigerian banks on the NIBSS instant payment network — including GTBank, Access, Zenith, UBA, First Bank, Kuda, OPay, PalmPay, Stanbic IBTC, Wema, Fidelity, Sterling, and many more." },
 			{ q: "Can I use a debit card to buy stablecoins?", a: "Not at this time. Clusteer supports bank transfers for Naira, which keeps fees lower and settlement faster. We may add card payments in future." },
 		],

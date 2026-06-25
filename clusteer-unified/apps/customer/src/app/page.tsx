@@ -245,7 +245,7 @@ export default function Home() {
 									<AssetLogo symbol="USDC" size="sm" /> USDC
 								</div>
 								<div className="float-2 absolute bottom-20 -left-7 bg-light-green px-3.5 py-2.5 rounded-full border-[1.5px] border-custom-black shadow-brutal-sm flex items-center gap-2 font-display font-bold text-[13px]">
-									<Bolt className="size-3.5" /> 4 min avg
+									<Bolt className="size-3.5" /> Minutes, not days
 								</div>
 								<div className="float-3 absolute top-56 -right-8 bg-warm-beige px-3.5 py-2.5 rounded-full border-[1.5px] border-custom-black shadow-brutal-sm flex items-center gap-2 font-display font-bold text-[13px]">
 									<Shield className="size-3.5" /> Bank-grade
@@ -571,7 +571,7 @@ function StepVisualPaid({ rate }: { rate: number }) {
 				</div>
 				<div>
 					<div className="font-display text-lg font-bold">Payout settled</div>
-					<div className="text-xs text-muted-foreground font-mono">04:12 elapsed • Block #61,832,409</div>
+					<div className="text-xs text-muted-foreground font-mono">Settled on-chain</div>
 				</div>
 			</div>
 			<div className="bg-warm-beige rounded-[14px] p-4 border border-custom-black/8">
