@@ -89,6 +89,14 @@ env:
   - variable: JWT_SECRET
     secret: JWT_SECRET
 
+  # ── Preview access (pre-launch) ──
+  # Lets invited reviewers (e.g. compliance) reach the gated /signup flow via
+  # /signup?key=<value>. NOT NEXT_PUBLIC, so it never reaches the client bundle.
+  # Rotate the secret value to revoke; remove this block at public launch.
+  - variable: WAITLIST_BYPASS_SECRET
+    secret: WAITLIST_BYPASS_SECRET
+    availability: [BUILD, RUNTIME]
+
   # ── Email / OTP (SendGrid) ──
   - variable: SENDGRID_API_KEY
     secret: SENDGRID_API_KEY

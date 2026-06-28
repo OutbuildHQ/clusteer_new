@@ -13,8 +13,12 @@ export async function POST(request: NextRequest) {
 
   // Pre-launch waitlist gate — mirror the /signup → /early-access page gate at the API
   // layer so registration can't be driven by a direct POST while signup is closed.
-  // Set SIGNUP_OPEN=true at public launch to lift this.
-  if (process.env.SIGNUP_OPEN !== "true") {
+  // Set SIGNUP_OPEN=true at public launch to lift this. Invited reviewers pass via the
+  // cl_preview cookie set by /signup?key=<WAITLIST_BYPASS_SECRET>.
+  const bypassSecret = process.env.WAITLIST_BYPASS_SECRET;
+  const hasPreviewAccess =
+    !!bypassSecret && request.cookies.get("cl_preview")?.value === bypassSecret;
+  if (process.env.SIGNUP_OPEN !== "true" && !hasPreviewAccess) {
     return NextResponse.json(
       { status: false, message: "Signups aren't open yet — join the waitlist at /early-access." },
       { status: 403 }

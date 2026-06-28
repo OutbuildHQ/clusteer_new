@@ -40,7 +40,30 @@ export async function middleware(request: NextRequest) {
 	// Pre-launch gate: account creation is closed. Send /signup to the
 	// early-access waitlist. /login stays open for internal testing.
 	// Remove this block to re-open public signup.
+	//
+	// Preview bypass: an invited reviewer (e.g. compliance) reaches the live
+	// signup flow via /signup?key=<WAITLIST_BYPASS_SECRET>. A valid key sets an
+	// httpOnly cookie and we strip the key from the URL; the cookie then lets
+	// them through on later navigation. Rotate WAITLIST_BYPASS_SECRET to revoke.
 	if (pathname === "/signup" || pathname.startsWith("/signup/")) {
+		const bypassSecret = process.env.WAITLIST_BYPASS_SECRET;
+		if (bypassSecret) {
+			const keyParam = request.nextUrl.searchParams.get("key");
+			if (keyParam && keyParam === bypassSecret) {
+				const response = NextResponse.redirect(new URL(pathname, request.url));
+				response.cookies.set("cl_preview", bypassSecret, {
+					httpOnly: true,
+					secure: process.env.NODE_ENV === "production",
+					sameSite: "lax",
+					maxAge: 60 * 60 * 24 * 30, // 30 days
+					path: "/",
+				});
+				return response;
+			}
+			if (request.cookies.get("cl_preview")?.value === bypassSecret) {
+				return NextResponse.next();
+			}
+		}
 		return NextResponse.redirect(new URL("/early-access", request.url));
 	}
 
