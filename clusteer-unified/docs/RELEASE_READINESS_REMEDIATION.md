@@ -224,34 +224,40 @@ Ran an independent adversarial audit of `272099f` (agent had no knowledge of the
 
 **Risk tier:** mixed — the middleware and signup-OTP fixes are SAFE-TO-FIX (unambiguous correct behavior: fail closed, not open). The 2FA build-vs-remove choice is NEEDS-DECISION.
 
-### Decision needed
+### Decision — RESOLVED (2026-07-03): drop the second factor entirely
 
-- [?] **2FA endpoints don't exist on the Django backend** (`/user/{userId}/2fa/status/`, `/user/{userId}/2fa/secret/` — grepped, confirmed absent). Choose: (a) build these on whichever backend is confirmed authoritative per Module B3, or (b) remove the 2FA UI/toggle entirely until it can be built, so users aren't shown a security feature that silently does nothing.
+- [x] **2FA endpoints don't exist on the Django backend** — decided (b): remove the 2FA UI/toggle rather than build it. Signup's email-link verification (`verify-email/page.tsx` + `resend-verification`, already real and working) is the only gate for now.
+- **Investigation before executing turned up something the original finding didn't know:** `verify-otp/page.tsx`, despite its name, was entirely a login-time TOTP/authenticator-app second factor (its own copy said "Open your authenticator app") — not an OTP-code flow. And it was already **100% unreachable in production**, not just partially broken: `login/route.ts`'s `/user/{userId}/2fa/status/` check silently defaults to `false` (endpoint doesn't exist on Django), so `requiresTwoFactor` was never `true` and nothing ever redirected there — not even the "flow !== login" signup-code branch, since real signup redirects to `/verify-email`, never to `/verify-otp` at all. So this whole module was dead code, not a partially-working feature.
+- [x] **Executed (2026-07-03, `7d2ac86`).** Deleted: `verify-otp/page.tsx` (both branches, zero live entry points), `verify-2fa/route.ts`, the Settings → Security "Two-factor authentication" card + its `twoFa` FlowHost flow (`components/flows/two-fa.tsx`), `api/user/2fa/request` + `api/user/[username]/2fa/validate` routes, `google-auth-qrcode.tsx`/`google-otp-form.tsx` (already orphaned since the earlier settings-page cleanup deleted their only page), and the now-dead `authRequest2FA`/`verifyGoogleAuthOTP` functions + `Auth2FARequest` type. Removed `login/page.tsx`'s dead `requiresTwoFactor` redirect branch and `login/route.ts`'s 2FA status check. Simplified `useAuth`'s Zustand store (dropped `completeTwoFactor`/`twoFactorPending`; renamed `requireTwoFactor` → `requireVerification`, its only remaining real purpose). Removed `/verify-otp` from `middleware.ts`'s `publicPaths`.
+- **Bonus findings while tracing the dependency chain (both confirmed zero-caller, both deleted):** `apps/customer/src/app/api/logout/route.ts` was an exact duplicate of `auth-firebase/logout/route.ts` with zero callers — Module B2's duplicate-route cleanup scope didn't include logout. `packages/ui/src/lib/auth.ts` (a `jose`-based JWT sign/verify module, including `signPendingToken` — the function the deleted 2FA route used to mint `pending_2fa_token`) had zero importers anywhere in the monorepo.
 
-### Tasks (SAFE-TO-FIX, no decision blocking these)
+### Tasks (SAFE-TO-FIX) — all done (2026-07-03, `7d2ac86`)
 
-- [ ] `apps/customer/src/middleware.ts:15-27` — `verifyAuthToken` falls back to an **unsigned** manual JWT payload decode if `firebase-admin`'s `verifyIdToken` throws *or is simply unreachable* (a transient network blip is enough to trigger this). **This must fail closed** — if signature verification cannot be performed, treat the token as invalid, not valid. This is the highest-severity item in this module.
-- [ ] `apps/customer/src/app/(auth)/verify-otp/page.tsx:52-55` — the signup-flow branch (`flow !== "login"`) currently accepts any 6 digits with zero API call and signs the user in client-side. Wire it to a real server-side OTP check.
-- [ ] `apps/customer/src/app/(auth)/verify-otp/page.tsx:143-149` — "Resend code" must call a real resend endpoint.
-- [ ] `apps/customer/src/app/(auth)/verify-2fa/page.tsx:16`, `verify-otp/page.tsx:30` — on an expired pending-2FA-token 401, redirect to `/login` instead of leaving the user stranded on the code-entry screen with only a toast.
-- [ ] `apps/customer/src/app/api/auth-firebase/reset-password/route.ts:26` — invalidate the existing `auth_token` session server-side after a successful password reset (currently the old session stays valid).
-- [ ] `apps/customer/src/app/api/auth-firebase/logout/route.ts:16` — `logoutFirebase()`'s `signOut(auth)` call is a no-op on the server; confirm cookie deletion is sufficient, or add a real server-side session invalidation if one becomes available.
-- [ ] `apps/customer/src/lib/rate-limiter.ts:9` (used by `login/page.tsx:32,150` and the waitlist route) — the in-memory store doesn't share state across multiple server instances, so the "strict" rate limit isn't globally enforced on Cloud Run/App Hosting with >1 instance. Move to a shared store (Redis/Upstash, already scaffolded elsewhere in the codebase per `apphosting.yaml` comments) or accept the gap explicitly.
-- [ ] `apps/customer/src/app/(auth)/login/page.tsx:174,186,201`, `signup/page.tsx:167,175` — Google/Apple/Passkey buttons currently just toast "Coming soon." Either hide these buttons until real, or clearly label them as unavailable rather than presenting live-looking CTAs.
+- [x] `apps/customer/src/middleware.ts:15-27` — **fixed.** Removed the unverified-JWT-decode fallback in `verifyAuthToken`. Previously, if `firebase-admin`'s `verifyIdToken` threw for *any* reason — including a forged/invalid signature — the code fell back to manually decoding the payload with **no signature check at all**, accepting any token with a future `exp` and a `user_id`/`sub` field of the attacker's choosing. Now any verification failure fails closed (returns `false` → redirect to `/login`). Also added `checkRevoked: true` so a session revoked via the new invalidate-sessions route (see below) is rejected before its natural expiry.
+- [x] `apps/customer/src/app/(auth)/verify-otp/page.tsx:52-55,143-149` — **moot**, see decision above (whole page deleted).
+- [x] `apps/customer/src/app/(auth)/verify-2fa/page.tsx:16`, `verify-otp/page.tsx:30` — **moot**, both files deleted.
+- [x] `apps/customer/src/app/api/auth-firebase/reset-password/route.ts:26` — **fixed, but not at this line** — that line only sends the reset *email*; the actual password change happens client-side in `reset-password/page.tsx` via Firebase's `confirmPasswordReset`. Added a new `POST /api/auth-firebase/invalidate-sessions` route (`getUserByEmail` + `admin.auth().revokeRefreshTokens`, new `revokeUserSessions` helper in `firebase-admin.ts`) that `reset-password/page.tsx` calls right after a successful reset, so an old session issued before the reset actually stops working.
+- [x] `apps/customer/src/app/api/auth-firebase/logout/route.ts:16` — **confirmed sufficient, no code change.** `signOut(auth)` running server-side against the client SDK instance is indeed a no-op, but harmless — `response.cookies.delete("auth_token")` in the same route is what actually ends the session, and that's correct/sufficient for a normal single-session logout (as opposed to "log out everywhere," which is what the new revoke-based reset flow above does instead).
+- [x] `apps/customer/src/lib/rate-limiter.ts:9` — **fixed.** A complete Redis-backed implementation (`redis-rate-limiter.ts`) already existed but nothing called it — all 11 live callers of `rateLimit()` used the bare in-memory function directly, so the "shared store" gap wasn't about missing infrastructure, it was about the infrastructure not being wired in. `rateLimit()` is now `async` and delegates to Redis when `USE_REDIS_RATE_LIMITING=true` (unchanged in-memory fallback otherwise). Updated all 11 call sites — 10 in `apps/customer` plus 1 in `apps/admin/src/app/api/auth/login/route.ts` that the original finding's file path (`apps/customer/...`) didn't cover; `tsc` on the admin app caught it. **Still outstanding, not something I can do from here:** actually provisioning an Upstash Redis instance and setting `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN`/`USE_REDIS_RATE_LIMITING=true` in the deployment secrets — the code path is ready the moment that's done.
+- [x] `apps/customer/src/app/(auth)/login/page.tsx:174,186,201`, `signup/page.tsx:167,175` — **fixed.** Google/Apple/Passkey buttons are now `disabled`, visually muted, and carry a small "Soon" badge (`soonBadgeStyle`, new in `auth-styles.ts`) instead of toasting "Coming soon" while looking fully clickable.
 
-### Tasks gated on the 2FA decision above
+### Tasks gated on the 2FA decision above — moot, all deleted (2026-07-03, `7d2ac86`)
 
-- [ ] `apps/customer/src/app/api/auth-firebase/login/route.ts:45` — replace/remove the call to the nonexistent `/user/{userId}/2fa/status/` endpoint.
-- [ ] `apps/customer/src/app/api/auth-firebase/verify-2fa/route.ts:38` — replace/remove the call to the nonexistent `/user/{userId}/2fa/secret/` endpoint.
-- [ ] `apps/customer/src/components/google-auth-qrcode.tsx:21,57` — reads `twoFactorSecret`, which `/api/user/2fa/request` intentionally never returns to the client (kept server-side, correctly, for security) — the "Copy key" button is permanently disabled as a result. Needs a real manual-entry flow if 2FA is kept.
-- [ ] `apps/customer/src/app/api/user/[username]/2fa/validate/route.ts:58-67` — TOTP secret persistence failure is only `console.warn`'d while the response still claims success; must fail the response if persistence fails.
-- [ ] `apps/customer/src/app/api/user/2fa/request/route.ts:23-26` — guard against silently regenerating a new secret/QR on every GET, invalidating an in-flight setup attempt.
+- [x] `apps/customer/src/app/api/auth-firebase/login/route.ts:45` — moot, the whole 2FA status check block was removed.
+- [x] `apps/customer/src/app/api/auth-firebase/verify-2fa/route.ts:38` — moot, file deleted.
+- [x] `apps/customer/src/components/google-auth-qrcode.tsx:21,57` — moot, file deleted (was already orphaned).
+- [x] `apps/customer/src/app/api/user/[username]/2fa/validate/route.ts:58-67` — moot, file deleted.
+- [x] `apps/customer/src/app/api/user/2fa/request/route.ts:23-26` — moot, file deleted.
+
+### New backlog item, not fixed (out of scope for this pass)
+
+- **A parallel, likely-fully-dead legacy auth scaffold**: `packages/ui/src/lib/api/auth/index.ts` still exports `loginUser`, `registerUser`, `forgotPassword`, `resetPassword`, `changePassword`, `resendOTP`, `verifyEmail`, `resendEmailVerification`, `changeEmail`, `sendEmailOTP` — most of these are only imported by a parallel set of `react-hook-form`-based components (`components/forms/login-form.tsx`, `signup-form.tsx`, `forgot-password-form.tsx`, `reset-password-form.tsx`, `change-password-form.tsx`, `change-email-form.tsx`) that predate the current inline-styled auth pages. `login-form.tsx` is already confirmed zero-importer (found during this pass). Whether the whole subtree is dead, like the two functions removed above, needs its own pass — didn't expand this module further to stay in scope.
 
 ### Acceptance criteria
 
-- A forged/unsigned token is rejected by middleware even when Firebase Admin is simulated as unreachable.
-- Signup OTP verification actually fails for a wrong code.
-- 2FA either demonstrably works end-to-end (enable → log out → log back in requires the code) or has been removed from the UI — no partial/silent state ships.
+- A forged/unsigned token is rejected by middleware even when Firebase Admin is simulated as unreachable. **Verified by code inspection (the fallback path is gone, `catch` unconditionally returns `false`) — not yet exercised against a live forged token in a running instance.**
+- Signup OTP verification actually fails for a wrong code. **Superseded — signup verification is a real Firebase email link, not a code; there's no "wrong code" case to fail.**
+- 2FA either demonstrably works end-to-end or has been removed from the UI — no partial/silent state ships. **Removed from the UI, per the decision above.**
 
 ---
 
@@ -276,7 +282,7 @@ Ran an independent adversarial audit of `272099f` (agent had no knowledge of the
 - [ ] `apps/customer/src/app/(dashboard)/identity-verification/page.tsx:174-181` — "Upgrade" button on Tier 2/3 cards has no `onClick` at all; wire it to the real tier-upgrade flow.
 - [ ] `apps/customer/src/components/flow-host.tsx` (via `settings/page.tsx:243`) — "Create new key" calls `window.openFlow("createApiKey")`, which isn't registered in `MODAL_FLOWS`/`DRAWER_FLOWS`; register the flow or remove the button.
 - [ ] `apps/customer/src/components/mobile-menu.tsx:89,98,107` — `#how-it-works`, `#features`, `#reviews` anchors don't exist on the homepage (there is no reviews section at all); add the matching ids/sections or remove the links.
-- [x] `apps/customer/src/app/(auth)/verify-2fa/page.tsx` — **decided and executed (2026-07-03).** Both pages called the identical backend endpoint (`/api/auth-firebase/verify-2fa`); `verify-otp`'s `flow=login` branch had the more complete UI (boxed digit auto-advance/paste, live resend countdown, SMS fallback) and is already the one login redirects to. Deleted `verify-2fa/page.tsx`; removed the now-dead `/verify-2fa` entry from `middleware.ts`'s `publicPaths`.
+- [x] `apps/customer/src/app/(auth)/verify-2fa/page.tsx` — **decided and executed (2026-07-03).** Both pages called the identical backend endpoint (`/api/auth-firebase/verify-2fa`); `verify-otp`'s `flow=login` branch had the more complete UI (boxed digit auto-advance/paste, live resend countdown, SMS fallback) and is already the one login redirects to. Deleted `verify-2fa/page.tsx`; removed the now-dead `/verify-2fa` entry from `middleware.ts`'s `publicPaths`. **Superseded (2026-07-03, `7d2ac86`, Module D): 2FA was later removed from the product entirely, so `verify-otp/page.tsx` itself was deleted too** — see Module D's decision section for why (both its branches turned out to be dead code, not just this one).
 - [x] `apps/customer/src/middleware.ts:70-109` — resolved during B1/B2 work. On direct re-check of the live file, `/markets` and `/request` were **already** in `protectedPaths` (the original finding was inaccurate on this point) — only `/referrals` was genuinely missing (added) and `/verify-2fa` was missing from `publicPaths` (added, mirroring `/verify-otp`'s pending-token pattern). See ledger E-10/E-11.
 - [x] `apps/customer/src/middleware.ts:70-83` — removed dead `/change-password`, `/auth/callback` entries. See ledger E-11.
 - [x] **Decision resolved (2026-07-03) — see Design Source Reconciliation above.** `/settings/page.tsx` (inline tabs) is canonical, per the accepted design's `dashboards/client-misc.jsx` `Settings` component. Remaining work is mechanical, not a decision:
@@ -430,19 +436,19 @@ Every finding from the audit, in one place, for a final cross-check that nothing
 | C-15 | C | HIGH | `api/trade/route.ts:33-34` | correct validation exists but is dead (wizard never calls it) | [ ] |
 | C-16 | C | BLOCKER | trade wizard as a whole | session-expiry mid-wizard invisible | [ ] |
 | C-17 | C | BLOCKER | trade wizard as a whole | offline mid-trade has zero effect | [ ] |
-| D-1 | D | BLOCKER | `auth-firebase/login/route.ts:45` | 2FA status check hits nonexistent endpoint | [?] |
-| D-2 | D | BLOCKER | `auth-firebase/verify-2fa/route.ts:38` | 2FA secret retrieval hits nonexistent endpoint | [?] |
-| D-3 | D | BLOCKER | `middleware.ts:15-27` | unsigned JWT fallback on verify failure | [ ] |
-| D-4 | D | BLOCKER | `verify-otp/page.tsx:52-55` | signup OTP branch never calls API | [ ] |
-| D-5 | D | HIGH | `verify-otp/page.tsx:143-149` | resend never calls API | [ ] |
-| D-6 | D | HIGH | `google-auth-qrcode.tsx:21,57` | copy-key button permanently disabled | [?] |
-| D-7 | D | HIGH | `user/[username]/2fa/validate/route.ts:58-67` | secret-save failure only warned, still claims success | [?] |
-| D-8 | D | MED | `verify-2fa/page.tsx:16`, `verify-otp/page.tsx:30` | expired token, no redirect to login | [ ] |
-| D-9 | D | MED | `auth-firebase/reset-password/route.ts:26` | no session invalidation after reset | [ ] |
-| D-10 | D | MED | `auth-firebase/logout/route.ts:16` | signOut() no-op server-side | [ ] |
-| D-11 | D | MED | `login/page.tsx:32,150` + `rate-limiter.ts:9` | in-memory rate limit not shared across instances | [ ] |
-| D-12 | D | MED | `login/page.tsx:174,186,201`, `signup/page.tsx:167,175` | OAuth/Passkey "coming soon" stubs | [ ] |
-| D-13 | D | LOW | `user/2fa/request/route.ts:23-26` | re-GET invalidates in-flight setup | [?] |
+| D-1 | D | BLOCKER | `auth-firebase/login/route.ts:45` | 2FA status check hits nonexistent endpoint | [x] `7d2ac86` — 2FA removed, check deleted |
+| D-2 | D | BLOCKER | `auth-firebase/verify-2fa/route.ts:38` | 2FA secret retrieval hits nonexistent endpoint | [x] `7d2ac86` — route deleted |
+| D-3 | D | BLOCKER | `middleware.ts:15-27` | unsigned JWT fallback on verify failure | [x] `7d2ac86` — fails closed now, `checkRevoked: true` added |
+| D-4 | D | BLOCKER | `verify-otp/page.tsx:52-55` | signup OTP branch never calls API | [-] `7d2ac86` — moot, whole page deleted (was already unreachable — signup redirects to `/verify-email`, never `/verify-otp`) |
+| D-5 | D | HIGH | `verify-otp/page.tsx:143-149` | resend never calls API | [-] `7d2ac86` — moot, same reason |
+| D-6 | D | HIGH | `google-auth-qrcode.tsx:21,57` | copy-key button permanently disabled | [-] `7d2ac86` — moot, file deleted (already orphaned before this) |
+| D-7 | D | HIGH | `user/[username]/2fa/validate/route.ts:58-67` | secret-save failure only warned, still claims success | [-] `7d2ac86` — moot, route deleted |
+| D-8 | D | MED | `verify-2fa/page.tsx:16`, `verify-otp/page.tsx:30` | expired token, no redirect to login | [-] `7d2ac86` — moot, both files deleted |
+| D-9 | D | MED | `auth-firebase/reset-password/route.ts:26` | no session invalidation after reset | [x] `7d2ac86` — new `invalidate-sessions` route + `revokeRefreshTokens` |
+| D-10 | D | MED | `auth-firebase/logout/route.ts:16` | signOut() no-op server-side | [-] `7d2ac86` — confirmed cookie-delete is sufficient for single-session logout, no change needed |
+| D-11 | D | MED | `login/page.tsx:32,150` + `rate-limiter.ts:9` | in-memory rate limit not shared across instances | [x] `7d2ac86` — wired to existing Redis path (`USE_REDIS_RATE_LIMITING`), all 11 call sites updated; Upstash credentials still need provisioning |
+| D-12 | D | MED | `login/page.tsx:174,186,201`, `signup/page.tsx:167,175` | OAuth/Passkey "coming soon" stubs | [x] `7d2ac86` — disabled + "Soon" badge |
+| D-13 | D | LOW | `user/2fa/request/route.ts:23-26` | re-GET invalidates in-flight setup | [-] `7d2ac86` — moot, route deleted |
 | E-1 | E | BLOCKER | `mobile-tab-bar.tsx:9,11` | Wallet/Send tabs → nonexistent routes | [x] replaced with sidebar.tsx's real `tab:true` set (Home/Buy-Sell/Orders/Me) |
 | E-2 | E | BLOCKER | `command-palette.tsx:28,30,31,32` | Wallet/Send/Receive/Withdraw → nonexistent routes | [x] NAV_ITEMS rewritten to mirror sidebar.tsx exactly; broken actions removed |
 | E-3 | E | BLOCKER | `identity-verification/page.tsx:174-181` | Upgrade button has no onClick | [ ] |
