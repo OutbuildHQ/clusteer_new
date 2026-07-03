@@ -75,3 +75,14 @@ export const spinnerStyle = {
 	animation: "spin .8s linear infinite",
 	display: "inline-block",
 } as const;
+
+/** Small pill for a disabled "not live yet" auth CTA (Google/Apple/Passkey). */
+export const soonBadgeStyle = {
+	fontSize: 10.5,
+	fontWeight: 600,
+	padding: "1px 6px",
+	borderRadius: 999,
+	background: "var(--c-surface-2)",
+	color: "var(--c-text-3)",
+	marginLeft: 4,
+} as const;

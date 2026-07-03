@@ -6,7 +6,7 @@ import { springFetch } from "@/lib/spring-boot-server";
 export async function POST(request: NextRequest) {
   // Rate limiting
   const { rateLimit, RateLimitPresets } = await import("@/lib/rate-limiter");
-  const rateLimitResponse = rateLimit(request, RateLimitPresets.strict);
+  const rateLimitResponse = await rateLimit(request, RateLimitPresets.strict);
   if (rateLimitResponse) {
     return rateLimitResponse;
   }

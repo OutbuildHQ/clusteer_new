@@ -38,7 +38,7 @@ async function rtdbAccessToken(): Promise<string> {
  */
 export async function POST(request: NextRequest) {
 	const { rateLimit, RateLimitPresets } = await import("@/lib/rate-limiter");
-	const limited = rateLimit(request, RateLimitPresets.strict);
+	const limited = await rateLimit(request, RateLimitPresets.strict);
 	if (limited) return limited;
 
 	let body: { email?: string };

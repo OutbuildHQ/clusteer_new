@@ -4,7 +4,7 @@ import { getAuthFromRequest, djangoFetch } from "@/lib/api-helpers";
 
 export async function POST(request: NextRequest) {
 	try {
-		const rateLimitResponse = rateLimit(request, RateLimitPresets.moderate);
+		const rateLimitResponse = await rateLimit(request, RateLimitPresets.moderate);
 		if (rateLimitResponse) {
 			return rateLimitResponse;
 		}

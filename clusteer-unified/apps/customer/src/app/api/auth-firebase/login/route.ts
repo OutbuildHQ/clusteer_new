@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { loginWithFirebase } from "@/lib/auth-firebase";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 import { isFirebaseConfigured } from "@/lib/firebase";
-import { djangoFetch } from "@/lib/api-helpers";
-import { signPendingToken } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   if (!isFirebaseConfigured) {
@@ -13,7 +11,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const rateLimitResponse = rateLimit(request, RateLimitPresets.strict);
+  const rateLimitResponse = await rateLimit(request, RateLimitPresets.strict);
   if (rateLimitResponse) return rateLimitResponse;
 
   try {
@@ -32,43 +30,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { firebaseUser, token } = await loginWithFirebase(email, password);
+    const { token } = await loginWithFirebase(email, password);
 
     // ── 1. Email verification gate (bypassed until Resend is configured) ────
     // TODO: re-enable once Resend email service is active
     // if (!firebaseUser.emailVerified) { ... }
 
-    // ── 2. 2FA check ────────────────────────────────────────────────────────
-    const userId = firebaseUser.uid;
-    let twoFactorEnabled = false;
-    try {
-      const r = await djangoFetch(`/user/${userId}/2fa/status/`);
-      if (r.ok) {
-        const d = await r.json();
-        twoFactorEnabled = d.enabled === true;
-      }
-    } catch {
-      // Django endpoint may not exist yet — default to disabled
-    }
+    // 2FA was removed (2026-07-03) — no second factor exists on the backend,
+    // email verification above is the only gate. See Module D decision in
+    // docs/RELEASE_READINESS_REMEDIATION.md.
 
-    if (twoFactorEnabled) {
-      const pendingToken = await signPendingToken({ userId, email }, "5m");
-      const response = NextResponse.json({
-        status: true,
-        requiresTwoFactor: true,
-        message: "2FA verification required",
-      });
-      response.cookies.set("pending_2fa_token", pendingToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 300,
-        path: "/",
-      });
-      return response;
-    }
-
-    // ── 3. Normal login ─────────────────────────────────────────────────────
+    // ── 2. Normal login ─────────────────────────────────────────────────────
     const response = NextResponse.json({
       status: true,
       message: "Login successful",

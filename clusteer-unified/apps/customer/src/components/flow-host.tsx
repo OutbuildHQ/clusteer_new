@@ -5,7 +5,6 @@ import { X } from "lucide-react";
 import { NewTicketFlow } from "./flows/new-ticket";
 import { ChangePasswordFlow } from "./flows/change-password";
 import { ChangeEmailFlow } from "./flows/change-email";
-import { TwoFaFlow } from "./flows/two-fa";
 import { AddBankFlow } from "./flows/add-bank";
 import { OrderDetailDrawer } from "./flows/order-detail";
 import { ConfirmDialog } from "@/components/flows/confirm-dialog";
@@ -21,7 +20,6 @@ const MODAL_FLOWS: Record<string, React.ComponentType<any>> = {
 	newTicket: NewTicketFlow,
 	changePassword: ChangePasswordFlow,
 	changeEmail: ChangeEmailFlow,
-	twoFa: TwoFaFlow,
 	addBank: AddBankFlow,
 	confirm: ConfirmDialog,
 	notifDetail: NotificationDetailFlow,

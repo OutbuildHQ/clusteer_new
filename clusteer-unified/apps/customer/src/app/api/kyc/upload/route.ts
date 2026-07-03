@@ -36,7 +36,7 @@ function validateFileSignature(buffer: Buffer, mimeType: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
-	const rateLimitRes = rateLimit(request, RateLimitPresets.moderate);
+	const rateLimitRes = await rateLimit(request, RateLimitPresets.moderate);
 	if (rateLimitRes) return rateLimitRes;
 
 	try {

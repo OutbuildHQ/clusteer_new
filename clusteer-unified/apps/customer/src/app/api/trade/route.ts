@@ -8,7 +8,7 @@ const VALID_CHANNELS = ["TRC20", "BEP20", "ERC20"];
 
 export async function POST(request: NextRequest) {
 	try {
-		const rateLimitResponse = rateLimit(request, RateLimitPresets.moderate);
+		const rateLimitResponse = await rateLimit(request, RateLimitPresets.moderate);
 		if (rateLimitResponse) return rateLimitResponse;
 
 		const auth = getAuthFromRequest(request);

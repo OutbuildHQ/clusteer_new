@@ -86,8 +86,3 @@ export interface PageParams {
 	page: number;
 	size: number;
 }
-
-export interface Auth2FARequest {
-	twoFactorQR: string;
-	twoFactorSecret: string;
-}

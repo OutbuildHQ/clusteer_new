@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { inputWrapStyle, innerInputStyle, btnPrimaryStyle, btnGhostStyle, showHideBtnStyle, spinnerStyle } from "@/lib/auth-styles";
+import { inputWrapStyle, innerInputStyle, btnPrimaryStyle, btnGhostStyle, showHideBtnStyle, spinnerStyle, soonBadgeStyle } from "@/lib/auth-styles";
 import { GoogleIcon, AppleIcon } from "@/components/brand/auth-icons";
 import { useAuth } from "@/store/auth";
 
@@ -12,7 +12,7 @@ import { useAuth } from "@/store/auth";
 
 export default function SignupPage() {
 	const router = useRouter();
-	const requireTwoFactor = useAuth((s) => s.requireTwoFactor);
+	const requireVerification = useAuth((s) => s.requireVerification);
 	const [step, setStep] = useState(1);
 	const [submitting, setSubmitting] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
@@ -62,7 +62,7 @@ export default function SignupPage() {
 				return;
 			}
 
-			requireTwoFactor(data.email);
+			requireVerification(data.email);
 			toast.success("Account created! Check your inbox for a verification link.");
 			router.push("/verify-email");
 		} catch {
@@ -160,23 +160,27 @@ export default function SignupPage() {
 						<div className="flex-1" style={{ height: 1, background: "var(--c-line)" }} />
 					</div>
 
-					{/* Social buttons */}
+					{/* Social buttons — disabled + labeled, not live yet */}
 					<div className="flex items-center gap-3">
 						<button
 							type="button"
-							onClick={() => toast.info("Coming soon: Google")}
-							style={{ ...btnGhostStyle, flex: 1, height: 46, gap: 8, fontSize: 13.5 }}
+							disabled
+							title="Coming soon"
+							style={{ ...btnGhostStyle, flex: 1, height: 46, gap: 8, fontSize: 13.5, color: "var(--c-text-3)", cursor: "not-allowed", opacity: 0.6 }}
 						>
 							<GoogleIcon />
 							<span className="sm:hidden">Google</span><span className="hidden sm:inline">Continue with Google</span>
+							<span style={soonBadgeStyle}>Soon</span>
 						</button>
 						<button
 							type="button"
-							onClick={() => toast.info("Coming soon: Apple")}
-							style={{ ...btnGhostStyle, flex: 1, height: 46, gap: 8, fontSize: 13.5 }}
+							disabled
+							title="Coming soon"
+							style={{ ...btnGhostStyle, flex: 1, height: 46, gap: 8, fontSize: 13.5, color: "var(--c-text-3)", cursor: "not-allowed", opacity: 0.6 }}
 						>
 							<AppleIcon />
 							Apple
+							<span style={soonBadgeStyle}>Soon</span>
 						</button>
 					</div>
 				</>

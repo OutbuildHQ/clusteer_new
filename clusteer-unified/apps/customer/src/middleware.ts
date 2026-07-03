@@ -9,23 +9,18 @@ async function verifyAuthToken(token: string): Promise<boolean> {
 		const parts = token.split(".");
 		if (parts.length !== 3) return false;
 
-		try {
-			const { getAdminAuth } = await import("@/lib/firebase-admin");
-			const auth = getAdminAuth();
-			const decodedToken = await auth.verifyIdToken(token);
-			return !!decodedToken.uid;
-		} catch {
-			try {
-				const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
-				const exp = payload.exp;
-				if (exp && typeof exp === "number") {
-					return exp * 1000 > Date.now();
-				}
-				return !!payload.user_id || !!payload.sub;
-			} catch {
-				return false;
-			}
-		}
+		// Fail closed: if signature verification throws for any reason — bad
+		// signature, expired token, or Firebase Admin being unreachable — the
+		// token is treated as invalid. There must be no unverified fallback
+		// decode here; that previously let a forged token with a future `exp`
+		// and an arbitrary `user_id` pass whenever verifyIdToken merely errored.
+		const { getAdminAuth } = await import("@/lib/firebase-admin");
+		const auth = getAdminAuth();
+		// checkRevoked: true so a session revoked by a password reset
+		// (see invalidate-sessions/route.ts) is rejected even if the token's
+		// own exp claim hasn't passed yet.
+		const decodedToken = await auth.verifyIdToken(token, true);
+		return !!decodedToken.uid;
 	} catch (error) {
 		console.error("Auth verification failed:", error);
 		return false;
@@ -74,7 +69,6 @@ export async function middleware(request: NextRequest) {
 		"/signup",
 		"/forgot-password",
 		"/reset-password",
-		"/verify-otp",
 		"/verify-email",
 		"/privacy-policy",
 		"/terms-of-service",

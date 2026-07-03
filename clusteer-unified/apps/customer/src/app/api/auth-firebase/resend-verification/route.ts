@@ -3,7 +3,7 @@ import { getAdminAuth } from "@/lib/firebase-admin";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 
 export async function POST(request: NextRequest) {
-  const rateLimitResponse = rateLimit(request, RateLimitPresets.moderate);
+  const rateLimitResponse = await rateLimit(request, RateLimitPresets.moderate);
   if (rateLimitResponse) return rateLimitResponse;
 
   try {

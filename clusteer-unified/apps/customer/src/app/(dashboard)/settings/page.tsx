@@ -86,23 +86,6 @@ export default function SettingsPage() {
 
 					{tab === "Security" && (
 						<div className="flex flex-col gap-4">
-							{/* 2FA */}
-							<div className="bg-ds-surface border border-ds-line rounded-[14px] overflow-hidden">
-								<div className="px-5 py-4 border-b border-ds-line">
-									<h3 className="text-[15px] font-semibold text-ds-text m-0">Two-factor authentication</h3>
-								</div>
-								<div className="p-5 flex items-center justify-between">
-									<div>
-										<div className="font-semibold text-ds-text">Authenticator app</div>
-										<div className="text-[12px] text-ds-text-3">Google Authenticator · added Mar 8</div>
-									</div>
-									<div className="flex items-center gap-2">
-										<StatusBadge s="Active" />
-										<button onClick={() => window.openFlow("twoFa")} className="inline-flex items-center h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium border border-ds-line bg-transparent text-ds-text cursor-pointer">Manage</button>
-									</div>
-								</div>
-							</div>
-
 							{/* Sessions */}
 							<div className="bg-ds-surface border border-ds-line rounded-[14px] overflow-hidden">
 								<div className="px-5 py-4 border-b border-ds-line">

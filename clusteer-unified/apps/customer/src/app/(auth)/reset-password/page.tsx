@@ -77,8 +77,20 @@ function ResetPasswordContent() {
 		if (!auth || !match || p1.length < 8 || submitting) return;
 		setSubmitting(true);
 		try {
-			await verifyPasswordResetCode(auth, oobCode!);
+			const email = await verifyPasswordResetCode(auth, oobCode!);
 			await confirmPasswordReset(auth, oobCode!, p1);
+			// Invalidate any session issued before this reset — otherwise an old
+			// auth_token stays valid until its natural expiry even after the
+			// password changes. Best-effort: the reset itself already succeeded.
+			try {
+				await fetch("/api/auth-firebase/invalidate-sessions", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email }),
+				});
+			} catch {
+				// non-blocking
+			}
 			setDone(true);
 			toast.success("Password updated successfully");
 		} catch (error: unknown) {

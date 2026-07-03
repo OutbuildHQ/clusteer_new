@@ -17,7 +17,7 @@ function getUserIdFromToken(token: string): string | null {
 
 export async function PUT(request: NextRequest) {
 	try {
-		const rateLimitResponse = rateLimit(request, RateLimitPresets.moderate);
+		const rateLimitResponse = await rateLimit(request, RateLimitPresets.moderate);
 		if (rateLimitResponse) {
 			return rateLimitResponse;
 		}

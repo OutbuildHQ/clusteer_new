@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { GoogleIcon, AppleIcon, PasskeyIcon } from "@/components/brand/auth-icons";
-import { inputWrapStyle, innerInputStyle, btnPrimaryStyle, btnGhostStyle, showHideBtnStyle, spinnerStyle } from "@/lib/auth-styles";
+import { inputWrapStyle, innerInputStyle, btnPrimaryStyle, btnGhostStyle, showHideBtnStyle, spinnerStyle, soonBadgeStyle } from "@/lib/auth-styles";
 import { useAuth } from "@/store/auth";
 
 
@@ -22,7 +22,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function LoginPage() {
 	const router = useRouter();
-	const { signIn, requireTwoFactor } = useAuth();
+	const { signIn, requireVerification } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 	const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
 		resolver: zodResolver(schema),
@@ -41,18 +41,12 @@ export default function LoginPage() {
 
 			if (!res.ok || !data.status) {
 				if (data.requiresEmailVerification) {
-					requireTwoFactor(values.email);
+					requireVerification(values.email);
 					toast.error("Please verify your email first.");
 					router.push("/verify-email");
 					return;
 				}
 				toast.error(data.message || "Login failed");
-				return;
-			}
-
-			if (data.requiresTwoFactor) {
-				requireTwoFactor(values.email);
-				router.push("/verify-otp?flow=login");
 				return;
 			}
 
@@ -167,46 +161,52 @@ export default function LoginPage() {
 					<div className="flex-1" style={{ height: 1, background: "var(--c-line)" }} />
 				</div>
 
-				{/* Social buttons */}
+				{/* Social buttons — disabled + labeled, not live yet */}
 				<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
 					<button
 						type="button"
-						onClick={() => toast.info("Coming soon: Google")}
+						disabled
+						title="Coming soon"
 						style={{
 							flex: 1, height: 46, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
 							borderRadius: "var(--r-md)", border: "1px solid var(--c-line)", background: "transparent",
-							fontSize: 13.5, fontWeight: 500, color: "var(--c-text)", fontFamily: "var(--f-sans)", cursor: "pointer",
+							fontSize: 13.5, fontWeight: 500, color: "var(--c-text-3)", fontFamily: "var(--f-sans)", cursor: "not-allowed", opacity: 0.6,
 						}}
 					>
 						<GoogleIcon />
 						<span className="sm:hidden">Google</span><span className="hidden sm:inline">Continue with Google</span>
+						<span style={soonBadgeStyle}>Soon</span>
 					</button>
 					<button
 						type="button"
-						onClick={() => toast.info("Coming soon: Apple")}
+						disabled
+						title="Coming soon"
 						style={{
 							flex: 1, height: 46, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
 							borderRadius: "var(--r-md)", border: "1px solid var(--c-line)", background: "transparent",
-							fontSize: 13.5, fontWeight: 500, color: "var(--c-text)", fontFamily: "var(--f-sans)", cursor: "pointer",
+							fontSize: 13.5, fontWeight: 500, color: "var(--c-text-3)", fontFamily: "var(--f-sans)", cursor: "not-allowed", opacity: 0.6,
 						}}
 					>
 						<AppleIcon />
 						Apple
+						<span style={soonBadgeStyle}>Soon</span>
 					</button>
 				</div>
 
-				{/* Passkey */}
+				{/* Passkey — disabled + labeled, not live yet */}
 				<button
 					type="button"
-					onClick={() => toast.info("Passkey sign-in coming soon")}
+					disabled
+					title="Coming soon"
 					style={{
 						width: "100%", height: 46, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
 						marginTop: 10, borderRadius: "var(--r-md)", border: "1px solid var(--c-line)", background: "transparent",
-						fontSize: 13.5, fontWeight: 500, color: "var(--c-text)", fontFamily: "var(--f-sans)", cursor: "pointer",
+						fontSize: 13.5, fontWeight: 500, color: "var(--c-text-3)", fontFamily: "var(--f-sans)", cursor: "not-allowed", opacity: 0.6,
 					}}
 				>
 					<PasskeyIcon />
 					<span>Sign in with Passkey</span>
+					<span style={soonBadgeStyle}>Soon</span>
 				</button>
 			</form>
 		</div>

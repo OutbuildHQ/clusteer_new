@@ -5,7 +5,7 @@ import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 export async function POST(request: NextRequest) {
 	try {
 		// Rate limiting — strict for admin login
-		const rateLimitResponse = rateLimit(request, RateLimitPresets.strict);
+		const rateLimitResponse = await rateLimit(request, RateLimitPresets.strict);
 		if (rateLimitResponse) {
 			return rateLimitResponse;
 		}

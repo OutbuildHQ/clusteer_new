@@ -33,7 +33,7 @@ function validateDocumentNumber(documentNumber: string, type: string): { valid: 
 
 export async function POST(request: NextRequest) {
 	// Rate limit: 3 KYC submissions per 24 hours per IP
-	const rateLimitRes = rateLimit(request, RateLimitPresets.strict);
+	const rateLimitRes = await rateLimit(request, RateLimitPresets.strict);
 	if (rateLimitRes) return rateLimitRes;
 
 	try {

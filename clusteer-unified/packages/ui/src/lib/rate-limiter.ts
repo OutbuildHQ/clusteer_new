@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit as redisCheckRateLimit } from "./redis-rate-limiter";
 
 // In-memory store for development (use Redis for production)
 const rateLimitStore = new Map<
@@ -80,7 +81,7 @@ function defaultKeyGenerator(request: NextRequest): string {
  * @example
  * ```typescript
  * export async function GET(request: NextRequest) {
- *   const rateLimitResponse = rateLimit(request, {
+ *   const rateLimitResponse = await rateLimit(request, {
  *     maxRequests: 10,
  *     windowMs: 60000 // 10 requests per minute
  *   });
@@ -93,10 +94,10 @@ function defaultKeyGenerator(request: NextRequest): string {
  * }
  * ```
  */
-export function rateLimit(
+export async function rateLimit(
 	request: NextRequest,
 	config: RateLimitConfig = {}
-): NextResponse | null {
+): Promise<NextResponse | null> {
 	const {
 		maxRequests = 100,
 		windowMs = 60000, // 1 minute default
@@ -105,6 +106,38 @@ export function rateLimit(
 	} = config;
 
 	const key = keyGenerator(request);
+
+	// The in-memory store below doesn't share state across server instances
+	// (this app runs up to 4 on App Hosting — see apphosting.yaml), so the
+	// "strict" limit isn't globally enforced without this. Falls back to the
+	// in-memory path below until USE_REDIS_RATE_LIMITING=true and Upstash
+	// credentials are actually configured (see apphosting.yaml's env comment).
+	if (process.env.USE_REDIS_RATE_LIMITING === "true") {
+		const result = await redisCheckRateLimit(key, maxRequests, windowMs);
+		if (!result.success) {
+			const retryAfter = Math.ceil((result.reset - Date.now()) / 1000);
+			console.warn(`Rate limit exceeded for ${key}`);
+			if (onRateLimitExceeded) return onRateLimitExceeded(request);
+			return NextResponse.json(
+				{
+					status: false,
+					message: "Too many requests. Please try again later.",
+					retryAfter,
+				},
+				{
+					status: 429,
+					headers: {
+						"Retry-After": retryAfter.toString(),
+						"X-RateLimit-Limit": result.limit.toString(),
+						"X-RateLimit-Remaining": result.remaining.toString(),
+						"X-RateLimit-Reset": Math.ceil(result.reset / 1000).toString(),
+					},
+				}
+			);
+		}
+		return null;
+	}
+
 	const now = Date.now();
 
 	// Get or create rate limit entry

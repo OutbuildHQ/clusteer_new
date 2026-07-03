@@ -4,7 +4,7 @@ import { LoginFormType } from "@/components/forms/login-form";
 import { ResetPasswordPayload } from "@/components/forms/reset-password-form";
 import { SignupFormData } from "@/components/forms/signup-form";
 import apiClient from "@/lib/axios";
-import { Auth2FARequest, IResponse, IUser } from "@/types";
+import { IResponse, IUser } from "@/types";
 import axios, { AxiosError } from "axios";
 
 export async function loginUser(payload: LoginFormType) {
@@ -75,32 +75,6 @@ export async function verifyEmail(token: string) {
 export async function resendEmailVerification(token: string) {
 	try {
 		const res = await apiClient.put<IResponse>(`/user/verify?token=${token}`);
-		return res.data;
-	} catch (error) {
-		throw error as AxiosError;
-	}
-}
-
-export async function authRequest2FA() {
-	try {
-		const res = await apiClient.get<IResponse<Auth2FARequest>>(
-			"/user/2fa/request"
-		);
-		return res.data.data;
-	} catch (error) {
-		throw error as AxiosError;
-	}
-}
-
-export async function verifyGoogleAuthOTP({
-	username,
-	payload,
-}: {
-	username: string;
-	payload: { otp: string };
-}) {
-	try {
-		const res = await apiClient.post(`/user/${username}/2fa/validate`, payload);
 		return res.data;
 	} catch (error) {
 		throw error as AxiosError;

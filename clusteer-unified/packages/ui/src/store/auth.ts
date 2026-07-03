@@ -6,10 +6,8 @@ import { persist } from "zustand/middleware";
 type AuthState = {
 	isAuthenticated: boolean;
 	email: string | null;
-	twoFactorPending: boolean;
 	signIn: (email: string) => void;
-	requireTwoFactor: (email: string) => void;
-	completeTwoFactor: () => void;
+	requireVerification: (email: string) => void;
 	signOut: () => void;
 };
 
@@ -18,11 +16,9 @@ export const useAuth = create<AuthState>()(
 		(set) => ({
 			isAuthenticated: false,
 			email: null,
-			twoFactorPending: false,
-			signIn: (email) => set({ isAuthenticated: true, email, twoFactorPending: false }),
-			requireTwoFactor: (email) => set({ email, twoFactorPending: true, isAuthenticated: false }),
-			completeTwoFactor: () => set({ twoFactorPending: false, isAuthenticated: true }),
-			signOut: () => set({ isAuthenticated: false, email: null, twoFactorPending: false }),
+			signIn: (email) => set({ isAuthenticated: true, email }),
+			requireVerification: (email) => set({ email, isAuthenticated: false }),
+			signOut: () => set({ isAuthenticated: false, email: null }),
 		}),
 		{ name: "clusteer-auth" },
 	),

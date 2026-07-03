@@ -167,3 +167,19 @@ export async function setCustomUserClaims(uid: string, customClaims: any) {
 		return false;
 	}
 }
+
+/**
+ * Revoke all refresh tokens for a user, invalidating every existing session
+ * (e.g. after a password reset). Only takes effect on ID-token verification
+ * calls made with { checkRevoked: true } — see middleware.ts.
+ */
+export async function revokeUserSessions(uid: string) {
+	try {
+		const auth = getAdminAuth();
+		await auth.revokeRefreshTokens(uid);
+		return true;
+	} catch (error) {
+		console.error("Revoke sessions error:", error);
+		return false;
+	}
+}
