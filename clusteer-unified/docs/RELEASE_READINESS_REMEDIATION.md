@@ -124,10 +124,16 @@ Recommended order: **B → A → F(keys) → E → G → D(decision) → H → C
 
 **Finding:** order **creation** should flow through Spring Boot's `P2POrderService` (`/v1/order/purchase/create`, `/v1/order/sale/create`), but order **listing** and **cancellation** (`apps/customer/src/app/api/order/route.ts:29`, `order/[id]/cancel/route.ts:14`) call the Django Blockchain Engine instead, via `djangoFetch`. These are two different backends with (presumably) two different data stores. Orders created via Spring would never appear in the Django-backed list, and cancellation has no corresponding Spring endpoint at all.
 
-**Decision needed:**
-- [?] Confirm Spring Boot (`Clusteer-Api`) is the single source of truth for orders and transactions going forward (recommended — it's the actively-developed, deployed backend; Django appears to be the legacy/custodial-era system being phased out per the earlier non-custodial compliance audit).
-- [?] If confirmed: `apps/customer/src/app/api/order/route.ts` and `order/[id]/cancel/route.ts` need to be repointed to Spring's real endpoints (`GET /v1/order` for listing — note this is *not* `/user/{userId}/orders/`, see Module H), and a cancel endpoint needs to be added to Spring's `OrderController.java` since none currently exists.
-- [?] `apps/customer/src/app/api/transaction/user/route.ts` (dead Django proxy) should be deleted; the live path (`getAllTransactions()` in `packages/ui/src/lib/api/user/queries.ts:23-34`) already calls Spring's `/v1/transaction/user` directly — though that itself is a separate finding (Module H) about bypassing the app's server-side key-hiding pattern.
+**Decision: RESOLVED (2026-07-03) — Spring Boot (`Clusteer-Api`) is authoritative for orders.** Not a judgment call — verified by reading both backends' actual code:
+
+- **Django (`Clusteer-Blockchain-Engine`) has no deployed Order model.** `p2p/order_models.py` and `p2p/views/order_views.py` — despite being well-built (proper `Order`/`OrderStatusHistory` models, pagination, filtering) — are **completely untracked in git** (`git status` shows `??`, `git log` shows zero history) and **no migration anywhere creates the `orders` table** (only 7 migrations exist in `p2p/migrations/`, none mention orders). This code has never touched a real database. Zero real order data is at risk by moving off it.
+- **Django's wallet creation is custodial by design** — `MultiChainWallet`, `BscVaultWallet`, `EthVaultWallet`, `SolVaultWallet`, `TronsVaultWallet` all store raw/encrypted `private_key` fields directly (`p2p/views/wallets.py` generates them: `create_solana_wallet`, `create_tron_wallet`, etc.). This is the exact custodial system already parked pending VASP licensing per the project's earlier non-custodial compliance audit — it was never going to be the right home for order data going forward regardless of the migration state.
+- **Spring already has a real, deployed Order implementation.** `P2POrderServiceImpl` uses a genuine `OrderRepository` (`orderRepo.save(newOrder)`) and is already wired directly to `QuidaxService` (`initiatePurchase`/`confirmPurchase`/`initiateSale`). Nothing needs to be built from scratch — the fix is purely re-pointing the customer app's routes.
+
+**Tasks now unblocked (still gated on Module C/H sign-off before implementation):**
+- [ ] `apps/customer/src/app/api/order/route.ts` and `order/[id]/cancel/route.ts` — repoint to Spring's real endpoints (`GET /v1/order` for listing — *not* `/user/{userId}/orders/`, see Module H); add a cancel endpoint to Spring's `OrderController.java` since none currently exists there.
+- [ ] `apps/customer/src/app/api/transaction/user/route.ts` (dead Django proxy) — delete; the live path (`getAllTransactions()` in `packages/ui/src/lib/api/user/queries.ts:23-34`) already calls Spring's `/v1/transaction/user` directly (separate Module H finding about bypassing the server-side key-hiding pattern remains open).
+- [?] **New, separate decision (not blocking):** `Clusteer-Blockchain-Engine/p2p/order_models.py` + `p2p/views/order_views.py` are uncommitted local files sitting in the working directory — not part of any commit history. Confirm whether this is abandoned exploratory work safe to leave alone/delete, or someone's active in-progress branch that shouldn't be touched without asking them first.
 
 ---
 
@@ -357,7 +363,7 @@ Every finding from the audit, in one place, for a final cross-check that nothing
 | A-9 | A | HIGH | `identity-verification/page.tsx:67,95-99` | downstream: KYC status query never fires | [ ] |
 | B1 | B | — | `clusteer-unified/src/` (whole app) | orphaned legacy app, wallet feature never migrated | [x] backed up (zip + `archive/legacy-root-src-2026-06-30`) then deleted |
 | B2 | B | — | 8 duplicate auth route files | three parallel route families, two dead | [x] deleted, `nav-user.tsx` logout repointed then file deleted (fully orphaned) |
-| B3 | B | — | order/transaction routes | Django vs Spring split, no single source of truth | [?] answer ambiguous, re-asked |
+| B3 | B | — | order/transaction routes | Django vs Spring split, no single source of truth | [x] Spring confirmed authoritative — Django's Order model is uncommitted + never migrated, holds zero real data |
 | C-1 | C | BLOCKER | `dashboard/page.tsx:19-25,226-256` | hardcoded MOCK_MARKETS | [ ] |
 | C-2 | C | BLOCKER | `dashboard/page.tsx:84-99` | hardcoded verification/limit card | [ ] |
 | C-3 | C | BLOCKER | `trade/order-review.tsx:44-82,121-128` | never calls /api/trade, fake order | [ ] |
