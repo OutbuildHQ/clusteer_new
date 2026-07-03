@@ -1,21 +1,26 @@
 "use client";
 
-import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 /**
- * Extract the Firebase user ID from the auth_token cookie.
- * The middleware already verified the JWT — we just decode the payload.
+ * The current user's ID, derived server-side.
+ *
+ * auth_token is httpOnly (by design, for XSS protection) — client JS can never
+ * read it via document.cookie. /api/user/profile already decodes it server-side
+ * (see getAuthFromRequest in api-helpers.ts) and returns { data: { id, ... } },
+ * so we fetch that instead of trying to parse a cookie we can't see.
  */
 export function useUserId(): string | null {
-	return useMemo(() => {
-		if (typeof window === "undefined") return null;
-		const match = document.cookie.match(/auth_token=([^;]+)/);
-		if (!match) return null;
-		try {
-			const payload = JSON.parse(atob(match[1].split(".")[1]));
-			return payload.user_id || payload.sub || null;
-		} catch {
-			return null;
-		}
-	}, []);
+	const { data } = useQuery({
+		queryKey: ["current-user-id"],
+		queryFn: async () => {
+			const res = await fetch("/api/user/profile");
+			if (!res.ok) return null;
+			const json = await res.json();
+			return json?.data?.id ?? null;
+		},
+		staleTime: 5 * 60 * 1000,
+		retry: false,
+	});
+	return data ?? null;
 }

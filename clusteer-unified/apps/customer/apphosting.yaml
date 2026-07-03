@@ -81,9 +81,11 @@ env:
   - variable: NEXT_PUBLIC_BLOCKCHAIN_ENGINE_URL
     secret: NEXT_PUBLIC_BLOCKCHAIN_ENGINE_URL
     availability: [BUILD, RUNTIME]
+  # Server-side only — availability RUNTIME (not BUILD) so it is never inlined into the
+  # client bundle. Same fix shape as the Spring key (see spring-boot-api.ts history).
   - variable: NEXT_PUBLIC_BLOCKCHAIN_ENGINE_API_KEY
     secret: NEXT_PUBLIC_BLOCKCHAIN_ENGINE_API_KEY
-    availability: [BUILD, RUNTIME]
+    availability: [RUNTIME]
 
   # ── Auth ──
   - variable: JWT_SECRET

@@ -1,37 +1,16 @@
 import axios from "axios";
 
+// NEXT_PUBLIC_API_URL is "/api" — same-origin, so the browser already sends the
+// httpOnly auth_token cookie automatically on every request below. The receiving
+// Next.js route reads it server-side (see getAuthFromRequest in api-helpers.ts).
+// A client-side Bearer-token interceptor here would be both unreadable (httpOnly
+// blocks document.cookie) and redundant (cookies are already forwarded same-origin).
 const apiClient = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_API_URL,
-	// withCredentials: true,
 	headers: {
 		"Content-Type": "application/json",
 	},
 });
-
-const getAuthToken = () => {
-	// Check if we're in the browser (client-side)
-	if (typeof window !== "undefined") {
-		return document.cookie
-			.split("; ")
-			.find((row) => row.startsWith("auth_token="))
-			?.split("=")[1];
-	}
-	return null; // Return null or handle as needed on server-side
-};
-
-// Request interceptor to add the Bearer token to headers
-apiClient.interceptors.request.use(
-	(config) => {
-		const token = getAuthToken();
-		if (token) {
-			config.headers["Authorization"] = `Bearer ${token}`;
-		}
-		return config;
-	},
-	(error) => {
-		return Promise.reject(error);
-	}
-);
 
 // Response interceptor to handle auth errors globally
 apiClient.interceptors.response.use(
@@ -39,7 +18,7 @@ apiClient.interceptors.response.use(
 		// Pass through successful responses
 		return response;
 	},
-	(error) => {
+	async (error) => {
 		// Check if we're in the browser
 		if (typeof window !== "undefined") {
 			// Handle 401 Unauthorized errors
@@ -49,8 +28,14 @@ apiClient.interceptors.response.use(
 				// Only redirect to login if it's a genuine auth error
 				// Don't redirect on service unavailable errors
 				if (!errorMessage.includes("temporarily unavailable")) {
-					// Clear auth token
-					document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+					// auth_token is httpOnly — client JS can't clear it via document.cookie
+					// (that line used to be here and was a silent no-op). Clearing it for
+					// real requires a server route that can send a Set-Cookie header.
+					try {
+						await fetch("/api/auth-firebase/logout", { method: "POST" });
+					} catch {
+						// best-effort — still redirect to /login below even if this fails
+					}
 
 					// Redirect to login page if not already there
 					if (!window.location.pathname.includes("/login")) {
