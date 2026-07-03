@@ -48,6 +48,35 @@ Module C and Module H require explicit sign-off before implementation (financial
 
 Recommended order: **B → A → F(keys) → E → G → D(decision) → H → C**, with D and C gated on sign-off arriving.
 
+## Design Source Reconciliation (2026-07-03)
+
+The original audit was code-only — it never checked findings against the actual intended design. `Clusteer.zip` (repo root) contains the design reference. **Per explicit project-owner ruling: `Clusteer.zip` — specifically the interactive prototype `Clusteer Dashboards.html` / `dashboards/*.jsx` + `HANDOFF.md` — is the latest, accepted design. `DESIGN_CHANGE_PLAN_v2.md` (an older document in the same zip, describing work already executed against the now-superseded `clusteer-frontend/` scaffold) is discarded and carries no authority.** Every correction below follows from that ruling, not from weighing the two documents against each other. Reconciled every frontend-relevant module in this doc against the accepted design, comparing it directly to the live, deployed `apps/customer`. Net effect: most findings hold up, three needed correction, and one real audit-coverage gap got closed.
+
+**Confirmed aligned (no change, higher confidence now):**
+
+- Module B1's decision (back up + delete the orphaned wallet/send/receive feature) is directly confirmed by the accepted design — `HANDOFF.md`: *"There are no Wallet, Send, Receive, Withdraw, or Swap screens... if you see those anywhere, they're stale — do not build them."*
+- The channel picker correctly has no Solana option (`grep` confirmed) — the accepted design restricts to BEP20/ERC20/TRC20 only.
+- `/support/[ticketNumber]`, `/support/help/[topic]`, and the Notifications center all already exist matching the design's inventory — no discrepancy.
+- The live Overview page (`dashboard/page.tsx:194-227`) already has the exact Markets section the design calls for — a filterable All/Watchlist/Gainers/Losers table — matching `HANDOFF.md`'s Overview description verbatim. Confirmed by reading the code, not assumed.
+
+**Corrected, decisively — the older document's conflicting claim is discarded, not weighed:**
+
+- **Settings/Security routing: `/settings/page.tsx` (one page, 7 inline tabs, modals for deeper security actions) is canonical, full stop.** This is exactly what `dashboards/client-misc.jsx`'s `Settings` component (lines 321-370) builds — no separate `/settings/limits`, `/security`, or `/settings/security/*` routes. `DESIGN_CHANGE_PLAN_v2.md`'s description of those as executed separate routes is against the discarded scaffold and does not apply. Module E's task list below is updated to a firm decision, not an open question.
+
+**Corrected — the original Module E finding had the right instinct but the wrong mechanism:**
+
+- **`markets/page.tsx` should not get a sidebar entry — the accepted design's sidebar doesn't have one.** `dashboards/client-shell.jsx`'s `CLIENT_NAV` (the actual sidebar array, 11 items: Overview/Trade/Request/Orders/History/Billing/Identity/Notifications/Referrals/Settings/Support) has no Markets item at all — `HANDOFF.md`'s prose customer-surface list mentioning "Markets" refers to the embedded Overview section confirmed above, not a separate nav destination. The standalone `/markets/page.tsx` (319 lines, its own search/filter/live query) isn't redundant — it's a legitimate deeper "see all" view — but the fix is a **"View all markets" link from the Overview's Markets table**, not a sidebar item. Module E's task below is corrected accordingly.
+
+**New finding — the design's actual sidebar contradicts a choice in the live code, worth a business-side confirm before touching:**
+
+- **`Request`/Payment-Request is sidebar position #3 in the accepted design** (`client-shell.jsx`: `{ id:'request', label:'Request', icon: I.qr }`, right after Trade) **but is commented out in the live `sidebar.tsx`** with the note "hidden — requires own crypto license (post-Quidax)." The design treats Payment Request as a fully real, non-speculative feature (unlike Referrals). This may be a legitimate, still-current business/regulatory constraint, or it may be a stale reason from before the Quidax integration — I can't tell which from the code alone. Flagging for a business-side confirm rather than assuming either way; do not un-hide it without that confirmation, since the request feature itself is also still fake per Module C (`request/page.tsx:15-17,80-85,123`).
+
+**New finding, changes the fix direction — moved to Module G below:**
+
+- **Referrals should not be "fixed" to real data at all.** `HANDOFF.md`: *"Referrals (Phase 4, tagged 'Soon')"* — a forward-design, speculative surface, not something to wire to a real API. The hardcoded referral stats (`referrals/page.tsx:36-37,44-53,88-95` — "24 referred," "₦48,000 earned," `MOCK_REFERRALS` fallback) were flagged in the original audit conversation as a wiring bug to eventually build real, but **never actually made it into this doc's checklist** — a separate gap, now closed below with the corrected framing.
+
+**Audit coverage gap, closed — good news, not a defect:** `apps/customer/src/components/trade/buy-handoff.tsx` and `sell-handoff.tsx` were never mentioned anywhere in Module C, despite being core to the trade wizard. Read both in full: they're well-built and match the accepted design's required Quidax hand-off screens exactly — bank details with copy-to-clipboard + reference code for buy, QR + address + chain warning for sell, both with a live expiry countdown — and are correctly wired into `trade-wizard.tsx`'s step machine (`form → review → otp → handoff → confirming → done/failed`, matching the design's `create → otp → awaiting_payment/deposit → confirming → completed/paid_out | expired/failed` exactly). **No separate fix needed** — once Module C's order-creation is wired to a real `/api/trade` call, these screens will render real Quidax data for free, since they already correctly read `order.paymentDetails`/`order.depositDetails`.
+
 ---
 
 ## Module A — Auth Token Plumbing
@@ -163,6 +192,8 @@ Recommended order: **B → A → F(keys) → E → G → D(decision) → H → C
 - [ ] `apps/customer/src/components/trade/buy-entry.tsx:43`, `sell-entry.tsx:47` — add a real check against `MAX_TRADE_AMOUNT` and actual wallet/bank balance/limits client-side, in addition to (not instead of) the existing server-side check, so a user isn't led through a wizard that the server will reject.
 - [ ] `apps/customer/src/components/trade/order-review.tsx:121-128,227-236` — replace the 600ms-local-timeout double-submit guard with a real idempotency key sent to the server, now that a real network call exists.
 
+**Confirmed aligned, no fix needed (2026-07-03, see Design Source Reconciliation above):** `apps/customer/src/components/trade/buy-handoff.tsx` and `sell-handoff.tsx` — these were never mentioned in the original audit but were checked against the accepted design during reconciliation. Both are well-built and match the required Quidax hand-off screens exactly (bank details/reference for buy, QR/address/chain-warning for sell, live expiry countdown), and are correctly wired into `trade-wizard.tsx`'s step machine. They'll render real data automatically once the fixes above land — nothing to do here specifically.
+
 ### Decisions needed
 
 - [?] Confirm sign-off to begin implementation (financial feature).
@@ -239,11 +270,12 @@ Recommended order: **B → A → F(keys) → E → G → D(decision) → H → C
 - [?] `apps/customer/src/app/(auth)/verify-2fa/page.tsx` — fully built, posts to a real API, but nothing links to it (`login.tsx:55` redirects to `/verify-otp?flow=login` instead). **Decision needed:** which page is canonical — keep `verify-2fa` (dedicated 2FA page, currently unreachable) and redirect login to it, or keep `verify-otp?flow=login` (already wired) and retire `verify-2fa`? Ties into Module D's 2FA build-vs-remove decision.
 - [x] `apps/customer/src/middleware.ts:70-109` — resolved during B1/B2 work. On direct re-check of the live file, `/markets` and `/request` were **already** in `protectedPaths` (the original finding was inaccurate on this point) — only `/referrals` was genuinely missing (added) and `/verify-2fa` was missing from `publicPaths` (added, mirroring `/verify-otp`'s pending-token pattern). See ledger E-10/E-11.
 - [x] `apps/customer/src/middleware.ts:70-83` — removed dead `/change-password`, `/auth/callback` entries. See ledger E-11.
-- [?] `apps/customer/src/app/(dashboard)/settings/page.tsx` — still open. **Decision needed:** make `/settings` a real router to the dedicated sub-pages, or delete the sub-pages and keep the inline version canonical (the inline version is also fully mocked — Module C finding — likely resolve both together).
-- [?] `apps/customer/src/app/(dashboard)/settings/security/page.tsx` + 3 sub-pages — still open, same decision as above.
+- [x] **Decision resolved (2026-07-03) — see Design Source Reconciliation above.** `/settings/page.tsx` (inline tabs) is canonical, per the accepted design's `dashboards/client-misc.jsx` `Settings` component. Remaining work is mechanical, not a decision:
+  - [ ] Delete `settings/account`, `settings/limits`, `settings/notifications`, `settings/payment-methods`, `settings/privacy`, `settings/profile`, `settings/security` (+ its 3 sub-pages `google-auth`/`change-email`/`change-password`) — none of these should exist as routes; they're tabs (or, for the deeper security actions, modals) within the single hub page.
+  - [ ] Confirm `/settings/page.tsx`'s 7 tabs are wired to real data once Module A lands (it's also currently mocked — separate Module C-adjacent finding, not a routing question).
 - [ ] `apps/customer/src/app/(dashboard)/identity-verification/verify/page.tsx` — orphan; the main page's upload buttons open a native file picker directly. Delete if truly unused.
-- [ ] `apps/customer/src/app/(dashboard)/markets/page.tsx` — not in `sidebar.tsx`'s nav array, zero inbound links. Add a nav entry or remove the page.
-- [x] `apps/customer/src/app/(dashboard)/request/page.tsx` — re-checked: already in `protectedPaths` (confirmed above), so it is **not** actually unauthenticated-reachable — the original finding was inaccurate on this point too. Its sidebar omission is already deliberately documented in `sidebar.tsx:17` ("hidden — requires own crypto license (post-Quidax)"). No action needed.
+- [ ] `apps/customer/src/app/(dashboard)/markets/page.tsx` — **corrected (2026-07-03, see Design Source Reconciliation above): do not add a sidebar entry** — the accepted design's sidebar has no Markets item. Add a "View all markets" link from the Overview page's existing Markets table (`dashboard/page.tsx:194-227`) instead — that's the design-consistent way to reach this page.
+- [x] `apps/customer/src/app/(dashboard)/request/page.tsx` — re-checked: already in `protectedPaths` (confirmed above), so it is **not** actually unauthenticated-reachable — the original finding was inaccurate on this point too. **Revisit its sidebar omission** (see Design Source Reconciliation above — the accepted design puts Request at sidebar position #3; flagged for a business-side confirm on whether "requires own crypto license" still applies, not resolved here).
 - [ ] `apps/customer/src/app/(marketing)/about/page.tsx:206-210` — "View open roles" CTA points at `/contact` instead of `/careers`; fix the href.
 - [ ] `apps/customer/src/app/page.tsx:459` vs `apps/customer/src/middleware.ts:105` — homepage "Talk to us" CTA points at `/support`, which is a protected route — an anonymous marketing visitor clicking it gets redirected to `/login` instead of reaching any help/contact content. Point it at `/contact` or make a public support-intake path.
 
@@ -305,6 +337,10 @@ Recommended order: **B → A → F(keys) → E → G → D(decision) → H → C
 - [x] `apps/customer/src/app/page.tsx:130-136` — added `isError` from the query plus an `isLive` derived flag (`!isError && rateData?.buyRate && source !== "fallback"`); both "LIVE — USDT / NGN" badges (hero + `MobileSwap`) now read "USDT / NGN" without the pulsing dot when not genuinely live.
 - [ ] `apps/customer/src/app/(marketing)/early-access/page.tsx:31` — left as-is; already explicitly noted as "acceptable" in the original finding, deprioritized in favor of higher-value fixes.
 - [x] `packages/ui/src/lib/system-status.ts` vs `apps/customer/src/lib/system-status.ts` — resolved on its own: `packages/ui`'s copy no longer exists on disk (confirmed via `ls`), so `status/page.tsx`'s `@/lib/system-status` import unambiguously resolves to the single remaining copy in `apps/customer/src/lib/`. No ambiguity, no action needed.
+
+### Task added 2026-07-03 — corrected framing after design reconciliation (dashboard page, not marketing, but the same honesty-pass pattern)
+
+- [ ] `apps/customer/src/app/(dashboard)/referrals/page.tsx:36-37,44-53,88-95` — stat cards ("24 referred," "₦48,000 earned," "₦4,000 pending payout") are hardcoded literals, and the table falls back to `MOCK_REFERRALS` since `/api/referrals` always returns `data: null`. **Do not wire this to a real API** — the accepted design (`HANDOFF.md`) explicitly marks Referrals as "Phase 4, tagged 'Soon'," a forward/speculative surface. The correct fix is the opposite of what the original audit implied: add a clear "Coming Soon" treatment (matching the badge pattern already used elsewhere, e.g. `rate-alerts/page.tsx`'s SMS-alerts badge) and remove the fabricated stats entirely, rather than build real referral tracking.
 
 **Verification:** `npx tsc --noEmit -p apps/customer/tsconfig.json` run after all edits — the only errors present are the same pre-existing ones already known (stale `.next/types/` build cache referencing deleted routes, and the pre-existing `@/test-helpers/mock-next-request` alias gap) — zero new errors introduced by this pass.
 
