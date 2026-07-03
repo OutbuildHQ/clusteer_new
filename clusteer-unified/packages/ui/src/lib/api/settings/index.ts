@@ -131,32 +131,29 @@ export interface PrivacySettings {
 	third_party_sharing: boolean;
 }
 
-export async function getPrivacySettings(userId: string) {
-	try {
-		const res = await blockchainApiClient.get<{
-			status: boolean;
-			data: PrivacySettings;
-		}>(`/user/${userId}/privacy-settings/`);
-		return res.data.data;
-	} catch (error) {
-		throw error as AxiosError;
-	}
+// Uses the Next.js proxy (/api/user/privacy-settings) so the Django API key is
+// never exposed to the browser — same pattern as the bank-account/KYC functions
+// above. Has a real caller (packages/ui/src/components/app/cookie-consent.tsx),
+// unlike most of the other functions in this file.
+export async function getPrivacySettings(_userId: string): Promise<PrivacySettings> {
+	const res = await fetch("/api/user/privacy-settings");
+	const json = await res.json();
+	if (!res.ok) throw new Error(json.message || "Failed to fetch privacy settings");
+	return json.data;
 }
 
 export async function updatePrivacySettings(
-	userId: string,
+	_userId: string,
 	settings: Partial<PrivacySettings>
-) {
-	try {
-		const res = await blockchainApiClient.put<{
-			status: boolean;
-			message: string;
-			data: PrivacySettings;
-		}>(`/user/${userId}/privacy-settings/`, settings);
-		return res.data;
-	} catch (error) {
-		throw error as AxiosError;
-	}
+): Promise<{ status: boolean; message: string; data: PrivacySettings }> {
+	const res = await fetch("/api/user/privacy-settings", {
+		method: "PUT",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(settings),
+	});
+	const json = await res.json();
+	if (!res.ok) throw new Error(json.message || "Failed to update privacy settings");
+	return json;
 }
 
 // ==================== ACCOUNT LIMITS ====================

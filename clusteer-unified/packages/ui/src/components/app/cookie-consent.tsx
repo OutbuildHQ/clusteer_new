@@ -5,8 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Cookie } from "lucide-react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { useUserId } from "@/hooks/use-user-id";
 import { getPrivacySettings, updatePrivacySettings } from "@/lib/api/settings";
 
 const STORAGE_KEY = "clusteer-cookie-consent";
@@ -52,6 +51,7 @@ export default function CookieConsent() {
 	const [analytics, setAnalytics] = useState(false);
 	const [marketing, setMarketing] = useState(false);
 	const shouldReduceMotion = useReducedMotion();
+	const userId = useUserId();
 
 	useEffect(() => {
 		// If local pref already set, don't show — but still try to seed toggles from it
@@ -64,39 +64,41 @@ export default function CookieConsent() {
 
 		// No local pref → show banner after short delay
 		const t = setTimeout(() => setVisible(true), 800);
+		return () => clearTimeout(t);
+	}, []);
 
-		// Also listen for auth — if a user logs in, load their backend prefs
-		// and use those instead of showing the banner again
-		const unsub = auth
-			? onAuthStateChanged(auth, async (user) => {
-					if (!user) return;
-					try {
-						const serverPrefs = await getPrivacySettings(user.uid);
-						const prefs: CookiePrefs = {
-							analytics: serverPrefs.analytical_cookies,
-							marketing: serverPrefs.marketing_cookies,
-						};
-						persistLocally(prefs);
-						setAnalytics(prefs.analytics);
-						setMarketing(prefs.marketing);
-						setVisible(false); // dismiss banner — prefs loaded from server
-					} catch {
-						// server prefs unavailable — keep showing the banner
-					}
-			  })
-			: () => {};
+	// If a logged-in user has no local pref yet, load their saved backend prefs
+	// and use those instead of showing the banner.
+	useEffect(() => {
+		if (!userId || loadPrefs()) return;
+
+		let cancelled = false;
+		(async () => {
+			try {
+				const serverPrefs = await getPrivacySettings(userId);
+				if (cancelled) return;
+				const prefs: CookiePrefs = {
+					analytics: serverPrefs.analytical_cookies,
+					marketing: serverPrefs.marketing_cookies,
+				};
+				persistLocally(prefs);
+				setAnalytics(prefs.analytics);
+				setMarketing(prefs.marketing);
+				setVisible(false); // dismiss banner — prefs loaded from server
+			} catch {
+				// server prefs unavailable — keep showing the banner
+			}
+		})();
 
 		return () => {
-			clearTimeout(t);
-			unsub();
+			cancelled = true;
 		};
-	}, []);
+	}, [userId]);
 
 	function handleSave() {
 		const prefs: CookiePrefs = { analytics, marketing };
 		persistLocally(prefs);
-		const uid = auth?.currentUser?.uid;
-		if (uid) syncToBackend(uid, prefs);
+		if (userId) syncToBackend(userId, prefs);
 		setVisible(false);
 	}
 
@@ -105,8 +107,7 @@ export default function CookieConsent() {
 		setAnalytics(true);
 		setMarketing(true);
 		persistLocally(prefs);
-		const uid = auth?.currentUser?.uid;
-		if (uid) syncToBackend(uid, prefs);
+		if (userId) syncToBackend(userId, prefs);
 		setVisible(false);
 	}
 

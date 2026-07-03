@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useUser } from "@/store/user";
+import { useUserProfile } from "@/hooks/use-user-id";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTicketDetail, addTicketMessage, type SupportTicket, type TicketMessage } from "@/lib/api/support";
 import { toast } from "sonner";
@@ -11,7 +11,7 @@ import { ArrowLeft, Send, User, Headphones } from "lucide-react";
 export default function TicketDetailPage() {
 	const params = useParams();
 	const router = useRouter();
-	const user = useUser();
+	const user = useUserProfile();
 	const queryClient = useQueryClient();
 	const ticketNumber = params.ticketNumber as string;
 
