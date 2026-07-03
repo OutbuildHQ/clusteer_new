@@ -12,7 +12,7 @@ const HELP_CONTENT: Record<string, { icon: typeof Clock; title: string; sections
 		sections: [
 			{ title: "How do stablecoin deposits work?", content: "To deposit USDT or USDC:\n\n1. Go to Assets → select the stablecoin\n2. Click Receive and choose your preferred chain (Tron, Ethereum, BSC, etc.)\n3. Copy the deposit address or scan the QR code\n4. Send stablecoins from your external wallet to that address\n\nFunds arrive after network confirmation — typically 1-5 minutes on Tron, 2-10 minutes on others." },
 			{ title: "How do Naira deposits work?", content: "To fund your account with Naira:\n\n1. Go to Trade → Buy\n2. Enter the amount in NGN\n3. You'll receive a bank transfer instruction with a unique reference\n4. Send the exact amount from your linked bank account\n5. Funds are credited once confirmed — usually within minutes\n\nAlways use the exact reference and amount shown. Partial payments may be delayed." },
-			{ title: "How do withdrawals work?", content: "Stablecoin withdrawals:\n• Go to Assets → select coin → Send\n• Enter the recipient address and choose chain\n• Review fee and confirm with 2FA\n• Processing: 5-30 minutes\n\nNaira withdrawals:\n• Sell stablecoins for NGN\n• Funds auto-withdraw to your linked bank account\n• Processing: within 15 minutes on business days" },
+			{ title: "How do withdrawals work?", content: "Stablecoin withdrawals:\n• Go to Assets → select coin → Send\n• Enter the recipient address and choose chain\n• Review the fee and confirm\n• Processing: 5-30 minutes\n\nNaira withdrawals:\n• Sell stablecoins for NGN\n• Funds auto-withdraw to your linked bank account\n• Processing: within 15 minutes on business days" },
 			{ title: "My deposit hasn't arrived", content: "If your deposit is delayed:\n\n1. Check the TX hash on a block explorer to confirm it was sent\n2. Verify you sent to the correct chain (e.g., USDT on Tron, not Ethereum)\n3. Wait for the required network confirmations\n4. If over 30 minutes and confirmed on-chain, contact support with the TX hash\n\nWrong-chain deposits may not be recoverable. Always double-check the network." },
 		],
 	},
@@ -26,13 +26,13 @@ const HELP_CONTENT: Record<string, { icon: typeof Clock; title: string; sections
 			{ title: "Why was my order cancelled?", content: "Orders may be cancelled if:\n\n• Payment wasn't received within the time limit\n• The amount sent didn't match the order amount\n• Your account was flagged for verification\n• You exceeded your daily/monthly limits\n\nIf you believe this was an error, contact support with your order ID." },
 		],
 	},
-	"security-2fa": {
+	"account-security": {
 		icon: Shield,
-		title: "Security & 2FA",
+		title: "Account Security",
 		sections: [
-			{ title: "Setting up 2FA", content: "Two-factor authentication adds an extra layer of protection:\n\n1. Go to Settings → Security\n2. Click 'Enable 2FA'\n3. Download Google Authenticator or Authy\n4. Scan the QR code shown\n5. Enter the 6-digit code to verify\n6. Save your backup codes somewhere safe\n\n2FA is required for withdrawals and sensitive account changes." },
-			{ title: "I lost my 2FA device", content: "If you can't access your authenticator app:\n\n1. Use one of your saved backup codes to log in\n2. Go to Settings → Security → Reset 2FA\n3. Set up 2FA again with your new device\n\nIf you don't have backup codes, contact support with your ID for manual verification. This process takes 24-48 hours for security." },
-			{ title: "Protecting your account", content: "Best practices:\n\n• Use a unique, strong password (12+ characters)\n• Enable 2FA immediately after signup\n• Never share your password or 2FA codes with anyone\n• Clusteer will never ask for your password via email or chat\n• Check the URL is clusteer.com before entering credentials\n• Review your login history regularly in Settings\n• Enable email notifications for sign-in alerts" },
+			{ title: "Resetting your password", content: "If you forget your password:\n\n1. On the login page, tap Forgot Password\n2. Enter your registered email\n3. We'll send a reset link — it expires after 30 minutes\n4. Follow the link to set a new password\n\nIf you no longer have access to your registered email, contact support with your BVN for manual verification." },
+			{ title: "Suspicious activity on your account", content: "If you notice a login, order, or change you didn't make:\n\n1. Change your password immediately from Settings → Security\n2. Email support@clusteer.com with details\n\nBecause Clusteer is non-custodial, stablecoin withdrawals always settle to your own wallet — we never hold a balance that could be drained from our side." },
+			{ title: "Protecting your account", content: "Best practices:\n\n• Use a unique, strong password (12+ characters)\n• Never share your password with anyone\n• Clusteer will never ask for your password via email or chat\n• Check the URL is clusteer.com before entering credentials\n• Review your login history regularly in Settings\n• Enable email notifications for sign-in alerts" },
 		],
 	},
 	"kyc-verification": {

@@ -93,9 +93,8 @@ const CATEGORIES = [
 		icon: Shield,
 		label: "Security",
 		faqs: [
-			{ q: "Is my money safe on Clusteer?", a: "Yes. We use bank-grade AES-256 encryption for all data at rest and in transit. Every account is verified via BVN to prevent fraud. We support two-factor authentication (2FA) on all logins and withdrawals. Your funds are protected at every layer." },
-			{ q: "What is two-factor authentication (2FA)?", a: "2FA adds a second layer of security to your account. After entering your password, you must also enter a 6-digit code from an authenticator app (like Google Authenticator or Authy). This means even if someone steals your password, they cannot access your account without your phone." },
-			{ q: "What if I forget my password?", a: "Tap Forgot Password on the login page, enter your registered email, and we will send a reset link. The link expires after 30 minutes. If you have 2FA enabled, you will need your authenticator code to complete the reset. If you have lost access to both your email and authenticator, contact support with your BVN for manual verification." },
+			{ q: "Is my money safe on Clusteer?", a: "Yes. We use bank-grade AES-256 encryption for all data at rest and in transit. Every account is verified via BVN to prevent fraud. Your funds are protected at every layer." },
+			{ q: "What if I forget my password?", a: "Tap Forgot Password on the login page, enter your registered email, and we will send a reset link. The link expires after 30 minutes. If you have lost access to your email, contact support with your BVN for manual verification." },
 			{ q: "How is my personal data protected?", a: "We follow industry best practices: AES-256 encryption, secure key management, HTTPS everywhere, and strict access controls. Your BVN and bank details are encrypted at rest using Jasypt column-level encryption. We never share your personal data with third parties without your consent, and we comply with the Nigeria Data Protection Regulation (NDPR)." },
 		],
 	},
@@ -107,7 +106,7 @@ const CATEGORIES = [
 			{ q: "How do I verify my account?", a: "Verification happens in tiers. Tier 1: Enter your BVN on the Identity Verification page -- this takes about 2 minutes and unlocks basic trading. Tier 2: Upload your NIN slip, a government-issued ID (passport, driver's license, or national ID), and a live selfie. Tier 3: Provide proof of address and source of funds documentation for high-volume trading." },
 			{ q: "What are the KYC tier limits?", a: "Tier 1 (BVN only): Up to $500/day, $2,000/month. Tier 2 (NIN + ID + selfie): Up to $5,000/day, $20,000/month. Tier 3 (full verification): Up to $50,000/day, $200,000/month. Limits apply to the combined value of all trades." },
 			{ q: "Can I delete my account?", a: "Yes. Go to Settings, scroll to the bottom, and tap Delete Account. You will need to confirm via email and enter your password. Before deletion, you must withdraw all funds (both stablecoins and pending Naira). Account deletion is permanent and cannot be undone. We retain certain records as required by Nigerian AML/CFT regulations." },
-			{ q: "How do I change my email address?", a: "Go to Settings, then Account, and tap Change Email. Enter your new email address. We will send verification links to both your old and new email addresses. You must confirm both to complete the change. If you have 2FA enabled, you will also need your authenticator code." },
+			{ q: "How do I change my email address?", a: "Go to Settings, then Account, and tap Change Email. Enter your new email address. We will send verification links to both your old and new email addresses. You must confirm both to complete the change." },
 		],
 	},
 ];

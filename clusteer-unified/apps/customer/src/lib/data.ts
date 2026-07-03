@@ -81,7 +81,7 @@ export const FAQs = [
 	{
 		question: "How do I change my account email?",
 		answer:
-			"To change your email, log into your dashboard, go to Settings > Security > Change Email. You'll need to verify both your old and new email addresses. For security, you may be required to complete 2FA verification before the change takes effect.",
+			"To change your email, log into your dashboard, go to Settings > Account > Change Email. You'll need to verify both your old and new email addresses before the change takes effect.",
 	},
 ];
 

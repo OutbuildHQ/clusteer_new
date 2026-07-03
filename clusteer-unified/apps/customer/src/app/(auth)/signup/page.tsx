@@ -94,7 +94,7 @@ export default function SignupPage() {
 			<div style={{ fontSize: 14.5, marginBottom: 28, lineHeight: 1.5, color: "var(--c-text-2)" }}>
 				{step === 1
 					? "NDPR-aligned. We never share your data with third parties."
-					: "Pick a strong password. You can add 2FA in the next step."}
+					: "Pick a strong password — at least 8 characters with a mix of letters, numbers, and symbols."}
 			</div>
 
 			{step === 1 && (

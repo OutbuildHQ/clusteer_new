@@ -421,7 +421,7 @@ export default function Home() {
 							{ q: "What stablecoins do you support?", a: "USDT and USDC on Tron (TRC-20), BSC (BEP-20), Ethereum (ERC-20), Solana (SPL), and Polygon. We auto-detect the chain." },
 							{ q: "How long do payouts take?", a: "Usually within minutes — naira hits your bank account via NIP instant transfer as soon as your order is confirmed on-chain. Same-day at the latest." },
 							{ q: "What are your fees?", a: "0.75% flat fee on all buy/sell orders. No hidden spread — the rate you see is the rate you get. Internal Clusteer-to-Clusteer sends are free." },
-							{ q: "Is my money safe?", a: "We use bank-grade AES-256 encryption, BVN verification for every account, and two-factor authentication on all withdrawals. Your data and funds are protected at every layer." },
+							{ q: "Is my money safe?", a: "We use bank-grade AES-256 encryption and BVN verification for every account. Your data and funds are protected at every layer." },
 							{ q: "What KYC documents do I need?", a: "Tier 1: BVN only (2 minutes). Tier 2: NIN + government ID + selfie. Tier 3: proof of address + source of funds for high-volume traders." },
 						].map((item) => <FAQ key={item.q} q={item.q} a={item.a} />)}
 					</div>

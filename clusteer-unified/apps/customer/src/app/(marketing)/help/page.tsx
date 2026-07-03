@@ -104,12 +104,11 @@ const TOPICS = [
 		id: "account-security",
 		icon: Shield,
 		title: "Account & Security",
-		description: "Two-factor authentication, password resets, and account protection.",
+		description: "Password resets and account protection.",
 		faqs: [
-			{ q: "How do I enable two-factor authentication (2FA)?", a: "Go to Settings → Security. Tap Enable 2FA, scan the QR code with an authenticator app like Google Authenticator or Authy, and enter the 6-digit code to confirm. We strongly recommend enabling 2FA on every account." },
-			{ q: "How do I reset my password?", a: "On the login page, tap Forgot Password, enter your registered email, and we'll send a reset link. The link expires after 30 minutes for security. If you have 2FA enabled, you'll also need your authenticator code." },
+			{ q: "How do I reset my password?", a: "On the login page, tap Forgot Password, enter your registered email, and we'll send a reset link. The link expires after 30 minutes for security." },
 			{ q: "How do I change my email address?", a: "Go to Settings → Account, tap Change Email, enter the new address, and verify it via the confirmation link. For security, you'll also confirm the change from your old email." },
-			{ q: "What should I do if I suspect unauthorized access?", a: "Immediately change your password and enable 2FA if you haven't already. Then email support@clusteer.com with details — we'll investigate and secure your account. Because Clusteer is non-custodial, your stablecoins always settle to your own wallet, never a balance we control." },
+			{ q: "What should I do if I suspect unauthorized access?", a: "Immediately change your password, then email support@clusteer.com with details — we'll investigate and secure your account. Because Clusteer is non-custodial, your stablecoins always settle to your own wallet, never a balance we control." },
 		],
 	},
 	{

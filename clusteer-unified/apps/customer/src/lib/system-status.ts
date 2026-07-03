@@ -74,7 +74,7 @@ export async function getSystemStatus(): Promise<SystemStatus> {
 
 	const services: ServiceCheck[] = [
 		{ key: "web", name: "Web platform", description: "clusteer.com and the trading app", status: "operational", latencyMs: 0 },
-		{ key: "auth", name: "Authentication", description: "Login, signup, and 2FA", status: classify(auth, "down"), latencyMs: auth?.ms ?? null },
+		{ key: "auth", name: "Authentication", description: "Login and signup", status: classify(auth, "down"), latencyMs: auth?.ms ?? null },
 		{ key: "database", name: "Realtime database", description: "Accounts, orders, and notifications", status: classify(db, "down"), latencyMs: db?.ms ?? null },
 		{ key: "chain", name: "Blockchain networks", description: "Tron, BSC, and Ethereum settlement", status: classify(chain, "pre-launch"), latencyMs: chain?.ms ?? null },
 		{ key: "backend", name: "Trading & bank payouts", description: "Orders, rates, and NIP payouts", status: classify(backend, "pre-launch"), latencyMs: backend?.ms ?? null },

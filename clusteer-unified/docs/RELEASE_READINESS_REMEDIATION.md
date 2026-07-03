@@ -259,6 +259,15 @@ Ran an independent adversarial audit of `272099f` (agent had no knowledge of the
 - Signup OTP verification actually fails for a wrong code. **Superseded — signup verification is a real Firebase email link, not a code; there's no "wrong code" case to fail.**
 - 2FA either demonstrably works end-to-end or has been removed from the UI — no partial/silent state ships. **Removed from the UI, per the decision above.**
 
+### Audit (2026-07-03) — 1 real content gap found and fixed
+
+Independent adversarial audit of `7d2ac86` (agent had no knowledge of the implementation, verified `verifyIdToken`/`verifyPasswordResetCode` against their actual `.d.ts` signatures rather than trusting the claims, ran `tsc` fresh). **No functional or security regressions found** — the middleware fail-closed fix, the new session-invalidation route, the rate-limiter async rewrite, and every 2FA-removal deletion all checked out. Two things it did catch:
+
+1. **User-facing copy still described 2FA as a live, required feature after the code removed it** — FAQ page (`faq/page.tsx`, 3 answers plus a whole "What is 2FA?" Q&A), the marketing help center (`help/page.tsx`, an entire "Account & Security" article with QR-code setup steps), the in-app support help topic (`support/help/[topic]/page.tsx`'s `security-2fa` entry, plus a "confirm with 2FA" line under withdrawals), the signup page's own step-2 subtitle, the homepage FAQ, and two lower-visibility strings (`lib/data.ts`, `lib/system-status.ts`) all still told users to enable/use/confirm with 2FA via a control that no longer exists. **Fixed**: removed or rewrote every instance — the in-app help topic was renamed `security-2fa` → `account-security` and rewritten around password reset + suspicious-activity guidance instead of TOTP setup (confirmed the old slug had zero external references before renaming, so nothing broke).
+2. **Minor doc/commit-message inaccuracy**: the commit message and this doc's D-11 entry claimed "11 call sites" for the rate-limiter fix; there are actually 12 real `rateLimit(` call-site matches (11 apps/customer + 1 apps/admin), plus a 13th match inside the already-orphaned `api-middleware.ts` that needs no fix. Corrected D-11 above.
+
+**Not fixed, confirmed non-issue:** `packages/ui/src/lib/api-middleware.ts:105`'s un-awaited `return rateLimit(...)` — harmless, since returning a promise from inside an `async` function is auto-flattened, and the file has zero callers anyway.
+
 ---
 
 ## Module E — Navigation / Dead Links
@@ -446,7 +455,7 @@ Every finding from the audit, in one place, for a final cross-check that nothing
 | D-8 | D | MED | `verify-2fa/page.tsx:16`, `verify-otp/page.tsx:30` | expired token, no redirect to login | [-] `7d2ac86` — moot, both files deleted |
 | D-9 | D | MED | `auth-firebase/reset-password/route.ts:26` | no session invalidation after reset | [x] `7d2ac86` — new `invalidate-sessions` route + `revokeRefreshTokens` |
 | D-10 | D | MED | `auth-firebase/logout/route.ts:16` | signOut() no-op server-side | [-] `7d2ac86` — confirmed cookie-delete is sufficient for single-session logout, no change needed |
-| D-11 | D | MED | `login/page.tsx:32,150` + `rate-limiter.ts:9` | in-memory rate limit not shared across instances | [x] `7d2ac86` — wired to existing Redis path (`USE_REDIS_RATE_LIMITING`), all 11 call sites updated; Upstash credentials still need provisioning |
+| D-11 | D | MED | `login/page.tsx:32,150` + `rate-limiter.ts:9` | in-memory rate limit not shared across instances | [x] `7d2ac86` — wired to existing Redis path (`USE_REDIS_RATE_LIMITING`), all 12 real call sites updated (11 in apps/customer + 1 in apps/admin — corrected count, audit caught the commit undercounting by one); a 12th match in the already-orphaned `api-middleware.ts` needs no fix (async-function return auto-awaits). Upstash credentials still need provisioning |
 | D-12 | D | MED | `login/page.tsx:174,186,201`, `signup/page.tsx:167,175` | OAuth/Passkey "coming soon" stubs | [x] `7d2ac86` — disabled + "Soon" badge |
 | D-13 | D | LOW | `user/2fa/request/route.ts:23-26` | re-GET invalidates in-flight setup | [-] `7d2ac86` — moot, route deleted |
 | E-1 | E | BLOCKER | `mobile-tab-bar.tsx:9,11` | Wallet/Send tabs → nonexistent routes | [x] replaced with sidebar.tsx's real `tab:true` set (Home/Buy-Sell/Orders/Me) |
