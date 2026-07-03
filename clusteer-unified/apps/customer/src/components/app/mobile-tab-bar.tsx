@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Wallet, ArrowLeftRight, Send, User } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, BookOpen, Settings } from "lucide-react";
 
+// Mirrors sidebar.tsx's NAV `tab: true` entries — the sidebar hides these on
+// mobile specifically because this tab bar is meant to carry them instead.
 const TABS = [
-	{ id: "home", label: "Home", icon: LayoutDashboard, href: "/dashboard" },
-	{ id: "wallet", label: "Wallet", icon: Wallet, href: "/assets" },
-	{ id: "trade", label: "Trade", icon: ArrowLeftRight, href: "/trade" },
-	{ id: "send", label: "Send", icon: Send, href: "/send" },
-	{ id: "me", label: "Me", icon: User, href: "/settings" },
+	{ id: "dashboard", label: "Home", icon: LayoutDashboard, href: "/dashboard" },
+	{ id: "trade", label: "Buy / Sell", icon: ArrowLeftRight, href: "/trade" },
+	{ id: "orders", label: "Orders", icon: BookOpen, href: "/orders" },
+	{ id: "settings", label: "Me", icon: Settings, href: "/settings" },
 ];
 
 export function MobileTabBar() {

@@ -74,12 +74,11 @@ export async function middleware(request: NextRequest) {
 		"/signup",
 		"/forgot-password",
 		"/reset-password",
-		"/change-password",
 		"/verify-otp",
+		"/verify-2fa",
 		"/verify-email",
 		"/privacy-policy",
 		"/terms-of-service",
-		"/auth/callback",
 	];
 
 	if (publicPaths.includes(pathname)) return NextResponse.next();
@@ -88,23 +87,16 @@ export async function middleware(request: NextRequest) {
 
 	const protectedPaths = [
 		"/dashboard",
-		"/profile",
-		"/security",
-		"/assets",
 		"/trade",
-		"/send",
-		"/receive",
 		"/request",
 		"/orders",
-		"/transactions",
 		"/transaction-history",
 		"/identity-verification",
-		"/wallet",
 		"/settings",
 		"/billing",
 		"/support",
 		"/notifications",
-		"/bank-accounts",
+		"/referrals",
 		"/markets",
 	];
 

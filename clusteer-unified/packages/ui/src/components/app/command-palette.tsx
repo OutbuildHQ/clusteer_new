@@ -4,13 +4,10 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
 	ArrowLeftRight,
-	Send,
-	Banknote,
 	LayoutDashboard,
-	Wallet,
-	ArrowDownToLine,
 	BookOpen,
 	List,
+	Receipt,
 	ShieldCheck,
 	Bell,
 	Gift,
@@ -20,18 +17,17 @@ import {
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/*  Nav items — mirrors sidebar NAV                                    */
+/*  Nav items — mirrors sidebar.tsx's NAV array exactly. Keep these in */
+/*  sync by hand (packages/ui can't import from apps/customer) — any   */
+/*  route added/removed in sidebar.tsx's NAV should be mirrored here.   */
 /* ------------------------------------------------------------------ */
 
 const NAV_ITEMS = [
 	{ id: "dashboard", href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-	{ id: "assets", href: "/assets", label: "Wallet", icon: Wallet },
 	{ id: "trade", href: "/trade", label: "Buy / Sell", icon: ArrowLeftRight },
-	{ id: "send", href: "/send", label: "Send", icon: Send },
-	{ id: "receive", href: "/receive", label: "Receive", icon: ArrowDownToLine },
-	{ id: "withdraw", href: "/withdraw", label: "Withdraw NGN", icon: Banknote },
 	{ id: "orders", href: "/orders", label: "Orders", icon: BookOpen },
-	{ id: "transaction-history", href: "/transaction-history", label: "Transactions", icon: List },
+	{ id: "transaction-history", href: "/transaction-history", label: "History", icon: List },
+	{ id: "billing", href: "/billing", label: "Billing", icon: Receipt },
 	{ id: "identity-verification", href: "/identity-verification", label: "Identity", icon: ShieldCheck },
 	{ id: "notifications", href: "/notifications", label: "Notifications", icon: Bell },
 	{ id: "referrals", href: "/referrals", label: "Referrals", icon: Gift },
@@ -96,24 +92,10 @@ export function CommandPalette() {
 		const actions: PaletteItem[] = [
 			{
 				id: "act-buy",
-				label: "Buy USDT",
+				label: "Buy / Sell USDT",
 				kind: "Action",
 				icon: ArrowLeftRight,
 				action: () => go("/trade"),
-			},
-			{
-				id: "act-send",
-				label: "Send crypto",
-				kind: "Action",
-				icon: Send,
-				action: () => go("/send"),
-			},
-			{
-				id: "act-withdraw",
-				label: "Withdraw to bank",
-				kind: "Action",
-				icon: Banknote,
-				action: () => go("/withdraw"),
 			},
 		];
 
