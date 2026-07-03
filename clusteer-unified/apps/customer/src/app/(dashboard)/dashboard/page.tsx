@@ -195,20 +195,25 @@ export default function DashboardPage() {
 			<div className="bg-ds-surface rounded-[14px] border border-ds-line overflow-hidden">
 				<div className="px-5 py-3.5 flex justify-between items-center border-b border-ds-line">
 					<span className="font-semibold text-[15px] text-ds-text">Markets</span>
-					<div className="flex gap-0.5 p-[3px] rounded-lg bg-ds-surface-2">
-						{["All", "Watchlist", "Gainers", "Losers"].map((t) => (
-							<button
-								key={t}
-								onClick={() => setMktTab(t)}
-								className={`px-3 py-[5px] rounded-md text-[12px] font-semibold border-none cursor-pointer ${
-									mktTab === t
-										? "bg-ds-surface text-ds-text shadow-sm"
-										: "bg-transparent text-ds-text-3"
-								}`}
-							>
-								{t}
-							</button>
-						))}
+					<div className="flex items-center gap-3">
+						<div className="flex gap-0.5 p-[3px] rounded-lg bg-ds-surface-2">
+							{["All", "Watchlist", "Gainers", "Losers"].map((t) => (
+								<button
+									key={t}
+									onClick={() => setMktTab(t)}
+									className={`px-3 py-[5px] rounded-md text-[12px] font-semibold border-none cursor-pointer ${
+										mktTab === t
+											? "bg-ds-surface text-ds-text shadow-sm"
+											: "bg-transparent text-ds-text-3"
+									}`}
+								>
+									{t}
+								</button>
+							))}
+						</div>
+						<Link href="/markets" className="text-[12px] font-semibold text-ds-text-3 hover:text-ds-text whitespace-nowrap">
+							View all →
+						</Link>
 					</div>
 				</div>
 				<table className="w-full border-collapse text-[13px]">

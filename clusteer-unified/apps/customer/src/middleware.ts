@@ -75,7 +75,6 @@ export async function middleware(request: NextRequest) {
 		"/forgot-password",
 		"/reset-password",
 		"/verify-otp",
-		"/verify-2fa",
 		"/verify-email",
 		"/privacy-policy",
 		"/terms-of-service",

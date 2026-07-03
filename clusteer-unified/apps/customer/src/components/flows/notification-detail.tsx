@@ -23,7 +23,7 @@ function iconColor(type: string) {
 const ROUTE_MAP: Record<string, string> = {
 	tx: "/orders",
 	price: "/trade",
-	security: "/settings/security",
+	security: "/settings",
 };
 
 type Props = {
