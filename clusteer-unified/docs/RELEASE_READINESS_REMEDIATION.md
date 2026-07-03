@@ -91,23 +91,32 @@ The original audit was code-only — it never checked findings against the actua
 
 ### Tasks
 
-- [ ] `apps/customer/src/hooks/use-user-id.ts:12` — `useUserId()` reads `document.cookie` for `auth_token`; always returns `null` client-side. Replace with a safe pattern (server-derived user ID, not the raw token).
-- [ ] `packages/ui/src/lib/axios.ts:14-17` — `getAuthToken()` same issue; no `Authorization: Bearer` header ever attached on this axios client.
-- [ ] `packages/ui/src/lib/api/settings/index.ts:13-21` — same `getAuthToken()` pattern, same fix.
-- [ ] `packages/ui/src/lib/api/support/index.ts:11-19` — same `getAuthToken()` pattern, same fix.
+- [x] `apps/customer/src/hooks/use-user-id.ts:12` — **fixed (2026-07-03, `272099f`).** `useUserId()` now fetches `/api/user/profile` (react-query, `staleTime: 5m`), which decodes `auth_token` server-side, instead of reading `document.cookie`. Moved to `packages/ui/src/hooks/use-user-id.ts` during the audit-fix pass (`ebb3f8c`) so components in `packages/ui` can import it directly.
+- [x] `packages/ui/src/lib/axios.ts:14-17` — **fixed (2026-07-03, `272099f`).** Removed the broken/redundant Bearer-token interceptor (unreadable httpOnly cookie; also redundant since `apiClient`'s `baseURL` is same-origin `/api`, so the cookie is already forwarded automatically). Bonus fix found while here: the 401 handler's `document.cookie = "auth_token=..."` clear was a silent no-op against an httpOnly cookie — replaced with a real `fetch("/api/auth-firebase/logout")` call.
+- [x] `packages/ui/src/lib/api/settings/index.ts:13-21` — **fixed (2026-07-03, `272099f` + `ebb3f8c`).** Removed the API key + broken auth logic from `blockchainApiClient`. `getKYCVerification` and (added during audit) `getPrivacySettings`/`updatePrivacySettings` now go through Next.js proxy routes. The other 8 functions in this file are confirmed zero-caller scaffolding (see Module F).
+- [x] `packages/ui/src/lib/api/support/index.ts:11-19` — **fixed (2026-07-03, `272099f`).** Same pattern; `getTicketDetail`/`addTicketMessage` now go through proxy routes. `getSupportTickets`/`createSupportTicket`/`getFAQs` confirmed zero-caller scaffolding.
 
 ### Downstream verification (should resolve automatically once the above land — re-check each, don't assume)
 
-- [ ] `apps/customer/src/app/(dashboard)/settings/account/page.tsx:28-39,72-100` — confirm account-limits/KYC query now fires and replaces the hardcoded fallback limits.
-- [ ] `apps/customer/src/app/(dashboard)/settings/notifications/page.tsx:111,114-118` — confirm notification-prefs query now fires, replaces `DEFAULT_PREFS`.
-- [ ] `apps/customer/src/app/(dashboard)/settings/privacy/page.tsx:74,76-80` — confirm privacy toggles now reflect real saved state, and re-verify the mutation target is one the now-authenticated user can actually reach.
-- [ ] `apps/customer/src/app/(dashboard)/settings/payment-methods/page.tsx:35,38-45` — confirm bank-accounts query now fires and shows real linked accounts (not a permanent empty state).
-- [ ] `apps/customer/src/app/(dashboard)/identity-verification/page.tsx:67,95-99` — confirm KYC-status query now fires and shows real tier/document status, not `FALLBACK_TIERS`.
+- [?] `apps/customer/src/app/(dashboard)/settings/account/page.tsx:28-39,72-100` — **moot.** This page (and `settings/notifications`, `settings/privacy`, `settings/payment-methods`) was deleted during the Module E settings-routing decision (`/settings/page.tsx`'s 7 inline tabs are canonical) — see Module E. Re-flagged there as "confirm the 7 tabs are wired to real data," not here.
+- [-] `apps/customer/src/app/(dashboard)/settings/notifications/page.tsx:111,114-118` — moot, same reason.
+- [-] `apps/customer/src/app/(dashboard)/settings/privacy/page.tsx:74,76-80` — moot, same reason.
+- [-] `apps/customer/src/app/(dashboard)/settings/payment-methods/page.tsx:35,38-45` — moot, same reason.
+- [x] `apps/customer/src/app/(dashboard)/identity-verification/page.tsx:67,95-99` — **verified (2026-07-03, audit pass).** Independently re-read the full page and `sidebar.tsx`: both read plain fields (`status`, `document_number`, `document_type`, `selfie_url`, `address_document_url`, `rejection_reason`) directly off the object `getKYCVerification` returns, which matches the `KYCVerification` shape exactly — no axios-wrapper mismatch. Query now genuinely fires once `useUserId()` resolves a real ID.
+
+### Audit (2026-07-03) — 2 real findings, both fixed, see `ebb3f8c`
+
+Ran an independent adversarial audit of `272099f` (agent had no knowledge of the implementation, told to verify every claim from scratch). It found one real regression; I found a second while independently re-verifying the audit's own findings before trusting them:
+
+1. **`getPrivacySettings`/`updatePrivacySettings` were not actually zero-caller** — `packages/ui/src/components/app/cookie-consent.tsx`, mounted globally in `apps/customer/src/app/layout.tsx`, calls both directly. The "zero live callers" check in the original commit only grepped `apps/customer/src`/`apps/admin/src`, missing this caller living under `packages/ui/src/components/`. Investigated further: this path wasn't actually reachable pre-fix either, for an unrelated reason — `cookie-consent.tsx` read identity from the client-side Firebase SDK's `onAuthStateChanged`/`auth.currentUser`, which is never populated anywhere in this app (both login and signup happen via Firebase Admin SDK calls inside Next.js server routes, never a client-side sign-in call — grepped `signInWith*`/`onAuthStateChanged` across the whole app to confirm). Fixed properly rather than left inert: added `apps/customer/src/app/api/user/privacy-settings/route.ts` (GET+PUT proxy, same pattern as `kyc-status`), converted both functions to call it, and moved `cookie-consent.tsx` onto the working `useUserId()` hook.
+2. **`support/[ticketNumber]/page.tsx`** (a live caller of `getTicketDetail`/`addTicketMessage`, also touched by this module) read `user.id` from `useUser()` — an in-memory Zustand store (`apps/customer/src/store/user.ts`) populated only by `login-form.tsx`, which itself has zero importers (the real login flow is `auth-firebase/*` per Module B2's decision). So `user` was always `null` and the ticket-detail query never fired, for any user, ever — not a regression from this commit, but a real bug directly in the call path being audited. Fixed by adding a `useUserProfile()` export alongside `useUserId()` (same underlying `/api/user/profile` fetch) and switching the page to it.
+
+**New backlog item, not fixed (out of scope for this pass):** `apps/customer/src/store/user.ts`'s Zustand `useUser()` store has no persistence/rehydration and is populated by dead code — `apps/customer/src/components/user-profile.tsx` and `user-banner.tsx` both read it but are themselves unimported/orphaned (confirmed via grep), so this is currently inert, not a live bug. `nin-verification-form.tsx`/`bvn-verification-form.tsx` also read it (to merge `is_verified: true` onto whatever's there) — worth a closer look if those forms are still on a live path, but that's a KYC-flow question, not an auth-plumbing one; not investigated further here.
 
 ### Acceptance criteria
 
-- A logged-in user reloading any of the 5 pages above sees data that changes when the underlying backend record changes (prove it by mutating one field via the backend directly and confirming the UI reflects it after refresh).
-- No client-side code anywhere reads `document.cookie` for `auth_token` (grep should return zero matches post-fix).
+- A logged-in user reloading any of the 5 pages above sees data that changes when the underlying backend record changes (prove it by mutating one field via the backend directly and confirming the UI reflects it after refresh). **Applies to `identity-verification/page.tsx` and `sidebar.tsx` now (settings pages moot, see above) — verified via code read, not yet click-tested end-to-end against a live Django instance.**
+- No client-side code anywhere reads `document.cookie` for `auth_token` (grep should return zero matches post-fix). **Confirmed (2026-07-03)** — only remaining `document.cookie` hits are an unrelated sidebar-open-state cookie and comments.
 
 ---
 
@@ -294,13 +303,13 @@ The original audit was code-only — it never checked findings against the actua
 
 ### Tasks
 
-- [ ] `packages/ui/src/lib/api/settings/index.ts:5-32` — `blockchainApiClient` bakes `NEXT_PUBLIC_BLOCKCHAIN_ENGINE_API_KEY` into default request headers; this client is imported into 5 `"use client"` pages (settings/account, settings/notifications, settings/privacy, settings/payment-methods, identity-verification). Remove the client-side key injection; proxy these calls through a Next.js server route that attaches the key server-side instead (same fix shape as the Spring key).
-- [ ] `packages/ui/src/lib/api/support/index.ts:3-9` — same pattern with the Django `X-API-KEY`, called directly from `support/[ticketNumber]/page.tsx:7`, a client component. Same fix.
-- [ ] After both fixes: confirm via `grep -rn "NEXT_PUBLIC_BLOCKCHAIN_ENGINE_API_KEY"` that the value is only read server-side, and check whether `apps/customer/apphosting.yaml`/`apps/admin/apphosting.yaml` need the same `availability: [RUNTIME]` (not `[BUILD, RUNTIME]`) treatment applied to the Spring key.
+- [x] `packages/ui/src/lib/api/settings/index.ts:5-32` — **fixed (2026-07-03, `272099f` + audit follow-up `ebb3f8c`).** `blockchainApiClient` no longer sends `NEXT_PUBLIC_BLOCKCHAIN_ENGINE_API_KEY`. `getKYCVerification` and `getPrivacySettings`/`updatePrivacySettings` (the 3 functions with real callers — the audit found `getPrivacySettings`/`updatePrivacySettings` were missed as "zero-caller" the first time, see Module A's Audit section) now go through Next.js proxy routes (`/api/user/kyc-status`, `/api/user/privacy-settings`). `getNotificationPreferences`, `updateNotificationPreferences`, `getAccountLimits`, `submitKYCVerification`, `getDataExportRequests`, `createDataExportRequest` remain on the now-key-less `blockchainApiClient` — confirmed zero callers anywhere in `apps/customer`, `apps/admin`, or `packages/ui`.
+- [x] `packages/ui/src/lib/api/support/index.ts:3-9` — **fixed (2026-07-03, `272099f`).** `getTicketDetail`/`addTicketMessage` (the 2 functions with real callers, `support/[ticketNumber]/page.tsx`) now go through proxy routes (`/api/support/tickets/[ticketNumber]`, `/api/support/tickets/[ticketNumber]/messages`). `getSupportTickets`/`createSupportTicket`/`getFAQs` remain on the key-less client — confirmed zero callers.
+- [x] After both fixes: **confirmed (2026-07-03).** `grep -rn "NEXT_PUBLIC_BLOCKCHAIN_ENGINE_API_KEY"` returns exactly one hit, `packages/ui/src/lib/api-helpers.ts:7` (server-only — used only inside `app/api/*/route.ts` handlers, verified via grep that no `"use client"` file imports it). `apps/customer/apphosting.yaml`'s entry flipped from `[BUILD, RUNTIME]` to `[RUNTIME]`, same as the Spring key; confirmed no build/SSG-time read exists that this would break.
 
 ### Acceptance criteria
 
-- The Blockchain Engine API key does not appear anywhere in the built client JS bundle (grep the `.next/static` output after a fresh build).
+- The Blockchain Engine API key does not appear anywhere in the built client JS bundle (grep the `.next/static` output after a fresh build) — **not yet re-verified against an actual production build output; the code-level check (no client-side reference) is done, but the acceptance criterion as written calls for a built-bundle grep, which hasn't been run.**
 
 ---
 
@@ -390,15 +399,17 @@ Every finding from the audit, in one place, for a final cross-check that nothing
 
 | ID | Module | Severity | Location | One-line summary | Status |
 |---|---|---|---|---|---|
-| A-1 | A | BLOCKER | `hooks/use-user-id.ts:12` | `useUserId()` reads httpOnly cookie, always null | [ ] |
-| A-2 | A | BLOCKER | `packages/ui/src/lib/axios.ts:14-17` | same, no Authorization header attached | [ ] |
-| A-3 | A | BLOCKER | `packages/ui/src/lib/api/settings/index.ts:13-21` | same | [ ] |
-| A-4 | A | BLOCKER | `packages/ui/src/lib/api/support/index.ts:11-19` | same | [ ] |
-| A-5 | A | HIGH | `settings/account/page.tsx:28-39,72-100` | downstream: limits/KYC query never fires | [ ] |
-| A-6 | A | HIGH | `settings/notifications/page.tsx:111,114-118` | downstream: prefs query never fires | [ ] |
-| A-7 | A | HIGH | `settings/privacy/page.tsx:74,76-80` | downstream: toggles always default | [ ] |
-| A-8 | A | HIGH | `settings/payment-methods/page.tsx:35,38-45` | downstream: bank accounts query never fires | [ ] |
-| A-9 | A | HIGH | `identity-verification/page.tsx:67,95-99` | downstream: KYC status query never fires | [ ] |
+| A-1 | A | BLOCKER | `hooks/use-user-id.ts:12` | `useUserId()` reads httpOnly cookie, always null | [x] `272099f`, moved `ebb3f8c` |
+| A-2 | A | BLOCKER | `packages/ui/src/lib/axios.ts:14-17` | same, no Authorization header attached | [x] `272099f` — removed (redundant on same-origin `/api`); 401-handler cookie-clear no-op also fixed |
+| A-3 | A | BLOCKER | `packages/ui/src/lib/api/settings/index.ts:13-21` | same | [x] `272099f` |
+| A-4 | A | BLOCKER | `packages/ui/src/lib/api/support/index.ts:11-19` | same | [x] `272099f` |
+| A-5 | A | HIGH | `settings/account/page.tsx:28-39,72-100` | downstream: limits/KYC query never fires | [-] moot — page deleted, see Module E settings-routing decision |
+| A-6 | A | HIGH | `settings/notifications/page.tsx:111,114-118` | downstream: prefs query never fires | [-] moot, same reason |
+| A-7 | A | HIGH | `settings/privacy/page.tsx:74,76-80` | downstream: toggles always default | [-] moot, same reason |
+| A-8 | A | HIGH | `settings/payment-methods/page.tsx:35,38-45` | downstream: bank accounts query never fires | [-] moot, same reason |
+| A-9 | A | HIGH | `identity-verification/page.tsx:67,95-99` | downstream: KYC status query never fires | [x] verified `272099f` — query now fires, shapes match |
+| A-10 | A | HIGH | `packages/ui/src/components/app/cookie-consent.tsx:74,98,108` | audit finding: `getPrivacySettings`/`updatePrivacySettings` had a real caller missed by the "zero-caller" grep; also read identity from a client Firebase auth state that's never populated anywhere in the app | [x] `ebb3f8c` — proxy route + `useUserId()` |
+| A-11 | A | HIGH | `support/[ticketNumber]/page.tsx:14` | audit finding: read `user.id` from a `useUser()` Zustand store populated only by dead `login-form.tsx` — always null, ticket query never fired | [x] `ebb3f8c` — switched to `useUserProfile()` |
 | B1 | B | — | `clusteer-unified/src/` (whole app) | orphaned legacy app, wallet feature never migrated | [x] backed up (zip + `archive/legacy-root-src-2026-06-30`) then deleted |
 | B2 | B | — | 8 duplicate auth route files | three parallel route families, two dead | [x] deleted, `nav-user.tsx` logout repointed then file deleted (fully orphaned) |
 | B3 | B | — | order/transaction routes | Django vs Spring split, no single source of truth | [x] Spring confirmed authoritative — Django's Order model is uncommitted + never migrated, holds zero real data |
@@ -453,8 +464,8 @@ Every finding from the audit, in one place, for a final cross-check that nothing
 | E-19 | E | LOW | `recent-activity.tsx` | orphan, unimported | [x] deleted (confirmed zero importers first) |
 | E-20 | E | LOW | `about/page.tsx:206-210` | "View open roles" → wrong route | [ ] |
 | E-21 | E | HIGH | `page.tsx:459` + `middleware.ts:105` | "Talk to us" → protected /support, anon redirected to login | [ ] |
-| F-1 | F | BLOCKER | `packages/ui/src/lib/api/settings/index.ts:5-32` | Blockchain Engine key in browser bundle, 5 pages | [ ] |
-| F-2 | F | BLOCKER | `packages/ui/src/lib/api/support/index.ts:3-9` | same pattern, support ticket page | [ ] |
+| F-1 | F | BLOCKER | `packages/ui/src/lib/api/settings/index.ts:5-32` | Blockchain Engine key in browser bundle, 5 pages | [x] `272099f` + `ebb3f8c` — key removed; `getKYCVerification`/`getPrivacySettings`/`updatePrivacySettings` proxied, rest confirmed zero-caller |
+| F-2 | F | BLOCKER | `packages/ui/src/lib/api/support/index.ts:3-9` | same pattern, support ticket page | [x] `272099f` — key removed; `getTicketDetail`/`addTicketMessage` proxied, rest confirmed zero-caller |
 | G-1 | G | HIGH | `buy/page.tsx:94-101` | hardcoded "live" rate, no fetch | [ ] |
 | G-2 | G | MED | `buy/page.tsx:136,159` | hardcoded order-ticket preview | [ ] |
 | G-3 | G | HIGH | `sell/page.tsx:80-121` | hardcoded ticket + fabricated 5-min stat | [ ] |
