@@ -90,15 +90,14 @@ export default function MarketingBuyPage() {
 										</div>
 										<span className="font-semibold">NGN</span>
 										<span className="[margin-left:auto] inline-flex items-center gap-[6px] text-[11.5px] font-semibold text-[#9fe870]">
-											<span className="live-dot w-[7px] h-[7px] rounded-full bg-[#9fe870]"></span>
-											LIVE
+											SAMPLE
 										</span>
 									</div>
 									<div className="f-mono text-[40px] font-bold tracking-[-1px] leading-none">
 										₦1,612
 									</div>
 									<div className="text-[13px] text-[rgba(244,241,234,0.6)] mt-[6px]">
-										per USDT · updates every few seconds
+										per USDT · illustrative, live rate shows in the app
 									</div>
 									<div className="mt-[14px]">
 										<svg width="220" height="44" viewBox="0 0 120 40" fill="none" className="block">
@@ -120,7 +119,7 @@ export default function MarketingBuyPage() {
 						</div>
 						<div className="bento-card bento-pop bento-hover opacity-100 row-span-2 col-span-4 p-[24px] bg-[#ffffff] text-[#21241d] border-[1.5px] border-[#21241d]">
 							<div className="f-mono text-[12px] font-semibold tracking-[1.5px] uppercase text-[#0f4f26] mb-[16px]">
-								Order ticket
+								Order ticket — example
 							</div>
 							<div>
 								<div className="inline-flex rounded-full border-[1.5px] border-[#21241d] overflow-hidden mb-[16px]">
@@ -160,10 +159,7 @@ export default function MarketingBuyPage() {
 								</div>
 								<div className="flex justify-between text-[12px] text-[#475467] mt-[12px]">
 									<span>Fee 0.75%</span>
-									<span className="inline-flex items-center gap-[5px]">
-										<span className="live-dot w-[6px] h-[6px] rounded-full bg-[#0f4f26]"></span>
-										Settles instantly
-									</span>
+									<span>Settles on-chain</span>
 								</div>
 							</div>
 						</div>

@@ -618,7 +618,7 @@ export default function PrivacyPolicyPage() {
 				</div>
 				<div className="mt-[24px]">
 					<div className="bento-card bento-pop opacity-100 bg-[#9fe870] border-[1.5px] border-[#21241d] rounded-[28px] p-[clamp(32px,5vw,64px)] text-center max-w-[1100px] mx-auto my-0">
-						<h2 className="f-display text-[clamp(28px,4vw,46px)] font-extrabold tracking-[-1.5px] leading-[1.05] m-0 max-w-[720px] mx-auto"></h2>
+						<h2 className="f-display text-[clamp(28px,4vw,46px)] font-extrabold tracking-[-1.5px] leading-[1.05] m-0 max-w-[720px] mx-auto">Ready to get started?</h2>
 						<div className="flex gap-[12px] justify-center flex-wrap mt-[28px]">
 							<Link
 								href="/early-access"

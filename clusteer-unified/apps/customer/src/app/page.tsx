@@ -8,9 +8,6 @@ import { SiteHeader } from "@/components/app/site-header";
 import { Footer } from "@/components/app/footer";
 import { Button } from "@/components/ui/button";
 import { AssetLogo } from "@/components/primitives/asset-logo";
-import { Num } from "@/components/primitives/num";
-import { RateTicker } from "@/components/rate-ticker";
-import { PixelRain } from "@/components/pixel-rain";
 import { formatMoney } from "@/lib/utils";
 import {
 	ArrowRight, ShieldCheck, Zap, Lock, Check, Play,
@@ -127,11 +124,12 @@ function FAQ({ q, a }: { q: string; a: string }) {
 
 export default function Home() {
 	// Live rates for hero visual
-	const { data: rateData } = useQuery({
+	const { data: rateData, isError } = useQuery({
 		queryKey: ["ticker-rates"],
 		queryFn: async () => { const r = await fetch("/api/system/exchange-rate?targetCurrency=NGN&amount=1&type=buy"); return r.json(); },
 		refetchInterval: 30_000, staleTime: 10_000,
 	});
+	const isLive = !isError && !!rateData?.buyRate && rateData?.source !== "fallback";
 	const liveRate = rateData?.buyRate ? rateData.buyRate.toFixed(2) : "1,612.40";
 	const liveRateInt = rateData?.buyRate ? Math.round(rateData.buyRate) : 1612;
 
@@ -193,8 +191,8 @@ export default function Home() {
 
 									{/* Eyebrow */}
 									<div className="absolute top-7 left-8 inline-flex items-center gap-2 font-mono text-xs font-medium text-light-green tracking-wider">
-										<span className="live-dot size-2 rounded-full bg-light-green" />
-										LIVE — USDT / NGN
+										<span className={`size-2 rounded-full bg-light-green ${isLive ? "live-dot" : ""}`} />
+										{isLive ? "LIVE — USDT / NGN" : "USDT / NGN"}
 									</div>
 
 									{/* Big rate */}
@@ -254,7 +252,7 @@ export default function Home() {
 
 							{/* Mobile — compact swap card */}
 							<div className="lg:hidden">
-								<MobileSwap rate={liveRateInt} />
+								<MobileSwap rate={liveRateInt} isLive={isLive} />
 							</div>
 						</FadeUp>
 					</div>
@@ -474,12 +472,12 @@ export default function Home() {
 /*  Mobile swap preview                                                 */
 /* ------------------------------------------------------------------ */
 
-function MobileSwap({ rate }: { rate: number }) {
+function MobileSwap({ rate, isLive }: { rate: number; isLive: boolean }) {
 	const ngn = formatMoney(1000 * rate, "NGN", { decimals: 0 });
 	return (
 		<div className="rounded-[18px] sm:rounded-[20px] border-2 border-custom-black bg-custom-black p-3.5 sm:p-5 shadow-brutal">
 			<div className="flex items-center gap-2 font-mono text-xs font-medium text-light-green tracking-wider mb-3">
-				<span className="live-dot size-2 rounded-full bg-light-green" /> LIVE — USDT / NGN
+				<span className={`size-2 rounded-full bg-light-green ${isLive ? "live-dot" : ""}`} /> {isLive ? "LIVE — USDT / NGN" : "USDT / NGN"}
 			</div>
 			<div className="font-mono text-2xl sm:text-4xl font-semibold text-white tabular-nums tracking-[-0.03em]">
 				₦{rate.toLocaleString()}

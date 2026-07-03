@@ -64,7 +64,7 @@ export default function MarketingSellPage() {
 					<div className="bento">
 						<div className="bento-card bento-pop bento-hover opacity-100 row-span-2 col-span-4 p-[24px] bg-[#ffffff] text-[#21241d] border-[1.5px] border-[#21241d]">
 							<div className="f-mono text-[12px] font-semibold tracking-[1.5px] uppercase text-[#0f4f26] mb-[16px]">
-								Sell ticket
+								Sell ticket — example
 							</div>
 							<div>
 								<div className="inline-flex rounded-full border-[1.5px] border-[#21241d] overflow-hidden mb-[16px]">
@@ -104,10 +104,7 @@ export default function MarketingSellPage() {
 								</div>
 								<div className="flex justify-between text-[12px] text-[#475467] mt-[12px]">
 									<span>Fee 0.75%</span>
-									<span className="inline-flex items-center gap-[5px]">
-										<span className="live-dot w-[6px] h-[6px] rounded-full bg-[#0f4f26]"></span>
-										Settles instantly
-									</span>
+									<span>Settles on-chain</span>
 								</div>
 							</div>
 						</div>
@@ -141,35 +138,12 @@ export default function MarketingSellPage() {
 											</svg>
 										</div>
 										<div className="flex-1">
-											<div className="font-semibold text-[14px]">GTBank</div>
-											<div className="f-mono text-[12px] text-[#475467]">•• 4321</div>
+											<div className="font-semibold text-[14px]">Your bank account</div>
+											<div className="f-mono text-[12px] text-[#475467]">any NIBSS-connected bank</div>
 										</div>
 										<span className="f-mono inline-flex items-center gap-[6px] text-[11.5px] font-semibold py-[5px] px-[11px] rounded-full bg-[#effcd0] text-[#0f4f26] border-[1.5px] border-[#21241d]">
-											Primary
+											Example
 										</span>
-									</div>
-									<div className="flex items-center gap-[12px] py-[12px] px-[14px] bg-[#ffffff] border-[1.5px] border-[#21241d] rounded-[14px]">
-										<div className="w-[38px] h-[38px] rounded-[10px] bg-[#21241d] text-[#9fe870] flex items-center justify-center">
-											<svg
-												width="18"
-												height="18"
-												viewBox="0 0 24 24"
-												fill="none"
-												stroke="currentColor"
-												strokeWidth="2"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-											>
-												<path d="M3 21h18"></path>
-												<path d="M3 10h18"></path>
-												<path d="M5 6l7-4 7 4"></path>
-												<path d="M5 21V10M9 21V10M15 21V10M19 21V10"></path>
-											</svg>
-										</div>
-										<div className="flex-1">
-											<div className="font-semibold text-[14px]">Access</div>
-											<div className="f-mono text-[12px] text-[#475467]">•• 8830</div>
-										</div>
 									</div>
 									<div className="flex items-center gap-[8px] text-[12.5px] text-[#475467]">
 										<svg
@@ -192,10 +166,10 @@ export default function MarketingSellPage() {
 						<div className="bento-card bento-pop bento-hover opacity-100 col-span-3 p-[24px] bg-[#9fe870] text-[#21241d] border-[1.5px] border-[#21241d]">
 							<div>
 								<div className="f-display text-[clamp(30px,4vw,46px)] font-extrabold tracking-[-1.5px] leading-none">
-									5 min
+									100%
 								</div>
 								<div className="text-[13.5px] text-[#475467] mt-[8px]">
-									Median time from deposit to NGN payout.
+									Non-custodial — your funds are always yours.
 								</div>
 							</div>
 						</div>

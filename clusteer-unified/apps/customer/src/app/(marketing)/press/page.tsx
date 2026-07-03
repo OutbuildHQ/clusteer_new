@@ -208,8 +208,8 @@ export default function PressPage() {
 								bg: "bg-warm-beige",
 							},
 							{
-								v: "2023",
-								l: "year founded",
+								v: "100%",
+								l: "non-custodial, by design",
 								bg: "bg-background",
 							},
 						].map((s, i) => (

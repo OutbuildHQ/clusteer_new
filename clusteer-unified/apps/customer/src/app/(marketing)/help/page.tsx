@@ -133,7 +133,7 @@ const TOPICS = [
 			{ q: "My order is stuck on pending — what should I do?", a: "Most orders resolve within 15 minutes. If yours has been pending for more than 30 minutes, check the Orders page for status. If it still shows pending, contact support@clusteer.com with your order reference (starts with CL-)." },
 			{ q: "I sent stablecoins for a sell order but haven't been paid.", a: "First, confirm the transfer on the blockchain using a block explorer (e.g., Tronscan for TRC-20), and check you sent the exact amount to the correct address on the network you selected. If it's confirmed and correct, contact support with the transaction hash — we'll trace the order and release your Naira payout." },
 			{ q: "My bank payout failed. What happens to my money?", a: "If a payout fails (usually an incorrect account number or a bank maintenance window), the order is held and our team retries the payout or reaches out to correct your bank details. Your funds are never lost — you'll be notified as soon as it's resolved." },
-			{ q: "How do I contact support?", a: "Email support@clusteer.com — we typically respond within 2 hours during business hours (9am-9pm WAT). You can also reach us via in-app chat on the Support page. For urgent security issues, include 'URGENT' in the subject line." },
+			{ q: "How do I contact support?", a: "Email support@clusteer.com — we aim to respond within 4 hours during business hours (Monday–Friday, 9am–5pm WAT). You can also reach us via in-app chat on the Support page. For urgent security issues, include 'URGENT' in the subject line." },
 		],
 	},
 ];

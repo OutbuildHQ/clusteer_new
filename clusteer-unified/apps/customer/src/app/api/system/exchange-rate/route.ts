@@ -6,6 +6,7 @@ let rateCache: {
 	sellRate: number; // Rate when users SELL crypto (2.5% premium - standard market rate)
 	usdtToUsd: number;
 	timestamp: number;
+	source: "live" | "fallback";
 } | null = null;
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
@@ -28,7 +29,10 @@ async function fetchLiveRates() {
 		// Step 1: Fetch official USD/NGN rate from forex API
 		const ngnResponse = await fetch("https://open.er-api.com/v6/latest/USD");
 		const ngnData = await ngnResponse.json();
-		const officialUsdToNgn = ngnData.rates?.NGN || 1420; // Official forex rate (fallback: ₦1,420)
+		const officialUsdToNgn = ngnData.rates?.NGN;
+		if (!officialUsdToNgn) {
+			throw new Error("Forex API did not return a usable NGN rate");
+		}
 
 		// Step 2: Fetch USDT/USD rate (typically 1:1, but can vary slightly)
 		const cryptoResponse = await fetch(
@@ -50,17 +54,19 @@ async function fetchLiveRates() {
 			sellRate,
 			usdtToUsd,
 			timestamp: Date.now(),
+			source: "live",
 		};
 
 		return rateCache;
 	} catch (error) {
 		console.error("Failed to calculate rates:", error);
-		// Return fallback rates
+		// Return fallback rates — NOT cached, so the next request retries the real APIs
 		return {
 			buyRate: 1447.68, // 2% premium on ₦1,420
 			sellRate: 1455.50, // 2.5% premium on ₦1,420
 			usdtToUsd: 1,
 			timestamp: Date.now(),
+			source: "fallback" as const,
 		};
 	}
 }
@@ -107,7 +113,7 @@ export async function GET(request: NextRequest) {
 			amount,
 			convertedAmount: amount * rate,
 			timestamp: new Date().toISOString(),
-			source: "live",
+			source: rates.source,
 		});
 	} catch (error) {
 		console.error("Exchange rate error:", error);
