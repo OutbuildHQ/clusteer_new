@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SellReceiveAmount } from "@/components/marketing/order-ticket-receive";
 
 export const metadata: Metadata = {
 	title: "Sell stablecoins, cash out to your bank — Clusteer",
@@ -100,7 +101,7 @@ export default function MarketingSellPage() {
 								</div>
 								<div className="bg-[#effcd0] border-[1.5px] border-[#21241d] rounded-[14px] p-[14px]">
 									<div className="text-[11px] text-[#0f4f26] font-semibold">You receive</div>
-									<div className="f-mono text-[24px] font-bold mt-[2px]">₦499,000</div>
+									<div className="f-mono text-[24px] font-bold mt-[2px]"><SellReceiveAmount /></div>
 								</div>
 								<div className="flex justify-between text-[12px] text-[#475467] mt-[12px]">
 									<span>Fee 0.75%</span>

@@ -1,5 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { RateBadge } from "@/components/marketing/rate-badge";
+import { RateValue } from "@/components/marketing/rate-value";
+import { BuyReceiveAmount } from "@/components/marketing/order-ticket-receive";
 
 export const metadata: Metadata = {
 	title: "Buy stablecoins with naira — Clusteer",
@@ -90,15 +93,10 @@ export default function MarketingBuyPage() {
 										</div>
 										<span className="font-semibold">NGN</span>
 										<span className="[margin-left:auto] inline-flex items-center gap-[6px] text-[11.5px] font-semibold text-[#9fe870]">
-											SAMPLE
+											<RateBadge type="buy" />
 										</span>
 									</div>
-									<div className="f-mono text-[40px] font-bold tracking-[-1px] leading-none">
-										₦1,612
-									</div>
-									<div className="text-[13px] text-[rgba(244,241,234,0.6)] mt-[6px]">
-										per USDT · illustrative, live rate shows in the app
-									</div>
+									<RateValue type="buy" fallback={1612} />
 									<div className="mt-[14px]">
 										<svg width="220" height="44" viewBox="0 0 120 40" fill="none" className="block">
 											<polyline
@@ -155,7 +153,7 @@ export default function MarketingBuyPage() {
 								</div>
 								<div className="bg-[#effcd0] border-[1.5px] border-[#21241d] rounded-[14px] p-[14px]">
 									<div className="text-[11px] text-[#0f4f26] font-semibold">You receive</div>
-									<div className="f-mono text-[24px] font-bold mt-[2px]">310.05 USDT</div>
+									<div className="f-mono text-[24px] font-bold mt-[2px]"><BuyReceiveAmount /></div>
 								</div>
 								<div className="flex justify-between text-[12px] text-[#475467] mt-[12px]">
 									<span>Fee 0.75%</span>
