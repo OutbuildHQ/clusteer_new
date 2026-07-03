@@ -221,29 +221,29 @@ Recommended order: **B → A → F(keys) → E → G → D(decision) → H → C
 
 **Risk tier:** SAFE-TO-FIX, except the `/assets`/`/send`/`/receive`/`/withdraw` entries which depend on the Module B1 decision.
 
-### Tasks depending on Module B1
+### Tasks depending on Module B1 — RESOLVED (2026-07-03, done alongside B1/B2)
 
-- [ ] `apps/customer/src/components/app/mobile-tab-bar.tsx:9,11` — "Wallet"/"Send" tabs point at `/assets`/`/send`, which don't exist in `apps/customer`. Fix once B1 is decided (either the pages get migrated in, or these tabs are removed/repointed).
-- [ ] `packages/ui/src/components/app/command-palette.tsx:28,30,31,32` — "Wallet", "Send"/"Send crypto", "Receive", "Withdraw NGN"/"Withdraw to bank" all route to non-existent pages. Same dependency as above.
-- [ ] `apps/customer/src/middleware.ts:89-109` — remove dead `protectedPaths` entries (`/assets`, `/send`, `/receive`, `/wallet`, `/transactions`, `/bank-accounts`, `/profile`, `/security`) or add the real pages, per the B1 decision.
-- [ ] `apps/customer/src/components/dashboard-nav.tsx`, `nav-bar-dashboard.tsx` — dead/unimported shell components referencing `/assets`; delete once B1 is resolved (don't let them get accidentally reactivated with a stale nav list).
-- [ ] `apps/customer/src/components/asset-client.tsx:47,53,59` — orphaned component linking to non-existent `/assets/[currency]/send|receive` routes plus a literal `href="#"` for "Convert"; delete or fix per B1.
-- [ ] `apps/customer/src/components/recent-activity.tsx` — orphaned, unimported; delete if not needed once B1 lands.
-- [ ] `apps/customer/src/components/nav-user.tsx:115,119` — `/billing`, `/settings/notifications` links currently unreachable since this component is only used by the dead `dashboard-nav.tsx`; resolve alongside that deletion.
+- [x] `apps/customer/src/components/app/mobile-tab-bar.tsx:9,11` — replaced with sidebar.tsx's real `tab:true` set (dashboard/trade/orders/settings). See ledger E-1.
+- [x] `packages/ui/src/components/app/command-palette.tsx:28,30,31,32` — NAV_ITEMS rewritten to mirror sidebar.tsx exactly; broken actions removed. See ledger E-2.
+- [x] `apps/customer/src/middleware.ts:89-109` — 8 dead `protectedPaths` entries removed. See ledger E-10.
+- [x] `apps/customer/src/components/dashboard-nav.tsx`, `nav-bar-dashboard.tsx` — deleted (confirmed zero importers first). See ledger E-16.
+- [x] `apps/customer/src/components/asset-client.tsx:47,53,59` — deleted (confirmed zero importers first). See ledger E-18.
+- [x] `apps/customer/src/components/recent-activity.tsx` — deleted (confirmed zero importers first). See ledger E-19.
+- [x] `apps/customer/src/components/nav-user.tsx:115,119` — file deleted outright once it became fully orphaned (its only importer, `dashboard-nav.tsx`, was already dead). See ledger E-17.
 
 ### Tasks independent of B1
 
 - [ ] `apps/customer/src/app/(dashboard)/identity-verification/page.tsx:174-181` — "Upgrade" button on Tier 2/3 cards has no `onClick` at all; wire it to the real tier-upgrade flow.
 - [ ] `apps/customer/src/components/flow-host.tsx` (via `settings/page.tsx:243`) — "Create new key" calls `window.openFlow("createApiKey")`, which isn't registered in `MODAL_FLOWS`/`DRAWER_FLOWS`; register the flow or remove the button.
 - [ ] `apps/customer/src/components/mobile-menu.tsx:89,98,107` — `#how-it-works`, `#features`, `#reviews` anchors don't exist on the homepage (there is no reviews section at all); add the matching ids/sections or remove the links.
-- [ ] `apps/customer/src/app/(auth)/verify-2fa/page.tsx` — fully built, posts to a real API, but nothing links to it (`login.tsx:55` redirects to `/verify-otp?flow=login` instead). Decide which page is canonical and remove/redirect the other.
-- [ ] `apps/customer/src/middleware.ts:70-109` — `/verify-2fa`, `/referrals`, `/markets`, `/request` currently match neither `publicPaths` nor `protectedPaths` and fall through unauthenticated. Add them explicitly to the correct array.
-- [ ] `apps/customer/src/middleware.ts:70-83` — remove dead `publicPaths` entries (`/change-password`, `/auth/callback`) that don't correspond to real routes.
-- [ ] `apps/customer/src/app/(dashboard)/settings/page.tsx` — renders its own inline tab UI instead of routing to the dedicated sub-pages, orphaning `/settings/account`, `/limits`, `/notifications`, `/payment-methods`, `/privacy`. Decide: make `/settings` a real router to those pages, or delete the sub-pages and keep the inline version as canonical (see also Module C's finding that the inline version is fully mocked — likely resolve both together).
-- [ ] `apps/customer/src/app/(dashboard)/settings/security/page.tsx`, `security/google-auth/page.tsx`, `security/change-email/page.tsx`, `security/change-password/page.tsx` — same orphan pattern; the live flows use modals instead. Same decision as above.
+- [?] `apps/customer/src/app/(auth)/verify-2fa/page.tsx` — fully built, posts to a real API, but nothing links to it (`login.tsx:55` redirects to `/verify-otp?flow=login` instead). **Decision needed:** which page is canonical — keep `verify-2fa` (dedicated 2FA page, currently unreachable) and redirect login to it, or keep `verify-otp?flow=login` (already wired) and retire `verify-2fa`? Ties into Module D's 2FA build-vs-remove decision.
+- [x] `apps/customer/src/middleware.ts:70-109` — resolved during B1/B2 work. On direct re-check of the live file, `/markets` and `/request` were **already** in `protectedPaths` (the original finding was inaccurate on this point) — only `/referrals` was genuinely missing (added) and `/verify-2fa` was missing from `publicPaths` (added, mirroring `/verify-otp`'s pending-token pattern). See ledger E-10/E-11.
+- [x] `apps/customer/src/middleware.ts:70-83` — removed dead `/change-password`, `/auth/callback` entries. See ledger E-11.
+- [?] `apps/customer/src/app/(dashboard)/settings/page.tsx` — still open. **Decision needed:** make `/settings` a real router to the dedicated sub-pages, or delete the sub-pages and keep the inline version canonical (the inline version is also fully mocked — Module C finding — likely resolve both together).
+- [?] `apps/customer/src/app/(dashboard)/settings/security/page.tsx` + 3 sub-pages — still open, same decision as above.
 - [ ] `apps/customer/src/app/(dashboard)/identity-verification/verify/page.tsx` — orphan; the main page's upload buttons open a native file picker directly. Delete if truly unused.
 - [ ] `apps/customer/src/app/(dashboard)/markets/page.tsx` — not in `sidebar.tsx`'s nav array, zero inbound links. Add a nav entry or remove the page.
-- [ ] `apps/customer/src/app/(dashboard)/request/page.tsx` — intentionally hidden from the sidebar ("requires own crypto license") but the route is still live and unauthenticated-reachable. Either gate it server-side (matching the intent of hiding it) or confirm it's fine as a soft-hidden route.
+- [x] `apps/customer/src/app/(dashboard)/request/page.tsx` — re-checked: already in `protectedPaths` (confirmed above), so it is **not** actually unauthenticated-reachable — the original finding was inaccurate on this point too. Its sidebar omission is already deliberately documented in `sidebar.tsx:17` ("hidden — requires own crypto license (post-Quidax)"). No action needed.
 - [ ] `apps/customer/src/app/(marketing)/about/page.tsx:206-210` — "View open roles" CTA points at `/contact` instead of `/careers`; fix the href.
 - [ ] `apps/customer/src/app/page.tsx:459` vs `apps/customer/src/middleware.ts:105` — homepage "Talk to us" CTA points at `/support`, which is a protected route — an anonymous marketing visitor clicking it gets redirected to `/login` instead of reaching any help/contact content. Point it at `/contact` or make a public support-intake path.
 
