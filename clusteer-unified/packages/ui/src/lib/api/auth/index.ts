@@ -54,15 +54,6 @@ export async function changePassword(payload: ChangePasswordFormData) {
 	}
 }
 
-export async function verifyOTP(payload: { username: string; otp: string }) {
-	try {
-		const res = await axios.post("/api/auth/verify-otp", payload);
-		return res.data;
-	} catch (error) {
-		throw error as AxiosError;
-	}
-}
-
 export async function resendOTP(payload: { email: string }) {
 	try {
 		const res = await apiClient.post("/user/send-email-otp", payload);
