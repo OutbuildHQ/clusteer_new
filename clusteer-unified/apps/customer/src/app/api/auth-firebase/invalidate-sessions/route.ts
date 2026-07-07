@@ -24,14 +24,21 @@ export async function POST(request: NextRequest) {
 			await revokeUserSessions(user.uid);
 		}
 
+		// Also clear the Spring bridge cookie: it's now stale (Spring's own
+		// password hash is untouched by a Firebase-only reset — see the Module H
+		// auth-bridge finding in the RRR doc for why that can't be fixed here),
+		// so keeping it around would let this browser make Spring calls under a
+		// token whose underlying credential no longer matches Firebase's.
 		const response = NextResponse.json({ status: true });
 		response.cookies.delete("auth_token");
+		response.cookies.delete("spring_auth_token");
 		return response;
 	} catch (error) {
 		console.error("Invalidate sessions error:", error);
-		// Best-effort — still clear this browser's cookie even if revocation failed.
+		// Best-effort — still clear this browser's cookies even if revocation failed.
 		const response = NextResponse.json({ status: false, message: "Failed to invalidate sessions" }, { status: 500 });
 		response.cookies.delete("auth_token");
+		response.cookies.delete("spring_auth_token");
 		return response;
 	}
 }
