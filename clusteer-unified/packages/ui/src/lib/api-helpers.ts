@@ -31,7 +31,10 @@ export function getUserIdFromToken(token: string): string | null {
  */
 export function getAuthFromRequest(request: Request): { userId: string; token: string } | null {
 	const cookieHeader = request.headers.get("cookie") || "";
-	const match = cookieHeader.match(/auth_token=([^;]+)/);
+	// Anchored so this only matches the actual auth_token cookie, not any
+	// other cookie whose name happens to end with "auth_token" (a real
+	// collision this project hit once already — see spring-boot-server.ts).
+	const match = cookieHeader.match(/(?:^|;\s*)auth_token=([^;]+)/);
 	if (!match) return null;
 
 	const token = match[1];

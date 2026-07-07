@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { loginWithFirebase } from "@/lib/auth-firebase";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limiter";
 import { isFirebaseConfigured } from "@/lib/firebase";
-import { springLogin } from "@/lib/spring-boot-server";
+import {
+  springLogin,
+  getSpringTokenFromRequest,
+  isSpringBridgeBlocked,
+  SPRING_SESSION_COOKIE,
+  SPRING_BRIDGE_BLOCKED_COOKIE,
+} from "@/lib/spring-boot-server";
 
 export async function POST(request: NextRequest) {
   if (!isFirebaseConfigured) {
@@ -61,23 +67,48 @@ export async function POST(request: NextRequest) {
     // passes its JwtAuthenticationFilter — a Firebase ID token never will.
     // Best-effort and non-fatal: a user with no (or out-of-sync) Spring
     // account still gets a normal Firebase session; they just can't reach
-    // Spring-backed features until reconciled. Never retried — Spring
-    // deactivates an account after 3 failed login attempts.
-    try {
-      const springResult = await springLogin(email, password);
-      if (springResult.ok) {
-        response.cookies.set("spring_auth_token", springResult.accessToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 60 * 60 * 24 * 30, // matches Spring's own 30-day token expiry
-          path: "/",
-        });
-      } else {
-        console.warn(`[login] Spring auth bridge failed for ${email}: ${springResult.reason}`);
+    // Spring-backed features until reconciled.
+    //
+    // Only attempted when there's a reason to: skip entirely if this browser
+    // already has a live Spring session (auth_token expires hourly and forces
+    // frequent re-logins — re-calling springLogin on every single one would
+    // be both wasteful and, more importantly, dangerous, see below) or if a
+    // prior login already recorded a real rejection from Spring. Spring
+    // deactivates an account after 3 failed login attempts with no automatic
+    // reset — if this ran unconditionally on every login, any user whose
+    // Spring-side password has drifted out of sync with Firebase (e.g. after
+    // a Firebase-only password reset — Spring has no way to be told about
+    // that today) would rack up one failed Spring attempt per re-login and
+    // eventually get their Spring account locked purely by continuing to use
+    // the app normally. A "rejected" result is therefore recorded and never
+    // auto-retried; only a genuinely transient failure (network/parse error)
+    // is safe to retry on a later login.
+    if (!getSpringTokenFromRequest(request) && !isSpringBridgeBlocked(request)) {
+      try {
+        const springResult = await springLogin(email, password);
+        if (springResult.ok) {
+          response.cookies.set(SPRING_SESSION_COOKIE, springResult.accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 60 * 60 * 24 * 30, // matches Spring's own 30-day token expiry
+            path: "/",
+          });
+        } else {
+          console.warn(`[login] Spring auth bridge failed for ${email}: ${springResult.reason}`);
+          if (springResult.reason === "rejected") {
+            response.cookies.set(SPRING_BRIDGE_BLOCKED_COOKIE, "1", {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: "lax",
+              maxAge: 60 * 60 * 24 * 30,
+              path: "/",
+            });
+          }
+        }
+      } catch (error) {
+        console.error("[login] Spring auth bridge threw:", error);
       }
-    } catch (error) {
-      console.error("[login] Spring auth bridge threw:", error);
     }
 
     return response;
