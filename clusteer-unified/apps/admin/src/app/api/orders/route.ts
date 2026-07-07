@@ -27,9 +27,9 @@ export async function GET(request: NextRequest) {
 
     const springUrl = `${SPRING_BASE}/v1/order/all?${params.toString()}`;
 
-    const cookieHeader = request.headers.get("cookie") || "";
-    const tokenMatch = cookieHeader.match(/admin_token=([^;]+)/);
-    const token = tokenMatch ? tokenMatch[1] : "";
+    // NextRequest's own cookie store matches by exact name — safe by
+    // construction, unlike a hand-rolled regex over the raw header.
+    const token = request.cookies.get("admin_token")?.value ?? "";
 
     const res = await fetch(springUrl, {
       headers: {

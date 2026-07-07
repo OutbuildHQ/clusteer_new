@@ -9,10 +9,13 @@ import { requirePermission } from "@/lib/admin-auth";
 
 const SPRING_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
 
+// NextRequest's own cookie store matches by exact name — safe by
+// construction, unlike a hand-rolled regex over the raw header (which a
+// differently-named cookie sharing "admin_token" as a suffix could collide
+// with; see docs/RELEASE_READINESS_REMEDIATION.md's auth-bridge finding for
+// the real instance of this bug class elsewhere in the app).
 function getAdminToken(request: NextRequest): string {
-  const cookieHeader = request.headers.get("cookie") || "";
-  const match = cookieHeader.match(/admin_token=([^;]+)/);
-  return match ? match[1] : "";
+  return request.cookies.get("admin_token")?.value ?? "";
 }
 
 export async function GET(request: NextRequest) {
