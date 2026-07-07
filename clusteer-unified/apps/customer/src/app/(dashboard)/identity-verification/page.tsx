@@ -68,6 +68,7 @@ export default function IdentityVerificationPage() {
 	const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const pendingDocType = useRef<string | null>(null);
+	const docsRef = useRef<HTMLDivElement>(null);
 
 	const handleUpload = useCallback(async (docType: string, file: File) => {
 		setUploadingDoc(docType);
@@ -173,10 +174,12 @@ export default function IdentityVerificationPage() {
 						</div>
 						{!t.current && (
 							<button
-								disabled={t.status === "Verified"}
+								disabled={t.status === "Verified" || t.tier === "Tier 3"}
+								onClick={() => docsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+								title={t.tier === "Tier 3" ? "Coming soon — source of funds verification isn't available yet" : undefined}
 								className="w-full mt-3.5 inline-flex items-center justify-center h-[36px] rounded-[10px] text-[13.5px] font-medium border-none cursor-pointer bg-onyx-900 text-cream dark:bg-cream dark:text-onyx-900 disabled:opacity-50 disabled:pointer-events-none"
 							>
-								{t.status === "Verified" ? "Completed" : t.status === "Pending" ? "Under Review" : "Upgrade"}
+								{t.status === "Verified" ? "Completed" : t.status === "Pending" ? "Under Review" : t.tier === "Tier 3" ? "Coming soon" : "Upgrade"}
 							</button>
 						)}
 					</div>
@@ -184,7 +187,7 @@ export default function IdentityVerificationPage() {
 			</div>
 
 			{/* Verification documents */}
-			<div className="bg-ds-surface border border-ds-line rounded-[14px] overflow-hidden">
+			<div ref={docsRef} className="bg-ds-surface border border-ds-line rounded-[14px] overflow-hidden">
 				<div className="px-5 py-4 border-b border-ds-line">
 					<h3 className="text-[15px] font-semibold text-ds-text m-0">Verification documents</h3>
 				</div>

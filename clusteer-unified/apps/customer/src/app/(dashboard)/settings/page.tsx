@@ -1,9 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ChevronRight, Plus, Landmark, CreditCard } from "lucide-react";
+import { Check, ChevronRight, Plus, Landmark, CreditCard, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { EmptyState } from "@/components/primitives/empty-state";
+
+interface ApiKey {
+	id: number;
+	name: string;
+	keyPrefix: string;
+	permissions: string;
+	active: boolean;
+	dateCreated?: string;
+}
 
 type Tab = "Profile" | "Security" | "Limits" | "Payment methods" | "Notifications" | "Privacy" | "API keys";
 const TABS: Tab[] = ["Profile", "Security", "Limits", "Payment methods", "Notifications", "Privacy", "API keys"];
@@ -31,6 +41,30 @@ export default function SettingsPage() {
 	const [tab, setTab] = useState<Tab>("Profile");
 	const [channels, setChannels] = useState<Record<string, boolean>>({ Email: true, Push: true, SMS: true });
 	const [privacy, setPrivacy] = useState<Record<string, boolean>>({ "Hide balances by default": true, "Allow analytics": true, "Receive product updates": true, "Allow marketing": false });
+
+	const queryClient = useQueryClient();
+	const { data: apiKeys, isLoading: apiKeysLoading } = useQuery({
+		queryKey: ["api-keys"],
+		queryFn: async (): Promise<ApiKey[]> => {
+			const res = await fetch("/api/user/api-keys");
+			const json = await res.json();
+			if (!res.ok) throw new Error(json.message || "Failed to load API keys");
+			return json.data ?? [];
+		},
+		enabled: tab === "API keys",
+	});
+	const revokeKey = useMutation({
+		mutationFn: async (id: number) => {
+			const res = await fetch(`/api/user/api-keys/${id}`, { method: "DELETE" });
+			const json = await res.json();
+			if (!res.ok) throw new Error(json.message || "Failed to revoke key");
+		},
+		onSuccess: () => {
+			toast.success("API key revoked");
+			queryClient.invalidateQueries({ queryKey: ["api-keys"] });
+		},
+		onError: (err: Error) => toast.error(err.message),
+	});
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -214,17 +248,53 @@ export default function SettingsPage() {
 
 					{tab === "API keys" && (
 						<div className="bg-ds-surface border border-ds-line rounded-[14px] overflow-hidden">
-							<div className="px-5 py-4 border-b border-ds-line">
+							<div className="px-5 py-4 border-b border-ds-line flex items-center justify-between">
 								<h3 className="text-[15px] font-semibold text-ds-text m-0">API keys</h3>
+								{!apiKeysLoading && (apiKeys?.length ?? 0) > 0 && (
+									<button
+										onClick={() => window.openFlow("createApiKey")}
+										className="inline-flex items-center h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium border border-ds-line bg-transparent text-ds-text cursor-pointer"
+									>
+										Create new key
+									</button>
+								)}
 							</div>
 							<div className="p-5">
-								<EmptyState
-									icon={Plus}
-									variant="branded"
-									title="No API keys yet"
-									description="Create an API key to integrate Clusteer into your applications."
-									action={{ label: "Create new key", onClick: () => window.openFlow("createApiKey") }}
-								/>
+								{apiKeysLoading ? (
+									<p className="text-[13px] text-ds-text-2">Loading…</p>
+								) : (apiKeys?.length ?? 0) === 0 ? (
+									<EmptyState
+										icon={Plus}
+										variant="branded"
+										title="No API keys yet"
+										description="Create an API key to integrate Clusteer into your applications."
+										action={{ label: "Create new key", onClick: () => window.openFlow("createApiKey") }}
+									/>
+								) : (
+									<div className="flex flex-col gap-3">
+										{apiKeys!.map((k) => {
+											const perms = (() => {
+												try { return JSON.parse(k.permissions); } catch { return {}; }
+											})();
+											return (
+												<div key={k.id} className="flex items-center justify-between p-3.5 rounded-[10px] border border-ds-line">
+													<div>
+														<div className="font-semibold text-[13px] text-ds-text">{k.name}</div>
+														<div className="tabular-nums text-[12px] mt-0.5 font-mono text-ds-text-3">{k.keyPrefix}••••••••</div>
+														<div className="text-[11.5px] mt-1 text-ds-text-3">{perms.trade ? "Read + trade" : "Read-only"}</div>
+													</div>
+													<button
+														onClick={() => revokeKey.mutate(k.id)}
+														disabled={revokeKey.isPending}
+														className="inline-flex items-center gap-1.5 h-[30px] px-2.5 rounded-[10px] text-[12.5px] font-medium border border-ds-line bg-transparent text-down cursor-pointer disabled:opacity-60"
+													>
+														<Trash2 size={13} /> Revoke
+													</button>
+												</div>
+											);
+										})}
+									</div>
+								)}
 							</div>
 						</div>
 					)}

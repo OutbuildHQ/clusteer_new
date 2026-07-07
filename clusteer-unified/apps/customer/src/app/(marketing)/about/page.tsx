@@ -204,7 +204,7 @@ export default function AboutPage() {
 						</p>
 					</div>
 					<Button asChild className="btn-shine shadow-brutal-sm shrink-0">
-						<Link href="/contact">
+						<Link href="/careers">
 							View open roles <ArrowRight className="size-4" />
 						</Link>
 					</Button>

@@ -454,7 +454,7 @@ export default function Home() {
 									<Link href="/early-access">Join the waitlist <ArrowRight className="size-5" /></Link>
 								</Button>
 								<Button size="xl" variant="outline" asChild className="border-2 border-custom-black w-full sm:w-auto text-base sm:text-[17px]">
-									<Link href="/support">Talk to us</Link>
+									<Link href="/contact">Talk to us</Link>
 								</Button>
 							</div>
 						</div>

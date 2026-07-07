@@ -6,6 +6,7 @@ import { NewTicketFlow } from "./flows/new-ticket";
 import { ChangePasswordFlow } from "./flows/change-password";
 import { ChangeEmailFlow } from "./flows/change-email";
 import { AddBankFlow } from "./flows/add-bank";
+import { CreateApiKeyFlow } from "./flows/create-api-key";
 import { OrderDetailDrawer } from "./flows/order-detail";
 import { ConfirmDialog } from "@/components/flows/confirm-dialog";
 import { NotificationDetailFlow } from "./flows/notification-detail";
@@ -21,6 +22,7 @@ const MODAL_FLOWS: Record<string, React.ComponentType<any>> = {
 	changePassword: ChangePasswordFlow,
 	changeEmail: ChangeEmailFlow,
 	addBank: AddBankFlow,
+	createApiKey: CreateApiKeyFlow,
 	confirm: ConfirmDialog,
 	notifDetail: NotificationDetailFlow,
 };
