@@ -7,8 +7,13 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 	if (!auth) return NextResponse.json({ status: false, message: "Unauthorized" }, { status: 401 });
 
 	const { id } = await params;
-	const res = await springFetch(`/user/api-keys/${id}`, { method: "DELETE" }, auth.token);
-	const data = await res.json();
-	if (!res.ok) return NextResponse.json({ status: false, message: data.message || "Failed" }, { status: res.status });
-	return NextResponse.json({ status: true, message: data.message });
+	try {
+		const res = await springFetch(`/user/api-keys/${id}`, { method: "DELETE" }, auth.token);
+		const data = await res.json();
+		if (!res.ok) return NextResponse.json({ status: false, message: data.message || "Failed" }, { status: res.status });
+		return NextResponse.json({ status: true, message: data.message });
+	} catch (error) {
+		console.error("API key revoke error:", error);
+		return NextResponse.json({ status: false, message: "Failed to revoke API key" }, { status: 502 });
+	}
 }
