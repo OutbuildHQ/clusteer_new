@@ -345,7 +345,7 @@ Independent adversarial audit of `953a6fd` (agent had no knowledge of the implem
 ### Decisions needed
 
 - [?] **Legal placeholders** (`terms-of-service/page.tsx`) — the liability cap (`₦____`) and the dispute-resolution clause note ("Choose one and confirm with counsel") are not something engineering should fill in unilaterally. Route to counsel/the project owner for the actual values, then replace.
-- [?] **Analytics cookies** (`cookie-policy/page.tsx:221-234`) — the page claims `_ga`/`_gid` (Google Analytics) and `_fbp` (Meta Pixel) are used, but no such scripts exist anywhere in the codebase. Decide: implement the tracking for real (consent-gated, per the existing `ConsentScripts` scaffolding), or remove the claim from the cookie policy. Do not leave a legal document asserting data collection that isn't happening (or, worse, ship the claim and then quietly add tracking later without updating consent flows).
+- [?] **Analytics cookies** (`cookie-policy/page.tsx:221-234`) — **decision (2026-07-07): implement for real, not remove the claim.** Re-checked before doing anything: `packages/ui/src/components/app/consent-scripts.tsx` (`ConsentScripts`, mounted live in `apps/customer/src/app/layout.tsx:96`) turns out to already be a complete, correct implementation — it reads the same `clusteer-cookie-consent` state the `CookieConsent` banner writes, loads GA4's `gtag.js` only after analytics consent and Meta Pixel only after marketing consent, and reacts live to consent changes via the `clusteer-consent-change` event. This isn't scaffolding, it's finished — the original finding's "no such scripts exist anywhere in the codebase" was already stale when written (this file already existed). **What's actually missing is real credentials, not code:** `NEXT_PUBLIC_GA_ID`/`NEXT_PUBLIC_META_PIXEL_ID` are unset (`apps/customer/apphosting.yaml:111-113` has a placeholder comment, no values) — both functions no-op without them (`if (gaLoaded || !GA_ID) return;`). This needs a real Google Analytics 4 property and/or Meta Pixel, which only the project owner can create. Confirmed no GA4/Meta accounts exist yet (2026-07-07) — holding here; add the two env vars to `apphosting.yaml` the moment real IDs exist and the cookie-policy's claim becomes true with zero further code changes.
 
 ### Tasks (SAFE-TO-FIX) — RESOLVED (2026-07-03), rate badges upgraded to genuinely live (2026-07-03, follow-up)
 
@@ -519,7 +519,7 @@ Every finding from the audit, in one place, for a final cross-check that nothing
 | G-12 | G | HIGH | `footer.tsx:21-24` | hardcoded "operational" badge | [ ] |
 | G-13 | G | LOW | `footer.tsx:196` | fake version string | [ ] |
 | G-14 | G | LOW | `footer.tsx:30,44,64,78` | dead social links | [ ] |
-| G-15 | G | HIGH | `cookie-policy/page.tsx:221-234` | fabricated GA/Meta Pixel claim | [?] |
+| G-15 | G | HIGH | `cookie-policy/page.tsx:221-234` | fabricated GA/Meta Pixel claim | [?] decided 2026-07-07: implement for real — infra already complete (`ConsentScripts`), blocked only on real GA4/Meta Pixel IDs the project owner doesn't have yet |
 | G-16 | G | LOW | 4 legal pages | empty `<h2>` broken markup | [ ] |
 | G-17 | G | LOW | `page.tsx:11-13` | 3 dead imports | [ ] |
 | G-18 | G | MED | `help/page.tsx` vs `contact/page.tsx` | contradictory response-time claims | [ ] |
