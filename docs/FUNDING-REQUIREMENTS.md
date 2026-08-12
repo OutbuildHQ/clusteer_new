@@ -49,9 +49,15 @@ That gap is not hidden in this document — it is precisely what the raise funds
 
 **3.1 Quidax.** Quidax holds Nigeria's first SEC Digital Assets Exchange licence (provisional
 licence presented 29 August 2024) and in July 2026 extended its stablecoin infrastructure to
-21+ countries and 14 currencies, serving 5,000+ startups and enterprises. A partnership on
-those rails means Clusteer can operate as a **non-custodial distribution and experience layer**
-over a licensed exchange, rather than as an unlicensed exchange of record.
+21+ countries and 14 currencies, serving 5,000+ startups and enterprises. Building on those
+rails would let Clusteer operate as a **non-custodial distribution and experience layer** over a
+licensed exchange, rather than as an unlicensed exchange of record.
+
+*Status as at August 2026:* Quidax has **granted Clusteer access to their API widget**. The
+**SLA is not yet signed**. Access is a technical permission; it is not a contractual right, it
+carries no service commitments, no notice period, and — critically — **no stated position on
+whose licence covers the transaction**. Until the SLA is executed, the regulatory argument in
+§3.2 is a plan, not a fact. See `QUIDAX-SLA-CHECKLIST.md` for the clauses that must be in it.
 
 This is the single most important economic fact in this memo, because of what it avoids:
 
@@ -122,7 +128,10 @@ Capital releases against evidence, not calendar.
 Finish and harden the platform; migrate custody to Quidax; pass a security audit; obtain a
 written legal opinion; soft-launch.
 
-**Gate to Tranche 2 — all four required:**
+**Gate to Tranche 2 — all five required:**
+- **Executed Quidax SLA** carrying, at minimum, the five deal-breaker clauses in
+  `QUIDAX-SLA-CHECKLIST.md` — regulated entity of record, termination notice, customer
+  non-solicit, service credits, and fixed commercial terms
 - Written legal opinion from a Tier-1 Lagos firm confirming the non-custodial model is
   permissible under Quidax's licence without separate SEC registration
 - Independent security audit passed, all critical and high findings closed
@@ -275,10 +284,19 @@ wallet private keys in the database. That is custody, it is the exact thing §3 
 does not do, and it is also the largest security liability in the stack. Eliminating self-custody
 is a Tranche 1 gate, not a nice-to-have.
 
-**9.4 Channel conflict with Quidax.** Quidax runs its own retail app and its own enterprise
+**9.4 The Quidax dependency is contractually unsecured.** Today Clusteer has API widget access
+and no signed SLA. That means: no committed uptime, no settlement-time guarantee, no notice
+period before access is withdrawn or repriced, no service credits, and no written statement of
+whose licence covers the transaction. The entire business would sit on a permission that can be
+revoked by email.
+
+Layered on top is channel conflict: Quidax runs its own retail app and its own enterprise
 stablecoin business. Today's partner is tomorrow's competitor, and Clusteer's merchants would be
-visible to them. The agreement needs a non-solicit and, ideally, segment exclusivity. If it has
-neither, that is a real weakness the investor is entitled to know about.
+visible to them. The agreement needs a customer non-solicit and, ideally, segment exclusivity.
+
+**Signing the SLA is the highest-value action available before this raise closes**, and it costs
+nothing but time. An investor who asks "show me the Quidax agreement" and is handed API
+credentials will draw an unflattering conclusion — about the deal and about the telling.
 
 **9.5 Naira and float exposure.** Float held in Naira devalues. Mitigation: hold float
 predominantly in USDT and convert on demand; never carry an overnight Naira position larger
@@ -301,9 +319,10 @@ defensible wedge is merchant service and settlement speed, not price — do not 
 
 Nine gaps. Every one changes a number in this document.
 
-1. **The Quidax agreement itself.** Liquidity only, or custody and settlement too? What is
-   their revenue share? Volume commitments or minimums? Exclusivity? Termination notice?
-   Without this, the 0.9% gross take rate in §7.1 is a guess.
+1. **The signed Quidax SLA** — currently API widget access only. Liquidity only, or custody and
+   settlement too? Their revenue share? Volume minimums? Exclusivity? Termination notice?
+   Without it the 0.9% gross take rate in §7.1 is a guess, and §3.2 is an assumption.
+   Working document: `QUIDAX-SLA-CHECKLIST.md`.
 2. **The KYC SLA.** Cost per BVN/NIN verification, monthly minimums, contract term.
 3. **Current cash position and monthly burn.**
 4. **Cap table** — the split between the two founders, and anything already promised to anyone.
