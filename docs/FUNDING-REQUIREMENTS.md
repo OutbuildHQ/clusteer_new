@@ -53,11 +53,20 @@ licence presented 29 August 2024) and in July 2026 extended its stablecoin infra
 rails would let Clusteer operate as a **non-custodial distribution and experience layer** over a
 licensed exchange, rather than as an unlicensed exchange of record.
 
-*Status as at August 2026:* Quidax has **granted Clusteer access to their API widget**. The
-**SLA is not yet signed**. Access is a technical permission; it is not a contractual right, it
-carries no service commitments, no notice period, and — critically — **no stated position on
-whose licence covers the transaction**. Until the SLA is executed, the regulatory argument in
-§3.2 is a plan, not a fact. See `QUIDAX-SLA-CHECKLIST.md` for the clauses that must be in it.
+*Status as at August 2026:* Quidax has **granted Clusteer access to their API widget**, which is
+flexible enough for Clusteer to **quote its own rate** — so the spread-capture economics assumed
+throughout this model hold, and the float requirement is real. The **SLA is not yet signed**, and
+the widget is understood to be an **interim integration** pending a successor arrangement.
+
+Three consequences, all material:
+
+1. Access is a technical permission, not a contractual right — no service commitments, no notice
+   period, no repricing protection.
+2. Setting your own price and capturing the spread is *principal-like* behaviour. It strengthens
+   the economics and **weakens** the "we are only a distribution layer" argument in §3.2. The
+   legal opinion becomes more necessary, not less. See `QUIDAX-SLA-CHECKLIST.md` §2.
+3. Because the widget is interim, any SLA scoped only to the widget expires in usefulness exactly
+   when volume is highest. The agreement must cover the **end-state integration**.
 
 This is the single most important economic fact in this memo, because of what it avoids:
 

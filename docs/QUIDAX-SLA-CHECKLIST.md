@@ -17,38 +17,87 @@ Signing this is the highest-value, lowest-cost action available before the raise
 
 ---
 
-## 1. Resolve this fork first — it changes everything
+## 1. Where the economics landed — and what is still open
 
-"Widget access" is ambiguous, and the two things it could mean are different businesses. Before
-negotiating anything, establish in writing **which one you have been granted.**
+The widget permits Clusteer to **quote its own rate**. That settles the commercial question in
+Clusteer's favour:
 
-| | **Model A — Embedded widget** | **Model B — API integration** |
+| | **Referral model** | **What Clusteer has** |
 |---|---|---|
-| Who owns the customer | Quidax | **Clusteer** |
-| Who does KYC | Quidax | Clusteer (via your KYC provider) |
-| Who holds custody | Quidax | Quidax |
 | Who sets the rate shown | Quidax | **Clusteer** |
-| Whose brand is in the flow | Quidax's, or co-branded | Clusteer's |
-| Clusteer's economics | Referral commission, ~0.1–0.4% | **Spread over wholesale, ~0.9%** |
+| Economics | Commission, ~0.1–0.4% | **Spread over wholesale, ~0.9%** |
 | Float required | None — Quidax settles | **$80k, as budgeted** |
-| Regulatory exposure | Minimal; you're a marketing channel | Grey — needs the legal opinion |
-| What Clusteer is worth | A lead-gen channel | A business |
+| What Clusteer is worth | A lead-gen channel | **A business** |
 
-**The funding plan assumes Model B.** If what you have been granted is Model A, the $250k ask is
-wrong in both directions: you need less money, and you have much less company.
+So the funding model stands: the 0.9% gross take rate and the $80k settlement float are both
+correctly sized. Good news, and worth telling the investor plainly.
 
-There is also **Model C** — Clusteer holds custody and is the exchange of record, with Quidax as
-liquidity only. That is what the current codebase actually does, and it requires Clusteer's own
-SEC DAX licence at ₦2bn paid-up capital. It is not viable. Migrating off it is a Tranche 1 gate.
+**The regulatory question is not settled, and rate flexibility made it harder.**
+
+Regulators test economic substance, not labels. Setting your own price and capturing the spread
+is what a **principal** does — a dealer trading on its own account — not what an agent or
+introducer does. The factors now point in two directions:
+
+| Points toward *Clusteer is the VASP* | Points toward *Quidax is the VASP* |
+|---|---|
+| Clusteer sets the price | Quidax holds custody |
+| Clusteer captures the spread | Quidax executes and settles |
+| Clusteer owns the customer relationship | Quidax is the licensed counterparty |
+| Customer contracts on Clusteer's terms | |
+
+Custody is the strongest thing on the right-hand side, which makes it the load-bearing element
+of the whole argument. Two things follow:
+
+- **Never take custody.** The moment Clusteer holds client assets, every factor points one way
+  and the licence question answers itself — at ₦2bn. The Django engine currently creates and
+  holds wallet private keys in the database. That must be gone. It is a Tranche 1 gate.
+- **The legal opinion is now more necessary, not less.** Do not let the rate flexibility be read
+  as good news for the licensing position. It is good news for revenue and a complication for
+  compliance, and your lawyer needs to see the actual flow of funds and the actual customer
+  contract to advise.
 
 **Ask Quidax directly, in writing:** *"For transactions originated through Clusteer, which entity
 is the exchange of record and the regulated VASP, and under whose licence is the activity
-conducted?"* Their answer determines everything downstream. Get it in an email at minimum,
-in the contract ideally.
+conducted?"* Get it in an email at minimum, in the contract ideally. Your lawyer cannot start
+without it.
 
 ---
 
-## 2. The five deal-breakers
+## 1b. The widget is temporary — and that changes what you sign
+
+The widget is an interim integration pending a successor arrangement. The trap is obvious once
+stated: **an SLA scoped to the widget stops being useful at the exact moment you migrate off it**
+— which will be when volume is highest, customer obligations are real, and your negotiating
+position is weakest because you are already committed.
+
+Three rules follow.
+
+1. **Scope the agreement to the relationship, not the integration.** Define Quidax as the
+   liquidity, execution and custody provider for Clusteer, and make the widget one *schedule*
+   under it. The successor integration becomes another schedule. The commercial terms, the
+   non-solicit, the termination notice and the entity-of-record language all survive the
+   migration.
+2. **Contractually commit the successor.** If the plan is to move to direct API, get Quidax's
+   commitment to provide it — with a timeline — rather than a promise to discuss it later.
+   "We'll sort it out when you're ready" is worth nothing when you are carrying $2m/month.
+3. **Do not let the interim status delay signing.** "It's only temporary" is the most common
+   reason startups operate for two years with no contract. Temporary integrations become
+   permanent, and the unsigned period is exactly when you are most exposed.
+
+**Before finalising, establish the end state,** because it determines whether the SLA is
+sufficient or whether a much larger problem is being deferred:
+
+- **Direct Quidax API, still their licence** — same analysis, same SLA, just a new schedule.
+- **Multiple liquidity providers with Quidax as one** — you become an aggregator/broker; the
+  entity-of-record argument gets harder, and each provider needs its own agreement.
+- **Own custody and own settlement** — this is Model C. It requires Clusteer's own SEC DAX
+  licence at **₦2bn paid-up capital**, and the funding plan in `FUNDING-REQUIREMENTS.md` does not
+  cover it. If this is the intended destination, the raise is undersized by an order of magnitude
+  and the strategy needs rethinking before the investor conversation, not after.
+
+---
+
+## 2. The six deal-breakers
 
 If you get nothing else, get these. Each one is individually capable of making the company
 uninvestable or worthless.
@@ -61,28 +110,36 @@ distribution partner operating under it.
 > Without this, your lawyer cannot write the legal opinion, and without the opinion your
 > Tranche 1 gate fails and the raise stalls.
 
-### 2 · Termination notice of at least 90 days, with transition assistance
+### 2 · Scope that survives the migration off the widget
+The agreement governs the **relationship** — Quidax as liquidity, execution and custody provider
+— with the widget as one schedule beneath it, and a committed timeline for the successor
+integration as another. Not an agreement about a widget.
+
+> The widget is interim. An agreement scoped to it expires in usefulness precisely when volume
+> is highest and your leverage is lowest.
+
+### 3 · Termination notice of at least 90 days, with transition assistance
 Termination for convenience on 30 days' notice or less is fatal. Target **90–180 days**, plus a
 **60–90 day wind-down period** in which Quidax continues serving existing customers while you
 migrate.
 
 > An investor will not fund a company whose core dependency can vanish inside a month.
 
-### 3 · Customer non-solicit
+### 4 · Customer non-solicit
 Quidax will not directly solicit merchants or users introduced through Clusteer, for the term
 plus 12 months. Push for segment exclusivity too — you likely won't get it, but ask.
 
 > Quidax runs a competing retail app and a competing enterprise stablecoin business, and the
 > integration shows them every merchant you acquire.
 
-### 4 · Fixed commercial terms with a repricing notice period
+### 5 · Fixed commercial terms with a repricing notice period
 Their take rate in writing, tiered by volume, with a minimum **60 days' notice** before any
 change. No unilateral repricing.
 
 > Your entire margin is the difference between their rate and yours. If they can move theirs on
 > a week's notice, you have no business model — you have their business model.
 
-### 5 · Service credits tied to the service levels
+### 6 · Service credits tied to the service levels
 Uptime, settlement time, and support response times with **financial remedies** attached.
 
 > An SLA with commitments but no remedies is a brochure. Credits are what make the numbers real.
@@ -160,7 +217,9 @@ Work through these with your lawyer. "Target" is what to open with.
 
 | # | Clause | Target |
 |---|---|---|
-| 39 | Sandbox / test environment access | Permanent |
+| 39 | **Successor integration** — committed availability, spec and timeline | Named in the agreement as a schedule, not a future conversation |
+| 39a | Migration support between integrations | Quidax-supported, no service gap, no repricing on migration |
+| 39b | Sandbox / test environment access | Permanent |
 | 40 | API versioning and deprecation notice | ≥ 90 days |
 | 41 | Branding and white-labelling | Clusteer-branded flow |
 | 42 | Governing law and dispute resolution | Nigerian law, Lagos arbitration |
@@ -177,7 +236,7 @@ redline a bespoke contract, and trying will cost you months.
 1. **Ask for their standard partner agreement and SLA schedule.** Whoever drafts, controls — but
    with a counterparty this size, asking for their paper is faster than proposing yours.
 2. **Accept the standard terms.** Do not fight clauses that do not matter.
-3. **Negotiate a short addendum covering only the five deal-breakers.** A one-page addendum gets
+3. **Negotiate a short addendum covering only the six deal-breakers.** A one-page addendum gets
    signed. A 40-clause redline gets forwarded to someone's legal queue and dies there.
 4. **Escalate to a named partnerships or commercial contact** — not the support desk, and not
    whoever gave you the API key. Ask your cofounder who made the introduction to make it again.
@@ -189,10 +248,16 @@ redline a bespoke contract, and trying will cost you months.
    answer from §1, and a copy of their SEC licence. These often arrive by email in days and are
    enough to unblock your lawyer's opinion while the full SLA is in process.
 
-**One thing to avoid:** do not build the Model B integration deeper until you have the
-entity-of-record answer. If it comes back "Quidax is not the entity of record for your
-transactions," you are in Model C, you need your own licence, and the architecture and the
-funding plan both change.
+**Two things to avoid.**
+
+*Do not let "it's temporary" become the reason nothing gets signed.* Interim integrations become
+permanent, and the unsigned window is exactly when the business is most exposed. Sign an
+agreement scoped to the relationship now; add the successor as a schedule later.
+
+*Do not commit further engineering to any end state that involves Clusteer holding custody* until
+you have the entity-of-record answer and the legal opinion. If the destination is own-custody,
+own-settlement, the licence requirement is ₦2bn and the current funding plan does not cover it —
+that has to be known before the investor conversation, not after.
 
 ---
 
@@ -216,9 +281,14 @@ funding plan both change.
 > 2. Your rate card and volume tiers.
 > 3. A copy of your SEC licence and its current standing.
 >
-> On the agreement itself we have a small number of points — notice period on termination, a
-> customer non-solicit, notice before any repricing, and service credits against the SLA. Happy
-> to cover those in a short addendum rather than redlining your standard terms.
+> One structural note: we're live on the widget now but expect to move to a deeper integration
+> as we scale. Rather than paper the widget alone, we'd like the agreement to cover the
+> relationship, with the widget as a schedule and the successor integration added as another when
+> we get there — so we're not renegotiating from scratch mid-flight.
+>
+> Beyond that we have a small number of points — notice period on termination, a customer
+> non-solicit, notice before any repricing, and service credits against the SLA. Happy to cover
+> those in a short addendum rather than redlining your standard terms.
 >
 > Is there a good time this week for a call?
 >
