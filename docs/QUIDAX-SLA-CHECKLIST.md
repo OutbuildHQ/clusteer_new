@@ -97,6 +97,110 @@ sufficient or whether a much larger problem is being deferred:
 
 ---
 
+## 1c. The BVN decision — it should not be driving the architecture
+
+The widget was adopted because Clusteer chose not to implement BVN — ID verification only —
+which meant using Quidax's BVN provider, which activated the widget. The plan is that $250k
+funds an independent BVN provider, unlocking the direct API and full customisation.
+
+Both premises behind that chain need checking, and the conclusion needs re-deriving.
+
+### Premise 1: "BVN is expensive." It is not.
+
+Published Nigerian pricing runs from **₦10 per BVN check** (Monnify) to roughly ₦100–₦300 for a
+full-service provider with biometric matching. Against the raise:
+
+| Users verified | @ ₦10 | @ ₦100 | @ ₦300 |
+|---|---:|---:|---:|
+| 5,000 | ₦50k · $32 | ₦500k · $323 | ₦1.5m · $968 |
+| 20,000 | ₦200k · $129 | ₦2m · $1,290 | ₦6m · $3,871 |
+| 50,000 | ₦500k · $323 | ₦5m · $3,226 | ₦15m · $9,677 |
+
+The realistic cell — 20,000 verified users at ₦100 — is **$1,290, or 0.5% of the raise.** The
+worst cell in the table is under 4%. This already sits inside the ₦300k/month KYC allowance in
+the infrastructure line of `FUNDING-REQUIREMENTS.md`. **BVN cost has never been a real constraint
+on this business, and no architectural decision should have turned on it.**
+
+> **Find out what "expensive" actually meant.** If it was a **minimum monthly commitment** or a
+> prepaid wallet float, that is negotiable and small. If it was **eligibility** — direct NIBSS
+> BVN access generally requires a licensed financial institution or a licensed aggregator, and
+> providers do refuse unlicensed crypto businesses — then **money does not solve it**, and the
+> whole "$250k unlocks our own BVN provider" plan fails on a non-financial constraint. Establish
+> which one it was before building a plan on it.
+
+### Premise 2: "BVN is optional." It is not.
+
+Nigerian VASP obligations require BVN or NIN linkage as part of customer due diligence under the
+SEC framework and CBN AML/CFT guidance. Anonymous or lightly-verified trading is not a supported
+model. Running ID-only verification is not a cost saving — it is **an open compliance gap**, and
+it is the kind of gap that surfaces in exactly two places you do not want it: the legal opinion
+that gates Tranche 1, and an investor's diligence.
+
+So BVN is going in regardless. The only question is who performs it.
+
+### The real trade — and it is not the one it looks like
+
+Moving to direct API with in-house KYC is not a free upgrade. It systematically strips away the
+evidence that Quidax, not Clusteer, is the regulated entity:
+
+| Factor | Today (widget) | After (direct API + own BVN) |
+|---|---|---|
+| Sets the price | Clusteer | Clusteer |
+| Captures the spread | Clusteer | Clusteer |
+| Owns the customer | Clusteer | Clusteer |
+| **Performs customer due diligence** | **Quidax** | **Clusteer** |
+| Holds custody | Quidax | Quidax |
+| **Score** | **3–2 Clusteer** | **4–1 Clusteer** |
+
+Performing CDD is one of the defining functions of an obliged entity under FATF-aligned AML
+regimes. Taking it in-house moves Clusteer materially closer to "you are the VASP, licence
+yourself" — and leaves **custody as the single remaining pillar** of the argument that keeps the
+₦2bn requirement away.
+
+**The widget is not only a technical constraint. Right now it is also a compliance shelter.**
+
+### The way to get both
+
+There is a well-established structure: perform KYC **as outsourced customer due diligence under
+Quidax's AML programme**, rather than as your own obliged-entity function. Clusteer builds and
+runs the flow — native UX, own provider, full customisation, own data — while Quidax remains the
+obliged entity, retains regulatory responsibility, sets the CDD standard, and holds audit and
+oversight rights over how Clusteer executes it.
+
+That is a contractual arrangement, not a technical one, and it must be written into the Quidax
+agreement. Done properly you keep the conversion and the customisation *and* the shelter. Done
+casually — you simply start doing your own KYC and tell Quidax afterwards — you get the
+customisation and lose the shelter.
+
+### Correct sequencing
+
+The plan as stated is *fund → buy BVN → move to API*. That risks spending the money on the thing
+that undermines the reason the money was raisable. Reorder it:
+
+1. **Scope the legal opinion to cover both configurations** — widget-with-Quidax-KYC *and* direct
+   API with outsourced CDD. Same lawyer, same engagement, marginal extra cost. This happens in
+   Tranche 1 regardless.
+2. **Get the outsourced-CDD arrangement into the Quidax agreement** while you are negotiating it
+   anyway. It costs a clause, not a renegotiation.
+3. **Then migrate**, knowing the position holds.
+
+### And do it for the right reason
+
+The case for direct API is real, but BVN cost is not it. The reasons that justify the migration:
+
+- **Conversion.** A handoff to an embedded third-party flow typically leaks a meaningful share of
+  signups at the KYC step. At $2m/month volume, a 20% conversion improvement is worth
+  multiples of the entire lifetime BVN bill.
+- **Customer ownership.** Your verification data, your record, reusable across products.
+- **Optionality.** A native integration is a precondition for ever adding a second liquidity
+  provider.
+- **Brand.** Your flow, not a Quidax-shaped hole in the middle of it.
+
+Argue it on those, budget BVN as the rounding error it is, and stop letting a $1,300 line item
+determine the shape of the company.
+
+---
+
 ## 2. The six deal-breakers
 
 If you get nothing else, get these. Each one is individually capable of making the company
@@ -170,6 +274,8 @@ Work through these with your lawyer. "Target" is what to open with.
 | 9 | Regulated entity of record *(deal-breaker 1)* | Explicit, per transaction type |
 | 10 | Evidence of Quidax's SEC licence and its current standing | Copy annexed; confirm whether provisional has converted to full |
 | 11 | Who performs and owns KYC/AML | Defined; no gap, no duplication |
+| 11a | **Outsourced CDD arrangement** — Clusteer runs the KYC flow under Quidax's AML programme | Quidax remains the obliged entity; sets the CDD standard; holds audit and oversight rights. Written in *before* you migrate off the widget |
+| 11b | Approved KYC providers and standards | Your provider named and accepted, so the migration does not need re-approval |
 | 12 | Who files suspicious transaction reports to NFIU | Defined |
 | 13 | Sanctions and screening responsibility | Defined; Quidax's Chainalysis coverage extends to your flow |
 | 14 | Regulatory change clause | Renegotiate in good faith, not automatic termination — SEC deadline is 30 June 2027 |

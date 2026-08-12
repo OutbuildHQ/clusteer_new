@@ -142,7 +142,11 @@ written legal opinion; soft-launch.
   `QUIDAX-SLA-CHECKLIST.md` — regulated entity of record, termination notice, customer
   non-solicit, service credits, and fixed commercial terms
 - Written legal opinion from a Tier-1 Lagos firm confirming the non-custodial model is
-  permissible under Quidax's licence without separate SEC registration
+  permissible under Quidax's licence without separate SEC registration — **scoped to cover both
+  the current widget configuration and the intended direct-API configuration with in-house KYC**,
+  so the migration does not invalidate the opinion that unlocked the funding
+- **BVN implemented.** Not optional under Nigerian VASP AML/CFT obligations, and it costs
+  ~0.5% of the raise (see `QUIDAX-SLA-CHECKLIST.md` §1c)
 - Independent security audit passed, all critical and high findings closed
 - Zero self-custody of client assets anywhere in the stack
 - 100+ KYC-verified users and $300,000 cumulative settled volume, zero loss events
@@ -321,6 +325,20 @@ the second problem; the milestones address the first.
 
 **9.8 Competition.** Binance P2P, Yellow Card, Breet, Busha and Quidax itself. Clusteer's
 defensible wedge is merchant service and settlement speed, not price — do not pitch it on price.
+
+**9.9 The planned KYC migration cuts against the regulatory thesis.** The intent is to fund an
+independent BVN provider and move from the widget to Quidax's direct API. The business case is
+sound — conversion, customer ownership, optionality — but bringing customer due diligence
+in-house removes one of only two factors supporting the argument that Quidax, not Clusteer, is
+the regulated entity, leaving custody as the sole remaining pillar. It must be structured as
+**outsourced CDD under Quidax's AML programme**, written into the agreement before migration, and
+covered by the legal opinion. Sequenced wrongly, the raise funds the change that invalidates the
+basis on which it was raised. Full analysis in `QUIDAX-SLA-CHECKLIST.md` §1c.
+
+Note also that BVN cost is **not** a material line item — roughly $1,300 for 20,000 verified
+users, already inside the infrastructure budget. It should not be presented to the investor as a
+reason funding is needed, because a diligent investor will price it in thirty seconds and wonder
+what else is mis-sized.
 
 ---
 
