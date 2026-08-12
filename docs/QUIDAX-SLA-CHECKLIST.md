@@ -97,107 +97,110 @@ sufficient or whether a much larger problem is being deferred:
 
 ---
 
-## 1c. The BVN decision — it should not be driving the architecture
+## 1c. The BVN dependency chain
 
-The widget was adopted because Clusteer chose not to implement BVN — ID verification only —
-which meant using Quidax's BVN provider, which activated the widget. The plan is that $250k
-funds an independent BVN provider, unlocking the direct API and full customisation.
+**Confirmed with the backend cofounder:** the constraint was never price. It was **eligibility**.
 
-Both premises behind that chain need checking, and the conclusion needs re-deriving.
+QoreID — the KYC provider Clusteer has already signed an SLA with — will supply document and ID
+verification but **will not activate BVN**, because BVN access is gated to licensed financial
+institutions or entities operating under one. QoreID is accountable to NIBSS for who it resells
+that access to, so it has to gate it. Clusteer has no licence, so no BVN, so the only compliant
+route to onboarding was Quidax's own BVN provider — which is what activated the widget.
 
-### Premise 1: "BVN is expensive." It is not.
+That is a sound decision, correctly reasoned. The widget was not a shortcut; it was the only
+lawful option available.
 
-Published Nigerian pricing runs from **₦10 per BVN check** (Monnify) to roughly ₦100–₦300 for a
-full-service provider with biometric matching. Against the raise:
+### The plan, and why it works
 
-| Users verified | @ ₦10 | @ ₦100 | @ ₦300 |
-|---|---:|---:|---:|
-| 5,000 | ₦50k · $32 | ₦500k · $323 | ₦1.5m · $968 |
-| 20,000 | ₦200k · $129 | ₦2m · $1,290 | ₦6m · $3,871 |
-| 50,000 | ₦500k · $323 | ₦5m · $3,226 | ₦15m · $9,677 |
+1. Execute the **Quidax SLA**, establishing that Clusteer operates under Quidax's SEC licence.
+2. Submit that SLA to **QoreID** as evidence of licensed status.
+3. QoreID **activates BVN** on Clusteer's account.
+4. Clusteer migrates off the widget to **Quidax's direct API**, with its own native KYC flow.
 
-The realistic cell — 20,000 verified users at ₦100 — is **$1,290, or 0.5% of the raise.** The
-worst cell in the table is under 4%. This already sits inside the ₦300k/month KYC allowance in
-the infrastructure line of `FUNDING-REQUIREMENTS.md`. **BVN cost has never been a real constraint
-on this business, and no architectural decision should have turned on it.**
+This is coherent and it is the right destination. Four consequences follow that are not obvious
+from the plan as stated.
 
-> **Find out what "expensive" actually meant.** If it was a **minimum monthly commitment** or a
-> prepaid wallet float, that is negotiable and small. If it was **eligibility** — direct NIBSS
-> BVN access generally requires a licensed financial institution or a licensed aggregator, and
-> providers do refuse unlicensed crypto businesses — then **money does not solve it**, and the
-> whole "$250k unlocks our own BVN provider" plan fails on a non-financial constraint. Establish
-> which one it was before building a plan on it.
+### 1 · This revises the earlier warning about in-house KYC — in your favour
 
-### Premise 2: "BVN is optional." It is not.
+An earlier version of this document scored the migration as weakening the regulatory position,
+on the basis that performing customer due diligence in-house moves Clusteer toward being the
+obliged entity. **That analysis does not hold in this configuration, and the correction matters.**
 
-Nigerian VASP obligations require BVN or NIN linkage as part of customer due diligence under the
-SEC framework and CBN AML/CFT guidance. Anonymous or lightly-verified trading is not a supported
-model. Running ID-only verification is not a cost saving — it is **an open compliance gap**, and
-it is the kind of gap that surfaces in exactly two places you do not want it: the legal opinion
-that gates Tranche 1, and an investor's diligence.
+Because BVN is granted *on the strength of operating under Quidax's licence*, Clusteer's CDD is
+explicitly **derivative authority**, not independent obliged-entity activity. QoreID's own gating
+enforces it: the access exists only while the umbrella exists. So the migration does **not** strip
+the compliance shelter — it formalises it. The outsourced-CDD structure recommended earlier is no
+longer optional advice; it is structurally what is already happening, and it needs to be written
+down to match.
 
-So BVN is going in regardless. The only question is who performs it.
+### 2 · Your ability to onboard customers now dies with the Quidax agreement
 
-### The real trade — and it is not the one it looks like
+This is the significant new risk. BVN access is contingent on the SLA. If Quidax terminates,
+QoreID must deactivate BVN, and Clusteer **cannot onboard a single new customer** — not
+degraded service, no service.
 
-Moving to direct API with in-house KYC is not a free upgrade. It systematically strips away the
-evidence that Quidax, not Clusteer, is the regulated entity:
+Termination is therefore not a commercial inconvenience. It is an extinction event, and it
+outranks almost everything else in this document. Two specific requirements follow:
 
-| Factor | Today (widget) | After (direct API + own BVN) |
-|---|---|---|
-| Sets the price | Clusteer | Clusteer |
-| Captures the spread | Clusteer | Clusteer |
-| Owns the customer | Clusteer | Clusteer |
-| **Performs customer due diligence** | **Quidax** | **Clusteer** |
-| Holds custody | Quidax | Quidax |
-| **Score** | **3–2 Clusteer** | **4–1 Clusteer** |
+- **90–180 days' notice minimum**, per deal-breaker 2.
+- **Survival of the licence-status attestation through the wind-down period**, so BVN stays live
+  while you migrate. A wind-down that keeps liquidity flowing but kills onboarding is not a
+  wind-down.
 
-Performing CDD is one of the defining functions of an obliged entity under FATF-aligned AML
-regimes. Taking it in-house moves Clusteer materially closer to "you are the VASP, licence
-yourself" — and leaves **custody as the single remaining pillar** of the argument that keeps the
-₦2bn requirement away.
+### 3 · The SLA must say what QoreID needs it to say — find out first
 
-**The widget is not only a technical constraint. Right now it is also a compliance shelter.**
+A generic partner agreement about API access will not satisfy QoreID. It needs language
+explicitly stating that Clusteer operates under Quidax's SEC Digital Assets Exchange licence as
+an appointed representative or distribution partner, and that Quidax's AML programme covers
+Clusteer's onboarding.
 
-### The way to get both
+> **Sequence this correctly.** Ask QoreID **in writing, now, before the Quidax SLA is finalised**:
+> *"What specific evidence and wording do you require to activate BVN for a partner operating
+> under a licensed exchange?"* Then negotiate the Quidax SLA to satisfy it.
+>
+> Do it the other way round — sign with Quidax, submit to QoreID, get rejected — and you are
+> reopening a signed agreement from the weakest possible position.
 
-There is a well-established structure: perform KYC **as outsourced customer due diligence under
-Quidax's AML programme**, rather than as your own obliged-entity function. Clusteer builds and
-runs the flow — native UX, own provider, full customisation, own data — while Quidax remains the
-obliged entity, retains regulatory responsibility, sets the CDD standard, and holds audit and
-oversight rights over how Clusteer executes it.
+This is the highest-value tactical move available this week, and it costs one email.
 
-That is a contractual arrangement, not a technical one, and it must be written into the Quidax
-agreement. Done properly you keep the conversion and the customisation *and* the shelter. Done
-casually — you simply start doing your own KYC and tell Quidax afterwards — you get the
-customisation and lose the shelter.
+### 4 · Expect Quidax to resist the wording, and expect to pay for it
 
-### Correct sequencing
+Attesting that Clusteer operates under their licence transfers real regulatory responsibility to
+Quidax. They will not grant it casually. Anticipate them asking for oversight rights, audit
+rights, compliance reporting obligations, approval over the onboarding flow, possibly higher fees
+or volume commitments.
 
-The plan as stated is *fund → buy BVN → move to API*. That risks spending the money on the thing
-that undermines the reason the money was raisable. Reorder it:
+**Accept those.** They are the price of the umbrella, and they are also what makes the umbrella
+credible to a regulator and to your investor. A licence attestation Quidax gives away without
+conditions is one they have not thought about, which makes it worth less than it looks.
 
-1. **Scope the legal opinion to cover both configurations** — widget-with-Quidax-KYC *and* direct
-   API with outsourced CDD. Same lawyer, same engagement, marginal extra cost. This happens in
-   Tranche 1 regardless.
-2. **Get the outsourced-CDD arrangement into the Quidax agreement** while you are negotiating it
-   anyway. It costs a clause, not a renegotiation.
-3. **Then migrate**, knowing the position holds.
+### The critical path
 
-### And do it for the right reason
+Everything is now serialised behind one document:
 
-The case for direct API is real, but BVN cost is not it. The reasons that justify the migration:
+```
+Quidax SLA (with licence attestation)   4-10 weeks   <- the long pole
+        v
+QoreID activates BVN                     1-3 weeks
+        v
+Widget -> direct API migration           3-6 weeks
+        v
+Native onboarding flow live
+```
 
-- **Conversion.** A handoff to an embedded third-party flow typically leaks a meaningful share of
-  signups at the KYC step. At $2m/month volume, a 20% conversion improvement is worth
-  multiples of the entire lifetime BVN bill.
-- **Customer ownership.** Your verification data, your record, reusable across products.
-- **Optionality.** A native integration is a precondition for ever adding a second liquidity
-  provider.
-- **Brand.** Your flow, not a Quidax-shaped hole in the middle of it.
+Roughly **2–5 months end to end**, which fits inside Tranche 1 but with little slack. The legal
+opinion runs in parallel and depends on the same document.
 
-Argue it on those, budget BVN as the rounding error it is, and stop letting a $1,300 line item
-determine the shape of the company.
+> **Start the Quidax SLA conversation now, before the funding closes.** It is the long pole, it
+> gates the legal opinion, BVN activation, the API migration and the Tranche 1 gate — and it
+> costs nothing to begin. Waiting for the money to land before starting adds two to three months
+> to the launch date for no reason.
+
+### One engineering note
+
+`clusteer-unified/src/lib/kyc-provider.ts` implements Smile Identity, Youverify and Prembly.
+There is **no QoreID adapter**. It is a small piece of work, but it is real, it is unbudgeted, and
+it should be scheduled to land before BVN activation rather than after.
 
 ---
 
@@ -211,23 +214,27 @@ The agreement states, per transaction type, which party is the licensed VASP and
 licence the activity is conducted — and, if it is Quidax's, acknowledges Clusteer as an appointed
 distribution partner operating under it.
 
-> Without this, your lawyer cannot write the legal opinion, and without the opinion your
-> Tranche 1 gate fails and the raise stalls.
+> This clause now has two consumers, not one. Your lawyer cannot write the legal opinion
+> without it, and **QoreID cannot activate BVN without it** — so it gates the raise and the
+> ability to onboard customers at all. Confirm QoreID's required wording before finalising.
 
-### 2 · Scope that survives the migration off the widget
+### 2 · Termination notice of 90+ days, with the licence attestation surviving wind-down
+Termination for convenience on 30 days' notice or less is fatal. Target **90–180 days**, plus a
+**60–90 day wind-down period** in which Quidax continues serving existing customers — and in
+which **the licence-status attestation remains valid**, so QoreID keeps BVN active while you
+migrate.
+
+> Since BVN access derives from this agreement (§1c), termination does not degrade the business
+> — it stops onboarding dead. A wind-down that preserves liquidity but kills customer
+> verification is not a wind-down.
+
+### 3 · Scope that survives the migration off the widget
 The agreement governs the **relationship** — Quidax as liquidity, execution and custody provider
 — with the widget as one schedule beneath it, and a committed timeline for the successor
 integration as another. Not an agreement about a widget.
 
 > The widget is interim. An agreement scoped to it expires in usefulness precisely when volume
 > is highest and your leverage is lowest.
-
-### 3 · Termination notice of at least 90 days, with transition assistance
-Termination for convenience on 30 days' notice or less is fatal. Target **90–180 days**, plus a
-**60–90 day wind-down period** in which Quidax continues serving existing customers while you
-migrate.
-
-> An investor will not fund a company whose core dependency can vanish inside a month.
 
 ### 4 · Customer non-solicit
 Quidax will not directly solicit merchants or users introduced through Clusteer, for the term
@@ -397,6 +404,25 @@ that has to be known before the investor conversation, not after.
 > those in a short addendum rather than redlining your standard terms.
 >
 > Is there a good time this week for a call?
+>
+> Best,
+> [name]
+
+### And send this one to QoreID first — it costs one email and it sets the wording
+
+> **Subject:** BVN activation — evidence requirements
+>
+> Hi [name],
+>
+> Following our SLA, we're finalising a partnership agreement with Quidax, under whose SEC
+> Digital Assets Exchange licence we'll be operating.
+>
+> Before we close that agreement, could you confirm **exactly what evidence and what wording you
+> require** in order to activate BVN for a partner operating under a licensed exchange? We'd
+> rather draft the Quidax agreement to meet your requirements the first time than come back to
+> renegotiate it.
+>
+> If it's helpful, happy to get on a call with your compliance team.
 >
 > Best,
 > [name]

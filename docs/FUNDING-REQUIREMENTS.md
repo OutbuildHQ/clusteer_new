@@ -326,19 +326,27 @@ the second problem; the milestones address the first.
 **9.8 Competition.** Binance P2P, Yellow Card, Breet, Busha and Quidax itself. Clusteer's
 defensible wedge is merchant service and settlement speed, not price — do not pitch it on price.
 
-**9.9 The planned KYC migration cuts against the regulatory thesis.** The intent is to fund an
-independent BVN provider and move from the widget to Quidax's direct API. The business case is
-sound — conversion, customer ownership, optionality — but bringing customer due diligence
-in-house removes one of only two factors supporting the argument that Quidax, not Clusteer, is
-the regulated entity, leaving custody as the sole remaining pillar. It must be structured as
-**outsourced CDD under Quidax's AML programme**, written into the agreement before migration, and
-covered by the legal opinion. Sequenced wrongly, the raise funds the change that invalidates the
-basis on which it was raised. Full analysis in `QUIDAX-SLA-CHECKLIST.md` §1c.
+**9.9 Customer onboarding depends on the Quidax agreement, not just liquidity.** BVN access is
+gated to licensed entities. QoreID — Clusteer's contracted KYC provider — will not activate BVN
+until Clusteer can evidence that it operates under Quidax's SEC licence. That evidence is the
+SLA. So the SLA does not merely secure liquidity and pricing; **it is the precondition for being
+able to verify a customer at all.** If it terminates, QoreID must deactivate BVN and onboarding
+stops dead.
 
-Note also that BVN cost is **not** a material line item — roughly $1,300 for 20,000 verified
-users, already inside the infrastructure budget. It should not be presented to the investor as a
-reason funding is needed, because a diligent investor will price it in thirty seconds and wonder
-what else is mis-sized.
+This makes termination notice an existential clause rather than a commercial one, and requires
+the licence attestation to survive the wind-down period. It also means BVN cost is **not** a
+material line item — roughly $1,300 for 20,000 verified users, already inside the infrastructure
+budget. The constraint was always eligibility, never price, and it should be described to the
+investor that way. Full analysis in `QUIDAX-SLA-CHECKLIST.md` §1c.
+
+**9.10 Everything is serialised behind one unsigned document.** The Quidax SLA gates the legal
+opinion, BVN activation, the widget-to-API migration and the Tranche 1 milestone gate. Realistic
+critical path is **2–5 months**: SLA negotiation 4–10 weeks (licence-attestation language is the
+slow kind of legal review), QoreID activation 1–3 weeks, API migration 3–6 weeks.
+
+**Start the SLA negotiation before this raise closes.** It costs nothing to begin and it is the
+long pole on every other milestone. Waiting for funds to land first adds two to three months to
+launch for no reason — and gives the investor something concrete to watch in the meantime.
 
 ---
 
