@@ -29,12 +29,28 @@ signed.
 
 ### 1 · Wrong entity — the counterparty is not the SEC-licensed company
 
-The agreement is with **Quidax Technologies FZCO, incorporated in Dubai** (Dubai Digital Park,
-Dubai Silicon Oasis, UAE). Nigeria's SEC Digital Assets Exchange licence is held by Quidax's
-**Nigerian** entity. A Dubai FZCO cannot confer a Nigerian SEC licence umbrella on anyone.
+Two different companies share the Quidax brand:
 
-The notices clause gives a Lagos address for Quidax, so the Nigerian entity exists and is
-involved operationally — but it is not the contracting party.
+| | Holds the SEC licence | Signed this agreement |
+|---|---|---|
+| **Name** | Quidax Technologies **Limited** | Quidax Technologies **FZCO** |
+| **Jurisdiction** | Nigeria | Dubai, UAE (Dubai Silicon Oasis) |
+| **Basis** | SEC provisional Digital Assets Exchange licence under ARIP, 29 August 2024 | — |
+
+A UAE free-zone company cannot hold a Nigerian SEC licence — those are granted to CAC-registered
+Nigerian companies. **The entity that signed is not the entity that holds the licence.**
+
+The tell is inside the document itself: the contracting party is Dubai-registered, but the
+notices address for Quidax is 1 Adedeji Adekola Street, Lekki, Lagos. Two addresses because
+there are two companies.
+
+This is probably deliberate and unremarkable — many African fintechs route international and API
+business through a UAE entity for tax and FX reasons. It is not a trick. But it means the
+document does not give Outbuild any linkage to the Nigerian licence, and rights under it run
+only against the Dubai company, enforceable in London arbitration under English law.
+
+The fix may be straightforward: a letter from Quidax Technologies Limited, or adding it as a
+party to the arrangement.
 
 ### 2 · The agreement says the opposite of what QoreID needs
 
@@ -159,21 +175,24 @@ not a renegotiation by email.
 > One item I need your help with before we can complete onboarding, and it is a blocker on our
 > side rather than a commercial point.
 >
-> Our KYC provider, QoreID, gates BVN access to entities that are licensed or that operate under
-> a licensed entity. Without BVN we cannot verify Nigerian customers, so we cannot go live. We
-> had expected to evidence our position to them using this agreement, but the agreement is with
-> Quidax Technologies FZCO in Dubai, and clause 16.1 characterises us as an independent
-> contractor rather than an appointed representative — so on its face it does not establish what
-> QoreID needs.
+> Our KYC provider, QoreID, will not activate BVN for us unless we can evidence that we are
+> licensed, or that we operate under a licensed entity. Without BVN we cannot verify Nigerian
+> customers, so we cannot go live.
 >
-> Two questions:
+> We had expected to use this agreement as that evidence, but two things in it mean we cannot:
 >
-> 1. Which Quidax entity holds the Nigerian SEC Digital Assets Exchange licence, and can that
->    entity either be a party to the arrangement or issue a letter confirming that Outbuild
->    operates under its licence for the activity conducted through the API?
-> 2. Relatedly — how does Quidax regard our regulatory position? Clause 8.1(d) has us warrant
->    that we hold the required licences and approvals. We want to be certain we are reading that
->    the way you intend before we rely on it, and our counsel has raised it.
+> 1. The agreement is signed by **Quidax Technologies FZCO** in Dubai. Our understanding is that
+>    the Nigerian SEC Digital Assets Exchange licence is held by **Quidax Technologies Limited**,
+>    a separate Nigerian company. Could Quidax Technologies Limited either come onto the
+>    agreement as a party, or issue us a short letter confirming that Outbuild operates under its
+>    SEC licence for the activity we conduct through the API? Either would satisfy QoreID.
+> 2. Clause 16.1 describes us as an independent contractor and states there is no agency, and
+>    clause 8.1(d) has us warrant that we hold the required licences and approvals ourselves. We
+>    want to be sure we are reading these the way you intend, because taken together they suggest
+>    we are expected to be separately licensed. Our counsel has flagged it.
+>
+> If Quidax's position is that we do need our own SEC registration, that is useful to know now —
+> it changes our timeline rather than our commitment.
 >
 > Separately, and less urgently, there are a few points we would like to cover in a short
 > addendum rather than reopening the agreement: the fee schedule and notice before any change,
