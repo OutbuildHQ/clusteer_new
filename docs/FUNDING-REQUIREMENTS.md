@@ -53,10 +53,17 @@ licence presented 29 August 2024) and in July 2026 extended its stablecoin infra
 rails would let Clusteer operate as a **non-custodial distribution and experience layer** over a
 licensed exchange, rather than as an unlicensed exchange of record.
 
-*Status as at August 2026:* Quidax has **granted Clusteer access to their API widget**, which is
-flexible enough for Clusteer to **quote its own rate** — so the spread-capture economics assumed
-throughout this model hold, and the float requirement is real. The **SLA is not yet signed**, and
-the widget is understood to be an **interim integration** pending a successor arrangement.
+*Status as at 19 August 2026:* An **API as a Service Agreement was executed on 13 August 2026**
+between **Quidax Technologies FZCO (Dubai)** and Outbuild Ltd, countersigned and returned. It
+grants contractual API access across wallets, crypto on/off-ramp, liquidity and fiat rails, and
+Clusteer can **quote its own rate** — so the spread-capture economics assumed throughout this
+model hold, and the float requirement is real.
+
+**It does not provide a regulatory umbrella.** The counterparty is the Dubai entity, not the
+holder of the Nigerian SEC licence; clause 16.1 expressly denies agency; clause 3.2 places KYC on
+Clusteer; and clause 8.1(d) has Clusteer warrant that it holds the required licences. Full
+analysis in `QUIDAX-AGREEMENT-REVIEW.md`. The regulatory argument in §3.2 below is therefore
+**not yet supported by any executed document**, and resolving that is now the critical path.
 
 Three consequences, all material:
 
@@ -138,9 +145,15 @@ Finish and harden the platform; migrate custody to Quidax; pass a security audit
 written legal opinion; soft-launch.
 
 **Gate to Tranche 2 — all five required:**
-- **Executed Quidax SLA** carrying, at minimum, the five deal-breaker clauses in
-  `QUIDAX-SLA-CHECKLIST.md` — regulated entity of record, termination notice, customer
-  non-solicit, service credits, and fixed commercial terms
+- **Licence position resolved in writing.** The executed agreement of 13 August 2026 does not
+  provide it — see `QUIDAX-AGREEMENT-REVIEW.md`. Required: either a letter from the
+  SEC-licensed Nigerian Quidax entity confirming Clusteer operates under its licence, or a
+  clear determination that Clusteer must register in its own right, with the cost of that path
+  modelled before Tranche 2 releases
+- **Addendum to the Quidax agreement** covering the fee schedule and repricing notice,
+  termination notice, service levels, and a customer non-solicit
+- **Warranty 8.1(d) resolved** — Clusteer has warranted it holds required licences and
+  approvals; that must be made accurate or amended
 - Written legal opinion from a Tier-1 Lagos firm confirming the non-custodial model is
   permissible under Quidax's licence without separate SEC registration — **scoped to cover both
   the current widget configuration and the intended direct-API configuration with in-house KYC**,
