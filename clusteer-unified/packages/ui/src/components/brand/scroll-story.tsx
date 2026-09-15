@@ -12,6 +12,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { ProductWalkthrough } from "./product-walkthrough";
 import { HeroConversionContext } from "./hero-conversion-context";
+// A fully revealed form must respond, even while its camera move continues.
+const CONVERSION_READY = 0.44;
 export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 	const root = useRef<HTMLElement>(null);
 	const focusOnArrival = useRef(false);
@@ -120,7 +122,7 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 			// Scroll position always owns the scene, even after a field or button was used.
 			// Release focus before the returning card becomes inert; keep its local state.
 			const conversion = element.querySelector<HTMLElement>(".cl-story-conversion");
-			if (hasProduct && p < 0.7 && conversion?.contains(document.activeElement)) {
+			if (hasProduct && p < CONVERSION_READY && conversion?.contains(document.activeElement)) {
 				element.focus({ preventScroll: true });
 			}
 			const approach = Math.min(1, p / (hasProduct ? 0.3 : 0.5));
@@ -133,7 +135,7 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 				);
 				element.style.setProperty(
 					"--conversion-opacity",
-					`${Math.min(1, Math.max(0, (p - 0.32) / 0.12))}`
+					`${Math.min(1, Math.max(0, (p - 0.32) / (CONVERSION_READY - 0.32)))}`
 				);
 				element.style.setProperty(
 					"--conversion-scale",
@@ -141,7 +143,7 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 				);
 				element.style.setProperty("--conversion-x", `${72 * (1 - liftEase)}px`);
 				setConversionVisible(p >= 0.32);
-				setConversionReady(p >= 0.7);
+				setConversionReady(p >= CONVERSION_READY);
 				const dashboardIsReady = p >= 0.28 && p < 0.4;
 				if (
 					!dashboardIsReady &&

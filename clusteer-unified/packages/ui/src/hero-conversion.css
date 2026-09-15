@@ -283,6 +283,18 @@
 	color: var(--m-muted);
 	line-height: 1.5;
 }
+.cl-converter-restart {
+	display: block;
+	margin: 4px auto 0;
+	min-height: 44px;
+	padding: 8px 16px;
+	border-radius: 999px;
+	font-size: 13px;
+	cursor: pointer;
+}
+.cl-converter-restart:hover {
+	background: var(--m-paper);
+}
 .cl-converter-edit {
 	display: flex;
 	align-items: center;
@@ -381,8 +393,25 @@
 	.cl-converter-result strong {
 		font-size: clamp(24px, 6.6vw, 34px);
 	}
+	.cl-converter-result.is-long-total strong {
+		font-size: clamp(20px, 6vw, 32px);
+	}
+	.cl-converter-result.is-long-total .cl-converter-currency {
+		display: none;
+	}
 	.cl-converter-amount input {
 		font-size: 32px;
+	}
+	.cl-converter-amount.is-long-amount {
+		flex-wrap: wrap;
+		gap: 0;
+	}
+	.cl-converter-amount.is-long-amount input {
+		flex: 1 0 100%;
+		font-size: clamp(22px, 6.6vw, 32px);
+	}
+	.cl-converter-amount.is-long-amount .cl-converter-asset {
+		margin-left: auto;
 	}
 	.cl-converter-currency > span {
 		display: none;
@@ -397,6 +426,30 @@
 	.cl-converter-entry,
 	.cl-converter-result {
 		padding-inline: 12px;
+	}
+}
+@media (max-width: 380px) {
+	.cl-converter-header {
+		gap: 8px;
+	}
+	.cl-converter-header h3 {
+		font-size: 20px;
+	}
+	.cl-converter-direction button {
+		min-width: 50px;
+		padding-inline: 10px;
+	}
+	.cl-converter-network {
+		flex-wrap: wrap;
+		gap: 0;
+		padding-top: 8px;
+	}
+	.cl-converter-network > div {
+		width: 100%;
+	}
+	.cl-converter-network select {
+		flex: 1;
+		max-width: none;
 	}
 }
 @media (prefers-reduced-motion: reduce) {

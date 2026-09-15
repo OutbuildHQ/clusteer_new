@@ -95,9 +95,9 @@ it("lifts only the converter and preserves edits across reverse scrolling and da
 	expect(view.container.querySelector(".cl-story-caption")).toHaveAttribute("inert");
 	expect(screen.getByRole("button", { name: "Orders", exact: true })).toBeInTheDocument();
 	const panel = view.container.querySelector(".cl-story-conversion")!;
-	view.scrollTo(0.48);
+	view.scrollTo(0.4);
 	expect(panel).toHaveAttribute("inert");
-	view.scrollTo(0.75);
+	view.scrollTo(0.44);
 	expect(panel).not.toHaveAttribute("inert");
 	expect(screen.queryByRole("button", { name: "Orders", exact: true })).not.toBeInTheDocument();
 	fireEvent.change(screen.getByLabelText("Amount in USDT"), { target: { value: "375" } });
@@ -127,6 +127,9 @@ it.each(["amount", "direction", "network"])(
 					: screen.getByLabelText("Network");
 		act(() => target.focus());
 		view.scrollTo(0.55);
+		expect(target).toHaveFocus();
+		expect(view.container.querySelector(".cl-story-conversion")).not.toHaveAttribute("inert");
+		view.scrollTo(0.4);
 		expect(view.root).toHaveFocus();
 		expect(view.container.querySelector(".cl-story-conversion")).toHaveAttribute("inert");
 		view.scrollTo(0);
@@ -157,6 +160,33 @@ it("keeps an open converter available when motion is disabled", () => {
 	expect(view.root).toHaveClass("is-conversion-visible");
 	view.finish();
 });
+
+it.each(["buy", "sell"] as const)(
+	"keeps both amounts and the network on the %s receipt, with a waitlist handoff",
+	(side) => {
+		render(<ProductWalkthrough presentation="card" />);
+		fireEvent.change(screen.getByLabelText("Stablecoin"), { target: { value: "USDC" } });
+		fireEvent.change(screen.getByLabelText("Amount in USDC"), { target: { value: "250.1234" } });
+		fireEvent.click(
+			screen.getByRole("button", { name: side === "buy" ? "Buy" : "Sell", exact: true })
+		);
+		fireEvent.click(screen.getByRole("button", { name: "Review conversion" }));
+		fireEvent.click(screen.getByRole("button", { name: "View receipt" }));
+		expect(
+			screen.getByText(side === "buy" ? "You received" : "You sold").parentElement
+		).toHaveTextContent("250.1234 USDC");
+		expect(screen.getByText("Network").parentElement).toHaveTextContent("Ethereum · ERC-20");
+		expect(
+			screen.getByText(side === "buy" ? "Total paid" : "Your bank received").parentElement
+		).toHaveTextContent(side === "buy" ? "₦365,399.02" : "₦359,958.84");
+		expect(screen.getByRole("link", { name: "Join the waitlist" })).toHaveAttribute(
+			"href",
+			"/early-access"
+		);
+		fireEvent.click(screen.getByRole("button", { name: "Start another conversion" }));
+		expect(screen.getByRole("button", { name: "Review conversion" })).toBeEnabled();
+	}
+);
 
 it("opens and closes the static converter locally, then shares its receipt with dashboard orders", () => {
 	const view = scene(false);

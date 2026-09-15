@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
 	ArrowDown,
 	ArrowLeft,
@@ -85,7 +86,7 @@ export function HeroConversionCard(props: Props) {
 				<>
 					<div className="cl-converter-entry">
 						<label htmlFor={`${id}-amount`}>{sell ? "You sell" : "You buy"}</label>
-						<div className="cl-converter-amount">
+						<div className={`cl-converter-amount${value.length > 7 ? " is-long-amount" : ""}`}>
 							<input
 								id={`${id}-amount`}
 								aria-label={`Amount in ${asset}`}
@@ -200,8 +201,18 @@ export function HeroConversionCard(props: Props) {
 					</div>
 				</div>
 			)}
-			<div className="cl-converter-result">
-				<span>{sell ? "Your bank receives" : "Total you pay"}</span>
+			<div
+				className={`cl-converter-result${formatNaira(total).length > 14 ? " is-long-total" : ""}`}
+			>
+				<span>
+					{stage === 2
+						? sell
+							? "Your bank received"
+							: "Total paid"
+						: sell
+							? "Your bank receives"
+							: "Total you pay"}
+				</span>
 				<div>
 					<strong>{valid ? formatNaira(total) : "—"}</strong>
 					<span className="cl-converter-currency">
@@ -211,6 +222,22 @@ export function HeroConversionCard(props: Props) {
 			</div>
 			{valid ? (
 				<dl className="cl-converter-details">
+					{stage === 2 && (
+						<>
+							<div>
+								<dt>{sell ? "You sold" : "You received"}</dt>
+								<dd>
+									{amount.toLocaleString("en-NG", { maximumFractionDigits: 4 })} {asset}
+								</dd>
+							</div>
+							<div>
+								<dt>Network</dt>
+								<dd>
+									{network.name} · {network.standard}
+								</dd>
+							</div>
+						</>
+					)}
 					<div>
 						<dt>Exchange rate</dt>
 						<dd>
@@ -239,26 +266,34 @@ export function HeroConversionCard(props: Props) {
 					Enter a valid amount to see the rate, fee and {sell ? "payout" : "total cost"}.
 				</p>
 			)}
-			<button
-				type="button"
-				className="cl-button cl-converter-action"
-				disabled={!valid}
-				onClick={() => (stage === 2 ? props.onRestart() : props.onStage(stage + 1))}
-			>
-				{stage === 0
-					? "Review conversion"
-					: stage === 1
-						? "View receipt"
-						: "Start another conversion"}
-				<ArrowRight size={16} />
-			</button>
-			<p className="cl-converter-footnote">
-				{stage === 2
-					? "Keep your order reference for support."
-					: sell
+			{stage === 2 ? (
+				<div className="cl-converter-finish">
+					<Link href="/early-access" className="cl-button cl-converter-action">
+						Join the waitlist <ArrowRight size={16} />
+					</Link>
+					<p className="cl-converter-footnote">Get an email when public access opens.</p>
+					<button type="button" className="cl-converter-restart" onClick={props.onRestart}>
+						Start another conversion
+					</button>
+				</div>
+			) : (
+				<button
+					type="button"
+					className="cl-button cl-converter-action"
+					disabled={!valid}
+					onClick={() => props.onStage(stage + 1)}
+				>
+					{stage === 0 ? "Review conversion" : "View receipt"}
+					<ArrowRight size={16} />
+				</button>
+			)}
+			{stage !== 2 && (
+				<p className="cl-converter-footnote">
+					{sell
 						? "Your payout is shown after the service fee."
 						: "Your total includes the service fee."}
-			</p>
+				</p>
+			)}
 		</div>
 	);
 }

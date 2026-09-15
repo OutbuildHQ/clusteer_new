@@ -234,14 +234,15 @@ export function BrandAssets() {
 						href="/security"
 						link="Understand the fund flow"
 					>
-						Clusteer connects your existing wallet and bank account, without a stored Clusteer balance.
+						Clusteer connects your existing wallet and bank account, without a stored Clusteer
+						balance.
 					</Caption>
 				</article>
 				<article>
 					<QuoteArt />
 					<Caption title="Know the payout, not just the rate." href="/fees" link="How quotes work">
-						Review the exchange rate, service fee and final amount together. Network charges may
-						also apply.
+						See what will reach your bank account before you continue, with the exchange rate and
+						service fee shown together. Network charges may also apply.
 					</Caption>
 				</article>
 				<article>
@@ -258,11 +259,12 @@ export function BrandAssets() {
 				<article>
 					<ReceiptArt />
 					<Caption
-						title="Find the details after it’s done."
+						title="An answer when you need to look back."
 						href="/demo"
 						link="Explore quote to receipt"
 					>
-						Your amount, destination and order reference stay together in your transaction receipt.
+						Check how much you converted and where it went. Your receipt keeps the amounts,
+						destination and reference in one place.
 					</Caption>
 				</article>
 			</div>
