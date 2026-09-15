@@ -2405,8 +2405,7 @@
 	font-variant-numeric: tabular-nums;
 }
 .cl-conversion-workspace .cl-demo-amount:focus-within {
-	outline: 2px solid #7d9765;
-	outline-offset: 2px;
+	border-color: #426e43;
 }
 .cl-conversion-workspace .cl-demo-amount input:focus-visible {
 	outline: none;
@@ -3343,9 +3342,8 @@
 .cl-story-caption button {
 	cursor: pointer;
 }
-.cl-story-device:focus-visible {
-	outline: 2px solid var(--m-ink);
-	outline-offset: 6px;
+.cl-story-device:focus {
+	outline: none;
 }
 .cl-submitted-email {
 	overflow-wrap: anywhere;

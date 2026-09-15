@@ -78,10 +78,28 @@
 }
 .cl-marketing :is(a, button, input, select, summary):focus-visible,
 .cl-early-access :is(a, button, input):focus-visible,
-.cl-workspace :is(a, button, input, select, textarea):focus-visible,
 .cl-site-header :is(a, button):focus-visible {
+	outline: 2px solid #426e43;
+	outline-offset: 3px;
+}
+.cl-workspace :is(a, button, input, select, textarea):focus-visible {
 	outline: 3px solid #68934a;
 	outline-offset: 4px;
+}
+/* Pointer clicks use the control's active state; keyboard focus keeps its ring. */
+:is(.cl-marketing, .cl-early-access, .cl-site-header)
+	:is(a, button, summary):focus:not(:focus-visible) {
+	outline: none;
+}
+.cl-marketing,
+.cl-early-access,
+.cl-site-header {
+	-webkit-tap-highlight-color: transparent;
+}
+.cl-waitlist input:focus {
+	border-color: #426e43;
+	box-shadow: inset 0 0 0 1px #426e43;
+	outline: none;
 }
 .cl-skip {
 	position: fixed;

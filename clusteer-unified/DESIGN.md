@@ -73,4 +73,6 @@ Mobile refinement: below 1000px, the hero shows the standalone Buy/Sell card imm
 
 ## Landing-page critique fixes — 15 September 2026
 
+Public focus styling uses a single 2px keyboard indicator on actions. Pointer clicks do not draw action outlines. Amount groups use their existing border for active-field feedback; converter selectors use an inset underline for keyboard focus. Waitlist fields strengthen their border without an external ring. Programmatic focus on the laptop region never outlines the entire frame. Dashboard focus styles remain scoped to their existing workspace system.
+
 The converter becomes interactive at 44% scene progress, exactly when it reaches full opacity; its visual lift continues through 70%. Returning below 44% releases focus without retaining or changing scroll position. Receipt views retain the stablecoin quantity, network and naira amount with completed-action labels. They lead to early-access signup, with restart as a secondary control. Long mobile amounts receive a full-width input row, and large totals retain readable currency-prefixed figures. Narrow screens stack the network label above its selector. Gallery copy connects amounts and records to their practical use without adding pricing or timing claims.
