@@ -15,6 +15,7 @@ import {
 	Landmark,
 } from "lucide-react";
 import { QuoteSummary } from "./quote-summary";
+import { HeroConversionCard } from "./hero-conversion-card";
 import { Logo } from "./logo";
 import type { OverviewOrder } from "./customer-overview";
 const steps = ["Quote", "Transfer", "Receipt"];
@@ -30,7 +31,9 @@ export function ProductWalkthrough({
 	compact = false,
 	initialSide = "sell",
 	onComplete,
+	presentation = "workspace",
 }: {
+	presentation?: "workspace" | "card";
 	stage?: number;
 	onStageChange?: (stage: number) => void;
 	compact?: boolean;
@@ -60,7 +63,10 @@ export function ProductWalkthrough({
 		if (next > 0 && !valid) return;
 		setLocalStage(next);
 		onStageChange?.(next);
-		if (focus) document.getElementById(`${id}-tab-${next}`)?.focus({ preventScroll: true });
+		if (focus)
+			document
+				.getElementById(presentation === "card" ? `${id}-card-heading` : `${id}-tab-${next}`)
+				?.focus({ preventScroll: true });
 	};
 	const safeAmount = valid ? amount : 0;
 	const rate = 1450;
@@ -99,6 +105,39 @@ export function ProductWalkthrough({
 		select(0, true);
 	};
 
+	if (presentation === "card")
+		return (
+			<HeroConversionCard
+				id={id}
+				stage={stage}
+				side={side}
+				value={value}
+				amount={safeAmount}
+				asset={asset}
+				valid={valid}
+				inRange={inRange}
+				rate={rate}
+				fee={fee}
+				networkKey={networkKey}
+				networks={networks}
+				receipt={receipt}
+				onSide={(next) => {
+					setSide(next);
+					if (next === "buy") setSelectedNetwork("ERC20");
+					select(0);
+				}}
+				onValue={setValue}
+				onAsset={setAsset}
+				onNetwork={(next) => setSelectedNetwork(next as Network)}
+				onStage={(next) => {
+					select(next);
+					requestAnimationFrame(() =>
+						document.getElementById(`${id}-card-heading`)?.focus({ preventScroll: true })
+					);
+				}}
+				onRestart={startAnother}
+			/>
+		);
 	return (
 		<div className={`cl-product-window cl-conversion-workspace ${compact ? "is-compact" : ""}`}>
 			<div className="cl-window-bar">

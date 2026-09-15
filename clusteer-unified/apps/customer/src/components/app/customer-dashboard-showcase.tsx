@@ -7,6 +7,7 @@ import { ProductWalkthrough } from "@/components/brand/product-walkthrough";
 import { ShowcasePanels } from "./showcase-panels";
 import { SidebarFrame, CUSTOMER_NAV } from "./sidebar-frame";
 import { TopBarFrame } from "./topbar-frame";
+import { useHeroConversion } from "@/components/brand/hero-conversion-context";
 
 const initialOrders: OverviewOrder[] = [
 	{
@@ -49,6 +50,7 @@ const initialOrders: OverviewOrder[] = [
 
 // Presentation only: shared dashboard views receive local data, without account queries.
 export function CustomerDashboardShowcase() {
+	const hero = useHeroConversion();
 	const [orders, setOrders] = useState(initialOrders);
 	const recordCompletion = useCallback((order: OverviewOrder) => {
 		setOrders((previous) => [order, ...previous.filter((item) => item.id !== order.id)]);
@@ -59,6 +61,11 @@ export function CustomerDashboardShowcase() {
 	const content = useRef<HTMLDivElement>(null);
 	const firstRender = useRef(true);
 	const navigate = (next: string) => {
+		if (next === "/trade" && hero) {
+			setTradeOpened(true);
+			hero.open();
+			return;
+		}
 		if (next === path) return;
 		if (next === "/trade") setTradeOpened(true);
 		setHistory((previous) => [...previous, next]);
@@ -78,68 +85,97 @@ export function CustomerDashboardShowcase() {
 		}
 	}, [path]);
 	return (
-		<div className="cl-product-window cl-dashboard-showcase">
-			<SidebarFrame pathname={sectionPath} tierLabel="Personal" embedded onNavigate={navigate} />
-			<div className="cl-dashboard-showcase-main">
-				<TopBarFrame>
-					{history.length > 1 && (
-						<button
-							className="cl-frame-back"
-							aria-label="Back within dashboard"
-							onClick={() => setHistory((previous) => previous.slice(0, -1))}
+		<>
+			<div
+				className="cl-story-dashboard"
+				inert={hero && !hero.dashboardInteractive ? true : undefined}
+				aria-hidden={hero?.visible && hero.interactive ? true : undefined}
+			>
+				<div className="cl-product-window cl-dashboard-showcase">
+					<SidebarFrame
+						pathname={sectionPath}
+						tierLabel="Personal"
+						embedded
+						onNavigate={navigate}
+					/>
+					<div className="cl-dashboard-showcase-main">
+						<TopBarFrame>
+							{history.length > 1 && (
+								<button
+									className="cl-frame-back"
+									aria-label="Back within dashboard"
+									onClick={() => setHistory((previous) => previous.slice(0, -1))}
+								>
+									<ArrowLeft size={16} />
+								</button>
+							)}
+							<span className="cl-showcase-breadcrumb">
+								Workspace <span>/</span> {title}
+							</span>
+							<select
+								className="cl-frame-mobile-nav"
+								aria-label="Dashboard section"
+								value={sectionPath}
+								onChange={(event) => navigate(event.target.value)}
+							>
+								{CUSTOMER_NAV.map((item) => (
+									<option key={item.id} value={item.href}>
+										{item.label}
+									</option>
+								))}
+							</select>
+							<div className="cl-showcase-user">
+								<span>Aisha Bello</span>
+								<span className="cl-showcase-avatar">AB</span>
+							</div>
+						</TopBarFrame>
+						<div
+							className="cl-dashboard-showcase-content"
+							ref={content}
+							tabIndex={-1}
+							role="region"
+							aria-label={`${title} dashboard view`}
 						>
-							<ArrowLeft size={16} />
-						</button>
-					)}
-					<span className="cl-showcase-breadcrumb">
-						Workspace <span>/</span> {title}
-					</span>
-					<select
-						className="cl-frame-mobile-nav"
-						aria-label="Dashboard section"
-						value={sectionPath}
-						onChange={(event) => navigate(event.target.value)}
-					>
-						{CUSTOMER_NAV.map((item) => (
-							<option key={item.id} value={item.href}>
-								{item.label}
-							</option>
-						))}
-					</select>
-					<div className="cl-showcase-user">
-						<span>Aisha Bello</span>
-						<span className="cl-showcase-avatar">AB</span>
-					</div>
-				</TopBarFrame>
-				<div
-					className="cl-dashboard-showcase-content"
-					ref={content}
-					tabIndex={-1}
-					role="region"
-					aria-label={`${title} dashboard view`}
-				>
-					{path === "/dashboard" && (
-						<CustomerOverview
-							name="Aisha"
-							orders={orders}
-							orderLimit={3}
-							rate={1450}
-							tradeHref="/trade"
-							resumeTrade={tradeOpened}
-							publicView
-							onNavigate={navigate}
-						/>
-					)}
-					{tradeOpened && (
-						<div className="cl-frame-conversion" hidden={path !== "/trade"}>
-							<ProductWalkthrough onComplete={recordCompletion} />
+							{path === "/dashboard" && (
+								<CustomerOverview
+									name="Aisha"
+									orders={orders}
+									orderLimit={3}
+									rate={1450}
+									tradeHref="/trade"
+									resumeTrade={tradeOpened}
+									publicView
+									onNavigate={navigate}
+								/>
+							)}
+							{tradeOpened && !hero && (
+								<div className="cl-frame-conversion" hidden={path !== "/trade"}>
+									<ProductWalkthrough onComplete={recordCompletion} />
+								</div>
+							)}
+							<div hidden={path === "/dashboard" || path === "/trade"}>
+								<ShowcasePanels path={path} orders={orders} navigate={navigate} />
+							</div>
 						</div>
-					)}
-					<div hidden={path === "/dashboard" || path === "/trade"}>
-						<ShowcasePanels path={path} orders={orders} navigate={navigate} />
 					</div>
 				</div>
 			</div>
-		</div>
+			{hero && (
+				<div
+					className="cl-story-conversion"
+					onFocusCapture={() => setTradeOpened(true)}
+					role="region"
+					aria-label="Buy and sell stablecoins"
+					tabIndex={-1}
+					inert={!hero.interactive ? true : undefined}
+					aria-hidden={!hero.visible ? true : undefined}
+				>
+					<ProductWalkthrough presentation="card" onComplete={recordCompletion} />
+					<button className="cl-conversion-return" onClick={hero.close}>
+						<ArrowLeft size={14} /> Back to dashboard
+					</button>
+				</div>
+			)}
+		</>
 	);
 }

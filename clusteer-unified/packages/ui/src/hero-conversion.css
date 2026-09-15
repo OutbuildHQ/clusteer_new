@@ -1,0 +1,418 @@
+/* The conversion keeps its own DOM and state as the dashboard recedes behind it. */
+.cl-story-dashboard {
+	opacity: var(--dashboard-opacity, 1);
+}
+.cl-story-conversion {
+	position: absolute;
+	z-index: 2;
+	width: min(560px, calc(100% - 40px));
+	left: 50%;
+	top: 50%;
+	opacity: var(--conversion-opacity, 0);
+	transform: translate(-50%, -50%) translateX(var(--conversion-x, 72px))
+		scale(var(--conversion-scale, 0.68));
+	transform-origin: center;
+	color: var(--m-ink);
+	visibility: hidden;
+}
+.is-conversion-visible .cl-story-conversion {
+	visibility: visible;
+}
+.cl-story-conversion[inert] {
+	pointer-events: none;
+}
+.cl-story-conversion:focus {
+	outline: none;
+}
+.cl-conversion-return {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	font-size: 13px;
+	color: var(--m-muted);
+	margin: 12px auto 0;
+	min-height: 44px;
+	padding-inline: 16px;
+	border-radius: 999px;
+	cursor: pointer;
+}
+.has-scroll-motion .cl-conversion-return {
+	display: none;
+}
+.cl-scroll-story:not(.has-scroll-motion) .cl-story-conversion {
+	position: relative;
+	left: auto;
+	top: auto;
+	width: min(560px, 100%);
+	margin: 0 auto;
+	transform: none;
+	opacity: 1;
+	display: none;
+}
+.cl-scroll-story:not(.has-scroll-motion).is-conversion-visible .cl-story-dashboard {
+	display: none;
+}
+.cl-scroll-story:not(.has-scroll-motion).is-conversion-visible .cl-story-conversion {
+	display: block;
+}
+/* Independent public converter. The authenticated dashboard retains its own UI. */
+.cl-conversion-card {
+	padding: 26px;
+	border-radius: 16px;
+	background: var(--m-white);
+	box-shadow: 0 20px 64px #172b2617;
+	color: var(--m-ink);
+}
+.cl-converter-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 20px;
+}
+.cl-converter-header h3 {
+	margin: 0;
+	font-family: var(--font-inter), sans-serif;
+	font-size: 22px;
+	font-weight: 500;
+	letter-spacing: -0.03em;
+}
+.cl-converter-header h3:focus {
+	outline: none;
+}
+.cl-converter-direction {
+	display: flex;
+	padding: 4px;
+	background: var(--m-paper);
+	border-radius: 999px;
+}
+.cl-converter-direction button {
+	min-width: 72px;
+	min-height: 40px;
+	padding: 8px 20px;
+	border-radius: 999px;
+	font-size: 14px;
+	cursor: pointer;
+	transition:
+		background-color 160ms,
+		color 160ms;
+}
+.cl-converter-direction button[aria-pressed="true"] {
+	background: var(--m-ink);
+	color: white;
+}
+.cl-converter-direction button:hover:not([aria-pressed="true"]) {
+	background: var(--m-wash);
+}
+.cl-converter-entry {
+	padding: 14px 18px 0;
+	border: 1px solid var(--m-line);
+	border-radius: 12px;
+}
+.cl-converter-entry:focus-within {
+	outline: 2px solid var(--m-ink);
+	outline-offset: 3px;
+}
+.cl-converter-entry > label,
+.cl-converter-result > span {
+	display: block;
+	font-size: 14px;
+	color: var(--m-muted);
+}
+.cl-converter-amount {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+.cl-converter-amount input {
+	min-width: 0;
+	width: 100%;
+	height: 50px;
+	background: transparent;
+	border: 0;
+	outline: none;
+	font-size: 36px;
+	font-weight: 500;
+	letter-spacing: -0.03em;
+	font-variant-numeric: tabular-nums;
+	appearance: textfield;
+}
+.cl-converter-amount input::-webkit-inner-spin-button,
+.cl-converter-amount input::-webkit-outer-spin-button {
+	appearance: none;
+	margin: 0;
+}
+.cl-converter-asset {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+	position: relative;
+}
+.cl-converter-asset select {
+	appearance: none;
+	padding: 0 20px 0 0;
+	background: transparent;
+	border: 0;
+	min-height: 44px;
+	font-size: 16px;
+	font-weight: 500;
+	cursor: pointer;
+}
+.cl-converter-asset > svg {
+	pointer-events: none;
+	position: absolute;
+	right: 0;
+}
+.cl-converter-network {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	border-top: 1px solid var(--m-line);
+	margin-top: 4px;
+	min-height: 44px;
+}
+.cl-converter-network > label {
+	font-size: 13px;
+	color: var(--m-muted);
+}
+.cl-converter-network > div {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+	position: relative;
+}
+.cl-converter-network select {
+	appearance: none;
+	background: transparent;
+	border: 0;
+	padding-right: 20px;
+	min-height: 44px;
+	min-width: 0;
+	max-width: 230px;
+	font-size: 13px;
+	color: var(--m-ink);
+	cursor: pointer;
+}
+.cl-converter-network svg {
+	position: absolute;
+	right: 0;
+	pointer-events: none;
+}
+.cl-converter-connector {
+	display: flex;
+	justify-content: center;
+	height: 24px;
+	align-items: center;
+	color: var(--m-muted);
+}
+.cl-converter-result {
+	background: var(--m-wash);
+	padding: 14px 18px;
+	border-radius: 12px;
+}
+.cl-converter-result > div {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px;
+	margin-top: 4px;
+}
+.cl-converter-result strong {
+	font-size: 36px;
+	font-weight: 500;
+	letter-spacing: -0.03em;
+	line-height: 1.3;
+	font-variant-numeric: tabular-nums;
+	overflow-wrap: anywhere;
+	min-width: 0;
+}
+.cl-converter-currency {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	font-size: 14px;
+	font-weight: 500;
+	flex-shrink: 0;
+}
+.cl-converter-currency > span {
+	display: grid;
+	place-items: center;
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	background: var(--m-ink);
+	color: white;
+	font-size: 15px;
+}
+.cl-converter-details {
+	margin: 16px 0 20px;
+}
+.cl-converter-details > div {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	padding-block: 5px;
+	font-size: 14px;
+}
+.cl-converter-details dt {
+	color: var(--m-muted);
+	flex-shrink: 0;
+}
+.cl-converter-details dd {
+	margin: 0;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	overflow-wrap: anywhere;
+	min-width: 0;
+}
+.cl-converter-action {
+	width: 100%;
+	min-height: 48px;
+	border-radius: 999px;
+	font-size: 14px;
+}
+.cl-converter-footnote {
+	margin: 10px 0 0;
+	text-align: center;
+	font-size: 12px;
+	color: var(--m-muted);
+	line-height: 1.5;
+}
+.cl-converter-edit {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-height: 44px;
+	padding: 0 12px;
+	border-radius: 999px;
+	background: var(--m-paper);
+	font-size: 13px;
+	cursor: pointer;
+}
+.cl-converter-edit:hover {
+	background: var(--m-wash);
+}
+.cl-converter-route {
+	list-style: none;
+	margin: 0 0 20px;
+	padding: 0;
+}
+.cl-converter-route li {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+	padding-block: 10px;
+}
+.cl-converter-route li > span {
+	width: 36px;
+	height: 36px;
+	display: grid;
+	place-items: center;
+	flex-shrink: 0;
+	background: var(--m-paper);
+	border-radius: 50%;
+}
+.cl-converter-route strong {
+	font-size: 14px;
+	font-weight: 500;
+}
+.cl-converter-route p {
+	margin: 2px 0 0;
+	font-size: 13px;
+	color: var(--m-muted);
+	line-height: 1.5;
+}
+.cl-converter-complete {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin: 10px 0 24px;
+}
+.cl-converter-complete > span {
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	background: var(--m-wash);
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+.cl-converter-complete strong {
+	font-weight: 500;
+	font-size: 16px;
+}
+.cl-converter-complete p {
+	font-size: 13px;
+	color: var(--m-muted);
+	margin: 4px 0 0;
+	line-height: 1.5;
+}
+.cl-converter-reference {
+	font-size: 12px;
+}
+.cl-converter-error {
+	color: #9d3029;
+	font-size: 13px;
+	line-height: 1.5;
+	margin: 10px 0 0;
+}
+.cl-converter-empty {
+	color: var(--m-muted);
+	font-size: 14px;
+	margin: 16px 0 20px;
+	line-height: 1.5;
+}
+@media (max-width: 600px) {
+	.cl-conversion-card {
+		padding: 20px;
+	}
+	.cl-converter-header h3 {
+		font-size: 21px;
+	}
+	.cl-converter-direction button {
+		min-width: 62px;
+		padding-inline: 14px;
+	}
+	.cl-converter-result strong {
+		font-size: clamp(24px, 6.6vw, 34px);
+	}
+	.cl-converter-amount input {
+		font-size: 32px;
+	}
+	.cl-converter-currency > span {
+		display: none;
+	}
+	.cl-converter-details > div {
+		font-size: 13px;
+	}
+	.cl-converter-network select {
+		max-width: 185px;
+		font-size: 12px;
+	}
+	.cl-converter-entry,
+	.cl-converter-result {
+		padding-inline: 12px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.cl-converter-direction button {
+		transition: none;
+	}
+}
+.cl-story-conversion :is(button, select):focus-visible {
+	outline: 2px solid var(--m-ink);
+	outline-offset: 3px;
+}
+.cl-converter-asset img {
+	width: 26px;
+	height: auto;
+}
+.cl-converter-network img {
+	width: 18px;
+	height: auto;
+}
