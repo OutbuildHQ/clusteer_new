@@ -1,16 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import {
-	ArrowDown,
-	ArrowLeft,
-	ArrowRight,
-	Check,
-	ChevronDown,
-	Landmark,
-	Wallet,
-} from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, Check, Landmark, Wallet } from "lucide-react";
+import { WebsiteSelect } from "./website-select";
 import { formatNaira } from "./quote-summary";
 import type { OverviewOrder } from "./customer-overview";
 
@@ -101,41 +93,45 @@ export function HeroConversionCard(props: Props) {
 								onChange={(event) => props.onValue(event.target.value)}
 							/>
 							<div className="cl-converter-asset">
-								<Image
-									src={`/assets/images/${asset.toLowerCase()}.svg`}
-									alt=""
-									width={26}
-									height={26}
-								/>
-								<select
-									aria-label="Stablecoin"
+								<WebsiteSelect
+									label="Stablecoin"
 									value={asset}
-									onChange={(event) => props.onAsset(event.target.value as "USDT" | "USDC")}
-								>
-									<option value="USDT">USDT</option>
-									<option value="USDC">USDC</option>
-								</select>
-								<ChevronDown size={14} aria-hidden="true" />
+									onChange={(value) => props.onAsset(value as "USDT" | "USDC")}
+									options={[
+										{
+											value: "USDT",
+											label: "USDT",
+											detail: "Tether",
+											icon: "/assets/images/usdt.svg",
+										},
+										{
+											value: "USDC",
+											label: "USDC",
+											detail: "USD Coin",
+											icon: "/assets/images/usdc.svg",
+										},
+									]}
+								/>
 							</div>
 						</div>
 						<div className="cl-converter-network">
 							<label htmlFor={`${id}-network`}>Network</label>
 							<div>
-								<Image src={`/assets/icons/${network.icon}.svg`} alt="" width={18} height={18} />
-								<select
+								<WebsiteSelect
 									id={`${id}-network`}
+									label="Network"
 									value={networkKey}
-									onChange={(event) => props.onNetwork(event.target.value)}
-								>
-									{Object.entries(networks)
+									onChange={props.onNetwork}
+									options={Object.entries(networks)
 										.filter(([key]) => asset === "USDT" || key === "ERC20")
-										.map(([key, item]) => (
-											<option key={key} value={key}>
-												{item.name} ({item.standard})
-											</option>
-										))}
-								</select>
-								<ChevronDown size={12} aria-hidden="true" />
+										.map(([key, item]) => ({
+											value: key,
+											label: item.name,
+											detail: item.standard,
+											shortLabel: `${item.name} (${item.standard})`,
+											icon: `/assets/icons/${item.icon}.svg`,
+										}))}
+								/>
 							</div>
 						</div>
 					</div>

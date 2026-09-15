@@ -1,20 +1,35 @@
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { ScrollStory } from "../../packages/ui/src/components/brand/scroll-story";
 import { ProductWalkthrough } from "../../packages/ui/src/components/brand/product-walkthrough";
 import { CustomerDashboardShowcase } from "../../apps/customer/src/components/app/customer-dashboard-showcase";
+
+// jsdom has no layout scrolling; Radix uses this when moving option focus.
+const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+beforeAll(() => {
+	HTMLElement.prototype.scrollIntoView = jest.fn();
+});
+afterAll(() => {
+	HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
+});
+function choose(label: string, option: string) {
+	fireEvent.keyDown(screen.getByRole("combobox", { name: label }), { key: "Enter" });
+	fireEvent.keyDown(screen.getByRole("option", { name: new RegExp(option) }), { key: "Enter" });
+}
 
 it("offers an independent website card with correct buy/sell totals and network constraints", () => {
 	const { container } = render(<ProductWalkthrough presentation="card" />);
 	expect(container.querySelector("aside")).toBeNull();
 	expect(screen.queryByText("Personal account")).not.toBeInTheDocument();
 	fireEvent.change(screen.getByLabelText("Amount in USDT"), { target: { value: "250" } });
-	fireEvent.change(screen.getByLabelText("Network"), { target: { value: "BEP20" } });
+	choose("Network", "BNB Smart Chain");
 	expect(screen.getByText("₦359,781.25")).toBeInTheDocument();
 	fireEvent.click(screen.getByRole("button", { name: "Buy", exact: true }));
 	expect(screen.getByText("₦365,218.75")).toBeInTheDocument();
-	fireEvent.change(screen.getByLabelText("Stablecoin"), { target: { value: "USDC" } });
-	expect(screen.getByLabelText("Network")).toHaveValue("ERC20");
-	expect(within(screen.getByLabelText("Network")).getAllByRole("option")).toHaveLength(1);
+	choose("Stablecoin", "USDC");
+	expect(screen.getByRole("combobox", { name: "Network" })).toHaveTextContent("Ethereum (ERC-20)");
+	fireEvent.keyDown(screen.getByRole("combobox", { name: "Network" }), { key: "Enter" });
+	expect(screen.getAllByRole("option")).toHaveLength(1);
+	fireEvent.keyDown(screen.getByRole("option"), { key: "Escape" });
 	fireEvent.change(screen.getByLabelText("Amount in USDC"), { target: { value: "0" } });
 	expect(screen.getByRole("button", { name: "Review conversion" })).toBeDisabled();
 	expect(screen.getByRole("alert")).toHaveTextContent("Enter an amount");
@@ -101,13 +116,13 @@ it("lifts only the converter and preserves edits across reverse scrolling and da
 	expect(panel).not.toHaveAttribute("inert");
 	expect(screen.queryByRole("button", { name: "Orders", exact: true })).not.toBeInTheDocument();
 	fireEvent.change(screen.getByLabelText("Amount in USDT"), { target: { value: "375" } });
-	fireEvent.change(screen.getByLabelText("Stablecoin"), { target: { value: "USDC" } });
+	choose("Stablecoin", "USDC");
 	view.scrollTo(0.3);
 	fireEvent.click(screen.getByRole("button", { name: "Orders", exact: true }));
 	expect(screen.getByRole("heading", { name: "Your orders" })).toBeInTheDocument();
 	view.scrollTo(0.75);
 	expect(screen.getByLabelText("Amount in USDC")).toHaveValue(375);
-	expect(screen.getByLabelText("Network")).toHaveValue("ERC20");
+	expect(screen.getByRole("combobox", { name: "Network" })).toHaveTextContent("Ethereum (ERC-20)");
 	view.finish();
 });
 
@@ -118,7 +133,7 @@ it.each(["amount", "direction", "network"])(
 		view.scrollTo(0.75);
 		fireEvent.change(screen.getByLabelText("Amount in USDT"), { target: { value: "250" } });
 		fireEvent.click(screen.getByRole("button", { name: "Buy", exact: true }));
-		fireEvent.change(screen.getByLabelText("Network"), { target: { value: "BEP20" } });
+		choose("Network", "BNB Smart Chain");
 		const target =
 			control === "amount"
 				? screen.getByLabelText("Amount in USDT")
@@ -143,7 +158,9 @@ it.each(["amount", "direction", "network"])(
 			"aria-pressed",
 			"true"
 		);
-		expect(screen.getByLabelText("Network")).toHaveValue("BEP20");
+		expect(screen.getByRole("combobox", { name: "Network" })).toHaveTextContent(
+			"BNB Smart Chain (BEP-20)"
+		);
 		view.finish();
 	}
 );
@@ -165,7 +182,7 @@ it.each(["buy", "sell"] as const)(
 	"keeps both amounts and the network on the %s receipt, with a waitlist handoff",
 	(side) => {
 		render(<ProductWalkthrough presentation="card" />);
-		fireEvent.change(screen.getByLabelText("Stablecoin"), { target: { value: "USDC" } });
+		choose("Stablecoin", "USDC");
 		fireEvent.change(screen.getByLabelText("Amount in USDC"), { target: { value: "250.1234" } });
 		fireEvent.click(
 			screen.getByRole("button", { name: side === "buy" ? "Buy" : "Sell", exact: true })
