@@ -25,6 +25,12 @@ The supplied log for `d9dfad5` showed both apps compiling and completing static 
 
 Selecting the actual customer app root aligns the Next.js adapter with its build output, configuration and `public` assets. Changing only the output directory at the workspace root would leave the adapter using the workspace's public directory.
 
+## Server runtime packaging
+
+Vercel resolves Next's `relativeAppDir` from the Git repository root. The customer config therefore uses that same root for `outputFileTracingRoot` when Vercel sets `VERCEL=1`. The generated path must be `clusteer-unified/apps/customer`, not `apps/customer`; otherwise the adapter looks for Next's server runtime in a nonexistent folder after the build succeeds.
+
+Firebase App Hosting and local builds keep the tracing root at `clusteer-unified`, preserving Firebase's expected standalone bundle structure. Turbopack uses the same root as file tracing in each environment, as required by Next.js 16.
+
 ## Separate runtime configuration
 
 The missing `SPRING_BOOT_API_KEY` warning did not cause this build failure. Backend-backed routes still require their server-side configuration in the appropriate Vercel environment. Set credentials through Vercel's environment settings, never in this file or a public `NEXT_PUBLIC_*` variable. The shared root `turbo.json` also uses an explicit environment allowlist; this customer deployment runs its own `next build` directly.
