@@ -416,3 +416,16 @@
 	width: 18px;
 	height: auto;
 }
+
+/* Mobile starts with the converter, including before hydration. */
+@media (max-width: 999px) {
+	.has-conversion-lift .cl-story-dashboard,
+	.has-conversion-lift .cl-hero-explore,
+	.has-conversion-lift .cl-conversion-return {
+		display: none;
+	}
+	.has-conversion-lift:not(.has-scroll-motion) .cl-story-conversion {
+		display: block;
+		visibility: visible;
+	}
+}

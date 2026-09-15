@@ -171,9 +171,11 @@ export function CustomerDashboardShowcase() {
 					aria-hidden={!hero.visible ? true : undefined}
 				>
 					<ProductWalkthrough presentation="card" onComplete={recordCompletion} />
-					<button className="cl-conversion-return" onClick={hero.close}>
-						<ArrowLeft size={14} /> Back to dashboard
-					</button>
+					{!hero.cardOnly && (
+						<button className="cl-conversion-return" onClick={hero.close}>
+							<ArrowLeft size={14} /> Back to dashboard
+						</button>
+					)}
 				</div>
 			)}
 		</>

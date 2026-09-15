@@ -21,16 +21,16 @@ it("offers an independent website card with correct buy/sell totals and network 
 	expect(screen.queryByText("₦0.00")).not.toBeInTheDocument();
 });
 
-function scene(animated = true) {
+function scene(animated = true, compact = false) {
 	let matches = animated;
 	let onMediaChange = () => {};
 	let progress = 0;
 	const queue: FrameRequestCallback[] = [];
 	const originalMedia = window.matchMedia;
 	const originalObserver = global.ResizeObserver;
-	window.matchMedia = jest.fn().mockImplementation(() => ({
+	window.matchMedia = jest.fn().mockImplementation((query: string) => ({
 		get matches() {
-			return matches;
+			return query.includes("max-width") ? compact : matches;
 		},
 		addEventListener: (_: string, fn: () => void) => {
 			onMediaChange = fn;
@@ -173,5 +173,23 @@ it("opens and closes the static converter locally, then shares its receipt with 
 	expect(screen.getByRole("button", { name: new RegExp(reference) })).toHaveTextContent(
 		"₦359,781.25"
 	);
+	view.finish();
+});
+
+it("shows only the converter on mobile without opening the dashboard first", () => {
+	const view = scene(false, true);
+	expect(screen.getByRole("region", { name: "Buy and sell stablecoins" })).not.toHaveAttribute(
+		"inert"
+	);
+	expect(screen.getByLabelText("Amount in USDT")).toHaveValue(100);
+	expect(screen.queryByRole("button", { name: "Overview", exact: true })).not.toBeInTheDocument();
+	expect(screen.queryByRole("button", { name: "Back to dashboard" })).not.toBeInTheDocument();
+	fireEvent.change(screen.getByLabelText("Amount in USDT"), { target: { value: "250" } });
+	fireEvent.click(screen.getByRole("button", { name: "Buy", exact: true }));
+	view.resize();
+	expect(screen.getByLabelText("Amount in USDT")).toHaveValue(250);
+	expect(screen.getByText("₦365,218.75")).toBeInTheDocument();
+	fireEvent.click(screen.getByRole("button", { name: "Review conversion" }));
+	expect(screen.getByRole("heading", { name: "Your conversion" })).toBeInTheDocument();
 	view.finish();
 });

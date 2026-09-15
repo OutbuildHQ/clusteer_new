@@ -22,6 +22,7 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 	const hasProduct = Boolean(product);
 	const [stage, setStage] = useState(0);
 	const [ready, setReady] = useState(false);
+	const [cardOnly, setCardOnly] = useState(false);
 	const [initialized, setInitialized] = useState(false);
 	const [arrived, setArrived] = useState(false);
 	const [introVisible, setIntroVisible] = useState(true);
@@ -97,6 +98,7 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 		const query = window.matchMedia(
 			"(min-width: 1000px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)"
 		);
+		const compactQuery = window.matchMedia("(max-width: 999px)");
 		let frame = 0,
 			finalScale = 1,
 			cardScale = 1;
@@ -198,6 +200,7 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 			if (!frame) frame = requestAnimationFrame(render);
 		};
 		const change = () => {
+			setCardOnly(hasProduct && compactQuery.matches);
 			measure();
 			if (motionEnabled !== query.matches) {
 				const keepConversion = hasProduct && element.classList.contains("is-conversion-visible");
@@ -255,9 +258,10 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 		<HeroConversionContext.Provider
 			value={{
 				motion: ready,
-				visible: conversionVisible,
-				interactive: conversionReady,
-				dashboardInteractive: !ready || dashboardReady,
+				cardOnly,
+				visible: cardOnly || conversionVisible,
+				interactive: cardOnly || conversionReady,
+				dashboardInteractive: !cardOnly && (!ready || dashboardReady),
 				open: openConversion,
 				close: explore,
 			}}
@@ -265,7 +269,7 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 			<section
 				ref={root}
 				tabIndex={-1}
-				className={`cl-scroll-story ${ready ? "has-scroll-motion" : ""} ${arrived ? "is-arrived" : ""} ${hasProduct ? "has-conversion-lift" : ""} ${conversionVisible ? "is-conversion-visible" : ""}`}
+				className={`cl-scroll-story ${ready ? "has-scroll-motion" : ""} ${arrived ? "is-arrived" : ""} ${hasProduct ? "has-conversion-lift" : ""} ${cardOnly || conversionVisible ? "is-conversion-visible" : ""}`}
 				aria-label="Explore a conversion at your own pace"
 			>
 				<div className="cl-story-sticky">
@@ -292,7 +296,11 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 							<Link className="cl-button" href="/early-access">
 								Join the waitlist <ArrowRight size={16} />
 							</Link>
-							<button type="button" className="cl-button cl-button-ghost" onClick={explore}>
+							<button
+								type="button"
+								className="cl-button cl-button-ghost cl-hero-explore"
+								onClick={explore}
+							>
 								Explore dashboard
 							</button>
 						</div>
@@ -320,7 +328,9 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 						className="cl-story-device"
 						tabIndex={-1}
 						role="region"
-						aria-label="Interactive Clusteer dashboard"
+						aria-label={
+							cardOnly ? "Interactive Clusteer conversion" : "Interactive Clusteer dashboard"
+						}
 						inert={ready && !arrived ? true : undefined}
 					>
 						<div className="cl-device-screen">
