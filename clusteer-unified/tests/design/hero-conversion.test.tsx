@@ -111,15 +111,45 @@ it("lifts only the converter and preserves edits across reverse scrolling and da
 	view.finish();
 });
 
-it("keeps the converter steady during editing and available when motion is disabled", () => {
+it.each(["amount", "direction", "network"])(
+	"restores the hero after interacting with %s without clearing the conversion",
+	(control) => {
+		const view = scene();
+		view.scrollTo(0.75);
+		fireEvent.change(screen.getByLabelText("Amount in USDT"), { target: { value: "250" } });
+		fireEvent.click(screen.getByRole("button", { name: "Buy", exact: true }));
+		fireEvent.change(screen.getByLabelText("Network"), { target: { value: "BEP20" } });
+		const target =
+			control === "amount"
+				? screen.getByLabelText("Amount in USDT")
+				: control === "direction"
+					? screen.getByRole("button", { name: "Buy", exact: true })
+					: screen.getByLabelText("Network");
+		act(() => target.focus());
+		view.scrollTo(0.55);
+		expect(view.root).toHaveFocus();
+		expect(view.container.querySelector(".cl-story-conversion")).toHaveAttribute("inert");
+		view.scrollTo(0);
+		expect(view.root.style.getPropertyValue("--copy-opacity")).toBe("1");
+		expect(view.root.style.getPropertyValue("--dashboard-opacity")).toBe("1");
+		expect(view.root).not.toHaveClass("is-conversion-visible");
+		expect(view.container.querySelector(".cl-story-intro")).not.toHaveAttribute("inert");
+		view.scrollTo(0.75);
+		expect(screen.getByLabelText("Amount in USDT")).toHaveValue(250);
+		expect(screen.getByRole("button", { name: "Buy", exact: true })).toHaveAttribute(
+			"aria-pressed",
+			"true"
+		);
+		expect(screen.getByLabelText("Network")).toHaveValue("BEP20");
+		view.finish();
+	}
+);
+
+it("keeps an open converter available when motion is disabled", () => {
 	const view = scene();
 	view.scrollTo(0.75);
 	const input = screen.getByLabelText("Amount in USDT");
 	act(() => input.focus());
-	view.scrollTo(0.1);
-	expect(input).toHaveFocus();
-	expect(view.root.style.getPropertyValue("--dashboard-opacity")).toBe("0");
-	expect(view.container.querySelector(".cl-story-conversion")).not.toHaveAttribute("inert");
 	view.media(false);
 	expect(view.root).not.toHaveClass("has-scroll-motion");
 	expect(view.root).toHaveClass("is-conversion-visible");

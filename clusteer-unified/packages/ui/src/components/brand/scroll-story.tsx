@@ -111,13 +111,16 @@ export function ScrollStory({ product }: { product?: ReactNode } = {}) {
 			frame = 0;
 			if (!query.matches) return;
 			const rect = element.getBoundingClientRect();
-			let p = Math.max(
+			const p = Math.max(
 				0,
 				Math.min(1, -rect.top / Math.max(1, element.offsetHeight - window.innerHeight))
 			);
-			// Once someone edits the card, keep it steady until focus leaves it.
+			// Scroll position always owns the scene, even after a field or button was used.
+			// Release focus before the returning card becomes inert; keep its local state.
 			const conversion = element.querySelector<HTMLElement>(".cl-story-conversion");
-			if (hasProduct && conversion?.contains(document.activeElement)) p = Math.max(0.7, p);
+			if (hasProduct && p < 0.7 && conversion?.contains(document.activeElement)) {
+				element.focus({ preventScroll: true });
+			}
 			const approach = Math.min(1, p / (hasProduct ? 0.3 : 0.5));
 			if (hasProduct) {
 				const lift = Math.min(1, Math.max(0, (p - 0.32) / 0.38));
