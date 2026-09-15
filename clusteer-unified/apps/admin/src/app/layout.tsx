@@ -27,9 +27,7 @@ export const metadata: Metadata = {
 	title: "Clusteer Admin",
 	description: "Clusteer administration dashboard",
 	icons: {
-		icon: [
-			{ url: "/favicon.svg", type: "image/svg+xml" },
-		],
+		icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
 		apple: "/apple-icon.svg",
 	},
 	robots: { index: false, follow: false },
@@ -38,12 +36,9 @@ export const metadata: Metadata = {
 export const viewport = {
 	width: "device-width",
 	initialScale: 1,
-	maximumScale: 1,
 };
 
-export default function RootLayout({
-	children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body

@@ -20,7 +20,10 @@ export function OrderOtp({ order, onVerified, onBack }: Props) {
 		setVerifying(true);
 		// Demo: simulate OTP verification with a short delay
 		setTimeout(() => {
-			onVerified({ ...order, status: order.side === "buy" ? "awaiting_payment" : "awaiting_deposit" });
+			onVerified({
+				...order,
+				status: order.side === "buy" ? "awaiting_payment" : "awaiting_deposit",
+			});
 		}, 500);
 	}, [order, onVerified]);
 
@@ -47,19 +50,25 @@ export function OrderOtp({ order, onVerified, onBack }: Props) {
 					Verify it&apos;s you
 				</h2>
 				<p className="text-[14px] text-ds-text-2 mt-1.5 leading-normal">
-					Enter the 6-digit code sent to your registered phone number to authorise this {sideLabel} order.
+					For this preview, enter any six digits to explore the next step. No verification code has
+					been sent.
 				</p>
 			</div>
 
 			{/* OTP Input */}
 			<div>
-				<InputOTP maxLength={6} value={code} onChange={setCode}>
-					<InputOTPGroup className="gap-2">
+				<InputOTP
+					aria-label="Preview verification code"
+					maxLength={6}
+					value={code}
+					onChange={setCode}
+				>
+					<InputOTPGroup className="gap-1.5 w-full">
 						{[0, 1, 2, 3, 4, 5].map((i) => (
 							<InputOTPSlot
 								key={i}
 								index={i}
-								className={`w-12 h-14 text-xl font-bold rounded-xl border-2 bg-ds-surface text-ds-text tabular-nums ${
+								className={`min-w-0 flex-1 w-10 h-12 text-xl font-bold rounded-xl border-2 bg-ds-surface text-ds-text tabular-nums ${
 									code[i] ? "border-ds-text" : "border-ds-line"
 								}`}
 							/>
@@ -72,7 +81,7 @@ export function OrderOtp({ order, onVerified, onBack }: Props) {
 			<div className="flex items-center gap-1.5 text-[13px] text-ds-text-2">
 				<Clock size={14} />
 				{countdown > 0 ? (
-					<span>Resend code in 0:{countdown.toString().padStart(2, "0")}</span>
+					<span>Preview only · no code required from your phone</span>
 				) : (
 					<button
 						onClick={() => setCountdown(42)}
@@ -95,7 +104,7 @@ export function OrderOtp({ order, onVerified, onBack }: Props) {
 							: "cursor-pointer opacity-100"
 				}`}
 			>
-				{verifying ? "Verifying…" : `Authorise ${sideLabel} order`}
+				{verifying ? "Verifying…" : `Preview ${sideLabel} instructions`}
 			</button>
 		</div>
 	);

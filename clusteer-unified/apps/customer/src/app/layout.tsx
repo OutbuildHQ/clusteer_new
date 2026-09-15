@@ -26,13 +26,11 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Clusteer — Bridge your Naira into the global digital economy",
+	title: "Clusteer — Stablecoins and naira, connected",
 	description:
-		"Buy, sell and hold stablecoins with Naira. Built for Nigeria.",
+		"Buy stablecoins to your own wallet or sell to your Nigerian bank account. Clusteer is preparing for public launch.",
 	icons: {
-		icon: [
-			{ url: "/favicon.svg", type: "image/svg+xml" },
-		],
+		icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
 		apple: "/apple-icon.svg",
 	},
 	keywords: [
@@ -40,16 +38,16 @@ export const metadata: Metadata = {
 		"Buy USDT Nigeria",
 		"Sell USDT",
 		"Stablecoin exchange Nigeria",
-		"P2P trading Nigeria",
+		"stablecoin conversion Nigeria",
 		"stablecoin exchange",
 		"USDT to Naira exchange",
 		"stablecoin exchange Nigeria",
 	],
 	authors: [{ name: "Clusteer" }],
 	openGraph: {
-		title: "Clusteer — Bridge your Naira into the global digital economy",
+		title: "Clusteer — Stablecoins and naira, connected",
 		description:
-			"Buy, sell and hold stablecoins with Naira. Built for Nigeria.",
+			"Buy stablecoins to your own wallet or sell to your Nigerian bank account. Clusteer is preparing for public launch.",
 		url: "https://clusteer.com",
 		siteName: "Clusteer",
 		type: "website",
@@ -64,9 +62,9 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Clusteer — Bridge your Naira into the global digital economy",
+		title: "Clusteer — Stablecoins and naira, connected",
 		description:
-			"Buy, sell and hold stablecoins with Naira. Built for Nigeria.",
+			"Buy stablecoins to your own wallet or sell to your Nigerian bank account. Clusteer is preparing for public launch.",
 		images: ["/og-image.png"],
 	},
 	robots: {
@@ -78,22 +76,21 @@ export const metadata: Metadata = {
 export const viewport = {
 	width: "device-width",
 	initialScale: 1,
-	maximumScale: 1,
 };
 
-export default function RootLayout({
-	children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
 				className={`${inter.variable} ${sora.variable} ${jetbrains.variable} antialiased min-h-screen`}
 				suppressHydrationWarning
 			>
-				<ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-				<Toaster position="bottom-center" richColors closeButton />
-				<CookieConsent />
-				<ConsentScripts />
+				<ReactQueryClientProvider>
+					{children}
+					<Toaster position="bottom-center" richColors closeButton />
+					<CookieConsent />
+					<ConsentScripts />
+				</ReactQueryClientProvider>
 			</body>
 		</html>
 	);

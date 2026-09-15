@@ -5,10 +5,7 @@ export async function GET(request: NextRequest) {
 	try {
 		const auth = getAuthFromRequest(request);
 		if (!auth) {
-			return NextResponse.json(
-				{ status: false, message: "Unauthorized" },
-				{ status: 401 }
-			);
+			return NextResponse.json({ status: false, message: "Unauthorized" }, { status: 401 });
 		}
 
 		const { userId } = auth;
@@ -29,24 +26,18 @@ export async function GET(request: NextRequest) {
 		const response = await djangoFetch(`/user/${userId}/orders/?${queryParams.toString()}`);
 
 		if (!response.ok) {
-			// Gracefully return empty list for any backend error (404, 500, etc.)
-			return NextResponse.json({
-				status: true,
-				data: [],
-				metadata: { page: 1, size: 10, totalItems: 0, totalPages: 1 },
-			});
+			return NextResponse.json(
+				{ status: false, message: "We couldn’t load your orders. Please try again." },
+				{ status: response.status === 401 || response.status === 403 ? response.status : 502 }
+			);
 		}
 
 		const responseData = await response.json();
 		return NextResponse.json(responseData);
-	} catch (error: any) {
-		console.error("Order fetch error:", error);
-
-		// Backend down or any unexpected error — return empty list gracefully
-		return NextResponse.json({
-			status: true,
-			data: [],
-			metadata: { page: 1, size: 10, totalItems: 0, totalPages: 1 },
-		});
+	} catch {
+		return NextResponse.json(
+			{ status: false, message: "Your orders are temporarily unavailable. Please try again." },
+			{ status: 503 }
+		);
 	}
 }

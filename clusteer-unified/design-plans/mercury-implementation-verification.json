@@ -1,0 +1,138 @@
+{
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "title": "Clusteer \u2014 Stablecoins and naira, connected"
+    },
+    {
+      "route": "/buy",
+      "status": 200,
+      "title": "Buy stablecoins \u2014 Clusteer"
+    },
+    {
+      "route": "/sell",
+      "status": 200,
+      "title": "Sell stablecoins \u2014 Clusteer"
+    },
+    {
+      "route": "/demo",
+      "status": 200,
+      "title": "Explore the Clusteer experience"
+    },
+    {
+      "route": "/fees",
+      "status": 200,
+      "title": "Fees &amp; rates \u2014 Clusteer"
+    },
+    {
+      "route": "/security",
+      "status": 200,
+      "title": "Safety &amp; fund flow \u2014 Clusteer"
+    },
+    {
+      "route": "/help",
+      "status": 200,
+      "title": "Help centre \u2014 Clusteer"
+    },
+    {
+      "route": "/faq",
+      "status": 200,
+      "title": "Frequently asked questions \u2014 Clusteer"
+    },
+    {
+      "route": "/about",
+      "status": 200,
+      "title": "About Clusteer"
+    },
+    {
+      "route": "/contact",
+      "status": 200,
+      "title": "Contact \u2014 Clusteer"
+    },
+    {
+      "route": "/press",
+      "status": 200,
+      "title": "Press &amp; brand \u2014 Clusteer"
+    },
+    {
+      "route": "/careers",
+      "status": 200,
+      "title": "Careers \u2014 Clusteer"
+    },
+    {
+      "route": "/mobile",
+      "status": 200,
+      "title": "Clusteer mobile \u2014 In development | Clusteer"
+    },
+    {
+      "route": "/payments",
+      "status": 200,
+      "title": "Payment requests \u2014 In development | Clusteer"
+    },
+    {
+      "route": "/rate-alerts",
+      "status": 200,
+      "title": "Rate alerts \u2014 In development | Clusteer"
+    },
+    {
+      "route": "/live-markets",
+      "status": 200,
+      "title": "Market view \u2014 In development | Clusteer"
+    },
+    {
+      "route": "/early-access",
+      "status": 200,
+      "title": "Clusteer \u2014 Stablecoins and naira, connected"
+    },
+    {
+      "route": "/terms-of-service",
+      "status": 200,
+      "title": "Terms of Service \u2014 Clusteer"
+    },
+    {
+      "route": "/privacy-policy",
+      "status": 200,
+      "title": "Privacy Policy \u2014 Clusteer"
+    },
+    {
+      "route": "/aml-cft",
+      "status": 200,
+      "title": "AML/CFT Policy \u2014 Clusteer"
+    },
+    {
+      "route": "/cookie-policy",
+      "status": 200,
+      "title": "Cookie Policy \u2014 Clusteer"
+    },
+    {
+      "route": "/status",
+      "status": 200,
+      "reachability_copy_present": true
+    }
+  ],
+  "tests": {
+    "total_passed": 17,
+    "suites": [
+      "conversion",
+      "website",
+      "scroll-fallback",
+      "order-errors"
+    ],
+    "note": "Order-errors suite rerun after correcting its test import; all 17 cases passed across the final focused runs."
+  },
+  "builds": {
+    "customer": "passed",
+    "admin": "passed"
+  },
+  "detector": [],
+  "browser": {
+    "desktop": "Opening, scroll approach, transfer/receipt, navigation, Buy and Help inspected",
+    "mobile": "390 \u00d7 844: homepage, navigation and Buy inspected; desktop-to-static transition checked",
+    "button_radius": {
+      "website": "999px",
+      "dashboard": "10px"
+    },
+    "reduced_motion": "Static-layout reset covered by simulated media-query unit test; system preference not toggled"
+  }
+}

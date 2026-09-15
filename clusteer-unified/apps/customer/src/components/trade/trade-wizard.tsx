@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Info, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
+import { SettlementProgress } from "@/components/brand/quote-summary";
 import type { QxOrderSide, QxChannel, QxOrder } from "@/lib/types";
 import { BuyEntry } from "./buy-entry";
 import { SellEntry } from "./sell-entry";
@@ -44,70 +46,26 @@ const STEP_INDEX: Record<TradeStep, number> = {
 
 function Stepper({ current, isBuy }: { current: TradeStep; isBuy: boolean }) {
 	const steps = ["Details", "Review", "Verify", isBuy ? "Pay" : "Send", "Done"];
-	const stepIdx = STEP_INDEX[current];
-
 	return (
-		<div className="flex items-center gap-0 mb-1">
-			{steps.map((s, i) => (
-				<div
-					key={s}
-					className="flex items-center gap-2"
-					style={{ flex: i < steps.length - 1 ? 1 : "0 0 auto" }}
-				>
-					<div className="flex items-center gap-2">
-						<div
-							className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-[11px] font-semibold"
-							style={{
-								background:
-									i < stepIdx
-										? "var(--c-lime-500)"
-										: i === stepIdx
-											? "var(--c-onyx-900)"
-											: "var(--c-surface-3)",
-								color:
-									i < stepIdx
-										? "var(--c-onyx-900)"
-										: i === stepIdx
-											? "var(--c-cream)"
-											: "var(--c-text-3)",
-							}}
-						>
-							{i < stepIdx ? <Check size={12} strokeWidth={3} /> : i + 1}
-						</div>
-						<span
-							className="text-[12px] whitespace-nowrap"
-							style={{
-								fontWeight: i === stepIdx ? 600 : 400,
-								color: i <= stepIdx ? "var(--c-text)" : "var(--c-text-3)",
-							}}
-						>
-							{s}
-						</span>
-					</div>
-					{i < steps.length - 1 && (
-						<div
-							className="flex-1 h-0.5 mx-2"
-							style={{
-								background:
-									i < stepIdx ? "var(--c-lime-500)" : "var(--c-line)",
-							}}
-						/>
-					)}
-				</div>
-			))}
-		</div>
+		<SettlementProgress
+			current={current === "done" ? steps.length : STEP_INDEX[current]}
+			labels={steps}
+		/>
 	);
 }
 
-export function TradeWizard() {
+export function TradeWizard({ initialSide = "buy" }: { initialSide?: QxOrderSide }) {
 	const [step, setStep] = useState<TradeStep>("form");
-	const [state, setState] = useState<TradeState>(INITIAL);
+	const [state, setState] = useState<TradeState>({ ...INITIAL, side: initialSide });
+	useEffect(() => {
+		if (new URLSearchParams(window.location.search).get("side") === "sell")
+			setState((s) => ({ ...s, side: "sell" }));
+	}, []);
 
-	const updateState = (patch: Partial<TradeState>) =>
-		setState((s) => ({ ...s, ...patch }));
+	const updateState = (patch: Partial<TradeState>) => setState((s) => ({ ...s, ...patch }));
 
 	const reset = () => {
-		setState(INITIAL);
+		setState({ ...INITIAL, side: state.side });
 		setStep("form");
 	};
 
@@ -141,14 +99,36 @@ export function TradeWizard() {
 		switch (step) {
 			case "form":
 				return isBuy ? (
-					<BuyEntry state={state} updateState={updateState} onContinue={handleContinueToReview} onSwitchSide={() => updateState({ side: "sell" })} />
+					<BuyEntry
+						state={state}
+						updateState={updateState}
+						onContinue={handleContinueToReview}
+						onSwitchSide={() => updateState({ side: "sell", amount: 0 })}
+					/>
 				) : (
-					<SellEntry state={state} updateState={updateState} onContinue={handleContinueToReview} onSwitchSide={() => updateState({ side: "buy" })} />
+					<SellEntry
+						state={state}
+						updateState={updateState}
+						onContinue={handleContinueToReview}
+						onSwitchSide={() => updateState({ side: "buy", amount: 0 })}
+					/>
 				);
 			case "review":
-				return <OrderReview state={state} onOrderCreated={handleOrderCreated} onBack={() => setStep("form")} />;
+				return (
+					<OrderReview
+						state={state}
+						onOrderCreated={handleOrderCreated}
+						onBack={() => setStep("form")}
+					/>
+				);
 			case "otp":
-				return <OrderOtp order={state.order!} onVerified={handleOtpVerified} onBack={() => setStep("review")} />;
+				return (
+					<OrderOtp
+						order={state.order!}
+						onVerified={handleOtpVerified}
+						onBack={() => setStep("review")}
+					/>
+				);
 			case "handoff":
 				return isBuy ? (
 					<BuyHandoff order={state.order!} onDone={handleHandoffDone} onCancel={reset} />
@@ -156,7 +136,13 @@ export function TradeWizard() {
 					<SellHandoff order={state.order!} onDone={handleHandoffDone} onCancel={reset} />
 				);
 			case "confirming":
-				return <OrderConfirming order={state.order!} onConfirmed={handleConfirmed} onFailed={handleFailed} />;
+				return (
+					<OrderConfirming
+						order={state.order!}
+						onConfirmed={handleConfirmed}
+						onFailed={handleFailed}
+					/>
+				);
 			case "done":
 				return <OrderDone order={state.order!} onTradeAgain={reset} />;
 			case "failed":
@@ -165,18 +151,57 @@ export function TradeWizard() {
 	};
 
 	return (
-		<div className="flex flex-col gap-6 max-w-[520px] mx-auto w-full">
-			<h1 className="text-[32px] font-semibold text-ds-text tracking-[-0.03em] m-0 font-display">
-				Buy & Sell
-			</h1>
-			<Stepper current={step} isBuy={isBuy} />
-			{step === "form" ? (
-				renderStep()
-			) : (
-				<div className="bg-ds-surface rounded-[14px] border border-ds-line p-6">
-					{renderStep()}
+		<div className="cl-workspace">
+			<div className="cl-page-heading">
+				<div>
+					<h1>Make your next move.</h1>
+					<p>One clear journey, from your quote to your receipt.</p>
 				</div>
-			)}
+			</div>
+			<div className="cl-preview-notice">
+				<Info size={16} />
+				<span>
+					Interactive preview. This flow simulates an order; no payment is submitted and no funds
+					are moved. Do not send money to preview details.
+				</span>
+			</div>
+			<div className="cl-trade-layout">
+				<div className="cl-trade-form flex flex-col gap-6">
+					<h2 className="text-[22px] font-medium text-ds-text tracking-[-0.03em] m-0 font-display">
+						Buy or sell stablecoins
+					</h2>
+					<Stepper current={step} isBuy={isBuy} />
+					{step === "form" ? (
+						renderStep()
+					) : (
+						<div className="bg-ds-surface rounded-[14px] border border-ds-line p-6">
+							{renderStep()}
+						</div>
+					)}
+				</div>
+				<aside className="cl-trade-aside">
+					<h2>Clarity at every step.</h2>
+					<p>
+						Review the amount, network and destination together. Your summary keeps the details
+						close throughout the journey.
+					</p>
+					<SettlementProgress
+						labels={
+							isBuy
+								? ["Quote reviewed", "Payment received", "Wallet delivery confirmed"]
+								: ["Quote reviewed", "Transfer received", "Bank payout confirmed"]
+						}
+						current={step === "form" || step === "review" ? 0 : step === "done" ? 3 : 1}
+					/>
+					<Link href="/support" className="cl-text-link">
+						Get help with an order <ArrowUpRight size={15} />
+					</Link>
+					<p>
+						Always use the network shown in your order. Transfers on a different network may not be
+						recoverable.
+					</p>
+				</aside>
+			</div>
 		</div>
 	);
 }

@@ -129,7 +129,7 @@ export default function CookieConsent() {
 					transition={{ type: "spring", stiffness: 340, damping: 30 }}
 					className="fixed bottom-6 left-6 z-50 w-[320px] max-w-[calc(100vw-3rem)]"
 				>
-					<div className="relative overflow-hidden rounded-[20px] border-2 border-custom-black bg-white shadow-[4px_4px_0px_0px_#21241D] p-5">
+					<div className="relative overflow-hidden rounded-[14px] border border-[#DCE2DC] bg-white shadow-[0_8px_35px_rgba(23,43,38,0.12)] p-5">
 						{/* Faint watermark icon */}
 						<div
 							aria-hidden="true"
@@ -149,8 +149,8 @@ export default function CookieConsent() {
 						</div>
 
 						<p className="text-xs text-custom-black/60 leading-relaxed mb-4">
-							We use cookies to improve your experience. You control what&apos;s on.
-							Essential cookies are always required.{" "}
+							We use cookies to improve your experience. You control what&apos;s on. Essential
+							cookies are always required.{" "}
 							<span className="text-custom-black/40">NDPR compliant.</span>
 						</p>
 
@@ -205,13 +205,13 @@ export default function CookieConsent() {
 								variant="outline"
 								size="sm"
 								onClick={handleSave}
-								className="flex-1 h-8 text-xs rounded-full border-2 border-custom-black font-semibold hover:bg-warm-beige"
+								className="flex-1 h-8 text-xs rounded-full border border-[#DCE2DC] font-semibold hover:bg-warm-beige"
 							>
 								Save
 							</Button>
 							<button
 								onClick={handleAcceptAll}
-								className="btn-shine flex-1 h-8 text-xs rounded-full border-2 border-custom-black bg-light-green font-bold font-sora text-custom-black transition-all hover:shadow-[2px_2px_0px_0px_#21241D] active:translate-y-px"
+								className="flex-1 h-8 text-xs rounded-full border border-[#DCE2DC] bg-light-green font-bold font-sora text-custom-black transition-all hover:bg-[#D4EF8A]"
 							>
 								Accept all
 							</button>

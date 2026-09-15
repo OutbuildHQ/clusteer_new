@@ -2,9 +2,21 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Bell, Menu, Search, Sun, Moon, User, Settings, LogOut, ChevronDown, X } from "lucide-react";
+import {
+	Bell,
+	Menu,
+	Search,
+	Sun,
+	Moon,
+	User,
+	Settings,
+	LogOut,
+	ChevronDown,
+	X,
+} from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { Sidebar } from "./sidebar";
+import { TopBarFrame } from "./topbar-frame";
 import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 import { getUserInfo } from "@/lib/api/user/queries";
@@ -23,12 +35,14 @@ export function TopBar() {
 	});
 
 	const initials = user
-		? `${(user.firstName?.[0] ?? "").toUpperCase()}${(user.lastName?.[0] ?? "").toUpperCase()}` || user.username?.[0]?.toUpperCase() || "U"
+		? `${(user.firstName?.[0] ?? "").toUpperCase()}${(user.lastName?.[0] ?? "").toUpperCase()}` ||
+			user.username?.[0]?.toUpperCase() ||
+			"U"
 		: "U";
 	const displayName = user
-		? (user.firstName && user.lastName
+		? user.firstName && user.lastName
 			? `${user.firstName} ${user.lastName}`
-			: user.firstName || user.lastName || user.username || "User")
+			: user.firstName || user.lastName || user.username || "User"
 		: "User";
 	const displayEmail = user?.email
 		? user.email.length > 12
@@ -38,7 +52,9 @@ export function TopBar() {
 	useEffect(() => setMounted(true), []);
 	useEffect(() => {
 		if (!userMenu) return;
-		const close = (e: MouseEvent) => { if (menuRef.current && !menuRef.current.contains(e.target as Node)) setUserMenu(false); };
+		const close = (e: MouseEvent) => {
+			if (menuRef.current && !menuRef.current.contains(e.target as Node)) setUserMenu(false);
+		};
 		document.addEventListener("mousedown", close);
 		return () => document.removeEventListener("mousedown", close);
 	}, [userMenu]);
@@ -47,15 +63,14 @@ export function TopBar() {
 	useEffect(() => {
 		if (mobileNav) document.body.style.overflow = "hidden";
 		else document.body.style.overflow = "";
-		return () => { document.body.style.overflow = ""; };
+		return () => {
+			document.body.style.overflow = "";
+		};
 	}, [mobileNav]);
 
 	return (
 		<>
-			<header
-				className="sticky top-0 z-30 flex items-center gap-2 sm:gap-3 shrink-0 px-3 sm:px-4 lg:px-6"
-				style={{ borderBottom: "1px solid var(--c-line)", background: "var(--c-surface)", height: 56 }}
-			>
+			<TopBarFrame>
 				{/* Mobile menu button */}
 				<button
 					className="lg:hidden inline-flex items-center justify-center size-9 rounded-[10px]"
@@ -72,10 +87,27 @@ export function TopBar() {
 				</div>
 
 				{/* Search */}
-				<div className="flex-1 max-w-[380px] hidden md:flex items-center gap-2 h-9 px-3 rounded-[10px] transition-shadow focus-within:shadow-[0_0_0_3px_rgba(159,232,112,0.45)]" style={{ border: "1px solid var(--c-line)", background: "var(--c-bg)" }}>
+				<div
+					className="flex-1 max-w-[380px] hidden md:flex items-center gap-2 h-9 px-3 rounded-[10px] transition-shadow focus-within:shadow-[0_0_0_3px_rgba(159,232,112,0.45)]"
+					style={{ border: "1px solid var(--c-line)", background: "var(--c-bg)" }}
+				>
 					<Search className="size-4 shrink-0" style={{ color: "var(--c-text-3)" }} />
-					<input className="flex-1 bg-transparent outline-none text-[13.5px] border-none shadow-none" style={{ color: "var(--c-text)", fontFamily: "var(--f-sans)" }} placeholder="Search assets, txns, addresses…" />
-					<kbd className="text-[11px] px-1.5 py-0.5 rounded" style={{ fontFamily: "var(--f-mono)", background: "var(--c-surface-2)", border: "1px solid var(--c-line)", color: "var(--c-text-3)" }}>⌘K</kbd>
+					<input
+						className="flex-1 bg-transparent outline-none text-[13.5px] border-none shadow-none"
+						style={{ color: "var(--c-text)", fontFamily: "var(--f-sans)" }}
+						placeholder="Search assets, txns, addresses…"
+					/>
+					<kbd
+						className="text-[11px] px-1.5 py-0.5 rounded"
+						style={{
+							fontFamily: "var(--f-mono)",
+							background: "var(--c-surface-2)",
+							border: "1px solid var(--c-line)",
+							color: "var(--c-text-3)",
+						}}
+					>
+						⌘K
+					</kbd>
 				</div>
 
 				<div className="flex-1" />
@@ -87,32 +119,67 @@ export function TopBar() {
 					style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}
 					title="Toggle theme"
 				>
-					{mounted ? (theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />) : <Sun className="size-4" />}
+					{mounted ? (
+						theme === "dark" ? (
+							<Sun className="size-4" />
+						) : (
+							<Moon className="size-4" />
+						)
+					) : (
+						<Sun className="size-4" />
+					)}
 				</button>
-				<Link href="/notifications" className="relative inline-flex items-center justify-center size-9 rounded-[10px] transition-colors" style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}>
+				<Link
+					href="/notifications"
+					className="relative inline-flex items-center justify-center size-9 rounded-[10px] transition-colors"
+					style={{ border: "1px solid var(--c-line)", color: "var(--c-text)" }}
+				>
 					<Bell className="size-[17px]" />
 				</Link>
 
 				{/* User + dropdown */}
-				<div ref={menuRef} className="relative sm:pl-3 sm:ml-1 sm:border-l" style={{ borderColor: "var(--c-line)" }}>
+				<div
+					ref={menuRef}
+					className="relative sm:pl-3 sm:ml-1 sm:border-l"
+					style={{ borderColor: "var(--c-line)" }}
+				>
 					<button
 						onClick={() => setUserMenu(!userMenu)}
 						className="flex items-center gap-2.5 rounded-lg px-1.5 py-1 transition-colors hover:bg-[var(--c-surface-2)]"
 					>
-						<div className="size-8 rounded-full flex items-center justify-center text-[12px] font-semibold shrink-0" style={{ background: "linear-gradient(135deg, var(--c-lime-500), var(--c-onyx-700))", color: "var(--c-onyx-900)" }}>
+						<div
+							className="size-8 rounded-full flex items-center justify-center text-[12px] font-semibold shrink-0"
+							style={{
+								background: "linear-gradient(135deg, var(--c-lime-500), var(--c-onyx-700))",
+								color: "var(--c-onyx-900)",
+							}}
+						>
 							{initials}
 						</div>
 						<div className="hidden sm:block text-left">
-							<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>{displayName}</div>
-							<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>{displayEmail}</div>
+							<div className="text-[13px] font-semibold" style={{ color: "var(--c-text)" }}>
+								{displayName}
+							</div>
+							<div className="text-[11px]" style={{ color: "var(--c-text-3)" }}>
+								{displayEmail}
+							</div>
 						</div>
-						<ChevronDown className="size-3.5 hidden sm:block" style={{ color: "var(--c-text-3)" }} />
+						<ChevronDown
+							className="size-3.5 hidden sm:block"
+							style={{ color: "var(--c-text-3)" }}
+						/>
 					</button>
 
 					{userMenu && (
 						<div
 							className="absolute right-0 top-full mt-2 w-52 py-1.5 rounded-[12px] overflow-hidden"
-							style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)", boxShadow: "var(--sh-3)", animation: "modalIn .15s cubic-bezier(.2,.7,.2,1)", zIndex: 50 }}
+							style={{
+								background: "var(--c-surface)",
+								border: "1px solid var(--c-line)",
+								boxShadow: "var(--sh-3)",
+								animation: "modalIn .15s cubic-bezier(.2,.7,.2,1)",
+								zIndex: 50,
+							}}
 						>
 							<Link
 								href="/settings"
@@ -145,7 +212,7 @@ export function TopBar() {
 						</div>
 					)}
 				</div>
-			</header>
+			</TopBarFrame>
 
 			{/* Mobile nav drawer */}
 			{mobileNav && (

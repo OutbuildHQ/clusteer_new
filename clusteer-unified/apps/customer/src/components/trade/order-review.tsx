@@ -3,12 +3,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { RefreshCw } from "lucide-react";
+import { QuoteSummary } from "@/components/brand/quote-summary";
 import type { QxOrder } from "@/lib/types";
 import type { TradeState } from "./trade-wizard";
 
 const DEFAULT_FEE_PCT = 0.0075;
 
-function RateLock({ seconds = 45, onExpire }: { seconds?: number; onExpire: () => void }) {
+function PreviewTimer({ seconds = 45, onExpire }: { seconds?: number; onExpire: () => void }) {
 	const [left, setLeft] = useState(seconds);
 
 	useEffect(() => {
@@ -36,15 +37,15 @@ function RateLock({ seconds = 45, onExpire }: { seconds?: number; onExpire: () =
 						: "bg-up-soft text-up"
 			}`}
 		>
-			{left > 0 ? `Rate locked · 0:${String(left).padStart(2, "0")}` : "Rate expired"}
+			{left > 0 ? `Preview expires · 0:${String(left).padStart(2, "0")}` : "Preview expired"}
 		</span>
 	);
 }
 
 function makeMockOrder(state: TradeState, rate: number, fee: number): QxOrder {
 	const isBuy = state.side === "buy";
-	const ngnAmount = isBuy ? state.amount : state.amount * rate;
-	const cryptoAmount = isBuy ? state.amount / rate : state.amount;
+	const ngnAmount = isBuy ? state.amount - fee : state.amount * rate;
+	const cryptoAmount = isBuy ? ngnAmount / rate : state.amount;
 	const orderId = `${isBuy ? "BUY" : "SELL"}-${(7000 + Math.floor(state.amount)) % 9999}`;
 
 	return {
@@ -60,9 +61,9 @@ function makeMockOrder(state: TradeState, rate: number, fee: number): QxOrder {
 		destination: isBuy ? state.destinationAddress : undefined,
 		paymentDetails: isBuy
 			? {
-					bankName: "Providus Bank",
-					accountNumber: "9901234567",
-					accountName: "Quidax / Clusteer",
+					bankName: "Example Bank",
+					accountNumber: "DEMO ONLY",
+					accountName: "Illustrative account — do not pay",
 					reference: orderId,
 					amountNgn: ngnAmount + fee,
 					expiresAt: new Date(Date.now() + 900_000).toISOString(),
@@ -70,10 +71,11 @@ function makeMockOrder(state: TradeState, rate: number, fee: number): QxOrder {
 			: undefined,
 		depositDetails: !isBuy
 			? {
-					address: state.channel === "TRC20" ? "TYz8Mh3pqgDdQc5QqVzHmgK4kQ4LQX8kQ4" : "0x7Ac9F4e1b2C8d3A5e6F70891aB2cD3e4F5061a2b",
+					address:
+						state.channel === "TRC20" ? "DEMO-ADDRESS-DO-NOT-SEND" : "DEMO-ADDRESS-DO-NOT-SEND",
 					chain: state.channel,
 					amountUsdt: cryptoAmount,
-					qrValue: `usdt:${state.channel === "TRC20" ? "TYz8Mh3pqgDdQc5QqVzHmgK4kQ4LQX8kQ4" : "0x7Ac9F4e1b2C8d3A5e6F70891aB2cD3e4F5061a2b"}?amount=${cryptoAmount.toFixed(2)}`,
+					qrValue: `usdt:${state.channel === "TRC20" ? "DEMO-ADDRESS-DO-NOT-SEND" : "DEMO-ADDRESS-DO-NOT-SEND"}?amount=${cryptoAmount.toFixed(2)}`,
 					expiresAt: new Date(Date.now() + 1_800_000).toISOString(),
 				}
 			: undefined,
@@ -94,9 +96,11 @@ export function OrderReview({ state, onOrderCreated, onBack }: Props) {
 	const isBuy = state.side === "buy";
 
 	const { data: rateData } = useQuery({
-		queryKey: ["exchange-rate"],
+		queryKey: ["exchange-rate", state.side],
 		queryFn: async () => {
-			const r = await fetch(`/api/system/exchange-rate?targetCurrency=NGN&amount=1&type=${state.side}`);
+			const r = await fetch(
+				`/api/system/exchange-rate?targetCurrency=NGN&amount=1&type=${state.side}`
+			);
 			return r.json();
 		},
 		refetchInterval: 30_000,
@@ -106,12 +110,12 @@ export function OrderReview({ state, onOrderCreated, onBack }: Props) {
 	const rate = isBuy
 		? rateData?.buyRate || 1614.5
 		: rateData?.sellRate || rateData?.buyRate || 1614.5;
-	const feePct = rateData?.feePercent ? rateData.feePercent / 100 : DEFAULT_FEE_PCT;
+	const feePct = rateData?.feePercent != null ? rateData.feePercent / 100 : DEFAULT_FEE_PCT;
 
 	const amount = state.amount || 0;
-	const ngnAmount = isBuy ? amount : amount * rate;
-	const cryptoAmount = isBuy ? amount / rate : amount;
-	const fee = ngnAmount * feePct;
+	const ngnAmount = isBuy ? amount / (1 + feePct) : amount * rate;
+	const cryptoAmount = isBuy ? ngnAmount / rate : amount;
+	const fee = isBuy ? amount - ngnAmount : ngnAmount * feePct;
 	const buyTotal = ngnAmount + fee;
 	const sellPayout = ngnAmount - fee;
 
@@ -136,7 +140,10 @@ export function OrderReview({ state, onOrderCreated, onBack }: Props) {
 		["Type", `${isBuy ? "Buy" : "Sell"} USDT`],
 		["Network", state.channel],
 		["Rate", `1 USDT = ₦${fmt(rate)}`],
-		[isBuy ? "Deliver to" : "Payout to", isBuy ? (state.destinationAddress || "Your wallet") : "Bank account"],
+		[
+			isBuy ? "Deliver to" : "Payout to",
+			isBuy ? state.destinationAddress || "Your wallet" : "Bank account",
+		],
 		[`Service fee (${(feePct * 100).toFixed(2)}%)`, `₦${fmt(fee)}`],
 		["Settlement", "Quidax"],
 	];
@@ -152,43 +159,21 @@ export function OrderReview({ state, onOrderCreated, onBack }: Props) {
 				>
 					{isBuy ? "Buy" : "Sell"} USDT
 				</span>
-				<RateLock key={lockKey} seconds={45} onExpire={() => setExpired(true)} />
+				<PreviewTimer key={lockKey} seconds={45} onExpire={() => setExpired(true)} />
 			</div>
 
-			{/* Big amount display */}
-			<div className="text-center py-1">
-				<div className="font-display font-semibold text-[34px] tabular-nums text-ds-text tracking-[-0.03em]">
-					{isBuy
-						? `${cryptoAmount.toFixed(4)} USDT`
-						: `₦${fmt(sellPayout)}`}
-				</div>
-				<div className="text-ds-text-2 font-mono tabular-nums text-[13px] mt-0.5">
-					{isBuy
-						? `for ₦${fmt(buyTotal)}`
-						: `for ${cryptoAmount.toFixed(4)} USDT`}
-				</div>
-			</div>
-
-			{/* Summary card */}
-			<div className="rounded-[14px] bg-ds-surface-2 px-[14px] py-1">
-				{summaryRows.map(([k, v]) => (
-					<div
-						key={k}
-						className="flex justify-between items-center text-[13px] py-[9px] border-b border-ds-line"
-					>
-						<span className="text-ds-text-2">{k}</span>
-						<span className="font-mono tabular-nums font-semibold text-ds-text max-w-[240px] text-right overflow-hidden text-ellipsis">
-							{v}
-						</span>
-					</div>
-				))}
-				<div className="flex justify-between items-center text-[14px] py-[11px]">
-					<span className="font-semibold text-ds-text">
-						{isBuy ? "Total to pay" : "Total to receive"}
-					</span>
-					<span className="font-mono tabular-nums font-bold text-ds-text">
-						{isBuy ? `₦${fmt(buyTotal)}` : `₦${fmt(sellPayout)}`}
-					</span>
+			<QuoteSummary
+				amount={cryptoAmount}
+				rate={rate}
+				fee={fee}
+				side={state.side}
+				destination={isBuy ? state.destinationAddress || "Your wallet" : "Your selected bank"}
+				illustrative
+			/>
+			<div className="cl-details">
+				<div>
+					<span>Selected network</span>
+					<strong>{state.channel}</strong>
 				</div>
 			</div>
 
@@ -196,14 +181,14 @@ export function OrderReview({ state, onOrderCreated, onBack }: Props) {
 			{expired ? (
 				<div className="rounded-[14px] bg-down-soft px-[14px] py-[10px]">
 					<p className="text-[12.5px] text-ds-text m-0">
-						The locked rate expired. Refresh to get Quidax&apos;s latest quote before you continue.
+						The preview expired. Refresh to restart the demonstration.
 					</p>
 				</div>
 			) : (
 				<div className="rounded-[14px] bg-warn-soft px-[14px] py-[10px]">
 					<p className="text-[12.5px] text-ds-text m-0">
-						This quote is rate-locked. You&apos;ll confirm with a one-time code, then complete the{" "}
-						{isBuy ? "payment" : "transfer"} with Quidax.
+						This is an illustrative quote. Continue to explore verification and transfer
+						instructions. No real order is created.
 					</p>
 				</div>
 			)}
